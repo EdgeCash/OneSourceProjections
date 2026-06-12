@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 98816,
+  "participant": {
+   "id": "7659",
+   "name": "William Contreras",
+   "link": "/mlb/props/william-contreras/",
+   "player": {
+    "short_name": "W. Contreras",
+    "first_name": "William",
+    "last_name": "Contreras",
+    "image": "https://images.fantasypros.com/images/players/mlb/7659/headshot/210x210.webp",
+    "slug": "william-contreras",
+    "position": "C,DH",
+    "team": "MIL",
+    "popularity": 61,
+    "jersey_number": 24
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": -134,
+   "book": 13,
+   "consensus_line": 1.5,
+   "consensus_odds": -140,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -135,
+     "book_id": 12,
+     "created": "2026-06-12 09:04:02"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "d2a736dcf8f6819792448cd2f04ab517",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 75
+    }
+   },
+   "probability": 0.85982326139808,
+   "expected_value": 0.5014824116951546,
+   "bet_rating": 5
+  },
+  "under": {
+   "line": 1.5,
+   "odds": 110,
+   "book": 33,
+   "consensus_line": 1.5,
+   "consensus_odds": 100,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": 102,
+     "book_id": 12,
+     "created": "2026-06-12 09:04:02"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "6da197906d602a2877f5746a57dfa1aa",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 42
+    }
+   },
+   "probability": 0.14017673860192004,
+   "expected_value": -0.7196465227961599,
+   "bet_rating": 1
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 3.46,
+   "probability": 0.85982326139808,
+   "expected_value": 0.5014824116951546,
+   "bet_rating": 5,
+   "diff": 1.96
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Painter (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 18,
+    "value": 0.5,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/william-contreras/runs-hits-rbis/",
+   "analyzer": "/mlb/props/william-contreras/runs-hits-rbis/",
+   "affiliate": "https://sportsbook.caesars.com/us/nj/bet/betslip?selectionIds=6318ff25-6842-3498-8a76-3b6477b1c7a2"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 11,
+    "under": 9,
+    "push": 0
+   },
+   "season": {
+    "over": 37,
+    "under": 25,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 82,
+    "under": 77,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 99841,
+  "participant": {
+   "id": "8022",
+   "name": "Adley Rutschman",
+   "link": "/mlb/props/adley-rutschman/",
+   "player": {
+    "short_name": "A. Rutschman",
+    "first_name": "Adley",
+    "last_name": "Rutschman",
+    "image": "https://images.fantasypros.com/images/players/mlb/8022/headshot/210x210.webp",
+    "slug": "adley-rutschman",
+    "position": "C,DH",
+    "team": "BAL",
+    "popularity": 170,
+    "jersey_number": 35
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": -130,
+   "book": 33,
+   "consensus_line": 1.5,
+   "consensus_odds": -134,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -124,
+     "book_id": 12,
+     "created": "2026-06-12 07:26:53"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "6e7e5424a5de1cc7da9c8d9b39907b89",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 60
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 1.5,
+   "odds": 111,
+   "book": 60,
+   "consensus_line": 1.5,
+   "consensus_odds": 101,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -107,
+     "book_id": 12,
+     "created": "2026-06-12 07:26:53"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "834d2bb9b6a7bb135971db62c8222fb9",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 47
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 3.11,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 1.61
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Canning (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 7,
+    "value": 0.4,
+    "tied": true
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/adley-rutschman/runs-hits-rbis/",
+   "analyzer": "/mlb/props/adley-rutschman/runs-hits-rbis/",
+   "affiliate": "https://thescore.bet/sport/baseball/organization/united-states/competition/mlb/event/21df5816-4b6b-4e8d-9d78-2904ccf8526a"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 9,
+    "under": 11,
+    "push": 0
+   },
+   "season": {
+    "over": 23,
+    "under": 26,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 36,
+    "under": 54,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "over"
+  }
+ }
+]

@@ -1,0 +1,312 @@
+[
+ {
+  "sport": "NBA",
+  "market_id": 338,
+  "event_id": 27781,
+  "participant": {
+   "id": "3532",
+   "name": "Landry Shamet",
+   "link": "/nba/props/landry-shamet/",
+   "player": {
+    "short_name": "L. Shamet",
+    "first_name": "Landry",
+    "last_name": "Shamet",
+    "image": "https://images.fantasypros.com/images/players/nba/3532/headshot/210x210.webp",
+    "slug": "landry-shamet",
+    "position": "G",
+    "team": "NYK",
+    "popularity": null,
+    "jersey_number": 44
+   }
+  },
+  "over": {
+   "line": 9.5,
+   "odds": -113,
+   "book": 60,
+   "consensus_line": 9.5,
+   "consensus_odds": -118,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 9.5,
+     "cost": -127,
+     "book_id": 12,
+     "created": "2026-06-11 03:43:14"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "5bd137df95758c31b517d46c2350a97b",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 256
+    }
+   },
+   "probability": 0.77214426771431,
+   "expected_value": 0.4554577789659118,
+   "bet_rating": 5
+  },
+  "under": {
+   "line": 9.5,
+   "odds": -110,
+   "book": 13,
+   "consensus_line": 9.5,
+   "consensus_odds": -111,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 9.5,
+     "cost": -104,
+     "book_id": 12,
+     "created": "2026-06-11 03:43:14"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "eb09916220b20ffb3c05d16034513c8a",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 200
+    }
+   },
+   "probability": 0.22785573228569,
+   "expected_value": -0.5668688332226974,
+   "bet_rating": 1
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 13.6,
+   "probability": 0.77214426771431,
+   "expected_value": 0.4554577789659118,
+   "bet_rating": 5,
+   "diff": 4.1
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 7,
+    "value": 178.3,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "nba/odds/player-props/landry-shamet/points-assists-rebounds/",
+   "analyzer": "/nba/props/landry-shamet/points-assists-rebounds/",
+   "affiliate": "https://novig.com/events/019eb4ee-25ca-7fc2-9d98-5c5b771258b6/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 7,
+    "under": 3,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 43,
+    "under": 26,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 15,
+    "under": 46,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "NBA",
+  "market_id": 336,
+  "event_id": 27781,
+  "participant": {
+   "id": "3532",
+   "name": "Landry Shamet",
+   "link": "/nba/props/landry-shamet/",
+   "player": {
+    "short_name": "L. Shamet",
+    "first_name": "Landry",
+    "last_name": "Shamet",
+    "image": "https://images.fantasypros.com/images/players/nba/3532/headshot/210x210.webp",
+    "slug": "landry-shamet",
+    "position": "G",
+    "team": "NYK",
+    "popularity": null,
+    "jersey_number": 44
+   }
+  },
+  "over": {
+   "line": 8.5,
+   "odds": -110,
+   "book": 49,
+   "consensus_line": 8.5,
+   "consensus_odds": -112,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 8.5,
+     "cost": -119,
+     "book_id": 12,
+     "created": "2026-06-11 03:43:15"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "ee570a0c93e816094182931cb09f5aa7",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 85
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 8.5,
+   "odds": -118,
+   "book": 12,
+   "consensus_line": 8.5,
+   "consensus_odds": -120,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 8.5,
+     "cost": -111,
+     "book_id": 12,
+     "created": "2026-06-11 03:43:16"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "e09200571f5e1fcb30c1513f51a22cb2",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 59
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 12.1,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 3.6
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 7,
+    "value": 152.8,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "nba/odds/player-props/landry-shamet/points-rebounds/",
+   "analyzer": "/nba/props/landry-shamet/points-rebounds/",
+   "affiliate": "https://app.hardrock.bet/?deep_link_value=betslip%2F4036205929388179799"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 7,
+    "under": 3,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 40,
+    "under": 29,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 14,
+    "under": 47,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ }
+]

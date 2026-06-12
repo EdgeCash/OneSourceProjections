@@ -1,0 +1,602 @@
+[
+ {
+  "id": "b4d36c69b374dcf9c7e477e7961ae25f",
+  "market_id": 122,
+  "event_id": 100102,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "STL",
+    "name": "Cardinals",
+    "link": "/mlb/teams/st-louis-cardinals/",
+    "team": {
+     "city": "St. Louis",
+     "abbreviation": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "st-louis-cardinals"
+    }
+   },
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "minnesota-twins"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "STL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1900,
+     "book_id": 68,
+     "created": "2026-06-10 18:26:20"
+    },
+    "label": "Cardinals",
+    "short_label": "STL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:12",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_4bbf5b52c7a668eb713b52d0d2694049",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:07:16",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun131410stlmin",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_4bbf5b52c7a668eb713b52d0d2694049",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:08:56",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_4bbf5b52c7a668eb713b52d0d2694049",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:07:26",
+        "cost": -105,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50
+        }
+       }
+      ]
+     },
+     {
+      "id": 75,
+      "lines": [
+       {
+        "id": "75_4bbf5b52c7a668eb713b52d0d2694049",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:09:12",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/D1wLDQ",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50
+        }
+       }
+      ]
+     }
+    ],
+    "id": "4bbf5b52c7a668eb713b52d0d2694049"
+   },
+   {
+    "participant": "MIN",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1900,
+     "book_id": 68,
+     "created": "2026-06-10 18:26:20"
+    },
+    "label": "Twins",
+    "short_label": "MIN",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:12",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 52.3
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_734084e85189591f68ae92b0f4e811ad",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:07:16",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun131410stlmin",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 52.3
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_734084e85189591f68ae92b0f4e811ad",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:08:56",
+        "cost": -113,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 52.3
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_734084e85189591f68ae92b0f4e811ad",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:07:26",
+        "cost": -115,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 52.3
+        }
+       }
+      ]
+     },
+     {
+      "id": 75,
+      "lines": [
+       {
+        "id": "75_734084e85189591f68ae92b0f4e811ad",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:12",
+        "cost": -108,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/D1wLDQ",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 52.3
+        }
+       }
+      ]
+     }
+    ],
+    "id": "734084e85189591f68ae92b0f4e811ad"
+   }
+  ]
+ },
+ {
+  "id": "8cefa5e67b57fe3cca06df2f869a6a00",
+  "market_id": 122,
+  "event_id": 99717,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "new-york-yankees"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "toronto-blue-jays"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "NYY",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -270,
+     "book_id": 68,
+     "created": "2026-06-10 19:27:37"
+    },
+    "label": "Yankees",
+    "short_label": "NYY",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:13",
+        "cost": -127,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_062fc34febebadb61d21250c8506dceb",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:07:16",
+        "cost": -127,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun131507nyytor",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_062fc34febebadb61d21250c8506dceb",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:08:56",
+        "cost": -133,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_062fc34febebadb61d21250c8506dceb",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:13",
+        "cost": -135,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 75,
+      "lines": [
+       {
+        "id": "75_062fc34febebadb61d21250c8506dceb",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:09:12",
+        "cost": -127,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/D1wLDQ",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "062fc34febebadb61d21250c8506dceb"
+   },
+   {
+    "participant": "TOR",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -270,
+     "book_id": 68,
+     "created": "2026-06-10 19:27:37"
+    },
+    "label": "Blue Jays",
+    "short_label": "TOR",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:13",
+        "cost": 117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_08da244376076fa322eb06409d2c02fb",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-12 14:07:16",
+        "cost": 117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun131507nyytor",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_08da244376076fa322eb06409d2c02fb",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:08:56",
+        "cost": 117,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_08da244376076fa322eb06409d2c02fb",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:13",
+        "cost": 110,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 75,
+      "lines": [
+       {
+        "id": "75_08da244376076fa322eb06409d2c02fb",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-12 14:09:12",
+        "cost": 117,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/D1wLDQ",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "08da244376076fa322eb06409d2c02fb"
+   }
+  ]
+ }
+]
