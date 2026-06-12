@@ -55,3 +55,34 @@ def test_legacy_backtests_and_calibration():
 def test_graded_props_2026():
     df = history.graded_props_2026()
     assert {"Player", "Prop_Type", "Line", "Result"} <= set(df.columns)
+
+
+def test_bp_game_odds_open_close():
+    df = history.bp_game_odds()
+    assert len(df) > 9_000
+    assert {"open_cost", "close_cost", "market_slug", "event_id"} <= set(df.columns)
+    assert set(df["market_slug"].unique()) >= {"moneyline", "total", "run-line"}
+    # both opening and closing prices present
+    assert (df["open_cost"].notna() & df["close_cost"].notna()).all()
+
+
+def test_bp_first_five_and_consensus():
+    f5 = history.bp_first_five_odds()
+    assert len(f5) > 9_000
+    assert any("inning" in m for m in f5["market_slug"].unique())
+    cc = history.closing_consensus_lines()
+    assert {"ml_open_fair_home", "ml_close_fair_home"} <= set(cc.columns)
+
+
+def test_mlb_starters_map():
+    st = history.mlb_starters(2026)
+    assert len(st["games"]) > 1_000
+    assert len(st["pitchers"]) > 200
+    g = st["games"][0]
+    assert {"date", "away_sp_id", "home_sp_id"} <= set(g)
+
+
+def test_pick_ledger():
+    pl = history.pick_ledger("picks")
+    assert len(pl) > 50
+    assert {"date", "market", "side"} <= set(pl.columns)

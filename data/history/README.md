@@ -31,6 +31,12 @@ non-modeled leagues (KBO/EPL/UCL, NCAA baseball/softball) were left behind.
 | `misc/odds_snapshots.jsonl.gz` | Multi-book odds snapshots (3.3k rows) | 2026 | Sports-stats-data (odds.db) |
 | `misc/mlb_closing_consensus_2026.jsonl.gz` | One-row-per-game consensus closers | May 2026 | Sports-stats-data |
 | `misc/picks_log/` | Prior pick logs (MLB, WNBA) | 2026 | edge-equation-v1 |
+| `bp_odds/bp_game_odds_2026.jsonl.gz` | **BettingPros game odds with OPEN + CLOSE** (moneyline, run-line, total, team-total) — open_cost/close_cost/close_best/close_median/n_books/projection/cover_prob per event/market/side | 2026-03-25 → 06-11 (9.3k rows) | profit-hunt |
+| `bp_odds/bp_first5_nrfi_2026.jsonl.gz` | BettingPros first-inning / first-five markets, open + close (NRFI, F5 run-line/total) | 2026 (10.4k rows) | profit-hunt |
+| `bp_odds/closing_consensus_2026.jsonl.gz` | Per-game consensus open/close fair moneyline probabilities | 2026 (312 games) | profit-hunt |
+| `backfill/mlb/2026/starters.json.gz` | 2026 game→starter map (MLBAM ids + names) and per-pitcher season stats (era/whip/k9/bb9/hr9/ip) | 2026 (1066 games, 302 pitchers) | profit-hunt |
+| `track/picks_ledger_2026.jsonl.gz`, `track/tenths_totals_ledger_2026.jsonl.gz` | Realized pick history (model prob, price, book, units, result) | 2026 | profit-hunt |
+| `backtest/legacy/nrfi_2026-03-20_2026-06-05.csv.gz`, `edge_clv_report_2026.txt` | Prior NRFI/game backtest output + CLV report | 2026 | profit-hunt |
 
 ## What this is for
 
@@ -43,6 +49,22 @@ non-modeled leagues (KBO/EPL/UCL, NCAA baseball/softball) were left behind.
 4. **WNBA props** — `player_games.jsonl` 2018+ supports building real
    per-player rate models instead of leaning on BettingPros projections.
 
-Not yet imported: `profit-hunt` (private repo, inaccessible from this
-session) and anything in repos created later — re-run the curation
-against those when access is available.
+### On the BettingPros open/close odds (`bp_odds/`)
+
+This is the highest-value odds history we have. BettingPros is a live-only
+API — you cannot retroactively pull historical opening prices — so these
+captured snapshots are irreplaceable, and they come from the *same source*
+the live pipeline uses (unlike the Odds API closing lines in
+`closing_lines/`, which came from a different vendor). They carry **both
+opening and closing** prices across the full 2026 season to date, which
+enables true CLV measurement (did our number beat the open→close move?)
+rather than just grading at the close. `profit-hunt` contained **no raw
+Odds API data** — those credits were spent in the other repos and that
+data is already in `closing_lines/`.
+
+Skipped from profit-hunt: a 235 MB MLB StatsAPI response cache (free,
+re-pullable), daily pick-graphic PNGs, and HTML site output.
+
+Sources fully imported: Sports-projections, edge-equation-v1,
+Sports-stats-data, profit-hunt. Re-run the curation against any repos
+created later when access is available.

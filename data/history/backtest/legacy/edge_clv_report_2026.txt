@@ -1,0 +1,26 @@
+Edge / CLV backtest — matched 305 games to closing lines
+Flat 1u on edge>threshold at best book price. ROI/units settled vs results.
+CLV = fair_close - implied(price bet); Move = fair_close - fair_open (toward our side).
+
+    market   thr  bets    units     ROI    hit     CLV    move
+----------------------------------------------------------------
+ Moneyline  0.00   302   -15.16   -5.0%  44.7%  -0.85  -0.12
+     Total  0.00   253   -20.91   -8.3%  47.0%  -1.27  +0.02
+  Run Line  0.00    29    +2.82   +9.7%  44.8%  -0.53  -3.34
+ Moneyline  0.02   236   -13.83   -5.9%  43.6%  -0.84  -0.17
+     Total  0.02   221   -15.86   -7.2%  47.5%  -1.28  +0.07
+  Run Line  0.02    16    +3.75  +23.4%  50.0%  -0.58  -5.76
+ Moneyline  0.04   165   -13.83   -8.4%  41.8%  -0.83  -0.28
+     Total  0.04   185   -12.91   -7.0%  47.6%  -1.25  +0.05
+  Run Line  0.04    10    +4.40  +44.0%  60.0%  -0.68  -3.20
+ Moneyline  0.06   108   -10.17   -9.4%  40.7%  -0.81  -0.36
+     Total  0.06   147    -8.14   -5.5%  48.3%  -1.23  +0.04
+  Run Line  0.06     7    +2.39  +34.1%  57.1%  -0.71  -0.55
+
+Moneyline by source / window (edge>0):
+            oddsdb    40 bets    -6.34u  ROI  -15.9%  hit 40.0%  CLV -0.87pp
+ sportsprojections   262 bets    -8.82u  ROI   -3.4%  hit 45.4%  CLV -0.85pp
+(sportsprojections=May 6-25, oddsdb=Jun 3-8 — independent windows)
+
+Read: positive ROI on a small sample is noisy. The verdict is CLV at n>~100:
+consistently negative = no edge; consistently positive = a real signal to pursue.
