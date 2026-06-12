@@ -1,0 +1,274 @@
+[
+ {
+  "id": 100102,
+  "sr_id": "e4b5a139-f505-46f1-809a-e22d2d5eac8b",
+  "sport": "MLB",
+  "scheduled": "2026-06-13 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIN",
+  "visitor": "STL",
+  "link": "/mlb/matchups/minnesota-twins-vs-st-louis-cardinals/?date=2026-06-13",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "46293",
+    "name": "Connor Prielipp",
+    "link": "/mlb/props/connor-prielipp/",
+    "player": {
+     "short_name": "C. Prielipp",
+     "first_name": "Connor",
+     "last_name": "Prielipp",
+     "image": "https://images.fantasypros.com/images/players/mlb/46293/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "connor-prielipp",
+     "jersey_number": 61
+    }
+   },
+   "visitor_probable": {
+    "id": "7459",
+    "name": "Matthew Liberatore",
+    "link": "/mlb/props/matthew-liberatore/",
+    "player": {
+     "short_name": "M. Liberatore",
+     "first_name": "Matthew",
+     "last_name": "Liberatore",
+     "image": "https://images.fantasypros.com/images/players/mlb/7459/headshot/210x210.webp",
+     "position": "SP",
+     "team": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "matthew-liberatore",
+     "jersey_number": 32
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIN",
+   "season": "2025",
+   "split": "A",
+   "r": "1.001",
+   "1b": "1.004",
+   "2b": "1.144",
+   "3b": "0.892",
+   "hr": "1.003",
+   "name": "Target Field"
+  },
+  "venue": {
+   "name": "Target Field",
+   "address": "1 Twins Way",
+   "city": "Minneapolis",
+   "state": "MN",
+   "country": "USA",
+   "zip": "55403",
+   "surface": "grass",
+   "capacity": 38544,
+   "stadium_type": "outdoor",
+   "id": "302f8dcd-eed6-4b83-8609-81548d51e955"
+  },
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 31,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "minnesota-twins",
+     "stadium_deg_offset": "75"
+    }
+   },
+   {
+    "id": "STL",
+    "name": "Cardinals",
+    "link": "/mlb/teams/st-louis-cardinals/",
+    "team": {
+     "city": "St. Louis",
+     "abbreviation": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 37,
+      "L": 29,
+      "T": 0
+     },
+     "slug": "st-louis-cardinals",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 71,
+   "forecast_wind_speed": 19,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 299,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1010,
+   "forecast_humidity": 0.44
+  },
+  "broadcasts": [
+   {
+    "network": "MNNT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99717,
+  "sr_id": "c00e2575-f254-4692-82a4-d1453b30138f",
+  "sport": "MLB",
+  "scheduled": "2026-06-13 19:07:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TOR",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/new-york-yankees-vs-toronto-blue-jays/?date=2026-06-13",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "4671",
+    "name": "Kevin Gausman",
+    "link": "/mlb/props/kevin-gausman/",
+    "player": {
+     "short_name": "K. Gausman",
+     "first_name": "Kevin",
+     "last_name": "Gausman",
+     "image": "https://images.fantasypros.com/images/players/mlb/4671/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "kevin-gausman",
+     "jersey_number": 34
+    }
+   },
+   "visitor_probable": {
+    "id": "7355019",
+    "name": "Cam Schlittler",
+    "link": "/mlb/props/cam-schlittler/",
+    "player": {
+     "short_name": "C. Schlittler",
+     "first_name": "Cam",
+     "last_name": "Schlittler",
+     "image": "https://images.fantasypros.com/images/players/mlb/7355019/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "cam-schlittler",
+     "jersey_number": 31
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TOR",
+   "season": "2025",
+   "split": "A",
+   "r": "0.975",
+   "1b": "0.944",
+   "2b": "1.042",
+   "3b": "0.687",
+   "hr": "1.011",
+   "name": "Rogers Centre"
+  },
+  "venue": {
+   "name": "Rogers Centre",
+   "address": "One Blue Jays Way",
+   "city": "Toronto",
+   "state": "ON",
+   "country": "CAN",
+   "zip": "M5V1J3",
+   "surface": "turf",
+   "capacity": 39150,
+   "stadium_type": "retractable",
+   "id": "84d72338-2173-4a90-9d25-99adc6c86f4b"
+  },
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 33,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 41,
+      "L": 26,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 80,
+   "forecast_wind_speed": 16,
+   "forecast_wind_direction": "SW",
+   "forecast_wind_degree": 227,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1011,
+   "forecast_humidity": 0.43
+  },
+  "broadcasts": [
+   {
+    "network": "YES",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

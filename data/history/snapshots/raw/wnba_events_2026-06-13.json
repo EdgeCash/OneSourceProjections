@@ -1,0 +1,128 @@
+[
+ {
+  "id": 2573,
+  "sr_id": "6e2754e7-1586-42f0-9949-9b93b2db4416",
+  "sport": "WNBA",
+  "scheduled": "2026-06-13 22:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CON",
+  "visitor": "IND",
+  "link": "/wnba/matchups/connecticut-sun-vs-indiana-fever/",
+  "series_summary": null,
+  "popularity": 3,
+  "venue": {
+   "name": "Mohegan Sun Arena",
+   "city": "Uncasville",
+   "state": "CT",
+   "country": "USA",
+   "zip": "06382",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CON",
+    "name": "Sun",
+    "link": "/wnba/teams/connecticut-sun/",
+    "team": {
+     "city": "Connecticut",
+     "abbreviation": "CON",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 2,
+      "L": 12,
+      "T": 0
+     },
+     "slug": "connecticut-sun"
+    }
+   },
+   {
+    "id": "IND",
+    "name": "Fever",
+    "link": "/wnba/teams/indiana-fever/",
+    "team": {
+     "city": "Indiana",
+     "abbreviation": "IND",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 7,
+      "L": 5,
+      "T": 0
+     },
+     "slug": "indiana-fever"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2574,
+  "sr_id": "e75b0563-7124-47c3-ac10-10f525369f09",
+  "sport": "WNBA",
+  "scheduled": "2026-06-14 00:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "LVA",
+  "visitor": "MIN",
+  "link": "/wnba/matchups/las-vegas-aces-vs-minnesota-lynx/",
+  "series_summary": null,
+  "popularity": 3,
+  "venue": {
+   "name": "Michelob ULTRA Arena",
+   "city": "Paradise",
+   "state": "NV",
+   "country": "USA",
+   "zip": "89119",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "LVA",
+    "name": "Aces",
+    "link": "/wnba/teams/las-vegas-aces/",
+    "team": {
+     "city": "Las Vegas",
+     "abbreviation": "LVA",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 9,
+      "L": 3,
+      "T": 0
+     },
+     "slug": "las-vegas-aces"
+    }
+   },
+   {
+    "id": "MIN",
+    "name": "Lynx",
+    "link": "/wnba/teams/minnesota-lynx/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 10,
+      "L": 2,
+      "T": 0
+     },
+     "slug": "minnesota-lynx"
+    }
+   }
+  ],
+  "broadcasts": [
+   {
+    "network": "CBS",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/cbs-news-us.png"
+   }
+  ]
+ }
+]
