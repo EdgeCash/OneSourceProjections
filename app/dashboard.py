@@ -209,7 +209,18 @@ def render_sport(sport: str):
                 render_research_card(sport, g, date_sel)
 
     with tab_p:
-        render_props(sport, props, q)
+        render_props(sport, props, q, blob.get("injuries") or [])
+
+    news = blob.get("news") or []
+    if news:
+        with st.expander(f"📰 Latest {sport} news ({len(news)})"):
+            for n in news:
+                head = n.get("title", "")
+                ply = n.get("player", "")
+                tag = f"**{ply}** — " if ply and ply not in head else ""
+                st.markdown(f"{tag}**{head}**")
+                if n.get("body"):
+                    st.caption(n["body"])
 
 
 @st.cache_data(ttl=900, show_spinner=False)
@@ -233,7 +244,7 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
                    "offense out-ranks the defense it faces.")
 
 
-def render_props(sport: str, props: list, q: str):
+def render_props(sport: str, props: list, q: str, injuries: list | None = None):
     if not props:
         st.info("No props yet — MLB batter props post once lineups are "
                 "confirmed (~2-4h before first pitch).")
@@ -276,13 +287,13 @@ def render_props(sport: str, props: list, q: str):
 
     rows = (sel.selection.rows if sel and getattr(sel, "selection", None) else [])
     if rows:
-        render_prop_detail(sport, df.iloc[rows[0]].to_dict())
+        render_prop_detail(sport, df.iloc[rows[0]].to_dict(), injuries or [])
     else:
         st.info("Select a prop above to open the deep-dive: recent-game "
                 "chart, hit-rate splits, and model vs BettingPros read.")
 
 
-def render_prop_detail(sport: str, p: dict):
+def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
     """Deep-dive panel for one prop: header facts, trend chart, hit-rate
     splits, and a model-vs-market read."""
     player = p.get("player", "")
@@ -374,10 +385,52 @@ def render_prop_detail(sport: str, p: dict):
             moved = "toward the over" if now_ < open_ else "toward the under"
             bits.append(f"Over opened **{ui.fmt_american(open_)}**, now "
                         f"**{ui.fmt_american(now_)}** (moved {moved}).")
+        from onesource.names import normalize as _norm
+        inj = next((i for i in (injuries or [])
+                    if i.get("norm") == _norm(player)), None)
+        if inj:
+            bits.append(f"🩹 **Injury report: {inj.get('status', '')}** "
+                        f"{('— ' + inj['note']) if inj.get('note') else ''}")
+        prof = _player_profile(sport, player, market)
+        if prof:
+            bits.append(prof)
         if p.get("opponent"):
             bits.append(f"{p.get('team', '')} vs {p.get('opponent', '')}.")
         if bits:
             st.markdown("\n\n".join(bits))
+
+
+def _player_profile(sport: str, player: str, market: str) -> str | None:
+    """Season profile line (MLB: box-log rates + prior-season Statcast
+    expected stats)."""
+    if sport != "MLB":
+        return None
+    try:
+        from onesource import internal_stats
+        from onesource.names import normalize as _norm
+        season = int(default_date[:4]) if default_date else 2026
+        n = _norm(player)
+        if str(market).startswith("pitcher"):
+            t = internal_stats.pitcher_table(season)
+            r = t[t["norm_name"] == n]
+            if r.empty:
+                return None
+            r = r.iloc[0]
+            return (f"📊 Season: **{r['FIP']:.2f} FIP**, "
+                    f"**{r['K%'] * 100:.1f}% K**, "
+                    f"{r['IP'] / max(r['GS'], 1):.1f} IP/start ({int(r['GS'])} GS).")
+        t = internal_stats.batter_table(season)
+        r = t[t["norm_name"] == n]
+        if r.empty:
+            return None
+        r = r.iloc[0]
+        x = ""
+        if pd.notna(r.get("est_ba")) and pd.notna(r.get("est_slg")):
+            x = f" · last-season Statcast **{r['est_ba']:.3f} xBA / {r['est_slg']:.3f} xSLG**"
+        return (f"📊 Season: **{r['AVG']:.3f} AVG / {r['SLG']:.3f} SLG**, "
+                f"{int(r['HR'])} HR in {int(r['PA'])} PA{x}.")
+    except Exception:
+        return None
 
 
 # ---------------------------------------------------------------------------

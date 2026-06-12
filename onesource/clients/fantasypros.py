@@ -110,3 +110,22 @@ def projection_index(players: list[dict]) -> dict[str, dict]:
         if name:
             out[normalize(name)] = stats
     return out
+
+
+def news(sport: str, limit: int = 20) -> list[dict]:
+    """Player news items (breaking/injury/transaction) for a sport."""
+    data = cached_json(
+        f"fp:news:{sport}:{limit}", 30 * 60,
+        lambda: _get(f"{sport.lower()}/news", {"limit": limit}),
+    )
+    return data.get("items", [])
+
+
+def injuries(sport: str, year: int | None = None) -> list[dict]:
+    """Current injury report for a sport."""
+    params = {"year": year} if year else {}
+    data = cached_json(
+        f"fp:injuries:{sport}:{year}", 60 * 60,
+        lambda: _get(f"{sport.lower()}/injuries", params),
+    )
+    return data.get("injuries", [])

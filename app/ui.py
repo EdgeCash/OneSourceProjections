@@ -306,7 +306,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
         f"{h_badge}<span style='font-weight:700;'>{home}</span></div></div>"
         f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:4px;'>"
         f"{fmt_time_et(g.get('game_time'))} · O/U {_num(g.get('total_line') or g.get('proj_total'))}"
-        f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</div>"
+        f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}{_weather_txt(g)}</div>"
     )
 
     # gauges (model): moneyline / run line-spread / total
@@ -356,12 +356,43 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
                   "(away / home)</div>"
                   f"<div style='display:flex;gap:6px;'>{cells}</div>")
 
+    lineups = _lineups_html(g)
     analysis = _analysis_html(sport, g, matchup, min_edge)
     return (
         "<div style='background:#161b24;border:1px solid #232a36;border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
-        f"{header}{gauges}{tables}{trends}{analysis}</div>"
+        f"{header}{gauges}{tables}{trends}{lineups}{analysis}</div>"
     )
+
+
+def _weather_txt(g: dict) -> str:
+    w = g.get("weather")
+    if not w:
+        return ""
+    bits = f" · 🌡 {w.get('temp_f')}°F · 💨 {w.get('wind_mph')}mph {w.get('wind_dir', '')}"
+    if (w.get("precip_pct") or 0) >= 20:
+        bits += f" · 🌧 {w['precip_pct']}%"
+    return bits
+
+
+def _lineups_html(g: dict) -> str:
+    lu = g.get("lineups") or {}
+    home, away = lu.get("home") or [], lu.get("away") or []
+    if not home and not away:
+        return ""
+
+    def col(team, names):
+        rows = "".join(
+            f"<div style='font-size:0.78rem;color:#c9d1d9;'>{i+1}. {n}</div>"
+            for i, n in enumerate(names[:9]))
+        return (f"<div style='flex:1;'><div style='color:#8b949e;font-size:0.72rem;"
+                f"font-weight:700;'>{team}</div>{rows or '—'}</div>")
+
+    return ("<div style='border-top:1px solid #232a36;margin-top:10px;padding-top:8px;'>"
+            "<div style='font-size:0.78rem;color:#58a6ff;font-weight:700;"
+            "text-transform:uppercase;margin-bottom:4px;'>Confirmed lineups</div>"
+            f"<div style='display:flex;gap:14px;'>{col(g.get('away_team',''), away)}"
+            f"{col(g.get('home_team',''), home)}</div></div>")
 
 
 def matchup_analysis(sport: str, g: dict, matchup: dict,

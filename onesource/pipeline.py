@@ -14,7 +14,7 @@ from datetime import date as _date
 
 import pandas as pd
 
-from . import config, internal_stats, odds, parks, playerlogs, teams
+from . import config, internal_stats, odds, parks, playerlogs, teams, weather
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -147,8 +147,20 @@ def project_games(date: str) -> pd.DataFrame:
             own_home_pf=parks.factor(g["away_team"]),
         )
         proj = game_model.simulate(home, away)
+        try:
+            wx = weather.game_weather(g["home_team"], g["game_time"])
+        except Exception:
+            wx = None
+        try:
+            lu = mlb_statsapi.batting_order(g["game_pk"])
+            lineups = {s_: [p["name"] for p in lu.get(s_, [])]
+                       for s_ in ("home", "away")} if lu else None
+        except Exception:
+            lineups = None
         rows.append(
             {
+                "weather": wx,
+                "lineups": lineups,
                 "game_pk": g["game_pk"],
                 "game_time": g["game_time"],
                 "away_team": g["away_team"],
@@ -933,6 +945,51 @@ def attach_hit_rates(props: pd.DataFrame, sport: str, date: str) -> pd.DataFrame
     return props
 
 
+_FP_NEWS_SPORTS = {"MLB", "NBA", "NHL", "NFL"}
+
+
+def _sport_news(sport: str) -> list[dict]:
+    if sport not in _FP_NEWS_SPORTS:
+        return []
+    try:
+        items = fantasypros.news(sport, limit=15)
+        _persist_fp(f"{sport.lower()}_news", _date.today().isoformat(), items)
+        out = []
+        for it in items[:15]:
+            out.append({
+                "title": it.get("headline") or it.get("title") or "",
+                "body": (it.get("description") or it.get("body") or "")[:280],
+                "player": it.get("player_name") or it.get("player") or "",
+                "when": it.get("created") or it.get("updated") or "",
+            })
+        return out
+    except Exception as e:
+        log.warning("%s news unavailable: %s", sport, e)
+        return []
+
+
+def _sport_injuries(sport: str) -> list[dict]:
+    if sport not in _FP_NEWS_SPORTS:
+        return []
+    try:
+        rows = fantasypros.injuries(sport)
+        out = []
+        for r in rows[:200]:
+            name = r.get("player_name") or r.get("name") or ""
+            out.append({
+                "player": name,
+                "norm": normalize(name),
+                "team": r.get("team") or r.get("team_id") or "",
+                "status": r.get("status") or r.get("injury_status") or "",
+                "note": (r.get("injury") or r.get("note") or
+                         r.get("description") or "")[:120],
+            })
+        return [r for r in out if r["player"]]
+    except Exception as e:
+        log.warning("%s injuries unavailable: %s", sport, e)
+        return []
+
+
 def _run_mlb(date: str) -> dict:
     games = attach_game_edges(project_games(date), date)
     props = attach_hit_rates(attach_prop_edges(project_props(date), date), "MLB", date)
@@ -960,6 +1017,8 @@ def run(date: str | None = None, sports: list[str] | None = None,
             continue
         try:
             out_sports[key] = _run_mlb(date) if key == "MLB" else _run_generic(key, date)
+            out_sports[key]["news"] = _sport_news(key)
+            out_sports[key]["injuries"] = _sport_injuries(key)
             log.info("%s: %d games, %d props", key,
                      len(out_sports[key]["games"]), len(out_sports[key]["props"]))
         except Exception as e:
