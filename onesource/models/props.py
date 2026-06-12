@@ -39,6 +39,21 @@ def prob_over_count(lam: float, line: float) -> float:
     return float(1 - stats.poisson.cdf(int(line), lam))
 
 
+# Per-game total bases are heavily overdispersed (var/mean ~2.2): lots of
+# 0-TB games plus occasional extra-base spikes. A plain Poisson on the mean
+# over-projects P(over); a negative binomial with this size matches the
+# observed distribution (backtest calibration gap ~0 at 1.0-1.1).
+TB_DISPERSION = 1.1
+
+
+def prob_over_neg_binom(mean: float, line: float, dispersion: float = TB_DISPERSION) -> float:
+    """P(X > line) for a negative-binomial X with the given mean and size
+    (dispersion). Used for total bases and other overdispersed counts."""
+    mean = max(mean, 1e-6)
+    p = dispersion / (dispersion + mean)
+    return float(1 - stats.nbinom.cdf(int(line), dispersion, p))
+
+
 def pitcher_strikeouts(
     expected_innings: float,
     k_rate: float | None,

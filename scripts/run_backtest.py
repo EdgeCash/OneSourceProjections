@@ -76,6 +76,23 @@ def _md_clv(c: dict) -> str:
         f"rate **{tot['clv_positive_rate']}**", ""])
 
 
+def _md_mlb_props(p: dict) -> str:
+    out = ["### MLB props — calibration (walk-forward, 2024+)", "",
+           "Production prop models on as-of-date player rates, graded vs "
+           "box-score outcomes. `calibration_gap` = mean predicted P(over) − "
+           "empirical over-rate (≈0 is unbiased; +ve leans over).", "",
+           "| Market | n | proj MAE | mean P(over) | empirical | gap |",
+           "|---|---|---|---|---|---|"]
+    for mkt, d in p.items():
+        if not d.get("n"):
+            continue
+        out.append(f"| {mkt} | {d['n']} | {d.get('projection_mae')} | "
+                   f"{d.get('mean_pred_over')} | {d.get('empirical_over')} | "
+                   f"{d.get('calibration_gap')} |")
+    out.append("")
+    return "\n".join(out)
+
+
 def _md_props(p: dict) -> str:
     out = ["### WNBA props — distribution calibration", "",
            "Trailing-average projection through the production distribution "
@@ -134,6 +151,13 @@ def main():
           f"Brier {wnba['moneyline']['brier']}, total MAE {wnba['total']['mae']}")
     print("  " + _fmt_clv(wnba["closing_line"]))
 
+    print("Running MLB prop calibration...")
+    mlb_props_cal = backtest.run_mlb_prop_calibration(starter_seasons)
+    for mkt, d in mlb_props_cal.items():
+        if d.get("n"):
+            print(f"  {mkt}: n={d['n']}, MAE {d['projection_mae']}, "
+                  f"gap {d['calibration_gap']}")
+
     print("Running WNBA prop calibration...")
     props = backtest.run_wnba_prop_calibration(prop_seasons)
     for stat, d in props.items():
@@ -144,7 +168,8 @@ def main():
     reports.mkdir(exist_ok=True)
     (reports / f"backtest_{today}.json").write_text(json.dumps(
         {"mlb": mlb, "mlb_team_form": mlb_tf, "mlb_starters": mlb_sp,
-         "mlb_clv": clv, "wnba": wnba, "wnba_props": props}, indent=1))
+         "mlb_clv": clv, "mlb_props": mlb_props_cal,
+         "wnba": wnba, "wnba_props": props}, indent=1))
     md = "\n".join([
         f"# Backtest report — {today}", "",
         "Walk-forward, no lookahead. WNBA uses the exact production model. "
@@ -157,7 +182,7 @@ def main():
         _md_game(mlb_tf, f"MLB team-form ({', '.join(map(str, starter_seasons))})"),
         _md_game(mlb_sp, f"MLB full model — starters+bullpen+park "
                  f"({', '.join(map(str, starter_seasons))})"),
-        _md_clv(clv),
+        _md_clv(clv), _md_mlb_props(mlb_props_cal),
         _md_game(wnba), _md_props(props),
     ])
     (reports / f"backtest_{today}.md").write_text(md)

@@ -261,7 +261,7 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
                 {**common, "market": "batter_hits", "projection": round(hits["mean"], 2),
                  "dist": "binomial", "param": hits["p"], "n": hits["n"]},
                 {**common, "market": "batter_total_bases", "projection": round(tb["mean"], 2),
-                 "dist": "poisson", "param": tb["lambda"]},
+                 "dist": "negbinom", "param": tb["lambda"]},
                 {**common, "market": "batter_home_runs", "projection": round(hr["p_hr"], 3),
                  "dist": "bernoulli", "param": hr["p_hr"]},
             ]
@@ -275,6 +275,8 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
 def prob_over_for_row(row: dict, line: float) -> float | None:
     if row["dist"] == "poisson":
         return prop_model.prob_over_count(row["param"], line)
+    if row["dist"] == "negbinom":
+        return prop_model.prob_over_neg_binom(row["param"], line)
     if row["dist"] == "binomial":
         return prop_model.prob_over_hits(row.get("n", 4), row["param"], line)
     if row["dist"] == "bernoulli":

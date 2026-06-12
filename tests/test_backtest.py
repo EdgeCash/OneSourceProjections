@@ -102,6 +102,27 @@ def test_full_model_beats_team_form():
     assert full["total"]["mae"] <= tf["total"]["mae"] + 0.02
 
 
+def test_mlb_prop_calibration():
+    r = backtest.run_mlb_prop_calibration([2024, 2025])
+    for mkt in ("pitcher_strikeouts", "batter_hits", "batter_total_bases",
+                "batter_home_runs"):
+        d = r[mkt]
+        assert d["n"] > 1_000
+        assert d["projection_mae"] is not None
+        # all four production prop models should be reasonably calibrated
+        assert abs(d["calibration_gap"]) < 0.05, (mkt, d["calibration_gap"])
+
+
+def test_total_bases_neg_binom_beats_poisson():
+    from onesource.models import props
+    # overdispersed -> NB puts more mass at 0 and the tail, so for a low
+    # half-line it gives a lower P(over) than Poisson at the same mean
+    mean, line = 1.6, 1.5
+    nb = props.prob_over_neg_binom(mean, line)
+    po = props.prob_over_count(mean, line)
+    assert nb < po
+
+
 def test_bp_open_close_structure():
     bp = backtest.bp_open_close(2026)
     assert len(bp) > 800

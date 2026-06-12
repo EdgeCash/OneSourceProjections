@@ -28,6 +28,7 @@ import pandas as pd
 from . import config, history, odds, parks
 from .models import game as mlb_game
 from .models import generic
+from .models import props as mlb_props
 from .names import normalize
 from .sports import SPORTS
 
@@ -634,6 +635,139 @@ def run_mlb_clv_open_close(seasons: list[int] | None = None, draws: int = 4000,
         "total": {**total_bets.summary(), "avg_clv": _clv(total_clv),
                   "clv_positive_rate": _posrate(total_clv)},
     }
+
+
+def run_mlb_prop_calibration(seasons: list[int] | None = None,
+                             min_pitcher_starts: int = 3,
+                             min_batter_ab: int = 40) -> dict:
+    """Walk-forward backtest of the production MLB prop models against
+    actual box-score outcomes (player_games, 2024+). No lookahead: each
+    projection uses only the player's prior games this season. Tests the
+    real distributions in models/props.py.
+
+    Markets: pitcher strikeouts (Poisson), batter hits (binomial), batter
+    total bases (Poisson), batter home runs (P>=1). Reports projection MAE
+    and a P(over) calibration table per market; the calibration gap (mean
+    predicted P(over) - empirical over-rate) flags directional bias.
+    """
+    seasons = seasons or [2024, 2025, 2026]
+    out = {}
+    out["pitcher_strikeouts"] = _mlb_pitcher_k_cal(seasons, min_pitcher_starts)
+    out.update(_mlb_batter_cal(seasons, min_batter_ab))
+    return out
+
+
+def _cal_collector():
+    return {"bins": defaultdict(lambda: [0, 0.0]), "mae": [0.0, 0],
+            "pred_sum": 0.0, "over_sum": 0, "n": 0}
+
+
+def _cal_record(c, p_over, projection, actual, line):
+    over = actual > line
+    b = round(p_over * 10) / 10
+    cell = c["bins"][b]
+    cell[0] += 1
+    cell[1] += int(over)
+    c["mae"][0] += abs(projection - actual)
+    c["mae"][1] += 1
+    c["pred_sum"] += p_over
+    c["over_sum"] += int(over)
+    c["n"] += 1
+
+
+def _cal_summary(c, min_bin=30):
+    cal = [{"predicted": round(b, 2), "n": v[0], "empirical": round(v[1] / v[0], 4)}
+           for b, v in sorted(c["bins"].items()) if v[0] >= min_bin]
+    n = c["n"]
+    return {
+        "n": n,
+        "projection_mae": round(c["mae"][0] / c["mae"][1], 3) if c["mae"][1] else None,
+        "mean_pred_over": round(c["pred_sum"] / n, 4) if n else None,
+        "empirical_over": round(c["over_sum"] / n, 4) if n else None,
+        "calibration_gap": round((c["pred_sum"] - c["over_sum"]) / n, 4) if n else None,
+        "calibration": cal,
+    }
+
+
+def _mlb_pitcher_k_cal(seasons, min_starts):
+    pg = history.player_games("mlb", seasons=seasons)
+    if pg.empty:
+        return {"n": 0}
+    sp = pg[(pg["position"] == "P") & (pg["started"] == True)].copy()  # noqa: E712
+    sp["dt"] = pd.to_datetime(sp["date"])
+    sp.sort_values("dt", inplace=True)
+
+    cum = defaultdict(lambda: {"k": 0.0, "bf": 0.0, "ip": 0.0, "gs": 0})
+    c = _cal_collector()
+    for _, row in sp.iterrows():
+        pid = row["player_id"]
+        st = row.get("stats") or {}
+        s = cum[pid]
+        if s["gs"] >= min_starts and s["bf"] > 0:
+            k_rate = s["k"] / s["bf"]
+            exp_ip = s["ip"] / s["gs"]
+            model = mlb_props.pitcher_strikeouts(exp_ip, k_rate)
+            lam = model["lambda"]
+            actual = st.get("strikeOuts", 0) or 0
+            line = round(lam * 2) / 2
+            if line == lam:
+                line -= 0.5
+            p_over = mlb_props.prob_over_count(lam, line)
+            _cal_record(c, p_over, lam, actual, line)
+        s["k"] += st.get("strikeOuts", 0) or 0
+        s["bf"] += st.get("battersFaced", 0) or 0
+        s["ip"] += float(st.get("inningsPitched", 0) or 0)
+        s["gs"] += 1
+    return _cal_summary(c)
+
+
+def _mlb_batter_cal(seasons, min_ab):
+    pg = history.player_games("mlb", seasons=seasons)
+    if pg.empty:
+        return {"batter_hits": {"n": 0}, "batter_total_bases": {"n": 0},
+                "batter_home_runs": {"n": 0}}
+    bat = pg[pg["position"] != "P"].copy()
+    bat["dt"] = pd.to_datetime(bat["date"])
+    bat.sort_values("dt", inplace=True)
+
+    cum = defaultdict(lambda: {"h": 0.0, "tb": 0.0, "hr": 0.0, "ab": 0.0,
+                               "pa": 0.0, "g": 0})
+    hits_c, tb_c, hr_c = _cal_collector(), _cal_collector(), _cal_collector()
+    for _, row in bat.iterrows():
+        pid = row["player_id"]
+        st = row.get("stats") or {}
+        s = cum[pid]
+        if s["ab"] >= min_ab and s["g"] >= 10:
+            exp_ab = s["ab"] / s["g"]
+            exp_pa = s["pa"] / s["g"]
+            ba = s["h"] / s["ab"]
+            slg = s["tb"] / s["ab"]
+            hr_pa = s["hr"] / s["pa"] if s["pa"] else 0.0
+
+            hits = mlb_props.batter_hits(exp_ab, ba)
+            line_h = 1.5 if hits["mean"] >= 1.0 else 0.5
+            p_h = mlb_props.prob_over_hits(hits["n"], hits["p"], line_h)
+            _cal_record(hits_c, p_h, hits["mean"], st.get("hits", 0) or 0, line_h)
+
+            tb = mlb_props.batter_total_bases(exp_ab, slg)
+            line_tb = round(tb["lambda"] * 2) / 2
+            if line_tb == tb["lambda"]:
+                line_tb -= 0.5
+            p_tb = mlb_props.prob_over_neg_binom(tb["lambda"], line_tb)
+            _cal_record(tb_c, p_tb, tb["lambda"], st.get("totalBases", 0) or 0, line_tb)
+
+            hr = mlb_props.batter_home_run(exp_pa, hr_pa)
+            _cal_record(hr_c, hr["p_hr"], hr["p_hr"], st.get("homeRuns", 0) or 0, 0.5)
+
+        s["h"] += st.get("hits", 0) or 0
+        s["tb"] += st.get("totalBases", 0) or 0
+        s["hr"] += st.get("homeRuns", 0) or 0
+        s["ab"] += st.get("atBats", 0) or 0
+        s["pa"] += st.get("plateAppearances", 0) or 0
+        s["g"] += 1
+    return {"batter_hits": _cal_summary(hits_c),
+            "batter_total_bases": _cal_summary(tb_c),
+            "batter_home_runs": _cal_summary(hr_c)}
 
 
 def run_wnba_prop_calibration(seasons: list[int], window: int = 10,

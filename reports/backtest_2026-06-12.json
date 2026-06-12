@@ -215,6 +215,134 @@
    "clv_positive_rate": 0.535
   }
  },
+ "mlb_props": {
+  "pitcher_strikeouts": {
+   "n": 10537,
+   "projection_mae": 1.876,
+   "mean_pred_over": 0.4249,
+   "empirical_over": 0.4196,
+   "calibration_gap": 0.0054,
+   "calibration": [
+    {
+     "predicted": 0.3,
+     "n": 752,
+     "empirical": 0.4082
+    },
+    {
+     "predicted": 0.4,
+     "n": 6031,
+     "empirical": 0.3865
+    },
+    {
+     "predicted": 0.5,
+     "n": 3742,
+     "empirical": 0.4749
+    }
+   ]
+  },
+  "batter_hits": {
+   "n": 111173,
+   "projection_mae": 0.686,
+   "mean_pred_over": 0.5311,
+   "empirical_over": 0.4999,
+   "calibration_gap": 0.0312,
+   "calibration": [
+    {
+     "predicted": 0.2,
+     "n": 1090,
+     "empirical": 0.2881
+    },
+    {
+     "predicted": 0.3,
+     "n": 17550,
+     "empirical": 0.2797
+    },
+    {
+     "predicted": 0.4,
+     "n": 8782,
+     "empirical": 0.3823
+    },
+    {
+     "predicted": 0.5,
+     "n": 25041,
+     "empirical": 0.5063
+    },
+    {
+     "predicted": 0.6,
+     "n": 33850,
+     "empirical": 0.5585
+    },
+    {
+     "predicted": 0.7,
+     "n": 24826,
+     "empirical": 0.6202
+    }
+   ]
+  },
+  "batter_total_bases": {
+   "n": 111173,
+   "projection_mae": 1.299,
+   "mean_pred_over": 0.3218,
+   "empirical_over": 0.3186,
+   "calibration_gap": 0.0032,
+   "calibration": [
+    {
+     "predicted": 0.2,
+     "n": 11194,
+     "empirical": 0.2428
+    },
+    {
+     "predicted": 0.3,
+     "n": 62102,
+     "empirical": 0.2948
+    },
+    {
+     "predicted": 0.4,
+     "n": 36749,
+     "empirical": 0.3769
+    },
+    {
+     "predicted": 0.5,
+     "n": 1110,
+     "empirical": 0.4829
+    }
+   ]
+  },
+  "batter_home_runs": {
+   "n": 111173,
+   "projection_mae": 0.195,
+   "mean_pred_over": 0.1082,
+   "empirical_over": 0.1072,
+   "calibration_gap": 0.001,
+   "calibration": [
+    {
+     "predicted": 0.0,
+     "n": 17946,
+     "empirical": 0.054
+    },
+    {
+     "predicted": 0.1,
+     "n": 69100,
+     "empirical": 0.1012
+    },
+    {
+     "predicted": 0.2,
+     "n": 21991,
+     "empirical": 0.1575
+    },
+    {
+     "predicted": 0.3,
+     "n": 2099,
+     "empirical": 0.232
+    },
+    {
+     "predicted": 0.4,
+     "n": 37,
+     "empirical": 0.1622
+    }
+   ]
+  }
+ },
  "wnba": {
   "sport": "WNBA",
   "seasons": [
