@@ -80,8 +80,9 @@ def _lookup_closing(consensus: dict, sport_key: str, date: str,
 # ---------------------------------------------------------------------------
 
 def _mlb_games(seasons: list[int], use_results_2026: bool) -> list[dict]:
-    """date, home, away, home_score, away_score. Uses full-name results for
-    2026 (joins to closing lines) and abbreviated backfill otherwise."""
+    """date, home, away, home_score, away_score, game_pk. Uses full-name
+    results for 2026 (joins to closing lines) and abbreviated backfill
+    otherwise. game_pk lets us attach starters from player_games."""
     rows = []
     for s in seasons:
         if s == 2026 and use_results_2026:
@@ -89,11 +90,12 @@ def _mlb_games(seasons: list[int], use_results_2026: bool) -> list[dict]:
             for _, r in df.iterrows():
                 if r.get("status") not in (None, "final", "Final"):
                     continue
+                pk = str(r.get("game_id", "")).split("-")[-1]
                 rows.append({
                     "date": str(r["date"])[:10], "home": r["home_team"],
                     "away": r["away_team"], "home_score": r["home_score"],
-                    "away_score": r["away_score"], "home_nick": _nick_from_full(r["home_team"]),
-                    "away_nick": _nick_from_full(r["away_team"]),
+                    "away_score": r["away_score"],
+                    "game_pk": int(pk) if pk.isdigit() else None,
                 })
         else:
             df = history.backfill_games("mlb", seasons=[s])
@@ -101,11 +103,52 @@ def _mlb_games(seasons: list[int], use_results_2026: bool) -> list[dict]:
                 rows.append({
                     "date": str(r["date"])[:10], "home": r["home_team"],
                     "away": r["away_team"], "home_score": r["home_score"],
-                    "away_score": r["away_score"], "home_nick": None, "away_nick": None,
+                    "away_score": r["away_score"],
+                    "game_pk": int(r["game_pk"]) if pd.notna(r.get("game_pk")) else None,
                 })
     rows = [r for r in rows if pd.notna(r["home_score"]) and pd.notna(r["away_score"])]
     rows.sort(key=lambda r: r["date"])
     return rows
+
+
+def starter_fip_table(seasons: list[int], league_fip: float = 4.10,
+                      ip_prior: float = 50.0, min_ip: float = 5.0) -> dict:
+    """As-of-date starter FIP per game side, no lookahead. Walks the
+    started-pitcher box logs (player_games, MLB 2024+) in date order and
+    records each starter's FIP from *prior* starts only, shrunk toward
+    league with an innings prior. Returns {(game_pk, 'home'|'away'): fip}.
+
+        FIP = (13*HR + 3*(BB+HBP) - 2*K) / IP + 3.10
+        shrunk = (FIP*IP + league*IP_PRIOR) / (IP + IP_PRIOR)
+    """
+    pg = history.player_games("mlb", seasons=seasons)
+    if pg.empty or "started" not in pg.columns:
+        return {}
+    sp = pg[(pg["position"] == "P") & (pg["started"] == True)].copy()  # noqa: E712
+    sp["dt"] = pd.to_datetime(sp["date"])
+    sp.sort_values("dt", inplace=True)
+
+    cum: dict = defaultdict(lambda: {"hr": 0.0, "bb": 0.0, "hbp": 0.0, "k": 0.0, "ip": 0.0})
+    out: dict = {}
+    for _, row in sp.iterrows():
+        pid = row["player_id"]
+        c = cum[pid]
+        if c["ip"] >= min_ip:
+            raw = (13 * c["hr"] + 3 * (c["bb"] + c["hbp"]) - 2 * c["k"]) / c["ip"] + 3.10
+            fip = (raw * c["ip"] + league_fip * ip_prior) / (c["ip"] + ip_prior)
+        else:
+            fip = None
+        pk = row.get("game_pk")
+        if pd.notna(pk):
+            side = "home" if row.get("is_home") else "away"
+            out[(int(pk), side)] = fip
+        st = row.get("stats") or {}
+        c["hr"] += st.get("homeRuns", 0) or 0
+        c["bb"] += st.get("baseOnBalls", 0) or 0
+        c["hbp"] += st.get("hitByPitch", 0) or 0
+        c["k"] += st.get("strikeOuts", 0) or 0
+        c["ip"] += float(st.get("inningsPitched", 0) or 0)
+    return out
 
 
 def _wnba_games(seasons: list[int]) -> list[dict]:
@@ -158,12 +201,20 @@ class _Form:
 
 
 def _project(sport_key: str, sport, h: generic.TeamRating | None,
-             a: generic.TeamRating | None, draws: int):
-    """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn)."""
+             a: generic.TeamRating | None, draws: int,
+             home_opp_xfip: float | None = None,
+             away_opp_xfip: float | None = None):
+    """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn).
+
+    home_opp_xfip / away_opp_xfip are the FIP of the starter each team
+    *faces* (i.e. home_opp_xfip = the away team's starter), matching the
+    production model's opp_starter_xfip input. None = team-form only.
+    """
     if sport_key == "MLB":
-        # Production Monte-Carlo model, offense-only (no starter).
-        hi = mlb_game.TeamInputs(name="h", runs_per_game=h.scored, opp_starter_xfip=None)
-        ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored, opp_starter_xfip=None)
+        hi = mlb_game.TeamInputs(name="h", runs_per_game=h.scored,
+                                 opp_starter_xfip=home_opp_xfip)
+        ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored,
+                                 opp_starter_xfip=away_opp_xfip)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
         lam_h, lam_a = proj.home_exp_runs, proj.away_exp_runs
@@ -275,7 +326,8 @@ class BetLog:
 
 
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
-                      draws: int = 4000, min_edge: float | None = None) -> dict:
+                      draws: int = 4000, min_edge: float | None = None,
+                      use_starters: bool = False) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
@@ -283,6 +335,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     window = 30 if sport_key == "MLB" else 15
     form = _Form(window)
     consensus = closing_consensus(sport_key)
+    fip_table = (starter_fip_table(seasons) if (sport_key == "MLB" and use_starters)
+                 else {})
 
     # accuracy accumulators
     brier_sum = logloss_sum = n_ml = 0.0
@@ -293,12 +347,20 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     ml_bets, total_bets = BetLog(), BetLog()
     clv_deltas = []
     n_matched = 0
+    n_with_starter = 0
 
     for g in games:
         h = form.rating(g["home"], sport.league_ppg)
         a = form.rating(g["away"], sport.league_ppg)
         if h and a and h.games >= min_games and a.games >= min_games:
-            hwp, tmean, prob_over, _ = _project(sport_key, sport, h, a, draws)
+            pk = g.get("game_pk")
+            # home faces the away starter and vice-versa
+            home_opp = fip_table.get((pk, "away")) if fip_table else None
+            away_opp = fip_table.get((pk, "home")) if fip_table else None
+            if home_opp is not None or away_opp is not None:
+                n_with_starter += 1
+            hwp, tmean, prob_over, _ = _project(sport_key, sport, h, a, draws,
+                                                home_opp, away_opp)
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
@@ -344,6 +406,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                    for b, c in sorted(cal_bins.items()) if c[0] >= 20}
     return {
         "sport": sport_key, "seasons": seasons, "n_games_graded": int(n_ml),
+        "use_starters": use_starters, "games_with_starter": n_with_starter,
         "moneyline": {
             "brier": round(brier_sum / n_ml, 4) if n_ml else None,
             "log_loss": round(logloss_sum / n_ml, 4) if n_ml else None,
@@ -360,6 +423,137 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             "moneyline_bets": ml_bets.summary(),
             "total_bets": total_bets.summary(),
         },
+    }
+
+
+# ---------------------------------------------------------------------------
+# True CLV: BettingPros opening vs closing prices (2026, MLB)
+# ---------------------------------------------------------------------------
+
+def bp_open_close(season: int = 2026) -> dict[tuple, dict]:
+    """From the captured BettingPros open+close odds, build per-game
+    moneyline and total records with de-vigged fair probabilities at both
+    open and close, plus the opening price to bet into. Keyed by
+    (date, normalized home, normalized away)."""
+    g = history.bp_game_odds(season)
+    if g.empty:
+        return {}
+    out: dict[tuple, dict] = {}
+    for _, ev in g.groupby("event_id"):
+        first = ev.iloc[0]
+        teams = list(first["teams"])
+        if len(teams) != 2:
+            continue
+        home_full, away_full = teams[0], teams[1]  # parallel to abbrs[home,vis]
+        date = str(first["date"])[:10]
+        rec = {"date": date, "home": home_full, "away": away_full,
+               "moneyline": None, "total": None}
+
+        def side_is_home(label: str) -> bool:
+            l = str(label).lower()
+            return l in home_full.lower() or home_full.lower().endswith(l)
+
+        ml = ev[ev["market_slug"] == "moneyline"]
+        h = ml[ml["label"].map(side_is_home)]
+        a = ml[~ml["label"].map(side_is_home)]
+        if len(h) and len(a):
+            ho, ao = h.iloc[0]["open_cost"], a.iloc[0]["open_cost"]
+            hc, ac = h.iloc[0]["close_cost"], a.iloc[0]["close_cost"]
+            hof, _ = odds.devig_two_way(odds.implied_prob(ho), odds.implied_prob(ao))
+            hcf, _ = odds.devig_two_way(odds.implied_prob(hc), odds.implied_prob(ac))
+            rec["moneyline"] = {
+                "home_open": float(ho), "away_open": float(ao),
+                "home_open_fair": float(hof), "away_open_fair": float(1 - hof),
+                "home_close_fair": float(hcf), "away_close_fair": float(1 - hcf),
+            }
+
+        tot = ev[ev["market_slug"] == "total"]
+        ov = tot[tot["label"].str.lower() == "over"]
+        un = tot[tot["label"].str.lower() == "under"]
+        if len(ov) and len(un):
+            oo, uo = ov.iloc[0]["open_cost"], un.iloc[0]["open_cost"]
+            oc, uc = ov.iloc[0]["close_cost"], un.iloc[0]["close_cost"]
+            oof, _ = odds.devig_two_way(odds.implied_prob(oo), odds.implied_prob(uo))
+            ocf, _ = odds.devig_two_way(odds.implied_prob(oc), odds.implied_prob(uc))
+            rec["total"] = {
+                "line": float(ov.iloc[0]["line"]),
+                "over_open": float(oo), "under_open": float(uo),
+                "over_open_fair": float(oof), "over_close_fair": float(ocf),
+            }
+        out[(date, normalize(home_full), normalize(away_full))] = rec
+    return out
+
+
+def run_mlb_clv_open_close(seasons: list[int] | None = None, draws: int = 4000,
+                          use_starters: bool = True,
+                          min_edge: float | None = None) -> dict:
+    """Walk-forward MLB model, bet model edges at BettingPros *opening*
+    prices, then measure (a) ROI graded on actual results and (b) CLV —
+    how the de-vigged fair probability moved from open to close on the
+    side we took. Positive CLV is the leading indicator that the model is
+    finding real value, independent of small-sample win variance.
+    """
+    min_edge = config.MIN_EDGE if min_edge is None else min_edge
+    seasons = seasons or [2024, 2025, 2026]
+    sport = SPORTS["MLB"]
+    games = _mlb_games(seasons, use_results_2026=True)
+    fip_table = starter_fip_table(seasons) if use_starters else {}
+    bp = bp_open_close(2026)
+    form = _Form(30)
+
+    ml_bets, total_bets = BetLog(), BetLog()
+    ml_clv, total_clv = [], []
+    n_matched = 0
+
+    for g in games:
+        h = form.rating(g["home"], sport.league_ppg)
+        a = form.rating(g["away"], sport.league_ppg)
+        if h and a and h.games >= 10 and a.games >= 10:
+            pk = g.get("game_pk")
+            home_opp = fip_table.get((pk, "away")) if fip_table else None
+            away_opp = fip_table.get((pk, "home")) if fip_table else None
+            hwp, _, prob_over, _ = _project("MLB", sport, h, a, draws,
+                                            home_opp, away_opp)
+            rec = bp.get((g["date"], normalize(g["home"]), normalize(g["away"])))
+            home_won = 1 if g["home_score"] > g["away_score"] else 0
+            actual_total = g["home_score"] + g["away_score"]
+            if rec:
+                n_matched += 1
+                if rec["moneyline"]:
+                    m = rec["moneyline"]
+                    for side, prob, price, fair_o, fair_c, won in (
+                        ("home", hwp, m["home_open"], m["home_open_fair"],
+                         m["home_close_fair"], home_won == 1),
+                        ("away", 1 - hwp, m["away_open"], m["away_open_fair"],
+                         m["away_close_fair"], home_won == 0)):
+                        if odds.expected_value(prob, price) >= min_edge:
+                            ml_bets.add(won, odds.american_to_decimal(price))
+                            ml_clv.append(fair_c - fair_o)  # +ve = moved our way
+                if rec["total"]:
+                    t = rec["total"]
+                    po = prob_over(t["line"])
+                    if actual_total != t["line"]:
+                        over_won = actual_total > t["line"]
+                        if odds.expected_value(po, t["over_open"]) >= min_edge:
+                            total_bets.add(over_won, odds.american_to_decimal(t["over_open"]))
+                            total_clv.append(t["over_close_fair"] - t["over_open_fair"])
+                        if odds.expected_value(1 - po, t["under_open"]) >= min_edge:
+                            total_bets.add(not over_won, odds.american_to_decimal(t["under_open"]))
+                            total_clv.append((1 - t["over_close_fair"]) - (1 - t["over_open_fair"]))
+        form.update(g)
+
+    def _clv(xs):
+        return round(float(np.mean(xs)), 4) if xs else None
+
+    def _posrate(xs):
+        return round(float(np.mean([x > 0 for x in xs])), 3) if xs else None
+
+    return {
+        "use_starters": use_starters, "games_matched": n_matched,
+        "moneyline": {**ml_bets.summary(), "avg_clv": _clv(ml_clv),
+                      "clv_positive_rate": _posrate(ml_clv)},
+        "total": {**total_bets.summary(), "avg_clv": _clv(total_clv),
+                  "clv_positive_rate": _posrate(total_clv)},
     }
 
 

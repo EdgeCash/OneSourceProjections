@@ -60,3 +60,42 @@ def test_small_game_backtest_runs():
     assert r["moneyline"]["brier"] is not None
     assert 0 < r["moneyline"]["brier"] < 0.35
     assert r["total"]["mae"] is not None
+
+
+def test_starter_fip_table_no_lookahead():
+    fip = backtest.starter_fip_table([2024])
+    vals = [v for v in fip.values() if v is not None]
+    assert len(vals) > 3_000
+    # FIP values land in a sane baseball range
+    assert all(2.0 < v < 7.5 for v in vals)
+    assert 3.7 < (sum(vals) / len(vals)) < 4.4  # ~league average
+    # every entry is keyed by (game_pk:int, side)
+    (pk, side) = next(iter(fip))
+    assert isinstance(pk, int) and side in ("home", "away")
+
+
+def test_starters_improve_or_match_calibration():
+    tf = backtest.run_game_backtest("MLB", [2024], draws=800, use_starters=False)
+    sp = backtest.run_game_backtest("MLB", [2024], draws=800, use_starters=True)
+    assert sp["use_starters"] and not tf["use_starters"]
+    # starters attached to nearly every game
+    assert sp["games_with_starter"] > 0.9 * sp["n_games_graded"]
+    # starter model should not be worse on Brier than team-form
+    assert sp["moneyline"]["brier"] <= tf["moneyline"]["brier"] + 0.002
+
+
+def test_bp_open_close_structure():
+    bp = backtest.bp_open_close(2026)
+    assert len(bp) > 800
+    rec = next(r for r in bp.values() if r["moneyline"])
+    m = rec["moneyline"]
+    assert 0 < m["home_open_fair"] < 1
+    assert abs(m["home_open_fair"] + m["away_open_fair"] - 1.0) < 1e-9
+
+
+def test_clv_open_close_runs():
+    c = backtest.run_mlb_clv_open_close([2024, 2025, 2026], draws=600)
+    assert c["games_matched"] > 200
+    assert c["moneyline"]["bets"] > 50
+    assert c["moneyline"]["avg_clv"] is not None
+    assert 0 <= c["moneyline"]["clv_positive_rate"] <= 1

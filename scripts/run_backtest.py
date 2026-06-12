@@ -28,10 +28,13 @@ def _fmt_clv(c: dict) -> str:
             f"{tot['units']}u, ROI {tot['roi_pct']}%")
 
 
-def _md_game(r: dict) -> str:
-    lines = [f"### {r['sport']} — seasons {', '.join(map(str, r['seasons']))}",
-             "",
-             f"- Games graded (walk-forward, ≥ warmup): **{r['n_games_graded']}**",
+def _md_game(r: dict, label: str | None = None) -> str:
+    title = label or f"{r['sport']} — seasons {', '.join(map(str, r['seasons']))}"
+    starter = ""
+    if r.get("use_starters"):
+        starter = f" · starters on {r.get('games_with_starter')}/{r['n_games_graded']}"
+    lines = [f"### {title}", "",
+             f"- Games graded (walk-forward, ≥ warmup): **{r['n_games_graded']}**{starter}",
              f"- Moneyline: Brier **{r['moneyline']['brier']}**, log-loss "
              f"{r['moneyline']['log_loss']}, favorite hit-rate "
              f"**{r['moneyline']['favorite_hit_rate']}**",
@@ -54,6 +57,23 @@ def _md_game(r: dict) -> str:
               f"{cl['total_bets']['win_rate']}, {cl['total_bets']['units']}u, "
               f"**ROI {cl['total_bets']['roi_pct']}%**", ""]
     return "\n".join(lines)
+
+
+def _md_clv(c: dict) -> str:
+    ml, tot = c["moneyline"], c["total"]
+    return "\n".join([
+        "### MLB — true CLV at BettingPros open→close (2026)", "",
+        "Model edges bet at the **opening** price, graded on results for "
+        "ROI, with CLV = how the de-vigged fair probability moved open→"
+        "close on the side taken. Positive CLV is the leading indicator of "
+        f"real edge. Starters: {c['use_starters']}. Games matched: "
+        f"{c['games_matched']}.", "",
+        f"- Moneyline: {ml['bets']} bets, win {ml['win_rate']}, ROI "
+        f"**{ml['roi_pct']}%**, avg CLV **{ml['avg_clv']}**, CLV-positive "
+        f"rate **{ml['clv_positive_rate']}**",
+        f"- Totals: {tot['bets']} bets, win {tot['win_rate']}, ROI "
+        f"**{tot['roi_pct']}%**, avg CLV **{tot['avg_clv']}**, CLV-positive "
+        f"rate **{tot['clv_positive_rate']}**", ""])
 
 
 def _md_props(p: dict) -> str:
@@ -82,13 +102,30 @@ def main():
     mlb_seasons = [int(s) for s in args.mlb_seasons.split(",")]
     wnba_seasons = [int(s) for s in args.wnba_seasons.split(",")]
     prop_seasons = [int(s) for s in args.wnba_prop_seasons.split(",")]
+    # starter box-logs only exist 2024+; use that window for the comparison
+    starter_seasons = [s for s in mlb_seasons if s >= 2024] or [2024, 2025, 2026]
     draws = 1500 if args.quick else args.draws
 
-    print("Running MLB game backtest...")
+    print("Running MLB game backtest (team-form only)...")
     mlb = backtest.run_game_backtest("MLB", mlb_seasons, draws=draws)
     print(f"  graded {mlb['n_games_graded']} games; "
           f"Brier {mlb['moneyline']['brier']}, total MAE {mlb['total']['mae']}")
-    print("  " + _fmt_clv(mlb["closing_line"]))
+
+    print("Running MLB game backtest (+starters, 2024+)...")
+    mlb_tf = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
+                                        use_starters=False)
+    mlb_sp = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
+                                        use_starters=True)
+    print(f"  team-form: Brier {mlb_tf['moneyline']['brier']}, "
+          f"MAE {mlb_tf['total']['mae']}; +starters: "
+          f"Brier {mlb_sp['moneyline']['brier']}, MAE {mlb_sp['total']['mae']}")
+
+    print("Running MLB true CLV (BettingPros open→close)...")
+    clv = backtest.run_mlb_clv_open_close(starter_seasons, draws=draws,
+                                          use_starters=True)
+    print(f"  matched {clv['games_matched']}; ML ROI {clv['moneyline']['roi_pct']}%, "
+          f"avg CLV {clv['moneyline']['avg_clv']}, "
+          f"+CLV rate {clv['moneyline']['clv_positive_rate']}")
 
     print("Running WNBA game backtest...")
     wnba = backtest.run_game_backtest("WNBA", wnba_seasons, draws=draws)
@@ -104,16 +141,22 @@ def main():
     today = date.today().isoformat()
     reports = REPO_ROOT / "reports"
     reports.mkdir(exist_ok=True)
-    (reports / f"backtest_{today}.json").write_text(
-        json.dumps({"mlb": mlb, "wnba": wnba, "wnba_props": props}, indent=1))
+    (reports / f"backtest_{today}.json").write_text(json.dumps(
+        {"mlb": mlb, "mlb_team_form": mlb_tf, "mlb_starters": mlb_sp,
+         "mlb_clv": clv, "wnba": wnba, "wnba_props": props}, indent=1))
     md = "\n".join([
         f"# Backtest report — {today}", "",
-        "Walk-forward, no lookahead. MLB uses the production Monte-Carlo "
-        "model **without probable-starter xFIP** (not in the historical "
-        "import), so MLB game numbers are a team-form floor. WNBA uses the "
-        "exact production model. Betting ROI is measured at **closing "
-        "prices** — the conservative bar.", "",
-        _md_game(mlb), _md_game(wnba), _md_props(props),
+        "Walk-forward, no lookahead. WNBA uses the exact production model. "
+        "MLB now runs both team-form-only and the **starter-aware** "
+        "production model (as-of-date FIP from prior starts, 2024+ where "
+        "box logs exist). CLV is measured at BettingPros **opening** prices "
+        "with the open→close fair-probability move — the leading indicator "
+        "of edge.", "",
+        _md_game(mlb, "MLB (team-form, all seasons)"),
+        _md_game(mlb_tf, f"MLB team-form ({', '.join(map(str, starter_seasons))})"),
+        _md_game(mlb_sp, f"MLB +starters ({', '.join(map(str, starter_seasons))})"),
+        _md_clv(clv),
+        _md_game(wnba), _md_props(props),
     ])
     (reports / f"backtest_{today}.md").write_text(md)
     print(f"\nWrote reports/backtest_{today}.md and .json")

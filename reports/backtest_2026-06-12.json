@@ -9,6 +9,8 @@
    2026
   ],
   "n_games_graded": 11141,
+  "use_starters": false,
+  "games_with_starter": 0,
   "moneyline": {
    "brier": 0.2483,
    "log_loss": 0.6898,
@@ -62,6 +64,147 @@
    }
   }
  },
+ "mlb_team_form": {
+  "sport": "MLB",
+  "seasons": [
+   2024,
+   2025,
+   2026
+  ],
+  "n_games_graded": 5847,
+  "use_starters": false,
+  "games_with_starter": 0,
+  "moneyline": {
+   "brier": 0.2483,
+   "log_loss": 0.6899,
+   "favorite_hit_rate": 0.5401
+  },
+  "total": {
+   "mae": 3.601,
+   "rmse": 4.527
+  },
+  "calibration": [
+   {
+    "n": 813,
+    "predicted": 0.4,
+    "empirical": 0.4686
+   },
+   {
+    "n": 3432,
+    "predicted": 0.5,
+    "empirical": 0.5318
+   },
+   {
+    "n": 1530,
+    "predicted": 0.6,
+    "empirical": 0.5719
+   },
+   {
+    "n": 53,
+    "predicted": 0.7,
+    "empirical": 0.5849
+   }
+  ],
+  "closing_line": {
+   "games_matched": 134,
+   "avg_clv_vs_fair": -0.0144,
+   "moneyline_bets": {
+    "bets": 150,
+    "win_rate": 0.46,
+    "units": 23.83,
+    "roi_pct": 15.89
+   },
+   "total_bets": {
+    "bets": 127,
+    "win_rate": 0.4094,
+    "units": -20.75,
+    "roi_pct": -16.33
+   }
+  }
+ },
+ "mlb_starters": {
+  "sport": "MLB",
+  "seasons": [
+   2024,
+   2025,
+   2026
+  ],
+  "n_games_graded": 5847,
+  "use_starters": true,
+  "games_with_starter": 5475,
+  "moneyline": {
+   "brier": 0.2471,
+   "log_loss": 0.6874,
+   "favorite_hit_rate": 0.5476
+  },
+  "total": {
+   "mae": 3.573,
+   "rmse": 4.505
+  },
+  "calibration": [
+   {
+    "n": 131,
+    "predicted": 0.3,
+    "empirical": 0.3817
+   },
+   {
+    "n": 1146,
+    "predicted": 0.4,
+    "empirical": 0.4686
+   },
+   {
+    "n": 2672,
+    "predicted": 0.5,
+    "empirical": 0.5281
+   },
+   {
+    "n": 1613,
+    "predicted": 0.6,
+    "empirical": 0.5784
+   },
+   {
+    "n": 273,
+    "predicted": 0.7,
+    "empirical": 0.6703
+   }
+  ],
+  "closing_line": {
+   "games_matched": 134,
+   "avg_clv_vs_fair": -0.018,
+   "moneyline_bets": {
+    "bets": 141,
+    "win_rate": 0.3972,
+    "units": 2.07,
+    "roi_pct": 1.47
+   },
+   "total_bets": {
+    "bets": 125,
+    "win_rate": 0.464,
+    "units": -6.72,
+    "roi_pct": -5.38
+   }
+  }
+ },
+ "mlb_clv": {
+  "use_starters": true,
+  "games_matched": 582,
+  "moneyline": {
+   "bets": 420,
+   "win_rate": 0.519,
+   "units": 45.35,
+   "roi_pct": 10.8,
+   "avg_clv": 0.003,
+   "clv_positive_rate": 0.55
+  },
+  "total": {
+   "bets": 473,
+   "win_rate": 0.4884,
+   "units": -28.92,
+   "roi_pct": -6.12,
+   "avg_clv": 0.0035,
+   "clv_positive_rate": 0.529
+  }
+ },
  "wnba": {
   "sport": "WNBA",
   "seasons": [
@@ -73,6 +216,8 @@
    2026
   ],
   "n_games_graded": 1312,
+  "use_starters": false,
+  "games_with_starter": 0,
   "moneyline": {
    "brier": 0.2272,
    "log_loss": 0.6456,
