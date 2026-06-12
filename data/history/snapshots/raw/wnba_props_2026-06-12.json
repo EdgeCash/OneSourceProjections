@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 395,
+  "event_id": 2571,
+  "participant": {
+   "id": "196",
+   "name": "Shakira Austin",
+   "link": "/wnba/props/shakira-austin/",
+   "player": {
+    "short_name": "S. Austin",
+    "first_name": "Shakira",
+    "last_name": "Austin",
+    "image": "https://images.fantasypros.com/images/players/wnba/196/headshot/210x210.webp",
+    "slug": "shakira-austin",
+    "position": "C",
+    "team": "WAS",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 24.5,
+   "odds": -106,
+   "book": 12,
+   "consensus_line": 24.5,
+   "consensus_odds": -111,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 22.5,
+     "cost": -124,
+     "book_id": 12,
+     "created": "2026-06-11 09:02:51"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "fbb671f5b6675284f99e67f72a9add49"
+   },
+   "probability": 0.26876238830854005,
+   "expected_value": -0.49753118707533817,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 24.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 24.5,
+   "consensus_odds": -120,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 22.5,
+     "cost": -108,
+     "book_id": 13,
+     "created": "2026-06-11 12:39:40"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "2f5a5ef0e04b982fee0e250830f79591"
+   },
+   "probability": 0.73123761169146,
+   "expected_value": 0.3670964044666425,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 21.13,
+   "probability": 0.73123761169146,
+   "expected_value": 0.3670964044666425,
+   "bet_rating": 5,
+   "diff": -3.37
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 13,
+    "value": 89,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/shakira-austin/points-rebounds/",
+   "analyzer": "/wnba/props/shakira-austin/points-rebounds/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 8,
+    "under": 30,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 397,
+  "event_id": 2571,
+  "participant": {
+   "id": "572",
+   "name": "Kiki Iriafen",
+   "link": "/wnba/props/kiki-iriafen/",
+   "player": {
+    "short_name": "K. Iriafen",
+    "first_name": "Kiki",
+    "last_name": "Iriafen",
+    "image": "https://images.fantasypros.com/images/players/wnba/572/headshot/210x210.webp",
+    "slug": "kiki-iriafen",
+    "position": "F",
+    "team": "WAS",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 9.5,
+   "odds": 144,
+   "book": 68,
+   "consensus_line": 8.5,
+   "consensus_odds": -113,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 8.5,
+     "cost": -113,
+     "book_id": 12,
+     "created": "2026-06-12 03:31:23"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "e39d97019bba18ba45865511b1aef405"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 8.5,
+   "odds": -106,
+   "book": 60,
+   "consensus_line": 8.5,
+   "consensus_odds": -118,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 8.5,
+     "cost": -118,
+     "book_id": 13,
+     "created": "2026-06-12 03:36:08"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "e36af31e4274229e1fd676ac824281a3"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 5.61,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -2.89
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 1,
+    "value": 0,
+    "tied": true
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/kiki-iriafen/rebounds/",
+   "analyzer": "/wnba/props/kiki-iriafen/rebounds/",
+   "affiliate": "https://novig.com/events/019eb9dd-f184-7a71-9ca9-bb71fa8850e8/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 7,
+    "under": 3,
+    "push": 0
+   },
+   "last_15": {
+    "over": 9,
+    "under": 6,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 7,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 23,
+    "under": 21,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ }
+]
