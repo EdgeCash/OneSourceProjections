@@ -379,7 +379,7 @@ _PROP_KEYWORDS = {
         "pitcher_strikeouts": (("strikeout",), ("team", "first", "alt")),
         "batter_hits": (("hits",), ("team", "allowed", "runs", "rbis", "alt")),
         "batter_total_bases": (("total bases",), ("team", "alt")),
-        "batter_home_runs": (("home run",), ("team", "first", "alt")),
+        "batter_home_runs": (("home run", "homerun"), ("team", "first", "alt")),
     },
     "WNBA": {
         "Points": (("points",), ("team", "rebounds", "assists", "alt", "quarter", "half")),
@@ -401,7 +401,8 @@ def prop_market_ids(sport: str) -> dict[str, int]:
     out: dict[str, int] = {}
     rules = _PROP_KEYWORDS.get(sport, {})
     for mid, info in sorted(market_lookup(sport).items()):
-        text = f"{info.get('name', '')} {info.get('slug', '')}".lower()
+        text = (f"{info.get('name') or ''} {info.get('slug') or ''}"
+                .lower().replace("-", " "))
         if not text.strip():
             continue
         for market, (need, block) in rules.items():

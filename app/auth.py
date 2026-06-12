@@ -2,6 +2,7 @@
 only a password prompt; the comparison is constant-time and the password
 lives in Streamlit secrets / env, never in code."""
 
+import hashlib
 import hmac
 
 import streamlit as st
@@ -15,7 +16,12 @@ def require_password() -> bool:
         st.error("APP_PASSWORD is not configured. Set it in Streamlit secrets.")
         st.stop()
 
+    token = hashlib.sha256(("osp:" + expected).encode()).hexdigest()[:32]
     if st.session_state.get("authed"):
+        return True
+    # remembered sign-in: ?k=<token> survives reloads / home-screen launches
+    if st.query_params.get("k") == token:
+        st.session_state["authed"] = True
         return True
 
     st.title("🔒")
@@ -23,6 +29,7 @@ def require_password() -> bool:
     if pw:
         if hmac.compare_digest(pw, expected):
             st.session_state["authed"] = True
+            st.query_params["k"] = token  # bookmark the URL to stay signed in
             st.rerun()
         else:
             st.error("Nope.")

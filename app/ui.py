@@ -28,7 +28,7 @@ def fmt_american(odds) -> str:
 
 def fmt_time_et(iso_ts: str | None) -> str:
     """ISO timestamp -> '7:10 PM' Eastern."""
-    if not iso_ts:
+    if not iso_ts or (isinstance(iso_ts, float) and pd.isna(iso_ts)):
         return ""
     try:
         dt = datetime.fromisoformat(str(iso_ts).replace("Z", "+00:00"))
@@ -182,6 +182,19 @@ def game_card_html(sport: str, g: dict) -> str:
     time = fmt_time_et(g.get("game_time"))
     total = g.get("total_line") or g.get("proj_total")
 
+    hml, aml = g.get("home_ml"), g.get("away_ml")
+    odds_bits = []
+    if aml is not None and pd.notna(aml) and hml is not None and pd.notna(hml):
+        odds_bits.append(f"ML {fmt_american(aml)} / {fmt_american(hml)}")
+    sp = g.get("rl_home_line", g.get("spread_home_line"))
+    if sp is not None and pd.notna(sp):
+        sp_o = g.get("rl_home_odds", g.get("spread_home_odds"))
+        odds_bits.append(f"{'RL' if 'rl_home_line' in g else 'Spread'} "
+                         f"{sp:+g} {fmt_american(sp_o)}")
+    market_line = (f"<div style='color:#8b949e;font-size:0.76rem;margin-top:6px;'>"
+                   f"{' · '.join(odds_bits)}{_weather_txt(g)}</div>"
+                   if (odds_bits or g.get('weather')) else "")
+
     edge = _best_edge(g)
     if edge:
         edge_html = (f"<span style='color:#3fb950;font-weight:600;'>"
@@ -209,6 +222,7 @@ def game_card_html(sport: str, g: dict) -> str:
         f"{side(a_badge, away, a_exp, a_wp, not home_fav)}"
         "<div style='height:8px;'></div>"
         f"{side(h_badge, home, h_exp, h_wp, home_fav)}"
+        f"{market_line}"
         "<div style='border-top:1px solid #232a36;margin-top:10px;padding-top:8px;"
         f"font-size:0.85rem;'>{edge_html}</div>"
         "</div>"

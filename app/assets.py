@@ -51,7 +51,25 @@ _MLB = {
 }
 
 # ESPN logo abbreviations by league
+_NBA_TEAMS = {
+    "Atlanta Hawks": "atl", "Boston Celtics": "bos", "Brooklyn Nets": "bkn",
+    "Charlotte Hornets": "cha", "Chicago Bulls": "chi",
+    "Cleveland Cavaliers": "cle", "Dallas Mavericks": "dal",
+    "Denver Nuggets": "den", "Detroit Pistons": "det",
+    "Golden State Warriors": "gs", "Houston Rockets": "hou",
+    "Indiana Pacers": "ind", "LA Clippers": "lac",
+    "Los Angeles Clippers": "lac", "Los Angeles Lakers": "lal",
+    "Memphis Grizzlies": "mem", "Miami Heat": "mia", "Milwaukee Bucks": "mil",
+    "Minnesota Timberwolves": "min", "New Orleans Pelicans": "no",
+    "New York Knicks": "nyk", "Oklahoma City Thunder": "okc",
+    "Orlando Magic": "orl", "Philadelphia 76ers": "phi", "Phoenix Suns": "phx",
+    "Portland Trail Blazers": "por", "Sacramento Kings": "sac",
+    "San Antonio Spurs": "sas", "Toronto Raptors": "tor", "Utah Jazz": "utah",
+    "Washington Wizards": "wsh",
+}
+
 _ESPN = {
+    "NBA": _NBA_TEAMS,
     "WNBA": {
         "Atlanta Dream": "atl", "Chicago Sky": "chi", "Connecticut Sun": "conn",
         "Dallas Wings": "dal", "Golden State Valkyries": "gsv",
