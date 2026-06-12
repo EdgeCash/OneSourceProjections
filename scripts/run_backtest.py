@@ -96,9 +96,11 @@ def _md_mlb_props(p: dict) -> str:
 def _md_props(p: dict) -> str:
     out = ["### WNBA props — distribution calibration", "",
            "Trailing-average projection through the production distribution "
-           "layer, graded vs actuals. Tests distribution shape, not edge.", ""]
+           "layer, graded vs actuals. Tests distribution shape, not edge. "
+           "`gap` = mean predicted P(over) − empirical (≈0 unbiased).", ""]
     for stat, d in p.items():
-        out.append(f"**{stat}** — n={d['n']}, projection MAE {d['projection_mae']}")
+        out.append(f"**{stat}** — n={d['n']}, projection MAE {d['projection_mae']}, "
+                   f"gap {d.get('calibration_gap')}")
         if d["calibration"]:
             out += ["", "| Predicted P(over) | n | Empirical |", "|---|---|---|"]
             for c in d["calibration"]:

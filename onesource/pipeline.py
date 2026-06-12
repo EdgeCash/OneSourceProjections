@@ -19,6 +19,7 @@ from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
 from .models import props as prop_model
+from .models.elo import Elo
 from .names import normalize
 from .sports import SPORTS, active_sports
 
@@ -420,11 +421,31 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
         results = []
     ratings = generic.team_ratings(results, sport.league_ppg)
 
+    # Elo: maintain ratings over a longer history (covers prior + current
+    # season for cross-season carryover), then blend its win prob in.
+    elo = None
+    if sport.elo_blend > 0:
+        elo = Elo()
+        try:
+            elo_results = espn.results_range(
+                sport_key, mlb_statsapi._shift_date(date, -500), date)
+            for r in sorted(elo_results, key=lambda x: x["date"]):
+                elo.update(r["home_team"], r["away_team"],
+                           r["home_score"], r["away_score"], int(r["date"][:4]))
+        except Exception as e:
+            log.warning("%s Elo history unavailable: %s", sport_key, e)
+            elo = None
+
     rows = []
     for g in slate:
         proj = generic.project_game(
             sport, ratings.get(g["home_team"]), ratings.get(g["away_team"])
         )
+        hwp = proj.home_win_prob
+        if elo is not None:
+            season = int(str(g.get("date") or date)[:4])
+            ewp = elo.home_win_prob(g["home_team"], g["away_team"], season)
+            hwp = round((1 - sport.elo_blend) * hwp + sport.elo_blend * ewp, 4)
         rows.append(
             {
                 "game_id": g["game_id"],
@@ -434,8 +455,8 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
                 "away_exp": proj.away_exp,
                 "home_exp": proj.home_exp,
                 "proj_total": proj.total_mean,
-                "home_win_prob": proj.home_win_prob,
-                "away_win_prob": round(1 - proj.home_win_prob, 4),
+                "home_win_prob": hwp,
+                "away_win_prob": round(1 - hwp, 4),
                 "_proj": proj,
             }
         )

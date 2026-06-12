@@ -26,6 +26,7 @@ class Sport:
     form_days: int           # lookback window for team ratings
     fp_projections: str | None = None   # FantasyPros projections support
     espn_params: dict = field(default_factory=dict)
+    elo_blend: float = 0.0   # weight on Elo win prob vs the off/def model (0 = off)
 
 
 SPORTS: dict[str, Sport] = {
@@ -39,6 +40,7 @@ SPORTS: dict[str, Sport] = {
         key="WNBA", espn_path="basketball/wnba", model="normal",
         league_ppg=82.0, hfa=2.5, sigma_margin=11.5, sigma_total=15.0,
         in_season_months=(5, 6, 7, 8, 9, 10), form_days=45,
+        elo_blend=0.65,  # 0.35 off/def model + 0.65 Elo (backtested)
     ),
     "NBA": Sport(
         key="NBA", espn_path="basketball/nba", model="normal",

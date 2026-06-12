@@ -47,12 +47,21 @@ defines the calendar; override with `--sports`).
   ratings from recent final scores (ESPN), shrunk toward league average,
   plus home advantage. Basketball/football use a Normal margin/total
   model; NHL uses the same Poisson simulation as MLB. Per-sport constants
-  (league scoring, HFA, volatility) live in `onesource/sports.py`.
+  (league scoring, HFA, volatility) live in `onesource/sports.py`. For
+  sports with `elo_blend > 0`, an Elo rating system
+  (`onesource/models/elo.py`, maintained live from results) is blended
+  into the moneyline win probability. WNBA uses 0.35 off/def + 0.65 Elo,
+  which backtests to Brier 0.227 → **0.215** (favorite hit-rate
+  0.62 → 0.67), well-calibrated across a 0.2–0.9 range.
 - **Props**: BettingPros `/props` supplies every line plus their premium
   projection; FantasyPros daily projections blend in where they exist
-  (NBA). Our distribution layer (Poisson for small counts, Normal for
-  points/yards) converts the blended projection into P(over), then EV on
-  both sides and a Kelly stake on whichever side is positive.
+  (NBA). Our distribution layer converts the blended projection into
+  P(over) — **negative binomial** for box-score counting stats (points,
+  rebounds, assists, etc.), with per-market dispersion tuned against
+  walk-forward calibration, since these stats are heavily overdispersed
+  and right-skewed; Normal for yardage. This removed a large over-bias in
+  the old Poisson/Normal layer (WNBA points calibration gap +0.08 → −0.01).
+  Then EV on both sides and a Kelly stake on whichever side is positive.
 
 ### Edges
 

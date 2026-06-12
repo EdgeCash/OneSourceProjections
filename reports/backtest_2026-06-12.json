@@ -357,9 +357,9 @@
   "use_starters": false,
   "games_with_starter": 0,
   "moneyline": {
-   "brier": 0.2272,
-   "log_loss": 0.6456,
-   "favorite_hit_rate": 0.6197
+   "brier": 0.2151,
+   "log_loss": 0.6192,
+   "favorite_hit_rate": 0.6669
   },
   "total": {
    "mae": 13.417,
@@ -367,39 +367,54 @@
   },
   "calibration": [
    {
-    "n": 99,
+    "n": 57,
+    "predicted": 0.2,
+    "empirical": 0.2632
+   },
+   {
+    "n": 147,
+    "predicted": 0.3,
+    "empirical": 0.2925
+   },
+   {
+    "n": 166,
     "predicted": 0.4,
-    "empirical": 0.2727
+    "empirical": 0.3313
    },
    {
-    "n": 356,
+    "n": 215,
     "predicted": 0.5,
-    "empirical": 0.3933
+    "empirical": 0.4558
    },
    {
-    "n": 519,
+    "n": 221,
     "predicted": 0.6,
-    "empirical": 0.5607
+    "empirical": 0.6199
    },
    {
-    "n": 300,
+    "n": 240,
     "predicted": 0.7,
-    "empirical": 0.7567
+    "empirical": 0.6417
    },
    {
-    "n": 32,
+    "n": 216,
     "predicted": 0.8,
-    "empirical": 0.8438
+    "empirical": 0.7731
+   },
+   {
+    "n": 49,
+    "predicted": 0.9,
+    "empirical": 0.898
    }
   ],
   "closing_line": {
    "games_matched": 40,
-   "avg_clv_vs_fair": 0.0734,
+   "avg_clv_vs_fair": 0.0637,
    "moneyline_bets": {
-    "bets": 41,
-    "win_rate": 0.3902,
-    "units": 2.93,
-    "roi_pct": 7.14
+    "bets": 43,
+    "win_rate": 0.3721,
+    "units": -1.96,
+    "roi_pct": -4.56
    },
    "total_bets": {
     "bets": 36,
@@ -411,105 +426,104 @@
  },
  "wnba_props": {
   "points": {
-   "n": 15100,
-   "projection_mae": 4.186,
+   "n": 15034,
+   "projection_mae": 4.198,
+   "mean_pred_over": 0.4212,
+   "empirical_over": 0.4322,
+   "calibration_gap": -0.011,
    "calibration": [
     {
      "predicted": 0.2,
-     "n": 133,
-     "empirical": 0.3534
+     "n": 115,
+     "empirical": 0.3565
     },
     {
      "predicted": 0.3,
-     "n": 800,
-     "empirical": 0.4175
+     "n": 799,
+     "empirical": 0.4018
     },
     {
      "predicted": 0.4,
-     "n": 3569,
-     "empirical": 0.4119
+     "n": 11289,
+     "empirical": 0.4235
     },
     {
      "predicted": 0.5,
-     "n": 9465,
-     "empirical": 0.4355
+     "n": 2751,
+     "empirical": 0.4791
     },
     {
      "predicted": 0.6,
-     "n": 1116,
-     "empirical": 0.4866
+     "n": 80,
+     "empirical": 0.45
     }
    ]
   },
   "rebounds": {
-   "n": 15100,
-   "projection_mae": 1.819,
+   "n": 14876,
+   "projection_mae": 1.832,
+   "mean_pred_over": 0.4106,
+   "empirical_over": 0.4191,
+   "calibration_gap": -0.0085,
    "calibration": [
     {
      "predicted": 0.2,
-     "n": 494,
-     "empirical": 0.3138
+     "n": 440,
+     "empirical": 0.3023
     },
     {
      "predicted": 0.3,
-     "n": 2315,
-     "empirical": 0.3464
+     "n": 2455,
+     "empirical": 0.3507
     },
     {
      "predicted": 0.4,
-     "n": 5613,
+     "n": 7566,
      "empirical": 0.4085
     },
     {
      "predicted": 0.5,
-     "n": 5069,
-     "empirical": 0.4358
+     "n": 3831,
+     "empirical": 0.4662
     },
     {
      "predicted": 0.6,
-     "n": 1576,
-     "empirical": 0.5508
+     "n": 584,
+     "empirical": 0.6216
     }
    ]
   },
   "assists": {
-   "n": 15100,
-   "projection_mae": 1.235,
+   "n": 13851,
+   "projection_mae": 1.298,
+   "mean_pred_over": 0.3982,
+   "empirical_over": 0.4062,
+   "calibration_gap": -0.008,
    "calibration": [
     {
-     "predicted": 0.0,
-     "n": 164,
-     "empirical": 1.0
-    },
-    {
-     "predicted": 0.1,
-     "n": 263,
-     "empirical": 0.2357
-    },
-    {
      "predicted": 0.2,
-     "n": 1333,
-     "empirical": 0.2483
+     "n": 978,
+     "empirical": 0.227
     },
     {
      "predicted": 0.3,
-     "n": 3138,
-     "empirical": 0.3474
+     "n": 3394,
+     "empirical": 0.3462
     },
     {
      "predicted": 0.4,
-     "n": 4813,
-     "empirical": 0.3865
+     "n": 5404,
+     "empirical": 0.3984
     },
     {
      "predicted": 0.5,
-     "n": 3961,
-     "empirical": 0.4597
+     "n": 3208,
+     "empirical": 0.485
     },
     {
      "predicted": 0.6,
-     "n": 1428,
-     "empirical": 0.5791
+     "n": 867,
+     "empirical": 0.5998
     }
    ]
   }

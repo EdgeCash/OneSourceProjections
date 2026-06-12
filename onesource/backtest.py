@@ -29,6 +29,7 @@ from . import config, history, odds, parks
 from .models import game as mlb_game
 from .models import generic
 from .models import props as mlb_props
+from .models.elo import Elo
 from .names import normalize
 from .sports import SPORTS
 
@@ -199,6 +200,21 @@ def bullpen_fip_table(seasons: list[int], league_fip: float = 4.10,
         for k in ("hr", "bb", "hbp", "k", "ip"):
             c[k] += a[k]
     return out
+
+
+def _prewarm_elo(elo: Elo, sport_key: str, first_season: int, lookback: int = 8):
+    """Feed completed games from the seasons before the test window so Elo
+    ratings are informed by the time grading starts."""
+    warm = [s for s in range(first_season - lookback, first_season) if s >= 2002]
+    if not warm:
+        return
+    if sport_key == "WNBA":
+        games = _wnba_games(warm)
+    else:
+        return
+    for g in games:
+        elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
+                   int(g["date"][:4]))
 
 
 def _wnba_games(seasons: list[int]) -> list[dict]:
@@ -400,6 +416,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
     bp_table = bullpen_fip_table(seasons) if (is_mlb and use_bullpen) else {}
 
+    # Elo (generic sports): maintain ratings walk-forward, pre-warmed from
+    # seasons before the test window so early-window ratings are informed.
+    elo = None
+    if not is_mlb and sport.elo_blend > 0:
+        elo = Elo()
+        _prewarm_elo(elo, sport_key, min(seasons))
+
     # accuracy accumulators
     brier_sum = logloss_sum = n_ml = 0.0
     fav_correct = 0
@@ -431,6 +454,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             hwp, tmean, prob_over, _ = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
                 home_bp, away_bp, pf_venue, home_pf, away_pf)
+            if elo is not None:
+                ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
+                hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
@@ -470,6 +496,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                         if odds.expected_value(1 - po, t["under_best"]) >= min_edge:
                             total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]))
         form.update(g)
+        if elo is not None:
+            elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
+                       int(g["date"][:4]))
 
     calibration = {b: {"n": c[0], "predicted": round(b, 2),
                        "empirical": round(c[1] / c[0], 4)}
@@ -783,8 +812,7 @@ def run_wnba_prop_calibration(seasons: list[int], window: int = 10,
 
     markets = {"points": "Points", "rebounds": "Rebounds", "assists": "Assists"}
     trailing = defaultdict(lambda: defaultdict(deque))
-    results = {m: defaultdict(lambda: [0, 0.0]) for m in markets}
-    mae = {m: [0.0, 0] for m in markets}
+    coll = {m: _cal_collector() for m in markets}
 
     for _, row in df.iterrows():
         pid = row["player_id"]
@@ -795,25 +823,11 @@ def run_wnba_prop_calibration(seasons: list[int], window: int = 10,
                 line = round(proj * 2) / 2
                 if line == proj:
                     line -= 0.5  # avoid a pushy whole-number == projection
-                actual = row[stat]
-                p_over = generic.prop_prob_over(proj, line, market_name)
-                over = actual > line
-                b = round(p_over * 10) / 10
-                cell = results[stat][b]
-                cell[0] += 1; cell[1] += int(over)
-                mae[stat][0] += abs(proj - actual); mae[stat][1] += 1
+                if line >= 0.5:  # skip degenerate sub-0.5 lines (no real market)
+                    p_over = generic.prop_prob_over(proj, line, market_name)
+                    _cal_record(coll[stat], p_over, proj, row[stat], line)
             hist.append(row[stat])
             if len(hist) > window:
                 hist.popleft()
 
-    out = {}
-    for stat in markets:
-        cal = [{"predicted": round(b, 2), "n": c[0],
-                "empirical": round(c[1] / c[0], 4)}
-               for b, c in sorted(results[stat].items()) if c[0] >= 30]
-        out[stat] = {
-            "n": mae[stat][1],
-            "projection_mae": round(mae[stat][0] / mae[stat][1], 3) if mae[stat][1] else None,
-            "calibration": cal,
-        }
-    return out
+    return {stat: _cal_summary(coll[stat]) for stat in markets}

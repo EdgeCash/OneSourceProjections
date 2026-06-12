@@ -55,18 +55,22 @@ def test_total_and_cover_probabilities():
 
 
 def test_prop_distributions():
-    # small count -> poisson
+    # overdispersed count -> negative binomial, P(>= ~mean) a bit under 0.5
     p = generic.prop_prob_over(1.2, 0.5, "Goals")
-    assert 0.6 < p < 0.8
-    # basketball points -> normal
+    assert 0.45 < p < 0.75
+    # points are right-skewed: at a line just under the mean, P(over) < 0.5
     p25 = generic.prop_prob_over(25, 24.5, "Points")
-    assert 0.5 < p25 < 0.6
-    # yards get a wider sd than points at the same mean
+    assert 0.40 < p25 < 0.50
+    # yards (Normal) vs points at a line above the mean
     p_yards = generic.prop_prob_over(60, 75.5, "Receiving Yards")
     p_points = generic.prop_prob_over(60, 75.5, "Points")
     assert p_yards > p_points
-    # monotone in the line
+    # monotone in the line: a lower line gives a higher P(over)
     assert generic.prop_prob_over(25, 20.5, "Points") > p25
+    # points use a smaller NB size (wider) than assists, so at a line well
+    # above the mean points carry more tail mass
+    assert (generic.prop_prob_over(6, 9.5, "Points")
+            > generic.prop_prob_over(6, 9.5, "Assists"))
 
 
 def test_sports_registry():
