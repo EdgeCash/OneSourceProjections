@@ -1,0 +1,96 @@
+League,Game_ID,Date,Player,Prop_Type,Line,Over_Odds,Under_Odds,Actual_Value,Result
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Shohei Ohtani,Total Hits,1.5,-130,100,5,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Shohei Ohtani,Total Home Runs,0.5,+349,-589,1,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Mookie Betts,Total Hits,1.5,-120,100,4,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Mookie Betts,Total Home Runs,0.5,+401,-493,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Freddie Freeman,Total Hits,1.5,-110,-110,3,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Freddie Freeman,Total Home Runs,0.5,+395,-552,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Teoscar Hernández,Total Hits,1.5,-130,100,2,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Teoscar Hernández,Total Home Runs,0.5,+417,-433,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Fernando Tatis Jr.,Total Hits,1.5,-110,-110,2,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Fernando Tatis Jr.,Total Home Runs,0.5,+288,-474,1,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Manny Machado,Total Hits,1.5,-110,-110,2,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Manny Machado,Total Home Runs,0.5,+446,-571,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Xander Bogaerts,Total Hits,1.5,-130,100,4,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Xander Bogaerts,Total Home Runs,0.5,+404,-487,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Jake Cronenworth,Total Hits,1.5,-110,-110,2,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Jake Cronenworth,Total Home Runs,0.5,+405,-486,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Shohei Ohtani,Total Hits,1.5,-120,100,4,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Shohei Ohtani,Total Home Runs,0.5,+251,-572,1,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Mookie Betts,Total Hits,1.5,-120,100,2,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Mookie Betts,Total Home Runs,0.5,+419,-421,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Freddie Freeman,Total Hits,1.5,-120,100,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Freddie Freeman,Total Home Runs,0.5,+359,-484,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Teoscar Hernández,Total Hits,1.5,-130,100,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Teoscar Hernández,Total Home Runs,0.5,+445,-530,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Jose Altuve,Total Hits,1.5,-110,-110,1,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Jose Altuve,Total Home Runs,0.5,+327,-586,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Yordan Alvarez,Total Hits,1.5,-120,100,4,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Yordan Alvarez,Total Home Runs,0.5,+388,-498,0,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Alex Bregman,Total Hits,1.5,105,-120,4,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Alex Bregman,Total Home Runs,0.5,+299,-521,1,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Kyle Tucker,Total Hits,1.5,105,-120,5,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Kyle Tucker,Total Home Runs,0.5,+316,-533,1,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Jose Altuve,Total Hits,1.5,-120,100,0,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Jose Altuve,Total Home Runs,0.5,+262,-454,0,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Yordan Alvarez,Total Hits,1.5,-110,-110,4,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Yordan Alvarez,Total Home Runs,0.5,+325,-517,1,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Alex Bregman,Total Hits,1.5,105,-120,2,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Alex Bregman,Total Home Runs,0.5,+419,-420,1,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Kyle Tucker,Total Hits,1.5,-130,100,4,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Kyle Tucker,Total Home Runs,0.5,+313,-577,1,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Ronald Acuña Jr.,Total Hits,1.5,-110,-110,5,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Ronald Acuña Jr.,Total Home Runs,0.5,+317,-506,1,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Matt Olson,Total Hits,1.5,105,-120,3,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Matt Olson,Total Home Runs,0.5,+367,-431,0,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Austin Riley,Total Hits,1.5,-110,-110,0,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Austin Riley,Total Home Runs,0.5,+389,-436,0,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Ozzie Albies,Total Hits,1.5,-130,100,5,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Ozzie Albies,Total Home Runs,0.5,+396,-522,1,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Shohei Ohtani,Total Hits,1.5,-110,-110,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Shohei Ohtani,Total Home Runs,0.5,+337,-544,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Mookie Betts,Total Hits,1.5,105,-120,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Mookie Betts,Total Home Runs,0.5,+438,-550,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Freddie Freeman,Total Hits,1.5,-110,-110,3,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Freddie Freeman,Total Home Runs,0.5,+387,-464,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Teoscar Hernández,Total Hits,1.5,-130,100,1,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Teoscar Hernández,Total Home Runs,0.5,+413,-564,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Ronald Acuña Jr.,Total Hits,1.5,-120,100,2,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Ronald Acuña Jr.,Total Home Runs,0.5,+267,-402,1,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Matt Olson,Total Hits,1.5,-120,100,0,Under
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Matt Olson,Total Home Runs,0.5,+296,-528,0,Under
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Tyler Glasnow,Total Strikeouts,5.5,100,-120,8,Over
+MLB,2026-03-26_LAD_at_SDP,2026-03-26,Yu Darvish,Total Strikeouts,7.5,-125,-120,3,Under
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Tyler Glasnow,Total Strikeouts,7.5,-105,-120,9,Over
+MLB,2026-03-27_LAD_at_HOU,2026-03-27,Framber Valdez,Total Strikeouts,7.5,-125,-120,8,Over
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Framber Valdez,Total Strikeouts,7.5,100,-120,6,Under
+MLB,2026-03-28_HOU_at_ATL,2026-03-28,Max Fried,Total Strikeouts,5.5,-105,-120,8,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Tyler Glasnow,Total Strikeouts,6.5,-115,-115,7,Over
+MLB,2026-03-29_LAD_at_ATL,2026-03-29,Max Fried,Total Strikeouts,7.5,100,-120,3,Under
+MLB,2026-03-30_HOU_at_NYY,2026-03-30,Justin Verlander,Total Strikeouts,6.5,-105,-120,4,Under
+MLB,2026-03-30_HOU_at_NYY,2026-03-30,Carlos Rodón,Total Strikeouts,5.5,-105,-120,9,Over
+MLB,2026-04-02_BOS_at_ATL,2026-04-02,Lucas Giolito,Total Strikeouts,6.5,-115,-115,8,Over
+MLB,2026-04-02_BOS_at_ATL,2026-04-02,Spencer Strider,Total Strikeouts,5.5,100,-120,3,Under
+MLB,2026-04-04_NYY_at_ATL,2026-04-04,Gerrit Cole,Total Strikeouts,7.5,-105,-120,4,Under
+MLB,2026-04-04_NYY_at_ATL,2026-04-04,Max Fried,Total Strikeouts,6.5,-115,-115,4,Under
+MLB,2026-04-04_BOS_at_LAD,2026-04-04,Brayan Bello,Total Strikeouts,5.5,100,-120,8,Over
+WNBA,2026WNBA_0514_ATL_NYL,2026-05-14,Rhyne Howard,Total Points,18.5,-120,-105,31,Over
+WNBA,2026WNBA_0514_ATL_NYL,2026-05-14,Allisha Gray,Total Points,16.5,-115,-105,14,Under
+WNBA,2026WNBA_0514_ATL_NYL,2026-05-14,Breanna Stewart,Total Points,22.5,-120,-105,28,Over
+WNBA,2026WNBA_0514_ATL_NYL,2026-05-14,Sabrina Ionescu,Total Points,18.5,-110,-115,18,Under
+WNBA,2026WNBA_0514_ATL_NYL,2026-05-14,Jonquel Jones,Total Points,18.5,-120,-105,10,Under
+WNBA,2026WNBA_0514_LAS_IND,2026-05-14,Dearica Hamby,Total Points,14.5,-115,-105,25,Over
+WNBA,2026WNBA_0514_LAS_IND,2026-05-14,Rickea Jackson,Total Points,14.5,-115,-105,24,Over
+WNBA,2026WNBA_0514_LAS_IND,2026-05-14,Caitlin Clark,Total Points,21.5,-110,-115,13,Under
+WNBA,2026WNBA_0514_LAS_IND,2026-05-14,Aliyah Boston,Total Points,14.5,100,-115,14,Under
+WNBA,2026WNBA_0514_LAS_IND,2026-05-14,Kelsey Mitchell,Total Points,18.5,-110,-115,18,Under
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Kahleah Copper,Total Points,18.5,-110,-115,20,Over
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Diana Taurasi,Total Points,16.5,-120,-105,14,Under
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Brittney Griner,Total Points,14.5,-120,-105,19,Over
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Angel Reese,Total Points,18.5,-115,-105,23,Over
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Kamilla Cardoso,Total Points,14.5,-115,-105,8,Under
+WNBA,2026WNBA_0514_PHO_CHI,2026-05-14,Chennedy Carter,Total Points,14.5,-115,-105,22,Over
+WNBA,2026WNBA_0515_PHO_MIN,2026-05-15,Kahleah Copper,Total Points,16.5,-115,-105,8,Under
+WNBA,2026WNBA_0515_PHO_MIN,2026-05-15,Diana Taurasi,Total Points,16.5,100,-115,22,Over
+WNBA,2026WNBA_0515_PHO_MIN,2026-05-15,Brittney Griner,Total Points,14.5,-120,-105,16,Over
+WNBA,2026WNBA_0515_PHO_MIN,2026-05-15,Napheesa Collier,Total Points,14.5,-120,-105,16,Over

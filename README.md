@@ -150,5 +150,11 @@ home box behind Tailscale for a fully invisible deployment.
 - **Closing-line tracking**: persist `latest.json` per date (the Action
   commits history) and compare your openers to closers to measure whether
   the model beats CLV — do this before sizing up.
+- **Historical data** curated from prior EdgeCash repos lives in
+  `data/history/` (closing lines for 4 sports, a decade of MLB
+  backfill + Statcast xstats, WNBA player logs to 2018 and Elo to 2002,
+  648k graded prop projections, fitted calibration params). Load it via
+  `onesource/history.py`; see `data/history/README.md` for the manifest.
+  Use it to backtest model changes and benchmark CLV before trusting edges.
 - **Model knobs** live in `onesource/config.py` (MLB) and
   `onesource/sports.py` (per-sport constants).
