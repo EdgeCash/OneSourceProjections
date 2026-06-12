@@ -143,6 +143,18 @@ it runs, the more closing-line history and graded results accumulate.
 > Note: scheduled Actions need the workflow on the default branch. Merge
 > `claude/nifty-hamilton-26x2c1` to `main` to begin the hourly cadence.
 
+## Dashboard layout
+
+A left sidebar navigates by sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays**
+(the cross-sport best-bets board) and **Performance** (the forward-test
+tracker). The top bar shows the section title and a team/player search; each
+sport view has Games (matchup cards with team logos, projected score, win
+%, and the best model edge) and Props tabs. Team logos come from free CDNs
+(MLB: mlbstatic by team id; WNBA/NBA/NHL: ESPN by abbreviation) with a
+colored-monogram fallback when a logo is missing (`app/assets.py`).
+Presentation helpers live in `app/ui.py`; both are unit-tested and the whole
+app is render-tested via Streamlit's AppTest harness.
+
 ## Hosting the dashboard privately
 
 Recommended: **Streamlit Community Cloud** (free) with both layers:

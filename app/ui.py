@@ -9,6 +9,8 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
+from app import assets
+
 ET = ZoneInfo("America/New_York")
 
 
@@ -122,6 +124,83 @@ def _prop_edge(sport: str, p: dict) -> dict | None:
         "line": line, "price": price, "model_prob": prob, "ev": ev,
         "kelly": p.get("kelly"), "time": None,
     }
+
+
+# ---------------------------------------------------------------------------
+# Game matchup card (HTML)
+# ---------------------------------------------------------------------------
+
+def _pct(v) -> str:
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "—"
+    return f"{float(v) * 100:.0f}%"
+
+
+def _num(v, dp=1) -> str:
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "—"
+    return f"{float(v):.{dp}f}"
+
+
+def _exp(game: dict, side: str):
+    return game.get(f"{side}_exp_runs", game.get(f"{side}_exp"))
+
+
+def _best_edge(game: dict) -> tuple[str, float] | None:
+    """Largest positive model edge on a game, as (label, ev)."""
+    cands = []
+    for side in ("home", "away"):
+        ev = game.get(f"{side}_ml_ev", game.get(f"{side}_ev"))
+        if ev is not None and pd.notna(ev):
+            cands.append((f"{game.get(f'{side}_team')} ML", float(ev)))
+    if game.get("over_ev") is not None and pd.notna(game.get("over_ev")):
+        cands.append((f"Over {game.get('total_line')}", float(game["over_ev"])))
+    cands = [c for c in cands if c[1] > 0]
+    return max(cands, key=lambda c: c[1]) if cands else None
+
+
+def game_card_html(sport: str, g: dict) -> str:
+    """A compact matchup card: logos, projected score, win %, line/total,
+    and the best model edge. Designed to read at a glance."""
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    a_badge = assets.team_badge_html(sport, away, 40)
+    h_badge = assets.team_badge_html(sport, home, 40)
+    a_exp, h_exp = _exp(g, "away"), _exp(g, "home")
+    a_wp, h_wp = g.get("away_win_prob"), g.get("home_win_prob")
+    time = fmt_time_et(g.get("game_time"))
+    total = g.get("total_line") or g.get("proj_total")
+
+    edge = _best_edge(g)
+    if edge:
+        edge_html = (f"<span style='color:#3fb950;font-weight:600;'>"
+                     f"▲ {edge[0]} · +{edge[1] * 100:.1f}% EV</span>")
+    else:
+        edge_html = "<span style='color:#8b949e;'>no edge ≥ threshold</span>"
+
+    def side(badge, name, exp, wp, fav):
+        weight = "700" if fav else "500"
+        return (
+            f"<div style='display:flex;align-items:center;gap:10px;flex:1;'>"
+            f"{badge}"
+            f"<div><div style='font-weight:{weight};font-size:0.95rem;'>{name}</div>"
+            f"<div style='color:#8b949e;font-size:0.8rem;'>win {_pct(wp)}</div></div>"
+            f"<div style='margin-left:auto;font-size:1.5rem;font-weight:700;'>"
+            f"{_num(exp)}</div></div>"
+        )
+
+    home_fav = (h_wp or 0) >= (a_wp or 0)
+    return (
+        "<div style='background:#161b24;border:1px solid #232a36;border-radius:12px;"
+        "padding:14px 16px;margin-bottom:12px;'>"
+        f"<div style='color:#8b949e;font-size:0.78rem;margin-bottom:8px;'>"
+        f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</div>"
+        f"{side(a_badge, away, a_exp, a_wp, not home_fav)}"
+        "<div style='height:8px;'></div>"
+        f"{side(h_badge, home, h_exp, h_wp, home_fav)}"
+        "<div style='border-top:1px solid #232a36;margin-top:10px;padding-top:8px;"
+        f"font-size:0.85rem;'>{edge_html}</div>"
+        "</div>"
+    )
 
 
 # ---------------------------------------------------------------------------
