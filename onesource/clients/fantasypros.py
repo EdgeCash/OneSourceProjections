@@ -59,6 +59,31 @@ def mlb_projections(
     return data.get("player", [])
 
 
+def nba_projections(season: int, date: str | None = None) -> list[dict]:
+    """NBA daily player projections (PTS/REB/AST etc.)."""
+    params: dict = {"type": "daily", "stat_values": "precise"}
+    if date:
+        params["date"] = date
+    data = cached_json(
+        f"fp:nba:proj:{season}:{date}",
+        _TTL,
+        lambda: _get(f"nba/{season}/projections", params),
+    )
+    return data.get("player", [])
+
+
+def nfl_projections(season: int, week: int, position: str = "ALL") -> list[dict]:
+    """NFL weekly player projections."""
+    data = cached_json(
+        f"fp:nfl:proj:{season}:{week}:{position}",
+        _TTL,
+        lambda: _get(
+            f"nfl/{season}/projections", {"week": week, "position": position}
+        ),
+    )
+    return data.get("players", data.get("player", []))
+
+
 def mlb_lineups(date: str, projected: bool = True) -> list[dict]:
     """Confirmed or projected MLB lineups for a date."""
     data = cached_json(

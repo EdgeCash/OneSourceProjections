@@ -1,25 +1,29 @@
 # OneSource Projections
 
-Personal MLB betting model: game projections (moneyline / total / run line)
-and player props (pitcher Ks, batter hits / total bases / home runs), with
-edges computed against BettingPros market lines and a private Streamlit
-dashboard.
+Personal multi-sport betting model — **MLB, WNBA, NBA, NFL, NCAAF, NHL** —
+projecting games (moneyline / total / spread) and player props, with edges
+computed against BettingPros market lines and a private Streamlit dashboard.
 
 **Personal use only. Not financial advice. Bet responsibly.**
 
 ## How it works
 
 ```
-MLB StatsAPI ──► slate, probables, lineups, team form ─┐
-pybaseball   ──► FanGraphs rates + Statcast xBA/xSLG ──┤
-FantasyPros  ──► daily player projections ─────────────┼──► models ──► P(outcomes)
-                                                       │                  │
-BettingPros  ──► lines & best prices ──────────────────┘    de-vig, EV, ¼-Kelly
+MLB StatsAPI ──► MLB slate, probables, lineups, form ──┐
+ESPN API     ──► other sports: slates + recent scores ─┤
+pybaseball   ──► FanGraphs rates + Statcast xBA/xSLG ──┼──► models ──► P(outcomes)
+FantasyPros  ──► daily/weekly player projections ──────┤                  │
+BettingPros  ──► lines, best prices, BP projections ───┘    de-vig, EV, ¼-Kelly
                                                                           │
                                               data/output/latest.json ◄───┘
                                                           │
                                               Streamlit dashboard (password-gated)
 ```
+
+The pipeline runs every sport that's in season (`onesource/sports.py`
+defines the calendar; override with `--sports`).
+
+### MLB (the deep model)
 
 - **Game model** (`onesource/models/game.py`): recent team scoring rate
   shrunk toward league average, adjusted for the opposing starter's xFIP
@@ -29,8 +33,24 @@ BettingPros  ──► lines & best prices ────────────�
 - **Prop models** (`onesource/models/props.py`): Poisson for Ks and total
   bases, binomial for hits, per-PA rate for HRs. Our Statcast-informed
   rates are blended 50/50 with FantasyPros projections when available.
-- **Edges** (`onesource/pipeline.py`): model probability vs the best
-  available price from BettingPros → EV per unit and quarter-Kelly stake.
+
+### WNBA / NBA / NFL / NCAAF / NHL (the generic engine)
+
+- **Game model** (`onesource/models/generic.py`): offensive/defensive
+  ratings from recent final scores (ESPN), shrunk toward league average,
+  plus home advantage. Basketball/football use a Normal margin/total
+  model; NHL uses the same Poisson simulation as MLB. Per-sport constants
+  (league scoring, HFA, volatility) live in `onesource/sports.py`.
+- **Props**: BettingPros `/props` supplies every line plus their premium
+  projection; FantasyPros daily projections blend in where they exist
+  (NBA). Our distribution layer (Poisson for small counts, Normal for
+  points/yards) converts the blended projection into P(over), then EV on
+  both sides and a Kelly stake on whichever side is positive.
+
+### Edges
+
+Model probability vs the best available price from BettingPros → EV per
+unit and quarter-Kelly stake, for every game market and prop.
 
 ## Setup
 
@@ -38,8 +58,9 @@ BettingPros  ──► lines & best prices ────────────�
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # fill in your keys
-python scripts/run_daily.py            # build today's projections
-streamlit run app/dashboard.py         # view them
+python scripts/run_daily.py                       # all in-season sports
+python scripts/run_daily.py --sports WNBA,MLB     # or pick specific ones
+streamlit run app/dashboard.py                    # view them
 ```
 
 Required secrets (env vars, `.env`, or Streamlit secrets):
@@ -113,10 +134,21 @@ home box behind Tailscale for a fully invisible deployment.
 
 ## Extending
 
-- **Other sports**: the BettingPros/FantasyPros clients take a `sport`
-  parameter already; add an NFL/NBA slate source and a model module, and
-  reuse `onesource/odds.py` and the edge pipeline as-is.
+- **Deepening a sport**: the generic engine is intentionally simple. To
+  upgrade a sport the way MLB is upgraded, add a stats client (e.g.
+  nba_api, nfl_data_py) and a model module, then branch in
+  `pipeline.run()` like `_run_mlb` does. Ratings → margin/total
+  distributions and the entire edge/Kelly layer are already shared.
+- **Game market IDs** for non-MLB sports are resolved at runtime from
+  `/markets` by slug (`bettingpros.game_market_ids`). If a sport's
+  moneyline/total/spread slugs differ from the candidates in
+  `onesource/clients/bettingpros.py`, run `scripts/discover_markets.py
+  <SPORT>` and extend the candidate lists.
+- **NFL week numbers**: FantasyPros NFL projections are weekly
+  (`fantasypros.nfl_projections(season, week)`); wiring week inference
+  into the generic props blend is the first NFL-season improvement to make.
 - **Closing-line tracking**: persist `latest.json` per date (the Action
   commits history) and compare your openers to closers to measure whether
   the model beats CLV — do this before sizing up.
-- **Model knobs** live at the bottom of `onesource/config.py`.
+- **Model knobs** live in `onesource/config.py` (MLB) and
+  `onesource/sports.py` (per-sport constants).

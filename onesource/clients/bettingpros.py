@@ -69,9 +69,48 @@ def _get(path: str, params: dict, premium: bool = True) -> dict:
 
 
 def markets(sport: str = "MLB") -> list[dict]:
-    """Available markets for a sport — source of truth for BP_MARKET_IDS."""
-    data = _get("markets", {"sport": sport, "limit": 500}, premium=False)
+    """Available markets for a sport — source of truth for market IDs."""
+    data = cached_json(
+        f"bp:markets:{sport}",
+        24 * 60 * 60,
+        lambda: _get("markets", {"sport": sport, "limit": 500}, premium=False),
+    )
     return data.get("markets", [])
+
+
+def market_lookup(sport: str) -> dict[int, dict]:
+    """id -> {name, slug, category} for a sport, resolved live and cached."""
+    out = {}
+    for m in markets(sport):
+        mid = m.get("id") or m.get("market_id")
+        if mid is None:
+            continue
+        out[int(mid)] = {
+            "name": m.get("name") or m.get("label") or "",
+            "slug": m.get("slug") or m.get("market_slug") or "",
+            "category": m.get("category") or m.get("market_category") or "",
+        }
+    return out
+
+
+# Game-odds market slugs vary slightly by sport; try candidates in order.
+_GAME_MARKET_SLUGS = {
+    "moneyline": ["moneyline"],
+    "total": ["over-under", "total", "totals", "total-points", "total-goals"],
+    "spread": ["against-the-spread", "spread", "point-spread", "run-line",
+               "puck-line"],
+}
+
+
+def game_market_ids(sport: str) -> dict[str, int | None]:
+    """Resolve moneyline/total/spread market IDs for a sport at runtime."""
+    by_slug = {info["slug"]: mid for mid, info in market_lookup(sport).items()}
+    resolved = {}
+    for market, candidates in _GAME_MARKET_SLUGS.items():
+        resolved[market] = next(
+            (by_slug[s] for s in candidates if s in by_slug), None
+        )
+    return resolved
 
 
 def events(sport: str, date: str) -> list[dict]:
@@ -187,19 +226,35 @@ def flatten_props(raw_props: list[dict]) -> list[dict]:
     for p in raw_props:
         name = _dig(p, "participant.name", "participant.player.name",
                     "player.name", "name")
-        rows.append(
-            {
-                "event_id": _dig(p, "event_id", "event.id"),
-                "market_id": _dig(p, "market_id", "market.id"),
-                "participant": name if isinstance(name, str) else None,
-                "bp_line": _dig(p, "line", "selection.line", "over.line"),
-                "bp_projection": _dig(p, "projection", "projection.value",
-                                      "analysis.projection"),
-                "bp_ev": _dig(p, "expected_value", "ev"),
-                "bp_probability": _dig(p, "probability"),
-                "bp_recommended_side": _dig(p, "recommended_side", "recommendation",
-                                            "pick.side"),
-                "bp_bet_rating": _dig(p, "bet_rating"),
-            }
-        )
+        row = {
+            "event_id": _dig(p, "event_id", "event.id"),
+            "market_id": _dig(p, "market_id", "market.id"),
+            "participant": name if isinstance(name, str) else None,
+            "bp_line": _dig(p, "line", "selection.line", "over.line"),
+            "bp_projection": _dig(p, "projection", "projection.value",
+                                  "analysis.projection"),
+            "bp_ev": _dig(p, "expected_value", "ev"),
+            "bp_probability": _dig(p, "probability"),
+            "bp_recommended_side": _dig(p, "recommended_side", "recommendation",
+                                        "pick.side"),
+            "bp_bet_rating": _dig(p, "bet_rating"),
+            "over_line": None, "over_odds": None,
+            "under_line": None, "under_odds": None,
+        }
+        # include_selections=true embeds over/under selections with book
+        # lines; keep the best price for each side.
+        for sel in p.get("selections") or []:
+            label = str(sel.get("selection") or sel.get("label") or "").lower()
+            side = "over" if "over" in label else "under" if "under" in label else None
+            if not side:
+                continue
+            for book in sel.get("books") or []:
+                for line in book.get("lines") or []:
+                    cost = line.get("cost")
+                    if cost is None or not line.get("active", True):
+                        continue
+                    if row[f"{side}_odds"] is None or cost > row[f"{side}_odds"]:
+                        row[f"{side}_odds"] = cost
+                        row[f"{side}_line"] = line.get("line")
+        rows.append(row)
     return rows
