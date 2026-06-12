@@ -86,7 +86,8 @@ def market_lookup(sport: str) -> dict[int, dict]:
         if mid is None:
             continue
         out[int(mid)] = {
-            "name": m.get("name") or m.get("label") or "",
+            "name": m.get("name") or m.get("market_name") or m.get("label")
+            or m.get("display_name") or "",
             "slug": m.get("slug") or m.get("market_slug") or "",
             "category": m.get("category") or m.get("market_category") or "",
         }
@@ -289,12 +290,46 @@ def flatten_props(raw_props: list[dict]) -> list[dict]:
             "over_line": None, "over_odds": None,
             "under_line": None, "under_odds": None,
         }
-        # direct over/under objects, when present
+        # player metadata (team / position / headshot) when present
+        player = (p.get("participant") or {})
+        if isinstance(player, dict):
+            meta = player.get("player") or {}
+            row["player_team"] = meta.get("team")
+            row["player_position"] = meta.get("position")
+            row["player_image"] = meta.get("image")
+        # direct over/under objects: best line/odds, consensus, and the
+        # opening price (open->close CLV per prop, captured every snapshot)
         for side in ("over", "under"):
             sd = p.get(side)
             if isinstance(sd, dict):
                 row[f"{side}_line"] = _num_or_none(sd.get("line", row["bp_line"]))
                 row[f"{side}_odds"] = _num_or_none(sd.get("cost", sd.get("odds")))
+                row[f"{side}_consensus"] = _num_or_none(sd.get("consensus_odds"))
+                opening = (sd.get("selection") or {}).get("opening_line") or {}
+                row[f"{side}_open"] = _num_or_none(opening.get("cost"))
+        if row["bp_line"] is None:
+            row["bp_line"] = row.get("over_line")
+        # public consensus: BettingPros pick counts per side
+        def _picks(sd):
+            pk = ((sd or {}).get("selection") or {}).get("picks") or {}
+            return sum(v for v in pk.values() if isinstance(v, (int, float)))
+        o_picks, u_picks = _picks(p.get("over")), _picks(p.get("under"))
+        row["picks_total"] = (o_picks + u_picks) or None
+        row["pick_pct_over"] = (round(o_picks / (o_picks + u_picks), 3)
+                                if (o_picks + u_picks) > 0 else None)
+        # opponent defensive rank vs this market
+        opp = ((p.get("extra") or {}).get("opposition_rank") or {})
+        row["opp_rank"] = _num_or_none(opp.get("rank"))
+        # BettingPros' own over/under records by window -> over-rates
+        perf = p.get("performance") or {}
+        for window, key in (("last_5", "perf_l5"), ("last_10", "perf_l10"),
+                            ("last_20", "perf_l20"), ("season", "perf_season"),
+                            ("h2h", "perf_h2h")):
+            w = perf.get(window) or {}
+            o, u = w.get("over", 0) or 0, w.get("under", 0) or 0
+            row[key] = round(o / (o + u), 3) if (o + u) > 0 else None
+        row["streak"] = perf.get("streak")
+        row["streak_type"] = perf.get("streak_type")
         # include_selections=true embeds over/under selections with book
         # lines; keep the best price for each side. Selection shapes vary,
         # so probe both nested books->lines and flat cost/line fields.

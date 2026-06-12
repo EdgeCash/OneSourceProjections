@@ -72,6 +72,10 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
         return pd.DataFrame()
     df = pd.DataFrame(rows)
     df = df[pd.to_numeric(df["ev"], errors="coerce") >= min_edge]
+    # An edge this large usually means the market knows something the model
+    # doesn't (injury, lineup news) — surface it, but flagged.
+    df["flag"] = pd.to_numeric(df["ev"], errors="coerce").map(
+        lambda e: "⚠️ verify news" if e is not None and e >= 0.15 else "")
     return df.sort_values("ev", ascending=False).reset_index(drop=True)
 
 
@@ -382,6 +386,11 @@ def matchup_analysis(sport: str, g: dict, matchup: dict,
                 f"{_implied(price):.0%}")
         if ml_ev is not None and pd.notna(ml_ev):
             txt += f" — edge {ml_ev:+.1%}"
+        gap = abs(fav_wp - _implied(price))
+        if gap >= 0.18:
+            txt += (". ⚠️ Model and market disagree sharply — the market "
+                    "may know lineup/injury news the model doesn't; verify "
+                    "before betting")
     else:
         txt += "; no market price available yet"
     out.append({"market": "MONEYLINE", "decision": decide(ml_ev), "text": txt + "."})

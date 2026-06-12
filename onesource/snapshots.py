@@ -56,8 +56,13 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
             continue
         rows: list[dict] = []
         try:
+            _save_raw_sample(sk, date, "markets", bettingpros.markets(sk))
+        except Exception as e:
+            log.warning("%s snapshot: markets unavailable: %s", sk, e)
+        try:
             events = bettingpros.events(sk, date)
             event_ids = [e.get("id") for e in events if e.get("id")]
+            _save_raw_sample(sk, date, "events", events)
         except Exception as e:
             log.warning("%s snapshot: events unavailable: %s", sk, e)
             counts[sk] = 0

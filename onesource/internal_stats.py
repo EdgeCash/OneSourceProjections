@@ -29,9 +29,31 @@ _PITCH_FIELDS = ["strikeOuts", "battersFaced", "inningsPitched",
 _BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances"]
 
 
+def _ip_to_float(v):
+    """inningsPitched arrives as float thirds (3.667) in some seasons and
+    as statsapi '5.2' strings (= 5 and 2/3) in others."""
+    if v is None:
+        return None
+    if isinstance(v, str):
+        s = v.strip()
+        if s.count(".") == 1:
+            whole, frac = s.split(".")
+            if frac in ("0", "1", "2") and whole.isdigit():
+                return int(whole) + int(frac) / 3.0
+        try:
+            return float(s)
+        except ValueError:
+            return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def _mlb_rows(season: int) -> pd.DataFrame:
     """Flat per-player-game rows for a season from backfill (nested stats)
-    plus the forward store (flat), with name/team/position/started."""
+    plus the forward store (flat), with name/team/position/started. All
+    stat columns are numeric-coerced (sources mix strings and numbers)."""
     frames = []
     bf = history.player_games("mlb", seasons=[season])
     if not bf.empty:
@@ -60,6 +82,9 @@ def _mlb_rows(season: int) -> pd.DataFrame:
     if not frames:
         return pd.DataFrame()
     df = pd.concat(frames, ignore_index=True)
+    df["inningsPitched"] = df["inningsPitched"].map(_ip_to_float)
+    for f in set(_PITCH_FIELDS + _BAT_FIELDS) - {"inningsPitched"}:
+        df[f] = pd.to_numeric(df[f], errors="coerce")
     df["norm_name"] = df["name"].map(normalize)
     df["date"] = pd.to_datetime(df["date"])
     return df.drop_duplicates(["norm_name", "date"], keep="last")

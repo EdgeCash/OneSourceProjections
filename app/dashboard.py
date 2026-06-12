@@ -291,7 +291,19 @@ def render_prop_detail(sport: str, p: dict):
     season = int(default_date[:4]) if default_date else None
     title = f"{player} · {ui.short_market(market)}" + (
         f" {line:g}" if isinstance(line, (int, float)) and pd.notna(line) else "")
-    st.markdown(f"#### 🔎 {title}")
+    img = p.get("player_image")
+    pos = p.get("position") or ""
+    team = p.get("team") or ""
+    head = (f"<img src='{img}' width='52' height='52' "
+            f"style='border-radius:50%;object-fit:cover;vertical-align:middle;"
+            f"margin-right:10px;' onerror=\"this.style.display='none'\">"
+            if img else "")
+    sub = " · ".join(x for x in (team, pos) if x)
+    st.markdown(
+        f"<div style='display:flex;align-items:center;margin:6px 0;'>{head}"
+        f"<div><div style='font-size:1.15rem;font-weight:700;'>🔎 {title}</div>"
+        f"<div style='color:#8b949e;font-size:0.8rem;'>{sub}</div></div></div>",
+        unsafe_allow_html=True)
 
     c = st.columns(5)
     mop = p.get("model_over_prob")
@@ -331,7 +343,7 @@ def render_prop_detail(sport: str, p: dict):
             cc = st.columns(len(chips))
             for i, (k_, v) in enumerate(chips.items()):
                 cc[i].metric(k_, f"{v * 100:.0f}%" if v is not None else "—")
-        # model vs BettingPros read
+        # model vs BettingPros read + market context
         bits = []
         bp_proj, bp_side = p.get("bp_projection"), p.get("bp_recommended_side")
         bp_rating = p.get("bp_bet_rating")
@@ -344,7 +356,25 @@ def render_prop_detail(sport: str, p: dict):
             verdict = "✅ model agrees" if agree else "⚠️ model disagrees"
             stars = f" ({'★' * int(bp_rating)})" if bp_rating and pd.notna(bp_rating) else ""
             bits.append(f"BP lean: **{str(bp_side).upper()}**{stars} — {verdict}.")
-        if p.get("team") or p.get("opponent"):
+        opp_rank = p.get("opp_rank")
+        if opp_rank is not None and pd.notna(opp_rank):
+            bits.append(f"Opponent ranks **#{int(opp_rank)}** defending this stat.")
+        ppo, ptot = p.get("pick_pct_over"), p.get("picks_total")
+        if ppo is not None and pd.notna(ppo) and ptot:
+            side_txt = "over" if ppo >= 0.5 else "under"
+            pct = ppo if ppo >= 0.5 else 1 - ppo
+            bits.append(f"Public picks (BP): **{pct:.0%} on the {side_txt}** "
+                        f"({int(ptot)} picks).")
+        streak, stype = p.get("streak"), p.get("streak_type")
+        if streak and pd.notna(streak) and stype:
+            bits.append(f"Current streak: **{int(streak)} straight {stype}s**.")
+        open_, now_ = p.get("over_open"), p.get("over_odds")
+        if (open_ is not None and pd.notna(open_) and now_ is not None
+                and pd.notna(now_) and open_ != now_):
+            moved = "toward the over" if now_ < open_ else "toward the under"
+            bits.append(f"Over opened **{ui.fmt_american(open_)}**, now "
+                        f"**{ui.fmt_american(now_)}** (moved {moved}).")
+        if p.get("opponent"):
             bits.append(f"{p.get('team', '')} vs {p.get('opponent', '')}.")
         if bits:
             st.markdown("\n\n".join(bits))
@@ -379,10 +409,13 @@ def render_plays():
                      .fillna((view["ev"] / 100 * config.KELLY_FRACTION).clip(lower=0))
                      * bankroll).round(0)
     view["time"] = view["time"].map(ui.fmt_time_et)
-    view = view[["sport", "bet", "game", "time", "price", "model_prob", "ev",
-                 "stake"]].rename(columns={
+    cols = ["sport", "bet", "game", "time", "price", "model_prob", "ev", "stake"]
+    if "flag" in view.columns and view["flag"].astype(bool).any():
+        cols.append("flag")
+    view = view[cols].rename(columns={
         "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
-        "price": "Price", "model_prob": "Model %", "ev": "EV %", "stake": "Stake $"})
+        "price": "Price", "model_prob": "Model %", "ev": "EV %",
+        "stake": "Stake $", "flag": "Note"})
     st.dataframe(
         ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
         column_config={

@@ -456,7 +456,16 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
         except Exception as e:
             log.warning("MLB %s offers unavailable: %s", market, e)
 
-    event_teams = _bp_event_teams(events)
+    # event -> team names, from the events payload plus the offers' own
+    # participants (the offers always carry them, the events shape varies)
+    event_teams = dict(_bp_event_teams(events))
+    for df in flat_by_market.values():
+        if df is None or df.empty or "event_id" not in df.columns:
+            continue
+        for eid, grp in df.groupby("event_id"):
+            names = set(event_teams.get(eid, []))
+            names |= set(grp["participant"].dropna().astype(str))
+            event_teams[eid] = list(names)
 
     def event_offer(df, row, side_label=None):
         """Rows of df belonging to this game (via BP event team names)."""
@@ -816,7 +825,9 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
     rows = []
     for _, r in flat.iterrows():
         mid = r.get("market_id")
-        market_name = lookup.get(int(mid), {}).get("name", str(mid)) if pd.notna(mid) else ""
+        info = lookup.get(int(mid), {}) if pd.notna(mid) else {}
+        market_name = (info.get("name") or info.get("slug", "").replace("-", " ").title()
+                       or (f"Market {int(mid)}" if pd.notna(mid) else ""))
         fp_stats = fp.get(normalize(r["participant"]), {}) if r["participant"] else {}
         fp_proj = _fp_stat_for_market(fp_stats, market_name) if fp_stats else None
         bp_proj = r.get("bp_projection")
@@ -827,15 +838,29 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         row = {
             "market": market_name,
             "player": r["participant"],
+            "team": r.get("player_team"),
+            "position": r.get("player_position"),
+            "player_image": r.get("player_image"),
             "projection": round(projection, 2) if projection is not None else None,
             "fp_projection": fp_proj,
             "bp_projection": bp_proj,
             "bp_ev": r.get("bp_ev"),
+            "bp_probability": r.get("bp_probability"),
             "bp_recommended_side": r.get("bp_recommended_side"),
             "bp_bet_rating": r.get("bp_bet_rating"),
             "line": line,
             "over_odds": r.get("over_odds"),
             "under_odds": r.get("under_odds"),
+            "over_open": r.get("over_open"),
+            "over_consensus": r.get("over_consensus"),
+            "opp_rank": r.get("opp_rank"),
+            "pick_pct_over": r.get("pick_pct_over"),
+            "picks_total": r.get("picks_total"),
+            "streak": r.get("streak"),
+            "streak_type": r.get("streak_type"),
+            "perf_l5": r.get("perf_l5"), "perf_l10": r.get("perf_l10"),
+            "perf_l20": r.get("perf_l20"), "perf_season": r.get("perf_season"),
+            "perf_h2h": r.get("perf_h2h"),
             "model_over_prob": None, "ev_over": None, "ev_under": None, "kelly": None,
         }
         if projection is not None and pd.notna(line):
@@ -864,8 +889,9 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def attach_hit_rates(props: pd.DataFrame, sport: str, date: str) -> pd.DataFrame:
-    """Add L5/L10/L20/season/H2H over-rates (vs each prop's line) from our
-    player game logs, for the props heatmap board."""
+    """Add L5/L10/L20/season/H2H over-rates (vs each prop's line) for the
+    heatmap board: our own game logs first, BettingPros' performance
+    records (perf_*) as fallback where our logs are thin."""
     if props.empty:
         return props
     season = int(date[:4])
@@ -880,8 +906,10 @@ def attach_hit_rates(props: pd.DataFrame, sport: str, date: str) -> pd.DataFrame
             recs.append({})
     hr = pd.DataFrame(recs, index=props.index)
     for col in ("l5", "l10", "l20", "season", "h2h"):
-        if col in hr.columns:
-            props[f"hr_{col}"] = hr[col]
+        ours = hr[col] if col in hr.columns else pd.Series(None, index=props.index)
+        bp = props[f"perf_{col}"] if f"perf_{col}" in props.columns else pd.Series(
+            None, index=props.index)
+        props[f"hr_{col}"] = ours.where(ours.notna(), bp)
     return props
 
 
