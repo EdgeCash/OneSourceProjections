@@ -122,6 +122,7 @@ with st.sidebar:
                          format="%.3f")
     bankroll = st.number_input("Bankroll ($)", min_value=0, value=1000, step=100)
     show_all = st.checkbox("Show rows without edges", value=False)
+    hide_wild = st.checkbox("Hide implausible edges (≥30%)", value=True)
     st.caption(f"Stakes are {config.KELLY_FRACTION:.0%}-Kelly × bankroll.")
     if st.button("↻ Refresh", width="stretch"):
         refresh()
@@ -441,6 +442,8 @@ def render_plays():
     q = topbar("Plays")
     date_sel = pick_date()
     board = ui.build_best_bets(slates.get(date_sel, {}), min_edge)
+    if hide_wild and not board.empty:
+        board = board[pd.to_numeric(board["ev"], errors="coerce") < 0.30]
     if q and not board.empty:
         mask = (board["bet"].str.lower().str.contains(q)
                 | board["game"].str.lower().str.contains(q))
@@ -458,9 +461,10 @@ def render_plays():
     view["price"] = view["price"].map(ui.fmt_american)
     view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
     view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
+    stake_ev = (view["ev"] / 100 * config.KELLY_FRACTION).clip(lower=0)
+    stake_ev[view["ev"] >= 30] = 0  # no stake on implausible edges
     view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
-                     .fillna((view["ev"] / 100 * config.KELLY_FRACTION).clip(lower=0))
-                     * bankroll).round(0)
+                     .fillna(stake_ev) * bankroll).round(0)
     view["time"] = view["time"].map(ui.fmt_time_et)
     cols = ["sport", "bet", "game", "time", "price", "model_prob", "ev", "stake"]
     if "flag" in view.columns and view["flag"].astype(bool).any():

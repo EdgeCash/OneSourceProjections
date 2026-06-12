@@ -74,8 +74,13 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
     df = df[pd.to_numeric(df["ev"], errors="coerce") >= min_edge]
     # An edge this large usually means the market knows something the model
     # doesn't (injury, lineup news) — surface it, but flagged.
-    df["flag"] = pd.to_numeric(df["ev"], errors="coerce").map(
-        lambda e: "⚠️ verify news" if e is not None and e >= 0.15 else "")
+    ev = pd.to_numeric(df["ev"], errors="coerce")
+    df["flag"] = ev.map(lambda e: "🚫 implausible" if e is not None and e >= 0.30
+                        else ("⚠️ verify news" if e is not None and e >= 0.15 else ""))
+    # >=30% EV means the model is missing something (injuries, rotations,
+    # off-board line) far more often than the market is wrong; zero the
+    # suggested stake on those rows.
+    df.loc[ev >= 0.30, "kelly"] = 0.0
     return df.sort_values("ev", ascending=False).reset_index(drop=True)
 
 
