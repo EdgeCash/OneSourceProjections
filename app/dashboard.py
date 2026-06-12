@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import config, playerlogs, results  # noqa: E402
+from onesource import config, playerlogs, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS  # noqa: E402
 
 st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
@@ -188,9 +188,36 @@ def render_sport(sport: str):
         for i, g in enumerate(shown):
             with cols[i % 2]:
                 st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
+        if shown:
+            st.markdown("##### 📋 Full matchup breakdown")
+            labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
+            pick = st.selectbox("Game", labels, label_visibility="collapsed",
+                                key=f"matchup_{sport}_{date_sel}")
+            g = shown[labels.index(pick)]
+            render_research_card(sport, g, date_sel)
 
     with tab_p:
         render_props(sport, props, q)
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def _matchup(sport: str, home: str, away: str, asof: str) -> dict:
+    try:
+        return teamstats.matchup(sport, home, away, asof)
+    except Exception:
+        return {}
+
+
+def render_research_card(sport: str, g: dict, date_sel: str):
+    m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
+    if not m:
+        st.info("Team stat splits aren't available for this matchup yet.")
+        st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
+        return
+    st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
+    st.caption("Offense L5 vs the opponent's matching defense L5; small "
+               "numbers are league ranks (green = top third). ★ = the "
+               "offense out-ranks the defense it faces.")
 
 
 def render_props(sport: str, props: list, q: str):

@@ -204,6 +204,141 @@ def game_card_html(sport: str, g: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Full game research card (HTML): header, gauges, stat tables, trends
+# ---------------------------------------------------------------------------
+
+def _fmt_stat(label: str, v) -> str:
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "—"
+    v = float(v)
+    if "%" in label:
+        return f"{v * 100:.1f}%"
+    if label == "AVG":
+        return f"{v:.3f}".lstrip("0")
+    return f"{v:.1f}"
+
+
+def _rank_badge(rank, n_teams: int) -> str:
+    if rank is None or pd.isna(rank):
+        return "<span style='color:#6e7781;font-size:0.72rem;'>—</span>"
+    rank = int(rank)
+    third = max(1, n_teams / 3)
+    color = "#3fb950" if rank <= third else ("#f0b72f" if rank <= 2 * third else "#f85149")
+    return (f"<span style='color:{color};font-size:0.72rem;font-weight:600;'>"
+            f"{rank}</span>")
+
+
+def _stat_table_html(title: str, rows: list[dict], n_teams: int) -> str:
+    head = (
+        "<tr style='color:#8b949e;font-size:0.7rem;text-transform:uppercase;'>"
+        "<th style='text-align:left;padding:4px 6px;'>Stat</th>"
+        "<th style='text-align:right;'>L5</th><th>Rk</th>"
+        "<th style='width:34px;'></th>"
+        "<th>Rk</th><th style='text-align:left;padding-left:6px;'>Opp L5</th></tr>"
+    )
+    body = []
+    for r in rows:
+        stars = "★" * r.get("adv", 0)
+        star_html = (f"<span style='color:#e3b341;'>{stars}</span>" if stars
+                     else "")
+        body.append(
+            "<tr style='border-top:1px solid #1c2330;'>"
+            f"<td style='text-align:left;padding:4px 6px;font-weight:600;'>{r['stat']}</td>"
+            f"<td style='text-align:right;'>{_fmt_stat(r['stat'], r['off_l5'])}</td>"
+            f"<td style='text-align:center;'>{_rank_badge(r['off_rank'], n_teams)}</td>"
+            f"<td style='text-align:center;'>{star_html}</td>"
+            f"<td style='text-align:center;'>{_rank_badge(r['def_rank'], n_teams)}</td>"
+            f"<td style='text-align:left;padding-left:6px;color:#8b949e;'>"
+            f"{_fmt_stat(r['stat'], r['def_l5'])}</td></tr>"
+        )
+    return (
+        f"<div style='font-size:0.78rem;color:#58a6ff;font-weight:700;"
+        f"text-transform:uppercase;margin:10px 0 2px;'>{title}</div>"
+        "<table style='width:100%;border-collapse:collapse;font-size:0.85rem;'>"
+        f"{head}{''.join(body)}</table>"
+    )
+
+
+def _gauge_pill(label: str, value: str, ev, threshold: float) -> str:
+    play = ev is not None and pd.notna(ev) and ev >= threshold
+    color = "#3fb950" if play else "#6e7781"
+    tag = "PLAY" if play else "PASS"
+    ev_txt = f" · {ev * 100:+.1f}% EV" if ev is not None and pd.notna(ev) else ""
+    return (
+        f"<div style='flex:1;background:#0d1117;border:1px solid {color};"
+        f"border-radius:10px;padding:8px 12px;text-align:center;'>"
+        f"<div style='color:#8b949e;font-size:0.7rem;text-transform:uppercase;'>{label}</div>"
+        f"<div style='font-size:1.0rem;font-weight:700;margin:2px 0;'>{value}</div>"
+        f"<div style='color:{color};font-size:0.72rem;font-weight:700;'>{tag}{ev_txt}</div>"
+        "</div>"
+    )
+
+
+def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.02) -> str:
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    a_badge = assets.team_badge_html(sport, away, 38)
+    h_badge = assets.team_badge_html(sport, home, 38)
+    n = matchup.get("n_teams", 30)
+
+    # header
+    header = (
+        "<div style='display:flex;align-items:center;gap:14px;'>"
+        f"<div style='flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end;'>"
+        f"<span style='font-weight:700;'>{away}</span>{a_badge}</div>"
+        "<span style='color:#8b949e;font-size:0.8rem;'>@</span>"
+        f"<div style='flex:1;display:flex;align-items:center;gap:8px;'>"
+        f"{h_badge}<span style='font-weight:700;'>{home}</span></div></div>"
+        f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:4px;'>"
+        f"{fmt_time_et(g.get('game_time'))} · O/U {_num(g.get('total_line') or g.get('proj_total'))}"
+        f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</div>"
+    )
+
+    # gauges (model)
+    ml_fav = (g.get("home_win_prob") or 0) >= (g.get("away_win_prob") or 0)
+    ml_team = home if ml_fav else away
+    ml_prob = g.get("home_win_prob") if ml_fav else g.get("away_win_prob")
+    ml_ev = g.get("home_ml_ev", g.get("home_ev")) if ml_fav else g.get("away_ml_ev", g.get("away_ev"))
+    gauges = (
+        "<div style='display:flex;gap:8px;margin:10px 0;'>"
+        + _gauge_pill("Moneyline", f"{ml_team} {_pct(ml_prob)}", ml_ev, min_edge)
+        + _gauge_pill("Total", f"O {_num(g.get('total_line'))} · {_pct(g.get('model_over_prob'))}",
+                      g.get("over_ev"), min_edge)
+        + "</div>"
+    )
+
+    # stat tables
+    away_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
+    tables = ""
+    if matchup.get("away_off_vs_home_def"):
+        tables += _stat_table_html(f"{away} {away_lbl}",
+                                   matchup["away_off_vs_home_def"], n)
+    if matchup.get("home_off_vs_away_def"):
+        tables += _stat_table_html(f"{home} {away_lbl}",
+                                   matchup["home_off_vs_away_def"], n)
+
+    # trends (MLB)
+    trends = ""
+    tr = matchup.get("trends") or []
+    if tr:
+        cells = "".join(
+            f"<div style='flex:1;text-align:center;'>"
+            f"<div style='color:#8b949e;font-size:0.66rem;'>{t['stat']}</div>"
+            f"<div style='font-size:0.8rem;'>{_fmt_stat(t['stat']+'%', t['away'])}"
+            f" / {_fmt_stat(t['stat']+'%', t['home'])}</div></div>"
+            for t in tr)
+        trends = ("<div style='font-size:0.72rem;color:#58a6ff;font-weight:700;"
+                  "text-transform:uppercase;margin:10px 0 2px;'>Trends "
+                  "(away / home)</div>"
+                  f"<div style='display:flex;gap:6px;'>{cells}</div>")
+
+    return (
+        "<div style='background:#161b24;border:1px solid #232a36;border-radius:14px;"
+        "padding:16px 18px;margin-bottom:14px;'>"
+        f"{header}{gauges}{tables}{trends}</div>"
+    )
+
+
+# ---------------------------------------------------------------------------
 # View preparation (friendly columns + column_config-ready values)
 # ---------------------------------------------------------------------------
 

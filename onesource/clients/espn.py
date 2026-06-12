@@ -68,6 +68,66 @@ def slate(sport_key: str, date: str) -> list[dict]:
     return [g for g in _parse_events(data) if not g["completed"]]
 
 
+def _summary(sport_key: str, event_id) -> dict:
+    sp = SPORTS[sport_key]
+    resp = requests.get(f"{BASE}/{sp.espn_path}/summary",
+                        params={"event": event_id}, timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
+# ESPN box-score stat key -> our log field (basketball)
+_BBALL_KEYS = {
+    "points": "points", "rebounds": "rebounds", "assists": "assists",
+    "steals": "steals", "blocks": "blocks",
+}
+
+
+def box_player_logs(sport_key: str, event_id) -> list[dict]:
+    """Per-player box-score lines for a finished basketball game (points,
+    rebounds, assists, steals, blocks, threes). Returns [] on any issue."""
+    try:
+        data = _summary(sport_key, event_id)
+    except Exception:
+        return []
+    box = data.get("boxscore", {})
+    teams = box.get("players", [])
+    abbr = []
+    for t in teams:
+        team = t.get("team", {})
+        abbr.append(team.get("abbreviation") or team.get("displayName") or "")
+    rows = []
+    for idx, t in enumerate(teams):
+        opp = abbr[1 - idx] if len(abbr) == 2 else ""
+        for block in t.get("statistics", []):
+            keys = block.get("keys", []) or block.get("names", [])
+            for ath in block.get("athletes", []):
+                stats = ath.get("stats", [])
+                if not stats:
+                    continue
+                vals = dict(zip(keys, stats))
+                row = {"game_pk": event_id, "opponent": opp,
+                       "name": ath.get("athlete", {}).get("displayName")}
+                for k, field in _BBALL_KEYS.items():
+                    row[field] = _to_num(vals.get(k))
+                three = vals.get("threePointFieldGoalsMade-threePointFieldGoalsAttempted")
+                if three and "-" in str(three):
+                    row["three_made"] = _to_num(str(three).split("-")[0])
+                pts, reb, ast = row.get("points"), row.get("rebounds"), row.get("assists")
+                if None not in (pts, reb, ast):
+                    row["pra"] = pts + reb + ast
+                if row["name"]:
+                    rows.append(row)
+    return rows
+
+
+def _to_num(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def results_range(sport_key: str, start: str, end: str) -> list[dict]:
     """Completed games with final scores in [start, end]."""
     rng = f"{start.replace('-', '')}-{end.replace('-', '')}"

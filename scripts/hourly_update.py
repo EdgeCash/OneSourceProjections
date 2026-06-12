@@ -77,10 +77,11 @@ def main():
             graded += results.grade_date(d)
         except Exception as e:
             log.error("grading %s failed: %s", d, e)
-        try:
-            ingested += playerlogs.ingest_mlb(d)
-        except Exception as e:
-            log.error("box-score ingest %s failed: %s", d, e)
+        for sport in active_sports(d):
+            try:
+                ingested += playerlogs.ingest(sport, d)
+            except Exception as e:
+                log.error("box-score ingest %s %s failed: %s", sport, d, e)
     log.info("graded %d new rows, ingested %d player logs", graded, ingested)
 
     # 4) write the combined site data file

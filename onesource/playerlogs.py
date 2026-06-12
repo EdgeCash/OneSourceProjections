@@ -190,6 +190,40 @@ def ingest_mlb(date: str) -> int:
     return len(rows)
 
 
+def ingest_espn(sport: str, date: str) -> int:
+    """Fetch ESPN box scores for finished games on `date` (WNBA/NBA/NHL) and
+    append new player lines to the forward store, idempotent by event id."""
+    from .clients import espn
+
+    season = int(date[:4])
+    done = _ingested_pks(sport)
+    rows = []
+    try:
+        finals = espn.results_range(sport, date, date)
+    except Exception:
+        finals = []
+    for g in finals:
+        eid = g.get("game_id")
+        if not eid or eid in done:
+            continue
+        for r in espn.box_player_logs(sport, eid):
+            if not r.get("name"):
+                continue
+            r.update({"date": date, "season": season})
+            rows.append(r)
+    append_logs(sport, rows)
+    return len(rows)
+
+
+def ingest(sport: str, date: str) -> int:
+    """Append finished-game player logs for any supported sport."""
+    if sport == "MLB":
+        return ingest_mlb(date)
+    if sport in ("WNBA", "NBA"):
+        return ingest_espn(sport, date)
+    return 0
+
+
 def append_logs(sport: str, rows: list[dict]):
     """Append newly-completed game logs to the forward store (used by the
     hourly job). rows: [{name, date, season, opponent, <stat fields>}]."""

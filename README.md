@@ -156,6 +156,20 @@ the splits stay current as the season passes the backfill cutoff. (WNBA
 forward log ingestion is the next addition; its splits are current through
 the import for now.)
 
+## Game research cards
+
+Each game has a full matchup breakdown (`onesource/teamstats.py` +
+`app/ui.research_card_html`): the team's offense compared to the opponent's
+matching defense across Season/L10/L5 with **league ranks** and a star
+**advantage** flag where the offense out-ranks the defense it faces, plus
+model gauges (moneyline / total with PLAY/PASS) and — for MLB — game
+trends (NRFI%, F5 win%, RL cover%, Over%, Pythagorean). Team identity is
+resolved through `onesource/teams.py` so full names, cities, and
+abbreviations all join. Stats are derived from our box-score logs; a few
+reference stats we don't capture (e.g. WNBA paint points, fast break) are
+omitted. Generate a static HTML preview of all the graphics with
+`python scripts/make_preview.py --sport WNBA`.
+
 ## Dashboard layout
 
 A left sidebar navigates by sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays**
