@@ -1,0 +1,234 @@
+{
+ "mlb": {
+  "sport": "MLB",
+  "seasons": [
+   2022,
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "n_games_graded": 11141,
+  "moneyline": {
+   "brier": 0.2483,
+   "log_loss": 0.6898,
+   "favorite_hit_rate": 0.5395
+  },
+  "total": {
+   "mae": 3.59,
+   "rmse": 4.522
+  },
+  "calibration": [
+   {
+    "n": 29,
+    "predicted": 0.3,
+    "empirical": 0.5172
+   },
+   {
+    "n": 1589,
+    "predicted": 0.4,
+    "empirical": 0.4644
+   },
+   {
+    "n": 6501,
+    "predicted": 0.5,
+    "empirical": 0.5248
+   },
+   {
+    "n": 2906,
+    "predicted": 0.6,
+    "empirical": 0.5699
+   },
+   {
+    "n": 116,
+    "predicted": 0.7,
+    "empirical": 0.6034
+   }
+  ],
+  "closing_line": {
+   "games_matched": 134,
+   "avg_clv_vs_fair": -0.0144,
+   "moneyline_bets": {
+    "bets": 150,
+    "win_rate": 0.46,
+    "units": 23.83,
+    "roi_pct": 15.89
+   },
+   "total_bets": {
+    "bets": 127,
+    "win_rate": 0.4094,
+    "units": -20.75,
+    "roi_pct": -16.33
+   }
+  }
+ },
+ "wnba": {
+  "sport": "WNBA",
+  "seasons": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "n_games_graded": 1312,
+  "moneyline": {
+   "brier": 0.2272,
+   "log_loss": 0.6456,
+   "favorite_hit_rate": 0.6197
+  },
+  "total": {
+   "mae": 13.417,
+   "rmse": 16.917
+  },
+  "calibration": [
+   {
+    "n": 99,
+    "predicted": 0.4,
+    "empirical": 0.2727
+   },
+   {
+    "n": 356,
+    "predicted": 0.5,
+    "empirical": 0.3933
+   },
+   {
+    "n": 519,
+    "predicted": 0.6,
+    "empirical": 0.5607
+   },
+   {
+    "n": 300,
+    "predicted": 0.7,
+    "empirical": 0.7567
+   },
+   {
+    "n": 32,
+    "predicted": 0.8,
+    "empirical": 0.8438
+   }
+  ],
+  "closing_line": {
+   "games_matched": 40,
+   "avg_clv_vs_fair": 0.0734,
+   "moneyline_bets": {
+    "bets": 41,
+    "win_rate": 0.3902,
+    "units": 2.93,
+    "roi_pct": 7.14
+   },
+   "total_bets": {
+    "bets": 36,
+    "win_rate": 0.5278,
+    "units": 1.09,
+    "roi_pct": 3.03
+   }
+  }
+ },
+ "wnba_props": {
+  "points": {
+   "n": 15100,
+   "projection_mae": 4.186,
+   "calibration": [
+    {
+     "predicted": 0.2,
+     "n": 133,
+     "empirical": 0.3534
+    },
+    {
+     "predicted": 0.3,
+     "n": 800,
+     "empirical": 0.4175
+    },
+    {
+     "predicted": 0.4,
+     "n": 3569,
+     "empirical": 0.4119
+    },
+    {
+     "predicted": 0.5,
+     "n": 9465,
+     "empirical": 0.4355
+    },
+    {
+     "predicted": 0.6,
+     "n": 1116,
+     "empirical": 0.4866
+    }
+   ]
+  },
+  "rebounds": {
+   "n": 15100,
+   "projection_mae": 1.819,
+   "calibration": [
+    {
+     "predicted": 0.2,
+     "n": 494,
+     "empirical": 0.3138
+    },
+    {
+     "predicted": 0.3,
+     "n": 2315,
+     "empirical": 0.3464
+    },
+    {
+     "predicted": 0.4,
+     "n": 5613,
+     "empirical": 0.4085
+    },
+    {
+     "predicted": 0.5,
+     "n": 5069,
+     "empirical": 0.4358
+    },
+    {
+     "predicted": 0.6,
+     "n": 1576,
+     "empirical": 0.5508
+    }
+   ]
+  },
+  "assists": {
+   "n": 15100,
+   "projection_mae": 1.235,
+   "calibration": [
+    {
+     "predicted": 0.0,
+     "n": 164,
+     "empirical": 1.0
+    },
+    {
+     "predicted": 0.1,
+     "n": 263,
+     "empirical": 0.2357
+    },
+    {
+     "predicted": 0.2,
+     "n": 1333,
+     "empirical": 0.2483
+    },
+    {
+     "predicted": 0.3,
+     "n": 3138,
+     "empirical": 0.3474
+    },
+    {
+     "predicted": 0.4,
+     "n": 4813,
+     "empirical": 0.3865
+    },
+    {
+     "predicted": 0.5,
+     "n": 3961,
+     "empirical": 0.4597
+    },
+    {
+     "predicted": 0.6,
+     "n": 1428,
+     "empirical": 0.5791
+    }
+   ]
+  }
+ }
+}

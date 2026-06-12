@@ -155,6 +155,11 @@ home box behind Tailscale for a fully invisible deployment.
   backfill + Statcast xstats, WNBA player logs to 2018 and Elo to 2002,
   648k graded prop projections, fitted calibration params). Load it via
   `onesource/history.py`; see `data/history/README.md` for the manifest.
-  Use it to backtest model changes and benchmark CLV before trusting edges.
+- **Backtesting** (`onesource/backtest.py`, `scripts/run_backtest.py`):
+  walk-forward (no lookahead) game backtests for MLB and WNBA graded
+  against actuals and closing lines, plus a WNBA prop-distribution
+  calibration check. Run `python scripts/run_backtest.py`; it writes a
+  dated report to `reports/`. See the latest report for current model
+  skill, calibration, and CLV — read it before sizing up.
 - **Model knobs** live in `onesource/config.py` (MLB) and
   `onesource/sports.py` (per-sport constants).
