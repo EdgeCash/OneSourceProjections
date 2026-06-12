@@ -690,7 +690,8 @@ def _run_generic(sport_key: str, date: str) -> dict:
             "props": props.to_dict(orient="records")}
 
 
-def run(date: str | None = None, sports: list[str] | None = None) -> dict:
+def run(date: str | None = None, sports: list[str] | None = None,
+        write: bool = True) -> dict:
     date = date or _date.today().isoformat()
     sports = sports or active_sports(date)
 
@@ -712,8 +713,9 @@ def run(date: str | None = None, sports: list[str] | None = None) -> dict:
         "generated_at": pd.Timestamp.utcnow().isoformat(),
         "sports": out_sports,
     }
-    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    path = config.OUTPUT_DIR / "latest.json"
-    path.write_text(json.dumps(out, indent=1, default=str))
-    log.info("wrote %s", path)
+    if write:
+        config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        path = config.OUTPUT_DIR / "latest.json"
+        path.write_text(json.dumps(out, indent=1, default=str))
+        log.info("wrote %s", path)
     return out

@@ -51,6 +51,31 @@ def schedule(date: str) -> list[dict]:
     return games
 
 
+def final_scores(date: str) -> list[dict]:
+    """Completed games with final scores for a date (for grading)."""
+    data = cached_json(
+        f"statsapi:finals:{date}",
+        _TTL_SCHEDULE,
+        lambda: _get("schedule", {"sportId": 1, "date": date, "hydrate": "linescore"}),
+    )
+    out = []
+    for day in data.get("dates", []):
+        for g in day.get("games", []):
+            status = g.get("status", {})
+            if status.get("codedGameState") != "F":
+                continue
+            home, away = g["teams"]["home"], g["teams"]["away"]
+            out.append({
+                "game_pk": g["gamePk"],
+                "home_team": home["team"]["name"],
+                "away_team": away["team"]["name"],
+                "home_score": home.get("score"),
+                "away_score": away.get("score"),
+                "status": "final",
+            })
+    return out
+
+
 def team_recent_results(team_id: int, end_date: str, n_games: int = 30) -> list[dict]:
     """Final scores of the team's last n games on or before end_date."""
     data = cached_json(

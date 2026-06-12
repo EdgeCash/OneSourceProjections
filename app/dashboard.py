@@ -33,10 +33,23 @@ def load_data() -> dict | None:
 
 
 def refresh():
-    from onesource import pipeline
+    """Manual refresh: re-project today+tomorrow and rewrite latest.json in
+    the hourly format (skips the snapshot/grading the scheduled job does)."""
+    import json as _json
+    from datetime import date, timedelta
 
-    with st.spinner("Running pipeline (this can take a couple minutes)..."):
-        pipeline.run()
+    from onesource import pipeline, results
+
+    today, tomorrow = date.today().isoformat(), (date.today() + timedelta(1)).isoformat()
+    with st.spinner("Re-running projections (a couple of minutes)..."):
+        slates = {}
+        for d in (today, tomorrow):
+            slates[d] = pipeline.run(d, write=False)["sports"]
+            results.archive_projections(d, slates[d])
+        out = {"generated_at": pd.Timestamp.utcnow().isoformat(),
+               "primary_date": tomorrow, "dates": [today, tomorrow],
+               "slates": slates, "performance": results.performance()}
+        (config.OUTPUT_DIR / "latest.json").write_text(_json.dumps(out, default=str))
     load_data.clear()
 
 
@@ -53,6 +66,16 @@ EV_COLS = ["ev", "ev_over", "ev_under", "away_ev", "home_ev",
            "away_ml_ev", "home_ml_ev", "over_ev"]
 
 
+def slates_by_date(data: dict) -> dict:
+    """Normalize both the hourly multi-date format and the legacy
+    single-date format to {date: sports_blob}."""
+    if "slates" in data:
+        return data["slates"]
+    if "sports" in data:
+        return {data.get("date", "latest"): data["sports"]}
+    return {}
+
+
 st.title("OneSource Projections")
 
 col1, col2 = st.columns([5, 1])
@@ -62,26 +85,36 @@ with col2:
         refresh()
         data = load_data()
 
-if not data or "sports" not in data:
-    st.info("No data yet. Click **Refresh now** (requires API keys) or wait "
-            "for the daily GitHub Action to publish data/output/latest.json.")
+slates = slates_by_date(data) if data else {}
+if not slates:
+    st.info("No data yet. The hourly GitHub Action publishes "
+            "data/output/latest.json, or click **Refresh now** (needs API keys).")
     st.stop()
 
 with col1:
-    st.caption(f"Slate: {data['date']} · generated {data['generated_at'][:16]}Z")
+    gen = data.get("generated_at", "")[:16]
+    st.caption(f"Generated {gen} · {len(slates)} slate(s)")
 
-sports_with_data = [k for k, v in data["sports"].items()
-                    if v.get("games") or v.get("props")]
+# date selector (default to the primary/upcoming slate)
+dates = data.get("dates") or sorted(slates.keys(), reverse=True)
+default = data.get("primary_date", dates[0]) if dates else None
+date_sel = st.radio("Slate date", dates, horizontal=True,
+                    index=dates.index(default) if default in dates else 0,
+                    key="date_sel")
+day = slates.get(date_sel, {})
+
+sports_with_data = [k for k, v in day.items() if v.get("games") or v.get("props")]
 if not sports_with_data:
-    st.info("Pipeline ran but found no games for any in-season sport.")
+    st.info(f"No games found for any in-season sport on {date_sel}.")
     st.stop()
 
 sport = st.radio("Sport", sports_with_data, horizontal=True, label_visibility="collapsed")
-blob = data["sports"][sport]
+blob = day[sport]
 if blob.get("error"):
     st.warning(f"{sport} pipeline error: {blob['error']}")
 
-tab_games, tab_props, tab_settings = st.tabs(["Games", "Props", "Filters"])
+tab_games, tab_props, tab_perf, tab_settings = st.tabs(
+    ["Games", "Props", "Performance", "Filters"])
 
 with tab_settings:
     min_edge = st.slider("Minimum EV edge", 0.0, 0.15, config.MIN_EDGE, 0.005)
@@ -132,3 +165,23 @@ with tab_props:
                    f"suggested bankroll fraction ({config.KELLY_FRACTION:.0%} "
                    "Kelly). bp_* columns are BettingPros' own consensus — "
                    "rows where you and they disagree deserve a second look.")
+
+with tab_perf:
+    perf = data.get("performance", {})
+    overall = perf.get("overall", {})
+    if not overall or not overall.get("graded_games"):
+        st.info("No graded results yet — performance accrues as projected "
+                "games finish and the hourly job grades them.")
+    else:
+        c = st.columns(5)
+        c[0].metric("Graded games", overall.get("graded_games"))
+        c[1].metric("Model Brier", overall.get("model_brier"))
+        c[2].metric("Bets", overall.get("bets"))
+        c[3].metric("Units", overall.get("units"))
+        c[4].metric("ROI %", overall.get("roi_pct"))
+        by_sport = perf.get("by_sport", {})
+        if by_sport:
+            st.dataframe(pd.DataFrame(by_sport).T, use_container_width=True)
+        st.caption("Forward-test record from data/track/results.jsonl. "
+                   "Lower Brier = better win-prob calibration; ROI is per "
+                   "1u on model-recommended bets graded at projection-time prices.")

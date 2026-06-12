@@ -112,13 +112,36 @@ Required secrets (env vars, `.env`, or Streamlit secrets):
    props only appear once lineups are posted (~2-4h before first pitch).
 3. `pytest` — odds math and model sanity checks.
 
-## Daily automation
+## Hourly automation & forward-testing
 
-`.github/workflows/daily.yml` runs the pipeline at 14:00 UTC using the
-repo secrets you already configured, then commits `data/output/latest.json`.
-Scheduled runs only fire on the **default branch**, so merge this branch
-to enable it. You can also trigger it manually from the Actions tab
-(workflow_dispatch) with an optional date.
+`.github/workflows/hourly.yml` runs `scripts/hourly_update.py` every hour
+(using the repo secrets), then commits the data files — which redeploys the
+Streamlit app. Scheduled runs only fire on the **default branch**, so merge
+this branch to activate; you can also trigger it manually from the Actions
+tab.
+
+Each run:
+
+1. **Snapshots** current BettingPros odds for today + tomorrow into
+   append-only logs (`data/history/snapshots/<sport>/<date>.jsonl`). The
+   last pre-game snapshot per event becomes that game's closing line — this
+   builds our own open/close history from the same source the model uses,
+   so CLV/ROI can be measured going forward (and gives WNBA the open/close
+   data MLB already had).
+2. **Projects** today and tomorrow's slates and archives each
+   (`data/output/projections/<date>.json`) so they can be graded later.
+3. **Grades** games that have finished into `data/track/results.jsonl`
+   (idempotent), tracking the model's win-probability Brier on every game
+   and the realized P&L of model-recommended bets at projection-time prices.
+4. **Writes** `data/output/latest.json` with both slates and a live
+   performance summary; the dashboard's **Performance** tab reads it.
+
+Forward-testing starts the moment the schedule is live: tomorrow's slate is
+projected and archived now, and graded once those games finish. The longer
+it runs, the more closing-line history and graded results accumulate.
+
+> Note: scheduled Actions need the workflow on the default branch. Merge
+> `claude/nifty-hamilton-26x2c1` to `main` to begin the hourly cadence.
 
 ## Hosting the dashboard privately
 

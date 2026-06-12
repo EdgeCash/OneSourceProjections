@@ -1,0 +1,50 @@
+name: Hourly update
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Anchor date (YYYY-MM-DD), defaults to today ET"
+        required: false
+  schedule:
+    # top of every hour. scheduled runs only fire on the default branch,
+    # so this branch must be merged to main to activate.
+    - cron: "0 * * * *"
+
+# avoid overlapping runs racing on the same data files
+concurrency:
+  group: hourly-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Hourly pull, project, snapshot, grade
+        env:
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+          BP_PARTNER_KEY: ${{ secrets.BP_PARTNER_KEY }}
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_USER_KEY: ${{ secrets.BP_USER_KEY }}
+        run: python scripts/hourly_update.py ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
+
+      - name: Commit data
+        run: |
+          git config user.name "projections-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git add data/output data/history/snapshots data/track
+          git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"
+          git push
