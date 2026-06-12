@@ -228,7 +228,11 @@ def _dig(d: dict, *paths: str, default=None):
 
 
 def flatten_offers(raw_offers: list[dict]) -> list[dict]:
-    """Flatten the nested offer payload into one row per selection/book/line."""
+    """Flatten the nested offer payload into one row per selection/book/line.
+    Pre-flattened rows (replayed from the snapshot library) pass through."""
+    if raw_offers and isinstance(raw_offers[0], dict) \
+            and "odds" in raw_offers[0] and "selections" not in raw_offers[0]:
+        return raw_offers
     rows = []
     for offer in raw_offers:
         event_id = offer.get("event_id")
@@ -262,6 +266,9 @@ def flatten_props(raw_props: list[dict]) -> list[dict]:
     """One row per prop with BettingPros' projection / EV / recommendation.
     The prop object schema varies by tier, so every field is pulled
     defensively and missing values come back None."""
+    if raw_props and isinstance(raw_props[0], dict) \
+            and "bp_line" in raw_props[0] and "projection" not in raw_props[0]:
+        return raw_props  # pre-flattened (replayed from the snapshot library)
     rows = []
     for p in raw_props:
         name = _dig(p, "participant.name", "participant.player.name",

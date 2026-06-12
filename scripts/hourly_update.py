@@ -58,6 +58,13 @@ def main():
             except Exception as e:
                 log.error("snapshot %s failed: %s", d, e)
 
+    try:
+        n = snapshots.compact()
+        if n:
+            log.info("compacted %d old snapshot files", n)
+    except Exception as e:
+        log.error("snapshot compaction failed: %s", e)
+
     # 2) project upcoming slates and archive them
     slates = {}
     for d in upcoming:

@@ -31,6 +31,31 @@ def _append(sport: str, date: str, rows: list[dict]):
             f.write(json.dumps(r, default=str) + "\n")
 
 
+def _persist_json(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, default=str))
+
+
+def compact(keep_raw_days: int = 1) -> int:
+    """Gzip snapshot day-files older than `keep_raw_days` so the library
+    keeps growing without bloating the repo (jsonl.gz reads transparently
+    via pandas). Returns the number of files compacted."""
+    import gzip
+    from datetime import date, timedelta
+
+    cutoff = (date.today() - timedelta(days=keep_raw_days)).isoformat()
+    n = 0
+    for path in SNAP_DIR.glob("*/*.jsonl"):
+        stem = path.stem.replace("events_", "")
+        if stem < cutoff:
+            gz = path.with_suffix(".jsonl.gz")
+            with path.open("rb") as src, gzip.open(gz, "wb") as dst:
+                dst.write(src.read())
+            path.unlink()
+            n += 1
+    return n
+
+
 def _save_raw_sample(sport: str, date: str, kind: str, payload: list):
     """Keep the first couple of raw objects per sport/kind/date so the real
     payload schema is committed and inspectable offline (the parsers were
@@ -56,13 +81,18 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
             continue
         rows: list[dict] = []
         try:
-            _save_raw_sample(sk, date, "markets", bettingpros.markets(sk))
+            mkts = bettingpros.markets(sk)
+            _save_raw_sample(sk, date, "markets", mkts)
+            _persist_json(SNAP_DIR.parent / "markets" / f"{sk.lower()}.json", mkts)
         except Exception as e:
             log.warning("%s snapshot: markets unavailable: %s", sk, e)
         try:
             events = bettingpros.events(sk, date)
             event_ids = [e.get("id") for e in events if e.get("id")]
             _save_raw_sample(sk, date, "events", events)
+            # full events payload (MLB: lineups + park factors) — latest
+            # capture per date wins
+            _persist_json(SNAP_DIR / sk.lower() / f"events_{date}.json", events)
         except Exception as e:
             log.warning("%s snapshot: events unavailable: %s", sk, e)
             counts[sk] = 0

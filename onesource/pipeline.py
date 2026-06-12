@@ -69,10 +69,27 @@ def _batter_table(season: int) -> pd.DataFrame:
         return pd.DataFrame(columns=["Name", "norm_name"])
 
 
+FP_HISTORY = config.REPO_ROOT / "data" / "history" / "fantasypros"
+
+
+def _persist_fp(sport: str, date: str, players: list):
+    """Keep every FantasyPros projection pull — projection-accuracy history
+    is part of the library we're building."""
+    if not players:
+        return
+    try:
+        FP_HISTORY.mkdir(parents=True, exist_ok=True)
+        (FP_HISTORY / f"{sport.lower()}_{date}.json").write_text(
+            json.dumps(players, default=str))
+    except Exception as e:
+        log.warning("could not persist FP %s %s: %s", sport, date, e)
+
+
 def _fp_projections(season: int, date: str) -> dict[str, dict]:
     """Daily per-game projections keyed by normalized player name."""
     try:
         players = fantasypros.mlb_projections(season, proj_type="daily", date=date)
+        _persist_fp("mlb", date, players)
         return fantasypros.projection_index(players)
     except Exception as e:
         log.warning("FantasyPros projections unavailable: %s", e)
@@ -831,8 +848,11 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         fp_stats = fp.get(normalize(r["participant"]), {}) if r["participant"] else {}
         fp_proj = _fp_stat_for_market(fp_stats, market_name) if fp_stats else None
         bp_proj = r.get("bp_projection")
-        sources = [v for v in (fp_proj, bp_proj) if v is not None and pd.notna(v)]
-        projection = sum(map(float, sources)) / len(sources) if sources else None
+        if isinstance(bp_proj, dict):  # early-format snapshot rows
+            bp_proj = bp_proj.get("value")
+        sources = [float(v) for v in (fp_proj, bp_proj)
+                   if isinstance(v, (int, float)) and pd.notna(v)]
+        projection = sum(sources) / len(sources) if sources else None
 
         line = r.get("over_line") if pd.notna(r.get("over_line")) else r.get("bp_line")
         row = {
@@ -948,7 +968,7 @@ def run(date: str | None = None, sports: list[str] | None = None,
 
     out = {
         "date": date,
-        "generated_at": pd.Timestamp.utcnow().isoformat(),
+        "generated_at": pd.Timestamp.now("UTC").isoformat(),
         "sports": out_sports,
     }
     if write:

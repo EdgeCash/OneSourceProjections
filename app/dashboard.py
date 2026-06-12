@@ -69,7 +69,7 @@ def refresh():
         for d in (today, tomorrow):
             slates[d] = pipeline.run(d, write=False)["sports"]
             results.archive_projections(d, slates[d])
-        out = {"generated_at": pd.Timestamp.utcnow().isoformat(),
+        out = {"generated_at": pd.Timestamp.now("UTC").isoformat(),
                "primary_date": tomorrow, "dates": [today, tomorrow],
                "slates": slates, "performance": results.performance()}
         (config.OUTPUT_DIR / "latest.json").write_text(json.dumps(out, default=str))

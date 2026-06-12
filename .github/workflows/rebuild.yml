@@ -1,0 +1,45 @@
+name: Rebuild site (no API credits)
+
+# Re-runs the pipeline against the committed snapshot library and commits
+# a fresh latest.json — for shipping model/feature tweaks between hourly
+# pulls without burning BettingPros/FantasyPros credits. Trigger manually
+# from the Actions tab after merging a change.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dates:
+        description: "Comma-separated dates (default: dates in latest.json)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hourly-update   # don't race the hourly job on the data files
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Rebuild from snapshot library
+        run: python scripts/rebuild_site.py ${{ inputs.dates && format('--dates {0}', inputs.dates) || '' }}
+
+      - name: Commit data
+        run: |
+          git config user.name "projections-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git add data/output/latest.json
+          git diff --cached --quiet || git commit -m "data: offline rebuild $(date -u +'%F %H:%MZ')"
+          git push

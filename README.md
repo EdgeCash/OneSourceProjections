@@ -241,3 +241,20 @@ home box behind Tailscale for a fully invisible deployment.
   skill, calibration, and CLV — read it before sizing up.
 - **Model knobs** live in `onesource/config.py` (MLB) and
   `onesource/sports.py` (per-sport constants).
+
+## The data library & credit-free rebuilds
+
+Every hourly run grows a committed library under `data/history/`:
+odds snapshots (per capture, per book — last pre-game capture = closing
+line), full BettingPros events (MLB lineups + park factors), the markets
+catalog, every FantasyPros projection pull, player box logs, archived
+projections, and graded results. Day-files older than a day are gzipped
+automatically (`snapshots.compact`).
+
+To ship a model/feature tweak between hourly pulls without burning
+BettingPros/FantasyPros credits, run the **"Rebuild site"** workflow from
+the Actions tab (or `python scripts/rebuild_site.py`). It re-runs the
+pipeline with the paid APIs replayed from the library (`onesource/
+replay.py`) — free sources still fetch live — and commits a fresh
+latest.json. Pure UI changes need nothing at all: Streamlit redeploys on
+every push.
