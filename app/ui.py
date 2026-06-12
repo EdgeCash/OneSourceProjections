@@ -78,25 +78,36 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
 def _game_edges(sport: str, g: dict) -> list[dict]:
     rows = []
     matchup = f"{g.get('away_team')} @ {g.get('home_team')}"
+
+    def add(market, bet, line, price, prob, ev):
+        if ev is not None and price is not None and pd.notna(ev) and pd.notna(price):
+            rows.append({"sport": sport, "type": "Game", "market": market,
+                         "bet": bet, "game": matchup, "line": line,
+                         "price": price, "model_prob": prob, "ev": ev,
+                         "kelly": None, "time": g.get("game_time")})
+
     for side in ("home", "away"):
-        ev = g.get(f"{side}_ml_ev", g.get(f"{side}_ev"))
-        price = g.get(f"{side}_ml")
-        prob = g.get(f"{side}_win_prob")
-        if ev is not None and price is not None and pd.notna(ev):
-            rows.append({
-                "sport": sport, "type": "Game", "market": "Moneyline",
-                "bet": f"{g.get(f'{side}_team')} ML", "game": matchup,
-                "line": None, "price": price, "model_prob": prob, "ev": ev,
-                "kelly": None, "time": g.get("game_time"),
-            })
-    if g.get("over_ev") is not None and pd.notna(g.get("over_ev")):
-        rows.append({
-            "sport": sport, "type": "Game", "market": "Total",
-            "bet": f"Over {g.get('total_line')}", "game": matchup,
-            "line": g.get("total_line"), "price": g.get("over_odds"),
-            "model_prob": g.get("model_over_prob"), "ev": g.get("over_ev"),
-            "kelly": None, "time": g.get("game_time"),
-        })
+        add("Moneyline", f"{g.get(f'{side}_team')} ML", None,
+            g.get(f"{side}_ml"), g.get(f"{side}_win_prob"),
+            g.get(f"{side}_ml_ev", g.get(f"{side}_ev")))
+    add("Total", f"Over {g.get('total_line')}", g.get("total_line"),
+        g.get("over_odds"), g.get("model_over_prob"), g.get("over_ev"))
+    mop = g.get("model_over_prob")
+    add("Total", f"Under {g.get('total_line')}", g.get("total_line"),
+        g.get("under_odds"), (1 - mop) if mop is not None else None,
+        g.get("under_ev"))
+    # run line / spread (home side line; away is the opposite handicap)
+    sp_line = g.get("rl_home_line", g.get("spread_home_line"))
+    sp_label = "Run Line" if "rl_home_line" in g else "Spread"
+    cover = g.get("model_home_rl", g.get("model_home_cover"))
+    if sp_line is not None and pd.notna(sp_line):
+        add(sp_label, f"{g.get('home_team')} {sp_line:+g}", sp_line,
+            g.get("rl_home_odds", g.get("spread_home_odds")), cover,
+            g.get("rl_home_ev", g.get("spread_home_ev")))
+        add(sp_label, f"{g.get('away_team')} {-sp_line:+g}", -sp_line,
+            g.get("rl_away_odds", g.get("spread_away_odds")),
+            (1 - cover) if cover is not None else None,
+            g.get("rl_away_ev", g.get("spread_away_ev")))
     return rows
 
 
@@ -149,12 +160,9 @@ def _exp(game: dict, side: str):
 def _best_edge(game: dict) -> tuple[str, float] | None:
     """Largest positive model edge on a game, as (label, ev)."""
     cands = []
-    for side in ("home", "away"):
-        ev = game.get(f"{side}_ml_ev", game.get(f"{side}_ev"))
-        if ev is not None and pd.notna(ev):
-            cands.append((f"{game.get(f'{side}_team')} ML", float(ev)))
-    if game.get("over_ev") is not None and pd.notna(game.get("over_ev")):
-        cands.append((f"Over {game.get('total_line')}", float(game["over_ev"])))
+    for r in _game_edges("", game):
+        if r["ev"] is not None and pd.notna(r["ev"]):
+            cands.append((r["bet"], float(r["ev"])))
     cands = [c for c in cands if c[1] > 0]
     return max(cands, key=lambda c: c[1]) if cands else None
 
@@ -232,9 +240,11 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int) -> str:
     head = (
         "<tr style='color:#8b949e;font-size:0.7rem;text-transform:uppercase;'>"
         "<th style='text-align:left;padding:4px 6px;'>Stat</th>"
+        "<th style='text-align:right;'>Season</th>"
         "<th style='text-align:right;'>L5</th><th>Rk</th>"
         "<th style='width:34px;'></th>"
-        "<th>Rk</th><th style='text-align:left;padding-left:6px;'>Opp L5</th></tr>"
+        "<th>Rk</th><th style='text-align:right;'>Opp L5</th>"
+        "<th style='text-align:right;padding-right:6px;'>Opp Szn</th></tr>"
     )
     body = []
     for r in rows:
@@ -244,12 +254,14 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int) -> str:
         body.append(
             "<tr style='border-top:1px solid #1c2330;'>"
             f"<td style='text-align:left;padding:4px 6px;font-weight:600;'>{r['stat']}</td>"
-            f"<td style='text-align:right;'>{_fmt_stat(r['stat'], r['off_l5'])}</td>"
+            f"<td style='text-align:right;color:#8b949e;'>{_fmt_stat(r['stat'], r.get('off_season'))}</td>"
+            f"<td style='text-align:right;font-weight:600;'>{_fmt_stat(r['stat'], r['off_l5'])}</td>"
             f"<td style='text-align:center;'>{_rank_badge(r['off_rank'], n_teams)}</td>"
             f"<td style='text-align:center;'>{star_html}</td>"
             f"<td style='text-align:center;'>{_rank_badge(r['def_rank'], n_teams)}</td>"
-            f"<td style='text-align:left;padding-left:6px;color:#8b949e;'>"
-            f"{_fmt_stat(r['stat'], r['def_l5'])}</td></tr>"
+            f"<td style='text-align:right;'>{_fmt_stat(r['stat'], r['def_l5'])}</td>"
+            f"<td style='text-align:right;padding-right:6px;color:#8b949e;'>"
+            f"{_fmt_stat(r['stat'], r.get('def_season'))}</td></tr>"
         )
     return (
         f"<div style='font-size:0.78rem;color:#58a6ff;font-weight:700;"
@@ -293,14 +305,23 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
         f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</div>"
     )
 
-    # gauges (model)
+    # gauges (model): moneyline / run line-spread / total
     ml_fav = (g.get("home_win_prob") or 0) >= (g.get("away_win_prob") or 0)
     ml_team = home if ml_fav else away
     ml_prob = g.get("home_win_prob") if ml_fav else g.get("away_win_prob")
     ml_ev = g.get("home_ml_ev", g.get("home_ev")) if ml_fav else g.get("away_ml_ev", g.get("away_ev"))
+    sp_line = g.get("rl_home_line", g.get("spread_home_line"))
+    sp_cover = g.get("model_home_rl", g.get("model_home_cover"))
+    sp_ev = g.get("rl_home_ev", g.get("spread_home_ev"))
+    sp_label = "Run Line" if "rl_home_line" in g else "Spread"
+    if sp_line is not None and pd.notna(sp_line):
+        sp_value = f"{home.split()[-1]} {sp_line:+g} · {_pct(sp_cover)}"
+    else:
+        sp_value = "— · —"
     gauges = (
         "<div style='display:flex;gap:8px;margin:10px 0;'>"
         + _gauge_pill("Moneyline", f"{ml_team} {_pct(ml_prob)}", ml_ev, min_edge)
+        + _gauge_pill(sp_label, sp_value, sp_ev, min_edge)
         + _gauge_pill("Total", f"O {_num(g.get('total_line'))} · {_pct(g.get('model_over_prob'))}",
                       g.get("over_ev"), min_edge)
         + "</div>"
@@ -331,10 +352,115 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
                   "(away / home)</div>"
                   f"<div style='display:flex;gap:6px;'>{cells}</div>")
 
+    analysis = _analysis_html(sport, g, matchup, min_edge)
     return (
         "<div style='background:#161b24;border:1px solid #232a36;border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
-        f"{header}{gauges}{tables}{trends}</div>"
+        f"{header}{gauges}{tables}{trends}{analysis}</div>"
+    )
+
+
+def matchup_analysis(sport: str, g: dict, matchup: dict,
+                     min_edge: float = 0.02) -> list[dict]:
+    """Written read on each market: [{market, decision, text}]. Decision is
+    PLAY when the model edge clears the threshold at an available price."""
+    home, away = g.get("home_team", ""), g.get("away_team", "")
+    out = []
+
+    def decide(ev):
+        return "PLAY" if (ev is not None and pd.notna(ev) and ev >= min_edge) else "PASS"
+
+    # MONEYLINE
+    hwp = g.get("home_win_prob") or 0
+    fav, fav_wp = (home, hwp) if hwp >= 0.5 else (away, 1 - hwp)
+    ml_ev = (g.get("home_ml_ev", g.get("home_ev")) if hwp >= 0.5
+             else g.get("away_ml_ev", g.get("away_ev")))
+    price = g.get("home_ml") if hwp >= 0.5 else g.get("away_ml")
+    txt = f"Model makes {fav} {fav_wp:.0%} to win"
+    if price is not None and pd.notna(price):
+        txt += (f"; best price {fmt_american(price)} implies "
+                f"{_implied(price):.0%}")
+        if ml_ev is not None and pd.notna(ml_ev):
+            txt += f" — edge {ml_ev:+.1%}"
+    else:
+        txt += "; no market price available yet"
+    out.append({"market": "MONEYLINE", "decision": decide(ml_ev), "text": txt + "."})
+
+    # SPREAD / RUN LINE
+    sp_line = g.get("rl_home_line", g.get("spread_home_line"))
+    sp_cover = g.get("model_home_rl", g.get("model_home_cover"))
+    sp_ev_h = g.get("rl_home_ev", g.get("spread_home_ev"))
+    sp_ev_a = g.get("rl_away_ev", g.get("spread_away_ev"))
+    label = "RUN LINE" if "rl_home_line" in g else "SPREAD"
+    if sp_line is not None and pd.notna(sp_line) and sp_cover is not None:
+        best_ev = max([e for e in (sp_ev_h, sp_ev_a)
+                       if e is not None and pd.notna(e)], default=None)
+        side = (f"{home} {sp_line:+g}" if best_ev == sp_ev_h
+                else f"{away} {-sp_line:+g}")
+        txt = (f"{home} {sp_line:+g} covers {sp_cover:.0%} of simulations; "
+               f"best side {side}")
+        if best_ev is not None:
+            txt += f" at {best_ev:+.1%} edge"
+        out.append({"market": label, "decision": decide(best_ev), "text": txt + "."})
+    else:
+        out.append({"market": label, "decision": "PASS",
+                    "text": "No line posted yet."})
+
+    # TOTAL
+    line = g.get("total_line")
+    proj = g.get("proj_total")
+    mop = g.get("model_over_prob")
+    o_ev, u_ev = g.get("over_ev"), g.get("under_ev")
+    if line is not None and pd.notna(line) and proj is not None:
+        gap = float(proj) - float(line)
+        lean = "over" if gap > 0 else "under"
+        best_ev = max([e for e in (o_ev, u_ev)
+                       if e is not None and pd.notna(e)], default=None)
+        txt = (f"Projected total {proj:.1f} vs line {line:g} "
+               f"({gap:+.1f} toward the {lean})")
+        if mop is not None and pd.notna(mop):
+            txt += f"; model has the over {mop:.0%}"
+        if best_ev is not None:
+            txt += f" — best side {best_ev:+.1%}"
+        out.append({"market": "TOTAL", "decision": decide(best_ev), "text": txt + "."})
+    else:
+        out.append({"market": "TOTAL", "decision": "PASS",
+                    "text": f"Projected total {_num(proj)}; no market line yet."})
+
+    # ADVANTAGES from the stat tables
+    stars = []
+    for key, team in (("away_off_vs_home_def", away), ("home_off_vs_away_def", home)):
+        for r in matchup.get(key, []) or []:
+            if r.get("adv", 0) >= 2:
+                stars.append(f"{team} {r['stat']} (#{r['off_rank']} vs #{r['def_rank']})")
+    if stars:
+        out.append({"market": "EDGES", "decision": "NOTE",
+                    "text": "Biggest stat mismatches: " + "; ".join(stars[:4]) + "."})
+    return out
+
+
+def _implied(american: float) -> float:
+    a = float(american)
+    return 100 / (a + 100) if a > 0 else -a / (-a + 100)
+
+
+def _analysis_html(sport, g, matchup, min_edge) -> str:
+    rows = matchup_analysis(sport, g, matchup, min_edge)
+    items = []
+    for r in rows:
+        color = {"PLAY": "#3fb950", "PASS": "#8b949e", "NOTE": "#e3b341"}[r["decision"]]
+        items.append(
+            "<div style='margin:6px 0;font-size:0.84rem;'>"
+            f"<span style='color:#58a6ff;font-weight:700;'>{r['market']}:</span> "
+            f"{r['text']} "
+            f"<span style='color:{color};font-weight:700;'>"
+            f"{'' if r['decision'] == 'NOTE' else 'DECISION: ' + r['decision']}</span></div>"
+        )
+    return (
+        "<div style='border-top:1px solid #232a36;margin-top:10px;padding-top:8px;'>"
+        "<div style='font-size:0.78rem;color:#58a6ff;font-weight:700;"
+        "text-transform:uppercase;margin-bottom:2px;'>📊 Statistical analysis</div>"
+        + "".join(items) + "</div>"
     )
 
 

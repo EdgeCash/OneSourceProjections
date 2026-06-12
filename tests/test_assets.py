@@ -51,6 +51,7 @@ def test_game_card_html_renders_key_facts():
         "game_time": "2026-06-13T23:10:00Z", "away_exp_runs": 4.4,
         "home_exp_runs": 4.9, "away_win_prob": 0.45, "home_win_prob": 0.55,
         "total_line": 8.5, "proj_total": 9.3,
+        "home_ml": -120, "away_ml": 110,
         "home_ml_ev": 0.06, "away_ml_ev": -0.03, "over_ev": 0.02, "over_odds": -110,
     }
     html = ui.game_card_html("MLB", g)

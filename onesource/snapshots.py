@@ -31,6 +31,19 @@ def _append(sport: str, date: str, rows: list[dict]):
             f.write(json.dumps(r, default=str) + "\n")
 
 
+def _save_raw_sample(sport: str, date: str, kind: str, payload: list):
+    """Keep the first couple of raw objects per sport/kind/date so the real
+    payload schema is committed and inspectable offline (the parsers were
+    initially written against guessed shapes)."""
+    if not payload:
+        return
+    path = SNAP_DIR / "raw" / f"{sport.lower()}_{kind}_{date}.json"
+    if path.exists():
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload[:2], indent=1, default=str))
+
+
 def snapshot(date: str, sports: list[str] | None = None) -> dict:
     """Capture and append current game + prop odds for a date. Returns a
     per-sport count of rows written. Degrades gracefully per sport."""
@@ -55,8 +68,11 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
             for market, mid in bettingpros.game_market_ids(sk).items():
                 if mid is None:
                     continue
-                for r in bettingpros.flatten_offers(
-                        bettingpros.offers(sk, mid, event_ids)):
+                raw = bettingpros.offers(sk, mid, event_ids,
+                                         season=int(date[:4]))
+                if market == "moneyline":
+                    _save_raw_sample(sk, date, "offers", raw)
+                for r in bettingpros.flatten_offers(raw):
                     r.update({"captured_at": captured, "sport": sk, "date": date,
                               "kind": "game", "market": market})
                     rows.append(r)
@@ -65,7 +81,9 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
 
         # player props (BettingPros consensus + premium projection/EV)
         try:
-            for r in bettingpros.flatten_props(bettingpros.props(sk, date)):
+            raw_props = bettingpros.props(sk, date)
+            _save_raw_sample(sk, date, "props", raw_props)
+            for r in bettingpros.flatten_props(raw_props):
                 r.update({"captured_at": captured, "sport": sk, "date": date,
                           "kind": "prop"})
                 rows.append(r)

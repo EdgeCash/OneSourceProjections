@@ -24,7 +24,8 @@ def tmp_data(tmp_path, monkeypatch):
 def test_snapshot_appends_timeseries(tmp_data, monkeypatch):
     monkeypatch.setattr(bettingpros, "events", lambda s, d: [{"id": 1}])
     monkeypatch.setattr(bettingpros, "game_market_ids", lambda s: {"moneyline": 10})
-    monkeypatch.setattr(bettingpros, "offers", lambda s, m, e: [])
+    monkeypatch.setattr(bettingpros, "offers",
+                        lambda s, m, e=None, location="ALL", season=None: [])
     monkeypatch.setattr(bettingpros, "flatten_offers",
                         lambda o: [{"participant": "A", "odds": -120}])
     monkeypatch.setattr(bettingpros, "props", lambda s, d: [])

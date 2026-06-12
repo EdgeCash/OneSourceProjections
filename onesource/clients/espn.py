@@ -129,14 +129,27 @@ def _to_num(v):
 
 
 def results_range(sport_key: str, start: str, end: str) -> list[dict]:
-    """Completed games with final scores in [start, end]."""
-    rng = f"{start.replace('-', '')}-{end.replace('-', '')}"
-    data = cached_json(
-        f"espn:results:{sport_key}:{rng}",
-        _TTL_RESULTS,
-        lambda: _get(sport_key, {"dates": rng}),
-    )
-    return [
-        g for g in _parse_events(data)
-        if g["completed"] and g["home_score"] is not None
-    ]
+    """Completed games with final scores in [start, end]. ESPN rejects very
+    long date ranges (observed 400s past ~1 year), so wide windows are
+    chunked into <=150-day requests and merged."""
+    from datetime import date, timedelta
+
+    d0 = date.fromisoformat(start)
+    d1 = date.fromisoformat(end)
+    out: list[dict] = []
+    seen: set = set()
+    while d0 <= d1:
+        chunk_end = min(d0 + timedelta(days=149), d1)
+        rng = f"{d0.strftime('%Y%m%d')}-{chunk_end.strftime('%Y%m%d')}"
+        data = cached_json(
+            f"espn:results:{sport_key}:{rng}",
+            _TTL_RESULTS,
+            lambda rng=rng: _get(sport_key, {"dates": rng}),
+        )
+        for g in _parse_events(data):
+            if (g["completed"] and g["home_score"] is not None
+                    and g["game_id"] not in seen):
+                seen.add(g["game_id"])
+                out.append(g)
+        d0 = chunk_end + timedelta(days=1)
+    return out

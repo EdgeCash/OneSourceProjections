@@ -130,20 +130,59 @@ def offers(
     market_id: int | str,
     event_ids: list[int] | None = None,
     location: str = "ALL",
+    season: int | None = None,
 ) -> list[dict]:
     """Live odds offers (lines + selections per book) for a market.
-    market_id accepts a single id or colon-delimited string of ids."""
-    params: dict = {
-        "sport": sport,
-        "market_id": str(market_id),
-        "location": location,
-        "limit": 500,
-    }
-    if event_ids:
-        params["event_id"] = ":".join(str(e) for e in event_ids)
-    key = f"bp:offers:{sport}:{market_id}:{params.get('event_id', 'all')}:{location}"
-    data = cached_json(key, _TTL, lambda: _get("offers", params))
+
+    The exact accepted parameter combination varies (live runs got 400s on
+    our first guess), so this tries a sequence of variants and remembers the
+    first one that works for the rest of the process. Docs say offers wants
+    market_id and *either* event_id or season, so one variant swaps the
+    event filter for season (rows are filtered by event downstream anyway).
+    """
+    key = f"bp:offers:{sport}:{market_id}:{':'.join(map(str, event_ids or []))[:60]}:{location}"
+    data = cached_json(key, _TTL,
+                       lambda: _offers_attempts(sport, market_id, event_ids,
+                                                location, season))
     return data.get("offers", [])
+
+
+_OFFERS_STYLE: dict = {"idx": None}
+
+
+def _offers_variants(event_ids, location, season):
+    ev = {"event_id": ":".join(str(e) for e in event_ids)} if event_ids else {}
+    season_d = {"season": season} if season else {}
+    return [
+        {**ev, "location": location, "limit": 100, "page": 1},
+        {**ev, "location": location},
+        {**ev},
+        {**season_d, "location": location, "limit": 100, "page": 1},
+        {**ev, "location": "NJ", "limit": 100, "page": 1},
+    ]
+
+
+def _offers_attempts(sport, market_id, event_ids, location, season) -> dict:
+    import requests as _rq
+
+    base = {"sport": sport, "market_id": str(market_id)}
+    variants = _offers_variants(event_ids, location, season)
+    order = list(range(len(variants)))
+    if _OFFERS_STYLE["idx"] is not None:
+        order.remove(_OFFERS_STYLE["idx"])
+        order.insert(0, _OFFERS_STYLE["idx"])
+    last_err: Exception | None = None
+    for i in order:
+        try:
+            data = _get("offers", {**base, **variants[i]})
+            _OFFERS_STYLE["idx"] = i
+            return data
+        except _rq.HTTPError as e:
+            if e.response is not None and e.response.status_code == 400:
+                last_err = e
+                continue
+            raise
+    raise BettingProsError(f"offers 400 on all param variants: {last_err}")
 
 
 def props(
@@ -225,36 +264,107 @@ def flatten_props(raw_props: list[dict]) -> list[dict]:
     rows = []
     for p in raw_props:
         name = _dig(p, "participant.name", "participant.player.name",
-                    "player.name", "name")
+                    "player.name", "participant", "name")
+        # Live payloads nest the premium fields inside a `projection` dict:
+        # {recommended_side, value, probability, expected_value, bet_rating,
+        #  diff}. Fall back to flat fields for older/other shapes.
+        proj = p.get("projection")
+        nested = proj if isinstance(proj, dict) else {}
         row = {
             "event_id": _dig(p, "event_id", "event.id"),
             "market_id": _dig(p, "market_id", "market.id"),
             "participant": name if isinstance(name, str) else None,
             "bp_line": _dig(p, "line", "selection.line", "over.line"),
-            "bp_projection": _dig(p, "projection", "projection.value",
-                                  "analysis.projection"),
-            "bp_ev": _dig(p, "expected_value", "ev"),
-            "bp_probability": _dig(p, "probability"),
-            "bp_recommended_side": _dig(p, "recommended_side", "recommendation",
-                                        "pick.side"),
-            "bp_bet_rating": _dig(p, "bet_rating"),
+            "bp_projection": _num_or_none(nested.get("value"))
+            if nested else _num_or_none(_dig(p, "projection", "analysis.projection")),
+            "bp_ev": _num_or_none(nested.get("expected_value",
+                                             _dig(p, "expected_value", "ev"))),
+            "bp_probability": _num_or_none(nested.get("probability",
+                                                      _dig(p, "probability"))),
+            "bp_recommended_side": nested.get("recommended_side")
+            or _dig(p, "recommended_side", "recommendation", "pick.side"),
+            "bp_bet_rating": _num_or_none(nested.get("bet_rating",
+                                                     _dig(p, "bet_rating"))),
+            "bp_diff": _num_or_none(nested.get("diff")),
             "over_line": None, "over_odds": None,
             "under_line": None, "under_odds": None,
         }
+        # direct over/under objects, when present
+        for side in ("over", "under"):
+            sd = p.get(side)
+            if isinstance(sd, dict):
+                row[f"{side}_line"] = _num_or_none(sd.get("line", row["bp_line"]))
+                row[f"{side}_odds"] = _num_or_none(sd.get("cost", sd.get("odds")))
         # include_selections=true embeds over/under selections with book
-        # lines; keep the best price for each side.
+        # lines; keep the best price for each side. Selection shapes vary,
+        # so probe both nested books->lines and flat cost/line fields.
         for sel in p.get("selections") or []:
             label = str(sel.get("selection") or sel.get("label") or "").lower()
             side = "over" if "over" in label else "under" if "under" in label else None
             if not side:
                 continue
+            flat_cost = _num_or_none(sel.get("cost", sel.get("odds")))
+            if flat_cost is not None:
+                if row[f"{side}_odds"] is None or flat_cost > row[f"{side}_odds"]:
+                    row[f"{side}_odds"] = flat_cost
+                    row[f"{side}_line"] = _num_or_none(sel.get("line", row["bp_line"]))
             for book in sel.get("books") or []:
                 for line in book.get("lines") or []:
-                    cost = line.get("cost")
+                    cost = _num_or_none(line.get("cost"))
                     if cost is None or not line.get("active", True):
                         continue
                     if row[f"{side}_odds"] is None or cost > row[f"{side}_odds"]:
                         row[f"{side}_odds"] = cost
-                        row[f"{side}_line"] = line.get("line")
+                        row[f"{side}_line"] = _num_or_none(line.get("line"))
         rows.append(row)
     return rows
+
+
+def _num_or_none(v):
+    if v is None or isinstance(v, (dict, list)):
+        return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+# Resolve our prop-market names to live BettingPros market ids by keyword
+# match on the /markets names/slugs (ids differ per sport and aren't stable
+# enough to hardcode). Excluded words avoid team/derivative variants.
+_PROP_KEYWORDS = {
+    "MLB": {
+        "pitcher_strikeouts": (("strikeout",), ("team", "first", "alt")),
+        "batter_hits": (("hits",), ("team", "allowed", "runs", "rbis", "alt")),
+        "batter_total_bases": (("total bases",), ("team", "alt")),
+        "batter_home_runs": (("home run",), ("team", "first", "alt")),
+    },
+    "WNBA": {
+        "Points": (("points",), ("team", "rebounds", "assists", "alt", "quarter", "half")),
+        "Rebounds": (("rebounds",), ("team", "points", "assists", "alt")),
+        "Assists": (("assists",), ("team", "points", "rebounds", "alt")),
+        "3-Pointers Made": (("three", "3-point"), ("team", "alt", "attempt")),
+    },
+    "NBA": {
+        "Points": (("points",), ("team", "rebounds", "assists", "alt", "quarter", "half")),
+        "Rebounds": (("rebounds",), ("team", "points", "assists", "alt")),
+        "Assists": (("assists",), ("team", "points", "rebounds", "alt")),
+        "3-Pointers Made": (("three", "3-point"), ("team", "alt", "attempt")),
+    },
+}
+
+
+def prop_market_ids(sport: str) -> dict[str, int]:
+    """{our_market_name: live market id} resolved from /markets."""
+    out: dict[str, int] = {}
+    rules = _PROP_KEYWORDS.get(sport, {})
+    for mid, info in sorted(market_lookup(sport).items()):
+        text = f"{info.get('name', '')} {info.get('slug', '')}".lower()
+        if not text.strip():
+            continue
+        for market, (need, block) in rules.items():
+            if market in out:
+                continue
+            if any(k in text for k in need) and not any(b in text for b in block):
+                out[market] = mid
+    return out

@@ -14,7 +14,7 @@ from datetime import date as _date
 
 import pandas as pd
 
-from . import config, odds, parks, playerlogs
+from . import config, internal_stats, odds, parks, playerlogs, teams
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -43,33 +43,30 @@ def _team_runs_per_game(team_id: int, date: str) -> float:
 
 
 def _pitcher_table(season: int) -> pd.DataFrame:
+    """Starter rates from our own box logs (FanGraphs is blocked on CI
+    runners, so internal data is primary; pybaseball remains a fallback)."""
+    df = internal_stats.pitcher_table(season)
+    if not df.empty:
+        return df
     try:
         df = statcast.season_pitching(season)
-        df = df.assign(norm_name=df["Name"].map(normalize))
-        return df
-    except Exception as e:  # early season / network issues
+        return df.assign(norm_name=df["Name"].map(normalize))
+    except Exception as e:
         log.warning("pitching stats unavailable: %s", e)
         return pd.DataFrame(columns=["Name", "norm_name"])
 
 
 def _batter_table(season: int) -> pd.DataFrame:
+    """Batter rates from our own box logs + prior-season Statcast xstats."""
+    df = internal_stats.batter_table(season)
+    if not df.empty:
+        return df
     try:
         df = statcast.season_batting(season)
-        df = df.assign(norm_name=df["Name"].map(normalize))
+        return df.assign(norm_name=df["Name"].map(normalize))
     except Exception as e:
         log.warning("batting stats unavailable: %s", e)
         return pd.DataFrame(columns=["Name", "norm_name"])
-    try:
-        exp = statcast.statcast_batter_expected(season)
-        exp = exp.assign(
-            norm_name=(exp["first_name"].str.strip() + " " + exp["last_name"].str.strip()).map(
-                normalize
-            )
-        )[["norm_name", "est_ba", "est_slg"]]
-        df = df.merge(exp, on="norm_name", how="left")
-    except Exception as e:
-        log.warning("statcast expected stats unavailable: %s", e)
-    return df
 
 
 def _fp_projections(season: int, date: str) -> dict[str, dict]:
@@ -101,6 +98,7 @@ def project_games(date: str) -> pd.DataFrame:
     season = _season(date)
     slate = mlb_statsapi.schedule(date)
     pitchers = _pitcher_table(season)
+    bullpens = internal_stats.bullpen_fip(season)
 
     def starter_xfip(name: str | None) -> float | None:
         if not name or pitchers.empty:
@@ -119,6 +117,7 @@ def project_games(date: str) -> pd.DataFrame:
             name=g["home_team"],
             runs_per_game=_team_runs_per_game(g["home_team_id"], date),
             opp_starter_xfip=starter_xfip(g["away_pitcher"]),
+            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["away_team"])),
             park_factor=pf_venue,
             own_home_pf=pf_venue,
         )
@@ -126,6 +125,7 @@ def project_games(date: str) -> pd.DataFrame:
             name=g["away_team"],
             runs_per_game=_team_runs_per_game(g["away_team_id"], date),
             opp_starter_xfip=starter_xfip(g["home_pitcher"]),
+            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["home_team"])),
             park_factor=pf_venue,
             own_home_pf=parks.factor(g["away_team"]),
         )
@@ -285,6 +285,20 @@ def prob_over_for_row(row: dict, line: float) -> float | None:
     return None
 
 
+_PROP_EDGE_COLS = ("line", "odds", "book_id", "model_over_prob", "ev", "kelly",
+                   "bp_projection", "bp_ev", "bp_probability",
+                   "bp_recommended_side", "bp_bet_rating")
+
+
+def _ensure_cols(df: pd.DataFrame, cols=_PROP_EDGE_COLS) -> pd.DataFrame:
+    """Guarantee the market columns exist (as None) so downstream display
+    code never KeyErrors when offers were unavailable."""
+    for c in cols:
+        if c not in df.columns:
+            df[c] = None
+    return df
+
+
 def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
     """Join model projections to BettingPros prop offers and compute EV."""
     if props.empty:
@@ -294,14 +308,19 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
         event_ids = [e.get("id") for e in events if e.get("id")]
     except Exception as e:
         log.warning("BettingPros events unavailable: %s", e)
-        return props
+        return _ensure_cols(props.copy())
+
+    try:
+        live_ids = bettingpros.prop_market_ids("MLB")
+    except Exception as e:
+        log.warning("prop market resolution failed: %s", e)
+        live_ids = {}
 
     market_rows = []
-    for market, mid in config.BP_MARKET_IDS.items():
-        if not market.startswith(("pitcher_", "batter_")):
-            continue
+    for market, mid in live_ids.items():
         try:
-            offers = bettingpros.offers("MLB", mid, event_ids)
+            offers = bettingpros.offers("MLB", mid, event_ids,
+                                        season=_season(date))
             for r in bettingpros.flatten_offers(offers):
                 r["market"] = market
                 market_rows.append(r)
@@ -309,7 +328,7 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
             log.warning("offers for %s unavailable: %s", market, e)
 
     if not market_rows:
-        return props
+        return _ensure_cols(_attach_bp_consensus_keyed(props.copy(), date))
 
     lines = pd.DataFrame(market_rows)
     lines = lines[lines["active"] & lines["odds"].notna() & lines["line"].notna()]
@@ -341,19 +360,18 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
                           "kelly": round(k, 4)})
 
     merged = pd.concat([merged, merged.apply(compute, axis=1)], axis=1)
-    merged = _attach_bp_consensus(merged, date)
-    return merged.drop(columns=["norm_player"])
+    merged = _attach_bp_consensus_keyed(merged, date)
+    return _ensure_cols(merged.drop(columns=["norm_player"], errors="ignore"))
 
 
-def _attach_bp_consensus(props: pd.DataFrame, date: str) -> pd.DataFrame:
+def _attach_bp_consensus_keyed(props: pd.DataFrame, date: str) -> pd.DataFrame:
     """Add BettingPros' own projection / EV / recommended side (premium
-    fields via auth=user) as a second opinion next to our model."""
-    prop_market_ids = [
-        mid for name, mid in config.BP_MARKET_IDS.items()
-        if name.startswith(("pitcher_", "batter_"))
-    ]
+    fields) as a second opinion next to our model. Also backfills the prop
+    line from BP's board when no offers were available, so hit-rate splits
+    and model probabilities can still be computed against a real number."""
     try:
-        raw = bettingpros.props("MLB", date, prop_market_ids)
+        raw = bettingpros.props("MLB", date)
+        live_ids = bettingpros.prop_market_ids("MLB")
     except Exception as e:
         log.warning("BettingPros /props unavailable: %s", e)
         return props
@@ -361,46 +379,164 @@ def _attach_bp_consensus(props: pd.DataFrame, date: str) -> pd.DataFrame:
     if flat.empty or flat["participant"].isna().all():
         return props
 
-    id_to_market = {mid: name for name, mid in config.BP_MARKET_IDS.items()}
+    id_to_market = {mid: name for name, mid in live_ids.items()}
     flat["market"] = flat["market_id"].map(id_to_market)
     flat["norm_player"] = flat["participant"].map(normalize)
     flat = flat.dropna(subset=["market"]).drop_duplicates(["norm_player", "market"])
-    cols = ["norm_player", "market", "bp_projection", "bp_ev",
-            "bp_recommended_side", "bp_bet_rating"]
-    return props.merge(flat[cols], on=["norm_player", "market"], how="left")
+    cols = ["norm_player", "market", "bp_line", "bp_projection", "bp_ev",
+            "bp_probability", "bp_recommended_side", "bp_bet_rating",
+            "over_odds", "under_odds"]
+    cols = [c for c in cols if c in flat.columns]
+    if "norm_player" not in props.columns:
+        props = props.assign(norm_player=props["player"].map(normalize))
+    merged = props.merge(flat[cols], on=["norm_player", "market"], how="left")
+    # backfill line + price from BP's board, then (re)compute our model prob
+    if "line" not in merged.columns:
+        merged["line"] = None
+    merged["line"] = merged["line"].where(merged["line"].notna(),
+                                          merged.get("bp_line"))
+    if "odds" not in merged.columns:
+        merged["odds"] = None
+    merged["odds"] = merged["odds"].where(merged["odds"].notna(),
+                                          merged.get("over_odds"))
+
+    def compute(row):
+        out = {"model_over_prob": row.get("model_over_prob"),
+               "ev": row.get("ev"), "kelly": row.get("kelly")}
+        if out["model_over_prob"] is None or pd.isna(out["model_over_prob"]):
+            line = row.get("line")
+            if line is not None and pd.notna(line):
+                p = prob_over_for_row(row, float(line))
+                if p is not None:
+                    out["model_over_prob"] = round(p, 4)
+                    price = row.get("odds")
+                    if price is not None and pd.notna(price):
+                        out["ev"] = round(odds.expected_value(p, float(price)), 4)
+                        out["kelly"] = round(odds.kelly_stake(
+                            p, float(price), config.KELLY_FRACTION), 4)
+        return pd.Series(out)
+
+    recomputed = merged.apply(compute, axis=1)
+    for c in recomputed.columns:
+        merged[c] = recomputed[c]
+    return merged
 
 
 def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
-    """Join moneyline offers to game projections and compute EV both sides."""
+    """Join moneyline / total / run-line offers to MLB game projections and
+    compute EV. Market ids resolve at runtime; team matching is loose
+    (BettingPros may use nicknames or abbreviations)."""
+    from scipy import stats as _st
+
+    games = games.copy()
+    game_cols = ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
+                 "total_line", "over_odds", "under_odds", "model_over_prob",
+                 "over_ev", "under_ev", "rl_home_line", "rl_home_odds",
+                 "rl_away_odds", "model_home_rl", "rl_home_ev", "rl_away_ev")
+    _ensure_cols(games, game_cols)
     if games.empty:
         return games
     try:
+        market_ids = bettingpros.game_market_ids("MLB")
         events = bettingpros.events("MLB", date)
-        offers = bettingpros.offers(
-            "MLB", config.BP_MARKET_IDS["moneyline"], [e.get("id") for e in events]
-        )
-        flat = pd.DataFrame(bettingpros.flatten_offers(offers))
+        event_ids = [e.get("id") for e in events if e.get("id")]
     except Exception as e:
-        log.warning("BettingPros moneylines unavailable: %s", e)
-        return games
-    if flat.empty:
+        log.warning("BettingPros game markets unavailable: %s", e)
         return games
 
-    flat["norm_team"] = flat["participant"].map(normalize)
-    best = flat.sort_values("odds", ascending=False).drop_duplicates("norm_team")
-    prices = dict(zip(best["norm_team"], best["odds"]))
+    flat_by_market: dict[str, pd.DataFrame] = {}
+    for market, mid in market_ids.items():
+        if mid is None:
+            continue
+        try:
+            raw = bettingpros.offers("MLB", mid, event_ids, season=_season(date))
+            df = pd.DataFrame(bettingpros.flatten_offers(raw))
+            if not df.empty:
+                flat_by_market[market] = df[df["active"] & df["odds"].notna()]
+        except Exception as e:
+            log.warning("MLB %s offers unavailable: %s", market, e)
 
-    games = games.copy()
-    for side in ("home", "away"):
-        games[f"{side}_ml"] = games[f"{side}_team"].map(lambda t: prices.get(normalize(t)))
-        games[f"{side}_ev"] = games.apply(
-            lambda r: round(
-                odds.expected_value(r[f"{side}_win_prob"], r[f"{side}_ml"]), 4
-            )
-            if pd.notna(r[f"{side}_ml"])
-            else None,
-            axis=1,
-        )
+    event_teams = _bp_event_teams(events)
+
+    def event_offer(df, row, side_label=None):
+        """Rows of df belonging to this game (via BP event team names)."""
+        if df is None or df.empty:
+            return df
+        ids = [eid for eid, ts in event_teams.items()
+               if any(_teams_match(row["home_team"], t)
+                      or _teams_match(row["away_team"], t) for t in ts)]
+        return df[df["event_id"].isin(ids)] if ids else df.iloc[0:0]
+
+    ml = flat_by_market.get("moneyline", pd.DataFrame())
+    tot = flat_by_market.get("total", pd.DataFrame())
+    rl = flat_by_market.get("spread", pd.DataFrame())
+
+    def per_game(row):
+        out = {}
+        # moneyline: best price per side by team-name match within the event
+        mlg = event_offer(ml, row)
+        if mlg is not None and not mlg.empty:
+            for side in ("home", "away"):
+                m = mlg[mlg["participant"].map(
+                    lambda p: _teams_match(row[f"{side}_team"], p or ""))]
+                if not m.empty:
+                    price = float(m["odds"].max())
+                    out[f"{side}_ml"] = price
+                    out[f"{side}_ml_ev"] = round(odds.expected_value(
+                        row[f"{side}_win_prob"], price), 4)
+        # total
+        tg = event_offer(tot, row)
+        if tg is not None and not tg.empty and "line" in tg.columns:
+            overs = tg[tg["selection"].astype(str).str.lower()
+                       .str.contains("over", na=False) & tg["line"].notna()]
+            unders = tg[tg["selection"].astype(str).str.lower()
+                        .str.contains("under", na=False) & tg["line"].notna()]
+            if not overs.empty:
+                best_o = overs.sort_values("odds", ascending=False).iloc[0]
+                line = float(best_o["line"])
+                over_probs = row.get("over_probs") or {}
+                p = over_probs.get(line, over_probs.get(str(line)))
+                if p is None:
+                    p = float(1 - _st.poisson.cdf(int(line), row["proj_total"]))
+                out.update({"total_line": line, "over_odds": float(best_o["odds"]),
+                            "model_over_prob": round(float(p), 4),
+                            "over_ev": round(odds.expected_value(
+                                float(p), float(best_o["odds"])), 4)})
+                if not unders.empty:
+                    best_u = unders.sort_values("odds", ascending=False).iloc[0]
+                    out["under_odds"] = float(best_u["odds"])
+                    out["under_ev"] = round(odds.expected_value(
+                        1 - float(p), float(best_u["odds"])), 4)
+        # run line (home -1.5 / +1.5)
+        rg = event_offer(rl, row)
+        if rg is not None and not rg.empty and "line" in rg.columns:
+            cover = row.get("home_rl_cover") or {}
+            home_rows = rg[rg["participant"].map(
+                lambda p: _teams_match(row["home_team"], p or ""))
+                & rg["line"].notna()]
+            away_rows = rg[rg["participant"].map(
+                lambda p: _teams_match(row["away_team"], p or ""))
+                & rg["line"].notna()]
+            if not home_rows.empty:
+                best_h = home_rows.sort_values("odds", ascending=False).iloc[0]
+                spread = float(best_h["line"])
+                p_cover = cover.get(spread, cover.get(str(spread)))
+                out["rl_home_line"] = spread
+                out["rl_home_odds"] = float(best_h["odds"])
+                if p_cover is not None:
+                    out["model_home_rl"] = round(float(p_cover), 4)
+                    out["rl_home_ev"] = round(odds.expected_value(
+                        float(p_cover), float(best_h["odds"])), 4)
+                if not away_rows.empty and p_cover is not None:
+                    best_a = away_rows.sort_values("odds", ascending=False).iloc[0]
+                    out["rl_away_odds"] = float(best_a["odds"])
+                    out["rl_away_ev"] = round(odds.expected_value(
+                        1 - float(p_cover), float(best_a["odds"])), 4)
+        return pd.Series(out, dtype=object)
+
+    extra = games.apply(per_game, axis=1)
+    for c in extra.columns:
+        games[c] = extra[c]
     return games
 
 
@@ -480,7 +616,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         if mid is None:
             continue
         try:
-            raw = bettingpros.offers(sport_key, mid, event_ids)
+            raw = bettingpros.offers(sport_key, mid, event_ids,
+                                     season=_season(date))
             df = pd.DataFrame(bettingpros.flatten_offers(raw))
             if not df.empty:
                 df["norm_team"] = df["participant"].map(normalize)
@@ -533,6 +670,49 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
 
         games = pd.concat([games, games.apply(total_cols, axis=1)], axis=1)
 
+    # spread (point spread / run line equivalent for generic sports)
+    sp = flat_by_market.get("spread", pd.DataFrame())
+    if not sp.empty and "line" in sp.columns:
+        event_teams = _bp_event_teams(events)
+
+        def spread_cols(row):
+            out = {"spread_home_line": None, "spread_home_odds": None,
+                   "spread_away_odds": None, "model_home_cover": None,
+                   "spread_home_ev": None, "spread_away_ev": None}
+            ids = [eid for eid, ts in event_teams.items()
+                   if any(_teams_match(row["home_team"], t)
+                          or _teams_match(row["away_team"], t) for t in ts)]
+            g = sp[sp["event_id"].isin(ids)] if ids else sp.iloc[0:0]
+            home_rows = g[g["participant"].map(
+                lambda p: _teams_match(row["home_team"], p or ""))
+                & g["line"].notna()]
+            if home_rows.empty:
+                return pd.Series(out)
+            best_h = home_rows.sort_values("odds", ascending=False).iloc[0]
+            spread = float(best_h["line"])
+            p = row["_proj"].home_cover_prob(spread, sport)
+            out.update({"spread_home_line": spread,
+                        "spread_home_odds": float(best_h["odds"]),
+                        "model_home_cover": round(p, 4),
+                        "spread_home_ev": round(odds.expected_value(
+                            p, float(best_h["odds"])), 4)})
+            away_rows = g[g["participant"].map(
+                lambda p_: _teams_match(row["away_team"], p_ or ""))
+                & g["line"].notna()]
+            if not away_rows.empty:
+                best_a = away_rows.sort_values("odds", ascending=False).iloc[0]
+                out["spread_away_odds"] = float(best_a["odds"])
+                out["spread_away_ev"] = round(odds.expected_value(
+                    1 - p, float(best_a["odds"])), 4)
+            return pd.Series(out)
+
+        games = pd.concat([games, games.apply(spread_cols, axis=1)], axis=1)
+
+    _ensure_cols(games, ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
+                         "total_line", "over_odds", "model_over_prob",
+                         "over_ev", "spread_home_line", "spread_home_odds",
+                         "spread_away_odds", "model_home_cover",
+                         "spread_home_ev", "spread_away_ev"))
     return games.drop(columns=["_proj"])
 
 
@@ -612,6 +792,14 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
     blended with FantasyPros where available, with our distribution on top."""
     try:
         raw = bettingpros.props(sport_key, date)
+        if not raw:
+            # some sports return an empty board without a market filter
+            # (observed live for WNBA) — retry with explicit market ids
+            ids = list(bettingpros.prop_market_ids(sport_key).values())
+            if ids:
+                raw = bettingpros.props(sport_key, date, market_ids=ids)
+                log.info("%s props retry with market ids %s -> %d rows",
+                         sport_key, ids, len(raw))
     except Exception as e:
         log.warning("%s BettingPros props unavailable: %s", sport_key, e)
         return pd.DataFrame()

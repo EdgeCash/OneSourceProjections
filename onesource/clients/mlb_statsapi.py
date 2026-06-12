@@ -95,15 +95,31 @@ def box_player_logs(game_pk: int) -> list[dict]:
             bat, pit = stats.get("batting", {}), stats.get("pitching", {})
             if not bat and not pit:
                 continue
+            is_pitcher = bool(pit)
             row = {
                 "game_pk": game_pk,
                 "name": p.get("person", {}).get("fullName"),
+                "player_id": p.get("person", {}).get("id"),
                 "opponent": names.get(opp),
+                "team": names.get(side),
+                "position": "P" if is_pitcher
+                else p.get("position", {}).get("abbreviation"),
+                "started": bool(pit.get("gamesStarted")) if is_pitcher else None,
             }
-            for src in (bat, pit):
-                for k in ("hits", "totalBases", "homeRuns", "strikeOuts"):
-                    if k in src:
-                        row[k] = src[k]
+            src = pit if is_pitcher else bat
+            for k in ("hits", "totalBases", "homeRuns", "strikeOuts",
+                      "battersFaced", "baseOnBalls", "hitByPitch",
+                      "atBats", "plateAppearances"):
+                if k in src:
+                    row[k] = src[k]
+            ip = pit.get("inningsPitched")
+            if ip is not None:
+                # statsapi reports "5.2" meaning 5 and 2/3 innings
+                try:
+                    whole, frac = str(ip).split(".") if "." in str(ip) else (str(ip), "0")
+                    row["inningsPitched"] = int(whole) + int(frac) / 3.0
+                except ValueError:
+                    pass
             rows.append(row)
     return rows
 

@@ -190,11 +190,23 @@ def render_sport(sport: str):
                 st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         if shown:
             st.markdown("##### 📋 Full matchup breakdown")
+            c1, c2 = st.columns([4, 2])
             labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
-            pick = st.selectbox("Game", labels, label_visibility="collapsed",
-                                key=f"matchup_{sport}_{date_sel}")
-            g = shown[labels.index(pick)]
-            render_research_card(sport, g, date_sel)
+            with c2:
+                show_all_cards = st.toggle("Scroll all matchups", value=False,
+                                           key=f"allcards_{sport}_{date_sel}")
+            if show_all_cards:
+                for g in shown:
+                    render_research_card(sport, g, date_sel, caption=False)
+                st.caption("Offense L5 vs the opponent's matching defense; "
+                           "small numbers are league ranks (green = top "
+                           "third). ★ = offense out-ranks the defense.")
+            else:
+                with c1:
+                    pick = st.selectbox("Game", labels, label_visibility="collapsed",
+                                        key=f"matchup_{sport}_{date_sel}")
+                g = shown[labels.index(pick)]
+                render_research_card(sport, g, date_sel)
 
     with tab_p:
         render_props(sport, props, q)
@@ -208,16 +220,17 @@ def _matchup(sport: str, home: str, away: str, asof: str) -> dict:
         return {}
 
 
-def render_research_card(sport: str, g: dict, date_sel: str):
+def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = True):
     m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
     if not m:
         st.info("Team stat splits aren't available for this matchup yet.")
         st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
-    st.caption("Offense L5 vs the opponent's matching defense L5; small "
-               "numbers are league ranks (green = top third). ★ = the "
-               "offense out-ranks the defense it faces.")
+    if caption:
+        st.caption("Offense L5 vs the opponent's matching defense L5; small "
+                   "numbers are league ranks (green = top third). ★ = the "
+                   "offense out-ranks the defense it faces.")
 
 
 def render_props(sport: str, props: list, q: str):
@@ -226,21 +239,26 @@ def render_props(sport: str, props: list, q: str):
                 "confirmed (~2-4h before first pitch).")
         return
     df = pd.DataFrame(props)
-    if q and "player" in df.columns:
+    if "player" not in df.columns:
+        st.info("Prop data is missing player names — check the next hourly run.")
+        return
+    if q:
         df = df[df["player"].str.contains(q, case=False, na=False)]
     ev_like = [c for c in ("ev", "ev_over", "ev_under") if c in df.columns]
     if ev_like:
         df["_best"] = df[ev_like].apply(pd.to_numeric, errors="coerce").max(axis=1)
-        if not show_all:
+        if not show_all and df["_best"].notna().any():
             df = df[df["_best"].notna() & (df["_best"] >= min_edge)]
-        df = df.sort_values("_best", ascending=False)
+        df = df.sort_values("_best", ascending=False, na_position="last")
     markets = sorted(ui.short_market(m) for m in df.get("market", pd.Series()).dropna().unique())
     market = st.selectbox("Market", ["All"] + markets) if markets else "All"
+    if market != "All" and "market" in df.columns:
+        df = df[df["market"].map(ui.short_market) == market]
+    df = df.reset_index(drop=True)
     view = ui.prep_props(df.drop(columns=["_best"], errors="ignore"))
-    if market != "All" and "Market" in view.columns:
-        view = view[view["Market"] == market]
     if view.empty:
-        st.info("Nothing matches the current filters.")
+        st.info("Nothing matches the current filters. Toggle “Show rows "
+                "without edges” in the sidebar to browse the full board.")
         return
     ev_cols = [c for c in ("EV", "Over EV", "Under EV") if c in view.columns]
     heat = [c for c in ui.HEAT_COLS if c in view.columns]
@@ -249,37 +267,87 @@ def render_props(sport: str, props: list, q: str):
         styler = styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100,
                                             subset=heat) \
                        .format({c: "{:.0f}%" for c in heat}, na_rep="—")
-    st.dataframe(styler, width="stretch", hide_index=True, height=520)
-    st.caption("L5/L10/L20/Season/H2H = how often the player has gone OVER "
-               "this line (our game logs). bp_* are BettingPros' consensus.")
+    sel = st.dataframe(styler, width="stretch", hide_index=True, height=480,
+                       on_select="rerun", selection_mode="single-row",
+                       key=f"props_table_{sport}")
+    st.caption("👆 Tap a row for the player deep-dive. L5/L10/L20/Season/H2H "
+               "= how often the player has gone OVER the line (our game "
+               "logs). bp_* are BettingPros' consensus.")
 
-    # per-player bar chart (recent games vs the line)
-    render_prop_chart(sport, df)
-
-
-def render_prop_chart(sport: str, df: pd.DataFrame):
-    if df.empty or "player" not in df.columns:
-        return
-    df = df.copy()
-    df["_opt"] = (df["player"].astype(str) + " · "
-                  + df["market"].map(ui.short_market).astype(str) + " "
-                  + df["line"].astype(str))
-    st.markdown("##### Player trend")
-    pick = st.selectbox("Player & prop", df["_opt"].tolist(),
-                        label_visibility="collapsed")
-    row = df[df["_opt"] == pick].iloc[0]
-    season = int(date_for_chart[:4]) if (date_for_chart := default_date) else None
-    series = playerlogs.recent_series(sport, row["player"], row["market"],
-                                      n=12, season=season)
-    line = row.get("line")
-    chart = ui.prop_chart(series, float(line) if line is not None else 0, pick)
-    if chart is None:
-        st.info("No game-log history for this player yet.")
+    rows = (sel.selection.rows if sel and getattr(sel, "selection", None) else [])
+    if rows:
+        render_prop_detail(sport, df.iloc[rows[0]].to_dict())
     else:
-        st.altair_chart(chart)
-        hit = sum(1 for s in series if s["value"] > line)
-        st.caption(f"Over the line in {hit} of the last {len(series)} games "
-                   f"(green = over, red = under, dashed = {line}).")
+        st.info("Select a prop above to open the deep-dive: recent-game "
+                "chart, hit-rate splits, and model vs BettingPros read.")
+
+
+def render_prop_detail(sport: str, p: dict):
+    """Deep-dive panel for one prop: header facts, trend chart, hit-rate
+    splits, and a model-vs-market read."""
+    player = p.get("player", "")
+    market = p.get("market", "")
+    line = p.get("line")
+    season = int(default_date[:4]) if default_date else None
+    title = f"{player} · {ui.short_market(market)}" + (
+        f" {line:g}" if isinstance(line, (int, float)) and pd.notna(line) else "")
+    st.markdown(f"#### 🔎 {title}")
+
+    c = st.columns(5)
+    mop = p.get("model_over_prob")
+    c[0].metric("Line", f"{line:g}" if line is not None and pd.notna(line) else "—")
+    c[1].metric("Our proj", p.get("projection") if p.get("projection") is not None else "—")
+    c[2].metric("Over %", f"{mop * 100:.0f}%" if mop is not None and pd.notna(mop) else "—")
+    best_ev = max([v for v in (p.get("ev"), p.get("ev_over"), p.get("ev_under"))
+                   if v is not None and pd.notna(v)], default=None)
+    c[3].metric("Best EV", f"{best_ev:+.1%}" if best_ev is not None else "—")
+    k = p.get("kelly")
+    c[4].metric("Stake", f"${k * bankroll:,.0f}"
+                if k is not None and pd.notna(k) and k > 0 else "—")
+
+    left, right = st.columns([3, 2])
+    with left:
+        series = playerlogs.recent_series(sport, player, market, n=12, season=season)
+        chart_line = float(line) if line is not None and pd.notna(line) else 0.0
+        chart = ui.prop_chart(series, chart_line, title)
+        if chart is None:
+            st.info("No game-log history for this player yet.")
+        else:
+            st.altair_chart(chart)
+            if chart_line:
+                hit = sum(1 for s in series if s["value"] > chart_line)
+                st.caption(f"Over in {hit} of the last {len(series)} "
+                           f"(dashed = {chart_line:g}).")
+    with right:
+        if line is not None and pd.notna(line):
+            hr = playerlogs.hit_rates(sport, player, market, float(line),
+                                      opponent=p.get("opponent"), season=season)
+        else:
+            hr = {}
+        if hr:
+            chips = {"L5": hr.get("l5"), "L10": hr.get("l10"),
+                     "L20": hr.get("l20"), "Season": hr.get("season"),
+                     "H2H": hr.get("h2h")}
+            cc = st.columns(len(chips))
+            for i, (k_, v) in enumerate(chips.items()):
+                cc[i].metric(k_, f"{v * 100:.0f}%" if v is not None else "—")
+        # model vs BettingPros read
+        bits = []
+        bp_proj, bp_side = p.get("bp_projection"), p.get("bp_recommended_side")
+        bp_rating = p.get("bp_bet_rating")
+        if p.get("projection") is not None and bp_proj is not None and pd.notna(bp_proj):
+            bits.append(f"We project **{p['projection']}**, BettingPros "
+                        f"projects **{bp_proj:g}**.")
+        if bp_side:
+            agree = (mop is not None and pd.notna(mop)
+                     and ((mop >= 0.5) == (str(bp_side).lower() == "over")))
+            verdict = "✅ model agrees" if agree else "⚠️ model disagrees"
+            stars = f" ({'★' * int(bp_rating)})" if bp_rating and pd.notna(bp_rating) else ""
+            bits.append(f"BP lean: **{str(bp_side).upper()}**{stars} — {verdict}.")
+        if p.get("team") or p.get("opponent"):
+            bits.append(f"{p.get('team', '')} vs {p.get('opponent', '')}.")
+        if bits:
+            st.markdown("\n\n".join(bits))
 
 
 # ---------------------------------------------------------------------------
