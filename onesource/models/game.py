@@ -22,6 +22,9 @@ class TeamInputs:
     runs_per_game: float          # recent scoring rate (raw)
     opp_starter_xfip: float | None  # opposing starter's xFIP (None = unknown)
     league_xfip: float = 4.10
+    opp_bullpen_xfip: float | None = None  # opposing bullpen FIP (None = unknown)
+    park_factor: float = 1.0      # run factor of the game's venue (1.0 neutral)
+    own_home_pf: float = 1.0      # team's own home-park factor (de-bias the rate)
 
 
 @dataclass
@@ -39,15 +42,26 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
     w = config.TEAM_RATE_WEIGHT
     base = w * team.runs_per_game + (1 - w) * league
 
-    # Opposing starter adjustment: scale the starter-covered share of the
-    # game by (starter xFIP / league xFIP). xFIP approximates runs allowed
-    # per 9 better than ERA for projection purposes.
+    # Opposing pitching: scale the starter-covered share of the game by the
+    # starter's quality and the rest by the opposing bullpen's quality, each
+    # as (FIP / league_FIP). FIP/xFIP approximate runs allowed per 9 better
+    # than ERA for projection. Clamp so one hot/cold month can't swing it.
+    share = config.STARTER_INNINGS_SHARE
+    sp_factor = bp_factor = 1.0
     if team.opp_starter_xfip is not None and team.opp_starter_xfip > 0:
-        share = config.STARTER_INNINGS_SHARE
-        factor = team.opp_starter_xfip / team.league_xfip
-        # clamp so one hot/cold month doesn't swing a projection absurdly
-        factor = float(np.clip(factor, 0.6, 1.5))
-        base = base * (share * factor + (1 - share))
+        sp_factor = float(np.clip(team.opp_starter_xfip / team.league_xfip, 0.6, 1.5))
+    if team.opp_bullpen_xfip is not None and team.opp_bullpen_xfip > 0:
+        bp_factor = float(np.clip(team.opp_bullpen_xfip / team.league_xfip, 0.6, 1.5))
+    if team.opp_starter_xfip or team.opp_bullpen_xfip:
+        base = base * (share * sp_factor + (1 - share) * bp_factor)
+
+    # Park: the recent rate is ~half-baked at the team's own park, so
+    # de-bias by its home factor, then apply the venue's factor. Tunable
+    # weight tempers the adjustment.
+    if team.park_factor != 1.0 or team.own_home_pf != 1.0:
+        own_bias = 0.5 * team.own_home_pf + 0.5
+        park_mult = team.park_factor / own_bias
+        base = base * (1 + config.PARK_WEIGHT * (park_mult - 1))
 
     if is_home:
         base += config.HOME_FIELD_RUNS / 2

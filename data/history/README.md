@@ -27,6 +27,7 @@ non-modeled leagues (KBO/EPL/UCL, NCAA baseball/softball) were left behind.
 | `calibration/*.json` | Fitted calibration params from the prior model (props: per-market a/b; games: knots) | — | Sports-projections |
 | `elo/wnba_elo_pregame.json.gz` | Pregame Elo + rest days per WNBA game (5.8k games) | 2002–2026 | Sports-projections |
 | `statcast/pitcher_arsenals.json`, `team_whiff.json` | Pitch-mix and team whiff features | current | Sports-projections |
+| `park_factors.json` | Empirical MLB park run factors (league mean 1.0), derived from backfill home/road scoring | 2022–2025 | computed (`scripts/compute_park_factors.py`) |
 | `misc/Sports_2026_YTD_Historical_Props.csv` | Graded props with odds + results | 2026 YTD | Sports-projections |
 | `misc/odds_snapshots.jsonl.gz` | Multi-book odds snapshots (3.3k rows) | 2026 | Sports-stats-data (odds.db) |
 | `misc/mlb_closing_consensus_2026.jsonl.gz` | One-row-per-game consensus closers | May 2026 | Sports-stats-data |

@@ -133,55 +133,65 @@
   "use_starters": true,
   "games_with_starter": 5475,
   "moneyline": {
-   "brier": 0.2471,
-   "log_loss": 0.6874,
-   "favorite_hit_rate": 0.5476
+   "brier": 0.2463,
+   "log_loss": 0.6857,
+   "favorite_hit_rate": 0.5521
   },
   "total": {
-   "mae": 3.573,
-   "rmse": 4.505
+   "mae": 3.546,
+   "rmse": 4.486
   },
   "calibration": [
    {
-    "n": 131,
+    "n": 24,
+    "predicted": 0.2,
+    "empirical": 0.3333
+   },
+   {
+    "n": 229,
     "predicted": 0.3,
-    "empirical": 0.3817
+    "empirical": 0.3799
    },
    {
-    "n": 1146,
+    "n": 1232,
     "predicted": 0.4,
-    "empirical": 0.4686
+    "empirical": 0.4651
    },
    {
-    "n": 2672,
+    "n": 2313,
     "predicted": 0.5,
-    "empirical": 0.5281
+    "empirical": 0.5383
    },
    {
-    "n": 1613,
+    "n": 1626,
     "predicted": 0.6,
-    "empirical": 0.5784
+    "empirical": 0.5744
    },
    {
-    "n": 273,
+    "n": 384,
     "predicted": 0.7,
-    "empirical": 0.6703
+    "empirical": 0.6406
+   },
+   {
+    "n": 37,
+    "predicted": 0.8,
+    "empirical": 0.7568
    }
   ],
   "closing_line": {
    "games_matched": 134,
-   "avg_clv_vs_fair": -0.018,
+   "avg_clv_vs_fair": -0.0207,
    "moneyline_bets": {
-    "bets": 141,
-    "win_rate": 0.3972,
-    "units": 2.07,
-    "roi_pct": 1.47
+    "bets": 144,
+    "win_rate": 0.4375,
+    "units": 8.74,
+    "roi_pct": 6.07
    },
    "total_bets": {
-    "bets": 125,
-    "win_rate": 0.464,
-    "units": -6.72,
-    "roi_pct": -5.38
+    "bets": 121,
+    "win_rate": 0.4628,
+    "units": -6.3,
+    "roi_pct": -5.21
    }
   }
  },
@@ -189,20 +199,20 @@
   "use_starters": true,
   "games_matched": 582,
   "moneyline": {
-   "bets": 420,
-   "win_rate": 0.519,
-   "units": 45.35,
-   "roi_pct": 10.8,
-   "avg_clv": 0.003,
-   "clv_positive_rate": 0.55
+   "bets": 424,
+   "win_rate": 0.5377,
+   "units": 54.37,
+   "roi_pct": 12.82,
+   "avg_clv": 0.0033,
+   "clv_positive_rate": 0.559
   },
   "total": {
-   "bets": 473,
-   "win_rate": 0.4884,
-   "units": -28.92,
-   "roi_pct": -6.12,
-   "avg_clv": 0.0035,
-   "clv_positive_rate": 0.529
+   "bets": 452,
+   "win_rate": 0.4934,
+   "units": -22.4,
+   "roi_pct": -4.95,
+   "avg_clv": 0.0046,
+   "clv_positive_rate": 0.535
   }
  },
  "wnba": {

@@ -111,13 +111,14 @@ def main():
     print(f"  graded {mlb['n_games_graded']} games; "
           f"Brier {mlb['moneyline']['brier']}, total MAE {mlb['total']['mae']}")
 
-    print("Running MLB game backtest (+starters, 2024+)...")
+    print("Running MLB game backtest (full pitching+park, 2024+)...")
     mlb_tf = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
                                         use_starters=False)
     mlb_sp = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
-                                        use_starters=True)
+                                        use_starters=True, use_bullpen=True,
+                                        use_park=True)
     print(f"  team-form: Brier {mlb_tf['moneyline']['brier']}, "
-          f"MAE {mlb_tf['total']['mae']}; +starters: "
+          f"MAE {mlb_tf['total']['mae']}; full: "
           f"Brier {mlb_sp['moneyline']['brier']}, MAE {mlb_sp['total']['mae']}")
 
     print("Running MLB true CLV (BettingPros open→close)...")
@@ -154,7 +155,8 @@ def main():
         "of edge.", "",
         _md_game(mlb, "MLB (team-form, all seasons)"),
         _md_game(mlb_tf, f"MLB team-form ({', '.join(map(str, starter_seasons))})"),
-        _md_game(mlb_sp, f"MLB +starters ({', '.join(map(str, starter_seasons))})"),
+        _md_game(mlb_sp, f"MLB full model — starters+bullpen+park "
+                 f"({', '.join(map(str, starter_seasons))})"),
         _md_clv(clv),
         _md_game(wnba), _md_props(props),
     ])

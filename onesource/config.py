@@ -54,6 +54,11 @@ TEAM_RATE_WEIGHT = 0.65
 # Starter is assumed to cover this share of the game before the bullpen.
 STARTER_INNINGS_SHARE = 5.3 / 9.0
 
+# How strongly to apply park factors to expected runs (0 = off, 1 = full).
+# The expected-runs math already de-biases each team's own home park, so
+# full weight (1.0) is appropriate and validated best in backtests.
+PARK_WEIGHT = 1.0
+
 # Monte Carlo draws for the game simulation.
 SIM_DRAWS = 20_000
 

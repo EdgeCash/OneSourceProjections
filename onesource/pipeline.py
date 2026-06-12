@@ -14,7 +14,7 @@ from datetime import date as _date
 
 import pandas as pd
 
-from . import config, odds
+from . import config, odds, parks
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -111,15 +111,22 @@ def project_games(date: str) -> pd.DataFrame:
 
     rows = []
     for g in slate:
+        # Park: game is at the home team's venue; de-bias each team's rate
+        # by its own home park (see models/game.expected_runs).
+        pf_venue = parks.factor(g["home_team"])
         home = game_model.TeamInputs(
             name=g["home_team"],
             runs_per_game=_team_runs_per_game(g["home_team_id"], date),
             opp_starter_xfip=starter_xfip(g["away_pitcher"]),
+            park_factor=pf_venue,
+            own_home_pf=pf_venue,
         )
         away = game_model.TeamInputs(
             name=g["away_team"],
             runs_per_game=_team_runs_per_game(g["away_team_id"], date),
             opp_starter_xfip=starter_xfip(g["home_pitcher"]),
+            park_factor=pf_venue,
+            own_home_pf=parks.factor(g["away_team"]),
         )
         proj = game_model.simulate(home, away)
         rows.append(

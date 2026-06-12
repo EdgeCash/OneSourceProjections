@@ -84,6 +84,24 @@ def test_starters_improve_or_match_calibration():
     assert sp["moneyline"]["brier"] <= tf["moneyline"]["brier"] + 0.002
 
 
+def test_bullpen_fip_table():
+    bp = backtest.bullpen_fip_table([2024])
+    vals = [v for v in bp.values() if v is not None]
+    assert len(vals) > 2_000
+    assert all(2.5 < v < 7.0 for v in vals)
+    (pk, side) = next(iter(bp))
+    assert isinstance(pk, int) and side in ("home", "away")
+
+
+def test_full_model_beats_team_form():
+    tf = backtest.run_game_backtest("MLB", [2024], draws=800)
+    full = backtest.run_game_backtest("MLB", [2024], draws=800, use_starters=True,
+                                      use_bullpen=True, use_park=True)
+    # full pitching+park model should not be worse on Brier or total MAE
+    assert full["moneyline"]["brier"] <= tf["moneyline"]["brier"] + 0.001
+    assert full["total"]["mae"] <= tf["total"]["mae"] + 0.02
+
+
 def test_bp_open_close_structure():
     bp = backtest.bp_open_close(2026)
     assert len(bp) > 800

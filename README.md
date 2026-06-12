@@ -26,10 +26,17 @@ defines the calendar; override with `--sports`).
 ### MLB (the deep model)
 
 - **Game model** (`onesource/models/game.py`): recent team scoring rate
-  shrunk toward league average, adjusted for the opposing starter's xFIP
-  over the innings starters cover, plus home field. 20k-draw Poisson Monte
-  Carlo (ties resolved as extra innings) → win prob, over/under probs,
-  run-line cover probs.
+  shrunk toward league average; opposing **starter** quality applied over
+  the innings starters cover and opposing **bullpen** quality over the
+  rest (each as FIP / league FIP); **park factors** applied to the venue
+  after de-biasing each team's own home park; plus home field. 20k-draw
+  Poisson Monte Carlo (ties resolved as extra innings) → win prob,
+  over/under probs, run-line cover probs. Park factors are derived
+  empirically (`scripts/compute_park_factors.py` →
+  `data/history/park_factors.json`, loaded via `onesource/parks.py`).
+  Backtested 2024–2026, each component improves the model monotonically
+  (Brier 0.2483→0.2463, total-runs MAE 3.60→3.55, favorite hit-rate
+  0.540→0.552); open→close CLV is +12.8% moneyline ROI at opening prices.
 - **Prop models** (`onesource/models/props.py`): Poisson for Ks and total
   bases, binomial for hits, per-PA rate for HRs. Our Statcast-informed
   rates are blended 50/50 with FantasyPros projections when available.

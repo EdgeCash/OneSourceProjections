@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
-from . import config, history, odds
+from . import config, history, odds, parks
 from .models import game as mlb_game
 from .models import generic
 from .names import normalize
@@ -151,6 +151,55 @@ def starter_fip_table(seasons: list[int], league_fip: float = 4.10,
     return out
 
 
+def bullpen_fip_table(seasons: list[int], league_fip: float = 4.10,
+                      ip_prior: float = 120.0, min_ip: float = 20.0) -> dict:
+    """As-of-date team bullpen FIP per game side, no lookahead. Aggregates
+    relief appearances (started=False) per team cumulatively in date order;
+    records each team's bullpen FIP from *prior* games before each game.
+    Returns {(game_pk, 'home'|'away'): bullpen_fip}. Larger IP prior than
+    starters since bullpens pool many arms."""
+    pg = history.player_games("mlb", seasons=seasons)
+    if pg.empty or "started" not in pg.columns:
+        return {}
+    rp = pg[(pg["position"] == "P") & (pg["started"] == False)].copy()  # noqa: E712
+    rp["dt"] = pd.to_datetime(rp["date"])
+    # one aggregated reliever line per (date, game_pk, team, side)
+    def _agg(s):
+        tot = defaultdict(float)
+        for st in s:
+            st = st or {}
+            tot["hr"] += st.get("homeRuns", 0) or 0
+            tot["bb"] += st.get("baseOnBalls", 0) or 0
+            tot["hbp"] += st.get("hitByPitch", 0) or 0
+            tot["k"] += st.get("strikeOuts", 0) or 0
+            tot["ip"] += float(st.get("inningsPitched", 0) or 0)
+        return tot
+
+    rp["side"] = rp["is_home"].map(lambda x: "home" if x else "away")
+    grouped = (rp.sort_values("dt")
+                 .groupby(["dt", "game_pk", "team", "side"])["stats"]
+                 .apply(list).reset_index())
+    grouped["agg"] = grouped["stats"].map(_agg)
+    grouped.sort_values("dt", inplace=True)
+
+    cum: dict = defaultdict(lambda: {"hr": 0.0, "bb": 0.0, "hbp": 0.0, "k": 0.0, "ip": 0.0})
+    out: dict = {}
+    for _, row in grouped.iterrows():
+        team = row["team"]
+        c = cum[team]
+        if c["ip"] >= min_ip:
+            raw = (13 * c["hr"] + 3 * (c["bb"] + c["hbp"]) - 2 * c["k"]) / c["ip"] + 3.10
+            fip = (raw * c["ip"] + league_fip * ip_prior) / (c["ip"] + ip_prior)
+        else:
+            fip = None
+        if pd.notna(row["game_pk"]):
+            out[(int(row["game_pk"]), row["side"])] = fip
+        a = row["agg"]
+        for k in ("hr", "bb", "hbp", "k", "ip"):
+            c[k] += a[k]
+    return out
+
+
 def _wnba_games(seasons: list[int]) -> list[dict]:
     df = history.backfill_games("wnba", seasons=seasons)
     rows = []
@@ -203,18 +252,28 @@ class _Form:
 def _project(sport_key: str, sport, h: generic.TeamRating | None,
              a: generic.TeamRating | None, draws: int,
              home_opp_xfip: float | None = None,
-             away_opp_xfip: float | None = None):
+             away_opp_xfip: float | None = None,
+             home_opp_bp: float | None = None,
+             away_opp_bp: float | None = None,
+             park_venue: float = 1.0,
+             home_own_pf: float = 1.0, away_own_pf: float = 1.0):
     """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn).
 
     home_opp_xfip / away_opp_xfip are the FIP of the starter each team
-    *faces* (i.e. home_opp_xfip = the away team's starter), matching the
-    production model's opp_starter_xfip input. None = team-form only.
+    *faces* (home_opp_xfip = the away team's starter); home_opp_bp /
+    away_opp_bp likewise for bullpens. park_venue is the home park's run
+    factor; *_own_pf are each team's home park (to de-bias their rate).
+    All default to neutral, giving the team-form-only model.
     """
     if sport_key == "MLB":
         hi = mlb_game.TeamInputs(name="h", runs_per_game=h.scored,
-                                 opp_starter_xfip=home_opp_xfip)
+                                 opp_starter_xfip=home_opp_xfip,
+                                 opp_bullpen_xfip=home_opp_bp,
+                                 park_factor=park_venue, own_home_pf=home_own_pf)
         ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored,
-                                 opp_starter_xfip=away_opp_xfip)
+                                 opp_starter_xfip=away_opp_xfip,
+                                 opp_bullpen_xfip=away_opp_bp,
+                                 park_factor=park_venue, own_home_pf=away_own_pf)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
         lam_h, lam_a = proj.home_exp_runs, proj.away_exp_runs
@@ -327,7 +386,8 @@ class BetLog:
 
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
-                      use_starters: bool = False) -> dict:
+                      use_starters: bool = False, use_bullpen: bool = False,
+                      use_park: bool = False) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
@@ -335,8 +395,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     window = 30 if sport_key == "MLB" else 15
     form = _Form(window)
     consensus = closing_consensus(sport_key)
-    fip_table = (starter_fip_table(seasons) if (sport_key == "MLB" and use_starters)
-                 else {})
+    is_mlb = sport_key == "MLB"
+    fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
+    bp_table = bullpen_fip_table(seasons) if (is_mlb and use_bullpen) else {}
 
     # accuracy accumulators
     brier_sum = logloss_sum = n_ml = 0.0
@@ -354,13 +415,21 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
         a = form.rating(g["away"], sport.league_ppg)
         if h and a and h.games >= min_games and a.games >= min_games:
             pk = g.get("game_pk")
-            # home faces the away starter and vice-versa
+            # home faces the away starter/bullpen and vice-versa
             home_opp = fip_table.get((pk, "away")) if fip_table else None
             away_opp = fip_table.get((pk, "home")) if fip_table else None
+            home_bp = bp_table.get((pk, "away")) if bp_table else None
+            away_bp = bp_table.get((pk, "home")) if bp_table else None
             if home_opp is not None or away_opp is not None:
                 n_with_starter += 1
-            hwp, tmean, prob_over, _ = _project(sport_key, sport, h, a, draws,
-                                                home_opp, away_opp)
+            if is_mlb and use_park:
+                pf_venue = parks.factor(g["home"])
+                home_pf, away_pf = pf_venue, parks.factor(g["away"])
+            else:
+                pf_venue = home_pf = away_pf = 1.0
+            hwp, tmean, prob_over, _ = _project(
+                sport_key, sport, h, a, draws, home_opp, away_opp,
+                home_bp, away_bp, pf_venue, home_pf, away_pf)
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
@@ -498,6 +567,7 @@ def run_mlb_clv_open_close(seasons: list[int] | None = None, draws: int = 4000,
     sport = SPORTS["MLB"]
     games = _mlb_games(seasons, use_results_2026=True)
     fip_table = starter_fip_table(seasons) if use_starters else {}
+    bp_table = bullpen_fip_table(seasons) if use_starters else {}
     bp = bp_open_close(2026)
     form = _Form(30)
 
@@ -512,8 +582,17 @@ def run_mlb_clv_open_close(seasons: list[int] | None = None, draws: int = 4000,
             pk = g.get("game_pk")
             home_opp = fip_table.get((pk, "away")) if fip_table else None
             away_opp = fip_table.get((pk, "home")) if fip_table else None
+            home_bp = bp_table.get((pk, "away")) if bp_table else None
+            away_bp = bp_table.get((pk, "home")) if bp_table else None
+            if use_starters:
+                pf_venue, home_pf, away_pf = (parks.factor(g["home"]),
+                                              parks.factor(g["home"]),
+                                              parks.factor(g["away"]))
+            else:
+                pf_venue = home_pf = away_pf = 1.0
             hwp, _, prob_over, _ = _project("MLB", sport, h, a, draws,
-                                            home_opp, away_opp)
+                                            home_opp, away_opp, home_bp, away_bp,
+                                            pf_venue, home_pf, away_pf)
             rec = bp.get((g["date"], normalize(g["home"]), normalize(g["away"])))
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
