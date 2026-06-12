@@ -27,7 +27,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import pipeline, results, snapshots  # noqa: E402
+from onesource import pipeline, playerlogs, results, snapshots  # noqa: E402
 from onesource.config import OUTPUT_DIR  # noqa: E402
 from onesource.sports import active_sports  # noqa: E402
 
@@ -69,14 +69,19 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
-    # 3) grade games that have finished (yesterday + today)
-    graded = 0
+    # 3) grade games that have finished (yesterday + today) and ingest box
+    #    scores so prop hit-rate heatmaps stay fresh past the backfill
+    graded = ingested = 0
     for d in (yesterday.isoformat(), today.isoformat()):
         try:
             graded += results.grade_date(d)
         except Exception as e:
             log.error("grading %s failed: %s", d, e)
-    log.info("graded %d new rows", graded)
+        try:
+            ingested += playerlogs.ingest_mlb(d)
+        except Exception as e:
+            log.error("box-score ingest %s failed: %s", d, e)
+    log.info("graded %d new rows, ingested %d player logs", graded, ingested)
 
     # 4) write the combined site data file
     perf = results.performance()

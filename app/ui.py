@@ -226,9 +226,14 @@ PROP_RENAMES = {
     "odds": "Odds", "over_odds": "Over", "under_odds": "Under",
     "model_over_prob": "Over %", "ev": "EV", "ev_over": "Over EV",
     "ev_under": "Under EV", "kelly": "Kelly",
+    "hr_l5": "L5", "hr_l10": "L10", "hr_l20": "L20", "hr_season": "Season",
+    "hr_h2h": "H2H",
     "bp_projection": "BP Proj", "bp_ev": "BP EV",
     "bp_recommended_side": "BP Side", "bp_bet_rating": "BP ★",
 }
+
+# hit-rate heatmap columns (rendered 0-100 with a red->green gradient)
+HEAT_COLS = ["L5", "L10", "L20", "Season", "H2H"]
 
 PCT_COLS = {"Away Win", "Home Win", "Over %", "Model %"}
 EV_COLS = {"Away EV", "Home EV", "Over EV", "Under EV", "EV", "EV %"}
@@ -260,13 +265,35 @@ def prep_props(props: pd.DataFrame) -> pd.DataFrame:
     df = df[keep].rename(columns=PROP_RENAMES)
     df = df.dropna(axis=1, how="all")
     for c in df.columns:
-        if c in PCT_COLS:
+        if c in PCT_COLS or c in HEAT_COLS:
             df[c] = pd.to_numeric(df[c], errors="coerce") * 100
         elif c in ODDS_COLS:
             df[c] = df[c].map(fmt_american)
         elif c in EV_COLS:
             df[c] = pd.to_numeric(df[c], errors="coerce") * 100
     return df
+
+
+def prop_chart(series: list[dict], line: float, title: str):
+    """Altair bar chart of recent games vs the line — green over, red under,
+    dashed line at the prop number. Returns None if there's no data."""
+    import altair as alt
+
+    if not series:
+        return None
+    df = pd.DataFrame(series)
+    df["over"] = df["value"] > line
+    df["label"] = df["date"] + "  " + df["opp"].fillna("")
+    bars = alt.Chart(df).mark_bar().encode(
+        x=alt.X("label:N", sort=None, axis=alt.Axis(title=None, labelAngle=-40)),
+        y=alt.Y("value:Q", title=title),
+        color=alt.condition("datum.value > %f" % line,
+                            alt.value("#3fb950"), alt.value("#f85149")),
+        tooltip=["date", "value", "opp"],
+    )
+    rule = alt.Chart(pd.DataFrame({"y": [line]})).mark_rule(
+        color="#e3b341", strokeDash=[5, 4], size=2).encode(y="y:Q")
+    return (bars + rule).properties(height=260, width="container")
 
 
 # ---------------------------------------------------------------------------

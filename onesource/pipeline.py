@@ -14,7 +14,7 @@ from datetime import date as _date
 
 import pandas as pd
 
-from . import config, odds, parks
+from . import config, odds, parks, playerlogs
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -675,9 +675,31 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
 # Entry points
 # ---------------------------------------------------------------------------
 
+def attach_hit_rates(props: pd.DataFrame, sport: str, date: str) -> pd.DataFrame:
+    """Add L5/L10/L20/season/H2H over-rates (vs each prop's line) from our
+    player game logs, for the props heatmap board."""
+    if props.empty:
+        return props
+    season = int(date[:4])
+    props = props.copy()
+    recs = []
+    for _, r in props.iterrows():
+        try:
+            recs.append(playerlogs.hit_rates(
+                sport, r.get("player", ""), r.get("market", ""), r.get("line"),
+                opponent=r.get("opponent"), season=season))
+        except Exception:
+            recs.append({})
+    hr = pd.DataFrame(recs, index=props.index)
+    for col in ("l5", "l10", "l20", "season", "h2h"):
+        if col in hr.columns:
+            props[f"hr_{col}"] = hr[col]
+    return props
+
+
 def _run_mlb(date: str) -> dict:
     games = attach_game_edges(project_games(date), date)
-    props = attach_prop_edges(project_props(date), date)
+    props = attach_hit_rates(attach_prop_edges(project_props(date), date), "MLB", date)
     return {"games": games.to_dict(orient="records"),
             "props": props.to_dict(orient="records")}
 
@@ -685,7 +707,7 @@ def _run_mlb(date: str) -> dict:
 def _run_generic(sport_key: str, date: str) -> dict:
     games = attach_generic_game_edges(project_generic_games(sport_key, date),
                                       sport_key, date)
-    props = project_generic_props(sport_key, date)
+    props = attach_hit_rates(project_generic_props(sport_key, date), sport_key, date)
     return {"games": games.to_dict(orient="records"),
             "props": props.to_dict(orient="records")}
 

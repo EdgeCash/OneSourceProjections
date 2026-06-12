@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import config, results  # noqa: E402
+from onesource import config, playerlogs, results  # noqa: E402
 from onesource.sports import SPORTS  # noqa: E402
 
 st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
@@ -216,13 +216,43 @@ def render_props(sport: str, props: list, q: str):
         st.info("Nothing matches the current filters.")
         return
     ev_cols = [c for c in ("EV", "Over EV", "Under EV") if c in view.columns]
-    cfg = {"Over %": st.column_config.ProgressColumn(
-        "Over %", min_value=0, max_value=100, format="%.0f%%")} \
-        if "Over %" in view.columns else {}
-    st.dataframe(ev_styler(view, ev_cols), width="stretch", hide_index=True,
-                 height=560, column_config=cfg)
-    st.caption("bp_* columns are BettingPros' own consensus — disagreements "
-               "with the model are worth a second look.")
+    heat = [c for c in ui.HEAT_COLS if c in view.columns]
+    styler = ev_styler(view, ev_cols)
+    if heat:
+        styler = styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100,
+                                            subset=heat) \
+                       .format({c: "{:.0f}%" for c in heat}, na_rep="—")
+    st.dataframe(styler, width="stretch", hide_index=True, height=520)
+    st.caption("L5/L10/L20/Season/H2H = how often the player has gone OVER "
+               "this line (our game logs). bp_* are BettingPros' consensus.")
+
+    # per-player bar chart (recent games vs the line)
+    render_prop_chart(sport, df)
+
+
+def render_prop_chart(sport: str, df: pd.DataFrame):
+    if df.empty or "player" not in df.columns:
+        return
+    df = df.copy()
+    df["_opt"] = (df["player"].astype(str) + " · "
+                  + df["market"].map(ui.short_market).astype(str) + " "
+                  + df["line"].astype(str))
+    st.markdown("##### Player trend")
+    pick = st.selectbox("Player & prop", df["_opt"].tolist(),
+                        label_visibility="collapsed")
+    row = df[df["_opt"] == pick].iloc[0]
+    season = int(date_for_chart[:4]) if (date_for_chart := default_date) else None
+    series = playerlogs.recent_series(sport, row["player"], row["market"],
+                                      n=12, season=season)
+    line = row.get("line")
+    chart = ui.prop_chart(series, float(line) if line is not None else 0, pick)
+    if chart is None:
+        st.info("No game-log history for this player yet.")
+    else:
+        st.altair_chart(chart)
+        hit = sum(1 for s in series if s["value"] > line)
+        st.caption(f"Over the line in {hit} of the last {len(series)} games "
+                   f"(green = over, red = under, dashed = {line}).")
 
 
 # ---------------------------------------------------------------------------

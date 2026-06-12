@@ -143,6 +143,19 @@ it runs, the more closing-line history and graded results accumulate.
 > Note: scheduled Actions need the workflow on the default branch. Merge
 > `claude/nifty-hamilton-26x2c1` to `main` to begin the hourly cadence.
 
+## Prop research (hit-rate heatmaps & trend charts)
+
+Each prop carries a hit-rate heatmap — how often the player has gone over
+that line in their last 5 / 10 / 20 games, the season, and head-to-head vs
+the opponent — computed from our own box-score logs
+(`onesource/playerlogs.py`) and shown as a red→green gradient on the Props
+view. Selecting a prop draws a bar chart of the player's recent games
+against the line (green = over, red = under). Logs come from the imported
+backfill plus a forward store the hourly job appends from MLB boxscores, so
+the splits stay current as the season passes the backfill cutoff. (WNBA
+forward log ingestion is the next addition; its splits are current through
+the import for now.)
+
 ## Dashboard layout
 
 A left sidebar navigates by sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays**

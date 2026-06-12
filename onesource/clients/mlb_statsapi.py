@@ -76,6 +76,38 @@ def final_scores(date: str) -> list[dict]:
     return out
 
 
+def box_player_logs(game_pk: int) -> list[dict]:
+    """Per-player batting + pitching lines from a finished game's boxscore,
+    shaped for the player-log store (name, date, opponent, stat fields)."""
+    data = cached_json(
+        f"statsapi:box:{game_pk}",
+        _TTL_STATIC,
+        lambda: _get(f"game/{game_pk}/boxscore"),
+    )
+    teams = data.get("teams", {})
+    names = {side: teams.get(side, {}).get("team", {}).get("abbreviation")
+             or teams.get(side, {}).get("team", {}).get("name")
+             for side in ("home", "away")}
+    rows = []
+    for side, opp in (("home", "away"), ("away", "home")):
+        for p in teams.get(side, {}).get("players", {}).values():
+            stats = p.get("stats", {})
+            bat, pit = stats.get("batting", {}), stats.get("pitching", {})
+            if not bat and not pit:
+                continue
+            row = {
+                "game_pk": game_pk,
+                "name": p.get("person", {}).get("fullName"),
+                "opponent": names.get(opp),
+            }
+            for src in (bat, pit):
+                for k in ("hits", "totalBases", "homeRuns", "strikeOuts"):
+                    if k in src:
+                        row[k] = src[k]
+            rows.append(row)
+    return rows
+
+
 def team_recent_results(team_id: int, end_date: str, n_games: int = 30) -> list[dict]:
     """Final scores of the team's last n games on or before end_date."""
     data = cached_json(
