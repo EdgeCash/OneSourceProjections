@@ -14,7 +14,8 @@ non-modeled leagues (KBO/EPL/UCL, NCAA baseball/softball) were left behind.
 | `backfill/mlb/<year>/games.json.gz` | Game results + run-line/total context | 2016–2026 | Sports-projections |
 | `backfill/mlb/<year>/statcast_xstats.json.gz` | Per-player xBA/xSLG/xwOBA aggregates by season | 2016–2026 | Sports-projections |
 | `backfill/mlb/<year>/player_games.jsonl.gz` | Player box-score lines | 2021–2026 | Sports-projections |
-| `backfill/mlb/<year>/game_context.jsonl.gz` | Retrosheet context (park, day/night, attendance) | 2021–2026 | Sports-projections |
+| `backfill/mlb/<year>/game_context.jsonl.gz` | Retrosheet game logs: final scores + park, weather, umpires, attendance. For 2016–2021 this is the games source (no games.json those years) | 2016–2026 (no 2019) | Sports-projections |
+| `backfill/mlb/2026/linescores.json.gz` | First-inning and first-5 scores per game (NRFI / F5 markets) | 2026 | Sports-projections |
 | `backfill/mlb/people.json.gz` | MLBAM player id ↔ name/handedness map (4.6k players) | — | Sports-projections |
 | `backfill/wnba/<year>/games.json.gz` | Game results | 2002–2026 | Sports-projections |
 | `backfill/wnba/<year>/player_games.jsonl.gz` | Player box scores (pts/reb/ast/min...) | 2018–2026 | Sports-projections |
