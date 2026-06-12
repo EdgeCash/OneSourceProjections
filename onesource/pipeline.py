@@ -69,9 +69,10 @@ def _batter_table(season: int) -> pd.DataFrame:
     return df
 
 
-def _fp_projections(season: int) -> dict[str, dict]:
+def _fp_projections(season: int, date: str) -> dict[str, dict]:
+    """Daily per-game projections keyed by normalized player name."""
     try:
-        players = fantasypros.mlb_projections(season)
+        players = fantasypros.mlb_projections(season, proj_type="daily", date=date)
         return fantasypros.projection_index(players)
     except Exception as e:
         log.warning("FantasyPros projections unavailable: %s", e)
@@ -148,7 +149,7 @@ def project_props(date: str) -> pd.DataFrame:
     slate = mlb_statsapi.schedule(date)
     pitchers = _pitcher_table(season)
     batters = _batter_table(season)
-    fp = _fp_projections(season)
+    fp = _fp_projections(season, date)
 
     rows: list[dict] = []
     for g in slate:
@@ -182,12 +183,11 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
         if so and pa:
             opp_k = so / pa
 
+        # FP daily projections are already per-game stat lines.
         fp_stats = fp.get(normalize(name), {})
-        fp_k_season = _lookup_float(fp_stats, "K", "SO", "strikeouts")
-        fp_gs = _lookup_float(fp_stats, "GS", "G")
-        fp_k_per_start = (fp_k_season / fp_gs) if fp_k_season and fp_gs else None
+        fp_k_today = _lookup_float(fp_stats, "K", "SO", "strikeouts")
 
-        model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k, fp_k_per_start)
+        model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k, fp_k_today)
         rows.append(
             {
                 "game_pk": g["game_pk"],
@@ -219,25 +219,28 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
                     stats_row = match.iloc[0].to_dict()
 
             exp_ab = prop_model.expected_ab_for_slot(slot)
+            # FP daily projections are already per-game stat lines.
             fp_stats = fp.get(normalize(name), {})
-            games = _lookup_float(fp_stats, "G") or 150.0
-
-            def per_game(*keys):
-                season_total = _lookup_float(fp_stats, *keys)
-                return season_total / games if season_total else None
+            fp_h = _lookup_float(fp_stats, "H", "hits")
+            fp_hr = _lookup_float(fp_stats, "HR")
+            fp_tb = _lookup_float(fp_stats, "TB")
+            if fp_tb is None and fp_h is not None:
+                d2 = _lookup_float(fp_stats, "2B") or 0
+                d3 = _lookup_float(fp_stats, "3B") or 0
+                fp_tb = fp_h + d2 + 2 * d3 + 3 * (fp_hr or 0)
 
             ba = _lookup_float(stats_row, "AVG")
             xba = _lookup_float(stats_row, "est_ba")
-            hits = prop_model.batter_hits(exp_ab, ba, xba, per_game("H", "hits"))
+            hits = prop_model.batter_hits(exp_ab, ba, xba, fp_h)
 
             slg = _lookup_float(stats_row, "SLG")
             xslg = _lookup_float(stats_row, "est_slg")
-            tb = prop_model.batter_total_bases(exp_ab, slg, xslg, per_game("TB"))
+            tb = prop_model.batter_total_bases(exp_ab, slg, xslg, fp_tb)
 
             pa_total = _lookup_float(stats_row, "PA")
             hr_total = _lookup_float(stats_row, "HR")
             hr_rate = hr_total / pa_total if hr_total and pa_total else None
-            hr = prop_model.batter_home_run(exp_ab + 0.4, hr_rate, per_game("HR"))
+            hr = prop_model.batter_home_run(exp_ab + 0.4, hr_rate, fp_hr)
 
             common = {
                 "game_pk": g["game_pk"],
@@ -326,7 +329,33 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
                           "kelly": round(k, 4)})
 
     merged = pd.concat([merged, merged.apply(compute, axis=1)], axis=1)
+    merged = _attach_bp_consensus(merged, date)
     return merged.drop(columns=["norm_player"])
+
+
+def _attach_bp_consensus(props: pd.DataFrame, date: str) -> pd.DataFrame:
+    """Add BettingPros' own projection / EV / recommended side (premium
+    fields via auth=user) as a second opinion next to our model."""
+    prop_market_ids = [
+        mid for name, mid in config.BP_MARKET_IDS.items()
+        if name.startswith(("pitcher_", "batter_"))
+    ]
+    try:
+        raw = bettingpros.props("MLB", date, prop_market_ids)
+    except Exception as e:
+        log.warning("BettingPros /props unavailable: %s", e)
+        return props
+    flat = pd.DataFrame(bettingpros.flatten_props(raw))
+    if flat.empty or flat["participant"].isna().all():
+        return props
+
+    id_to_market = {mid: name for name, mid in config.BP_MARKET_IDS.items()}
+    flat["market"] = flat["market_id"].map(id_to_market)
+    flat["norm_player"] = flat["participant"].map(normalize)
+    flat = flat.dropna(subset=["market"]).drop_duplicates(["norm_player", "market"])
+    cols = ["norm_player", "market", "bp_projection", "bp_ev",
+            "bp_recommended_side", "bp_bet_rating"]
+    return props.merge(flat[cols], on=["norm_player", "market"], how="left")
 
 
 def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:

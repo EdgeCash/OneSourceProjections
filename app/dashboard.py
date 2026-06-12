@@ -95,7 +95,9 @@ with tab_props:
             view = view[view["ev"].notna() & (view["ev"] >= min_edge)]
             view = view.sort_values("ev", ascending=False)
         cols = [c for c in ("player", "team", "opponent", "projection", "line",
-                            "odds", "model_over_prob", "ev", "kelly")
+                            "odds", "model_over_prob", "ev", "kelly",
+                            "bp_projection", "bp_ev", "bp_recommended_side",
+                            "bp_bet_rating")
                 if c in view.columns]
         st.dataframe(view[cols], use_container_width=True, hide_index=True)
         if "ev" in props.columns and props["ev"].notna().any():

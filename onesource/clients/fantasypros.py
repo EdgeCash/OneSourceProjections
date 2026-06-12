@@ -1,5 +1,9 @@
-"""FantasyPros public API client. Used for daily MLB player projections,
-which we blend with our own Statcast-derived rates for prop modeling."""
+"""FantasyPros Public API client (api.fantasypros.com/public/v2/json).
+
+We use the MLB daily projections (`type=daily&date=YYYY-MM-DD`) — per-game
+projected lines for hitters (H) and pitchers (P) — which feed straight
+into the prop models. Note the response's player array key is `player`.
+"""
 
 from __future__ import annotations
 
@@ -34,17 +38,38 @@ def _get(path: str, params: dict | None = None) -> dict:
     return resp.json()
 
 
-def mlb_projections(season: int, position: str | None = None) -> list[dict]:
-    """Player projections for the season/slate. Position e.g. 'P' or 'H'."""
-    params = {}
+def mlb_projections(
+    season: int,
+    proj_type: str = "daily",
+    date: str | None = None,
+    position: str | None = None,
+) -> list[dict]:
+    """MLB player projections. proj_type: daily | weekly | ros | preseason.
+    Daily projections are per-game stat lines for the given date."""
+    params: dict = {"type": proj_type}
+    if date:
+        params["date"] = date
     if position:
         params["position"] = position
     data = cached_json(
-        f"fp:mlb:proj:{season}:{position}",
+        f"fp:mlb:proj:{season}:{proj_type}:{date}:{position}",
         _TTL,
         lambda: _get(f"mlb/{season}/projections", params),
     )
-    return data.get("players", [])
+    return data.get("player", [])
+
+
+def mlb_lineups(date: str, projected: bool = True) -> list[dict]:
+    """Confirmed or projected MLB lineups for a date."""
+    data = cached_json(
+        f"fp:mlb:lineups:{date}:{projected}",
+        30 * 60,
+        lambda: _get(
+            "mlb/lineups",
+            {"start": date, "projected": "true" if projected else "false"},
+        ),
+    )
+    return data.get("games", [])
 
 
 def projection_index(players: list[dict]) -> dict[str, dict]:
@@ -54,7 +79,9 @@ def projection_index(players: list[dict]) -> dict[str, dict]:
     out = {}
     for p in players:
         name = p.get("name") or p.get("player_name")
-        stats = p.get("stats") or p.get("projections") or {}
+        stats = p.get("stats") or p.get("projections") or {
+            k: v for k, v in p.items() if isinstance(v, (int, float))
+        }
         if name:
             out[normalize(name)] = stats
     return out

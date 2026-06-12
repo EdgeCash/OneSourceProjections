@@ -46,18 +46,31 @@ Required secrets (env vars, `.env`, or Streamlit secrets):
 
 | Name | Purpose |
 |---|---|
-| `FANTASYPROS_API_KEY` | FantasyPros projections |
-| `BP_PARTNER_KEY` | BettingPros API key (`x-api-key`) |
-| `BP_USER`, `BP_USER_KEY` | BettingPros account credentials |
+| `FANTASYPROS_API_KEY` | FantasyPros public API key (`x-api-key` header) |
+| `BP_PARTNER_KEY` | BettingPros partner key, sent as `x-api-key` on every call |
+| `BP_USER`, `BP_USER_KEY` | BettingPros premium tier: sent as `auth=user&user=…&key=…` query params to unlock projections/EV/recommended sides |
 | `APP_PASSWORD` | Dashboard password gate |
+
+### API notes
+
+- **BettingPros rate limits**: 5 req/sec, 5,000 req/day across all
+  endpoints. The client throttles to ~4 RPS and caches responses for
+  10 minutes; a full MLB slate run uses roughly a dozen requests.
+- **BettingPros `/props`** supplies their projections, EV, and
+  recommended side (premium fields) — shown on the dashboard as
+  `bp_*` columns next to our model so you can see where you disagree
+  with their consensus. Disagreement is where the interesting bets live.
+- **FantasyPros MLB projections** use `type=daily&date=YYYY-MM-DD`:
+  per-game projected stat lines that blend directly into the prop models.
 
 ### First-run checklist
 
 1. `python scripts/discover_markets.py MLB` — prints your account's market
-   IDs. If they differ from `BP_MARKET_IDS` in `onesource/config.py`,
-   update that dict. (Market IDs vary by partner tier; the offer-flattening
-   in `onesource/clients/bettingpros.py` is also easy to tweak if your
-   payload shape differs.)
+   IDs (id, slug, name, category). Update `BP_MARKET_IDS` in
+   `onesource/config.py` to match; the defaults are placeholders. The
+   flatteners in `onesource/clients/bettingpros.py` pull fields
+   defensively, but spot-check one `/offers` and one `/props` response
+   against them on first run.
 2. `python scripts/run_daily.py` — should print game/prop counts. Batter
    props only appear once lineups are posted (~2-4h before first pitch).
 3. `pytest` — odds math and model sanity checks.
