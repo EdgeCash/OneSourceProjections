@@ -1,0 +1,8 @@
+pandas>=2.0
+numpy>=1.26
+scipy>=1.11
+requests>=2.31
+pybaseball>=2.2.7
+streamlit>=1.36
+python-dotenv>=1.0
+pyarrow>=15

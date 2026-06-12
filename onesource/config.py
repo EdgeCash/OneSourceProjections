@@ -1,0 +1,78 @@
+"""Central configuration. Secrets come from env vars first, then Streamlit
+secrets when running inside the dashboard, so the same code works in GitHub
+Actions, locally with a .env file, and on Streamlit Cloud."""
+
+import os
+from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+CACHE_DIR = REPO_ROOT / "data" / "cache"
+OUTPUT_DIR = REPO_ROOT / "data" / "output"
+
+
+def secret(name: str, default: str | None = None) -> str | None:
+    val = os.environ.get(name)
+    if val:
+        return val
+    try:
+        import streamlit as st
+
+        return st.secrets.get(name, default)
+    except Exception:
+        return default
+
+
+FANTASYPROS_API_KEY = lambda: secret("FANTASYPROS_API_KEY")  # noqa: E731
+BP_PARTNER_KEY = lambda: secret("BP_PARTNER_KEY")  # noqa: E731
+BP_USER = lambda: secret("BP_USER")  # noqa: E731
+BP_USER_KEY = lambda: secret("BP_USER_KEY")  # noqa: E731
+APP_PASSWORD = lambda: secret("APP_PASSWORD")  # noqa: E731
+
+# ---------------------------------------------------------------------------
+# Model knobs. Tune these as you collect results.
+# ---------------------------------------------------------------------------
+
+# League-average runs per team per game; used as the regression prior.
+LEAGUE_RUNS_PER_GAME = 4.5
+
+# Home teams win ~53-54% of even matchups historically.
+HOME_FIELD_RUNS = 0.12
+
+# How many recent team games feed the offense rating.
+TEAM_FORM_GAMES = 30
+
+# Shrinkage: weight on team's own rate vs league average (Bayesian-ish).
+TEAM_RATE_WEIGHT = 0.65
+
+# Starter is assumed to cover this share of the game before the bullpen.
+STARTER_INNINGS_SHARE = 5.3 / 9.0
+
+# Monte Carlo draws for the game simulation.
+SIM_DRAWS = 20_000
+
+# Weight given to FantasyPros projections when blending with our own rates.
+FP_BLEND_WEIGHT = 0.5
+
+# Betting thresholds.
+MIN_EDGE = 0.02  # only surface bets with >= 2% EV edge
+KELLY_FRACTION = 0.25  # quarter Kelly
+
+# BettingPros market ids vary by sport/account tier. These are sensible
+# defaults for MLB; run `python scripts/discover_markets.py` once with your
+# keys to print the live list and adjust here if needed.
+BP_MARKET_IDS = {
+    "moneyline": 1,
+    "spread": 3,  # run line
+    "total": 2,
+    "pitcher_strikeouts": 285,
+    "batter_hits": 287,
+    "batter_total_bases": 288,
+    "batter_home_runs": 286,
+}
