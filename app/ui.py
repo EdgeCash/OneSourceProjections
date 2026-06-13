@@ -653,7 +653,7 @@ PROP_RENAMES = {
     "model_over_prob": "Over %", "ev": "EV", "ev_over": "Over EV",
     "ev_under": "Under EV", "kelly": "Kelly",
     "hr_l5": "L5", "hr_l10": "L10", "hr_l20": "L20", "hr_season": "Season",
-    "hr_h2h": "H2H",
+    "hr_h2h": "H2H", "opp_rank": "Def Rk",
     "bp_projection": "BP Proj", "bp_ev": "BP EV",
     "bp_recommended_side": "BP Side", "bp_bet_rating": "BP ★",
 }
