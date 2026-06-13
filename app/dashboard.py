@@ -40,45 +40,65 @@ require_password()
 
 st.markdown("""
 <style>
-  :root { --osp-accent:#3fb950; --osp-accent2:#58a6ff; --osp-card:#161b24;
-          --osp-line:#232a36; --osp-bg:#0d1117; }
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+  :root { --acc:#00e676; --acc2:#22d3ee; --bg:#080b12; --card:#121826;
+          --line:#1e2636; --neg:#ff4d6d;
+          --disp:'Space Grotesk', system-ui, sans-serif; }
   .stApp { background:
-    radial-gradient(1200px 600px at 12% -8%, rgba(63,185,80,0.07), transparent 55%),
-    radial-gradient(1000px 500px at 100% 0%, rgba(88,166,255,0.06), transparent 50%),
-    var(--osp-bg); }
-  .block-container { padding-top: 1.2rem; padding-bottom: 2rem; max-width: 1320px; }
+    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,0.10), transparent 55%),
+    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,0.08), transparent 50%),
+    var(--bg); }
+  .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1340px; }
+  /* headings + brand in the bold display face */
+  h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
+    letter-spacing: -0.5px; }
   section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0c1119 0%,#0a0e15 100%);
-    border-right: 1px solid #1c2330; }
-  section[data-testid="stSidebar"] .stRadio label { font-size: 0.99rem; padding: 3px 0; }
-  /* nav radio: pill-style active row */
+    background: linear-gradient(180deg,#0b0f18 0%,#070a11 100%);
+    border-right: 1px solid var(--line); }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
-    border-radius: 8px; padding: 4px 8px; transition: background .15s ease; }
+    border-radius: 10px; padding: 5px 10px; font-weight: 600;
+    transition: background .15s ease; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
-    background: rgba(88,166,255,0.08); }
-  [data-testid="stMetric"] {
-    background: linear-gradient(160deg, rgba(63,185,80,0.10), rgba(88,166,255,0.05));
-    border: 1px solid rgba(80,160,120,0.22); border-radius: 12px;
-    padding: 12px 16px; box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset; }
-  [data-testid="stMetricLabel"] { opacity: 0.72; font-size: 0.78rem;
-    text-transform: uppercase; letter-spacing: 0.4px; }
-  [data-testid="stMetricValue"] { font-weight: 800; letter-spacing: -0.5px; }
-  .osp-brand { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.6px;
-    margin: 0 0 0.1rem 0;
-    background: linear-gradient(90deg,#3fb950,#58a6ff); -webkit-background-clip: text;
+    background: rgba(0,230,118,0.10); }
+  /* metric cards: punchy, glowing accent edge, big display-face value */
+  [data-testid="stMetric"] { position: relative; overflow: hidden;
+    background: linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)),
+      var(--card);
+    border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+  [data-testid="stMetric"]::before { content:""; position:absolute; left:0; top:0;
+    bottom:0; width:3px; background: linear-gradient(180deg,var(--acc),var(--acc2)); }
+  [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.74rem;
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  [data-testid="stMetricValue"] { font-family: var(--disp); font-weight: 700;
+    font-size: 1.85rem; letter-spacing: -1px; }
+  .osp-brand { font-size: 1.55rem; font-weight: 700; margin: 0 0 0.1rem 0;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    background: linear-gradient(90deg,var(--acc),var(--acc2)); -webkit-background-clip: text;
     background-clip: text; -webkit-text-fill-color: transparent; }
-  .osp-title { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
-  div[data-testid="stCaptionContainer"] { opacity: 0.66; }
-  .stTabs [data-baseweb="tab"] { font-size: 0.95rem; }
-  .stButton > button { border-radius: 9px; border: 1px solid var(--osp-line);
-    font-weight: 600; transition: border-color .15s ease, transform .05s ease; }
-  .stButton > button:hover { border-color: var(--osp-accent); }
-  .stButton > button:active { transform: translateY(1px); }
-  .osp-hero { background: linear-gradient(135deg, rgba(63,185,80,0.10), rgba(88,166,255,0.06));
-    border: 1px solid var(--osp-line); border-radius: 16px; padding: 16px 20px;
-    margin-bottom: 14px; }
-  .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:2px 9px;
+  .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
+  div[data-testid="stCaptionContainer"] { opacity: 0.62; }
+  /* tabs: bold, electric active underline */
+  .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
+    font-size: 0.96rem; }
+  .stTabs [aria-selected="true"] { color: var(--acc) !important; }
+  .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
+    height: 3px; }
+  /* buttons: glow on hover, lift on press */
+  .stButton > button { border-radius: 10px; border: 1px solid var(--line);
+    font-weight: 700; transition: all .15s ease; }
+  .stButton > button:hover { border-color: var(--acc); color: #fff;
+    box-shadow: 0 0 0 1px var(--acc), 0 6px 18px rgba(0,230,118,0.18);
+    transform: translateY(-1px); }
+  .stButton > button:active { transform: translateY(0); }
+  .osp-hero { background: linear-gradient(135deg, rgba(0,230,118,0.12),
+      rgba(34,211,238,0.06));
+    border: 1px solid rgba(0,230,118,0.25); border-radius: 18px; padding: 18px 22px;
+    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,0.35); }
+  .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:3px 10px;
     border-radius:999px; margin-right:6px; }
+  .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
+  @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 </style>
 """, unsafe_allow_html=True)
 
@@ -934,8 +954,8 @@ def _score_ticker(games: list[dict]):
     live = [g for g in games if g.get("state") == "in"] or games
     chips = []
     for g in live[:40]:
-        color = ("#3fb950" if g.get("state") == "in"
-                 else "#8b949e" if g.get("state") == "post" else "#58a6ff")
+        color = ("#00e676" if g.get("state") == "in"
+                 else "#8b949e" if g.get("state") == "post" else "#22d3ee")
         chips.append(
             f"<span style='margin:0 18px;color:{color};font-weight:600;'>"
             f"{scores.ticker_text(g)}</span>")
@@ -943,8 +963,8 @@ def _score_ticker(games: list[dict]):
         return
     strip = "".join(chips)
     st.markdown(
-        "<div style='overflow:hidden;white-space:nowrap;border:1px solid #232a36;"
-        "border-radius:8px;background:#0d1117;padding:8px 0;margin-bottom:10px;'>"
+        "<div style='overflow:hidden;white-space:nowrap;border:1px solid #1e2636;"
+        "border-radius:8px;background:#0b0f18;padding:8px 0;margin-bottom:10px;'>"
         "<div style='display:inline-block;padding-left:100%;"
         "animation:osp-marquee 60s linear infinite;'>" + strip + strip + "</div></div>"
         "<style>@keyframes osp-marquee{0%{transform:translateX(0)}"
@@ -966,8 +986,8 @@ def _score_card(g: dict) -> str:
         return (f"<div style='display:flex;justify-content:space-between;'>"
                 f"<span style='font-weight:{weight};'>{logo}{s.get('abbrev') or s.get('team') or '—'}{rec}</span>"
                 f"<span style='font-weight:{weight};font-size:1.05rem;'>{sc}</span></div>")
-    color = ("#3fb950" if g.get("state") == "in" else "#8b949e")
-    return ("<div style='background:#161b24;border:1px solid #232a36;border-radius:10px;"
+    color = ("#00e676" if g.get("state") == "in" else "#8b949e")
+    return ("<div style='background:#121826;border:1px solid #1e2636;border-radius:10px;"
             "padding:10px 12px;'>"
             + row("away") + "<div style='height:4px;'></div>" + row("home")
             + f"<div style='color:{color};font-size:0.72rem;margin-top:6px;'>"
@@ -1226,8 +1246,8 @@ def render_home():
         if not any_rows:
             st.caption("No games scheduled on this slate.")
         ready, _ = ai.available()
-        chip = ("<span class='osp-pill' style='background:rgba(63,185,80,0.18);"
-                "color:#3fb950;'>● AI analyst on</span>" if ready else
+        chip = ("<span class='osp-pill live' style='background:rgba(0,230,118,0.18);"
+                "color:#00e676;'>● AI analyst on</span>" if ready else
                 "<span class='osp-pill' style='background:rgba(110,118,129,0.18);"
                 "color:#8b949e;'>○ AI analyst off</span>")
         st.markdown(chip, unsafe_allow_html=True)
