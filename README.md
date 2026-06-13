@@ -184,7 +184,32 @@ it scans each slate for **arbitrage**, **middles** (totals/spreads with a line
 gap), and **low-hold** soft markets. Everything is pure functions over
 `{book: {side: price}}` dicts (unit-tested in `tests/test_edge.py`), with a
 snapshot-store adapter (`slate_books` / `scan_slate`). The **EDGES** tab renders
-all four; it lights up automatically as multi-book odds accumulate.
+all four; it lights up automatically as multi-book odds accumulate. The Odds API
+ingestion pulls the `us,us2` regions (≈15+ books incl. ESPN BET, Fanatics) so
+the consensus is sharper — set `ODDS_API_REGIONS` back to `us` to halve credit
+spend.
+
+## Expert consensus (searchable)
+
+`onesource/experts.py` builds a multi-source consensus per prop from three
+*independent* reads: **our model** (`model_over_prob` → a lean), **BettingPros'
+expert recommendation** (`bp_recommended_side` + their `bp_bet_rating` ★
+confidence — premium fields populated by the `BP_USER` auth), and the **public**
+(`pick_pct_over` pick distribution). The **Experts** tab ranks props by how many
+sources agree (✅ when all do), with a top-bar search by player/team/market —
+so you can quickly check where the experts, the public, and the model line up.
+Pure over the published slate, unit-tested in `tests/test_experts.py`.
+
+## SGP correlation finder
+
+`onesource/sgp.py` prices same-game parlays through the Gaussian copula
+(`onesource.calculators`) using correlation **priors** for common leg
+relationships (`CORRELATION_PRESETS`). Given each leg's win probability and a
+correlation, `price_sgp` returns the correlation-adjusted joint probability, the
+fair vs naive-independent prices, the "lift", and — with the book's quoted SGP
+price — the EV and ¼-Kelly stake. Surfaced in **Tools → Parlay & Correlation**:
+positive correlation lifts the true joint probability above the independent
+product, so a book SGP priced near the independent number is +EV.
 
 ## AI analyst (built-in "send to AI")
 
@@ -201,7 +226,8 @@ leaving the app.
 A left sidebar opens on a **Command Center** home (KPI tiles for today's edges,
 best EV, and model Brier/ROI/CLV, plus a top-edges table), then navigates by
 sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays** (the cross-sport best-bets
-board), **Edges** (the multi-book consensus scanner), **Scores**, **DFS**,
+board, split into Game/Props tabs), **Edges** (the multi-book consensus
+scanner), **Experts** (multi-source consensus, searchable), **Scores**, **DFS**,
 **Tools**, and **Performance** (the forward-test tracker). The top bar shows the
 section title and a team/player search; each
 sport view has Games (matchup cards with team logos, projected score, win

@@ -39,9 +39,12 @@ THE_ODDS_API_KEY = lambda: secret("THE_ODDS_API_KEY")  # noqa: E731
 # The Odds API (multi-book lines). Credit-frugal defaults: us region, the
 # three cheap featured markets, cached ~hourly, and a hard credit floor below
 # which we stop calling so the monthly balance can never drain to zero.
-# Only the markets we actually consume (CLV + grading use moneyline + totals);
-# 2 credits per sport per call. Add "spreads" when line-shopping needs it.
-ODDS_API_REGIONS = "us"
+# Books: "us" is the core ~10 US books; "us2" adds ESPN BET, Fanatics, Fliff,
+# etc. More books => a sharper de-vigged consensus and better line shopping on
+# the EDGES tab. Cost is (markets x regions) credits per sport per call, so
+# us,us2 with h2h,totals = 4 credits/sport/hr; the credit floor still guards the
+# account. Trim back to "us" to halve spend. Add "spreads" when EDGES needs it.
+ODDS_API_REGIONS = "us,us2"
 ODDS_API_MARKETS = "h2h,totals"
 ODDS_API_TTL = 3300  # seconds (~55 min) — at most one spend per sport per hour
 ODDS_API_MIN_CREDITS = 1000  # stop calling once the account drops below this

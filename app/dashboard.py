@@ -157,7 +157,8 @@ with st.sidebar:
     st.caption("projections & research")
     section = st.radio("Navigate",
                        ["HOME"] + NAV_SPORTS
-                       + ["SCORES", "PLAYS", "EDGES", "DFS", "TOOLS", "PERFORMANCE"],
+                       + ["SCORES", "PLAYS", "EDGES", "EXPERTS", "DFS", "TOOLS",
+                          "PERFORMANCE"],
                        label_visibility="collapsed", key="nav")
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
@@ -998,29 +999,40 @@ def render_tools():
         except ValueError:
             st.warning("Enter comma-separated numbers, e.g. -110, +120.")
         st.divider()
-        st.markdown("**Same-game parlay** — N correlated legs (Gaussian copula)")
-        legs_p = st.text_input("Leg win % (comma-separated)", "55, 60, 50",
+        st.markdown("**Same-game parlay** — correlation-adjusted fair price & EV")
+        from onesource import sgp as _sgp
+        legs_p = st.text_input("Leg win % (comma-separated)", "55, 60",
                                key="sgp_p")
-        rho = st.slider("Same-game correlation ρ", -0.5, 1.0, 0.3, 0.05,
-                        key="sgp_rho")
+        preset = st.selectbox("Leg relationship (sets ρ)",
+                              list(_sgp.CORRELATION_PRESETS), index=1,
+                              key="sgp_preset")
+        rho = st.slider("Correlation ρ (override the preset)", -0.5, 1.0,
+                        _sgp.CORRELATION_PRESETS[preset], 0.05, key="sgp_rho")
+        quoted = st.number_input("Book's SGP price (optional; 0 = none)",
+                                 value=0, step=5, key="sgp_quote")
         try:
             ps = [float(x) / 100 for x in legs_p.split(",") if x.strip()]
-            if 1 <= len(ps) and all(0 < p < 1 for p in ps):
-                cr = calc.correlated_parlay(ps, rho=rho)
-                rc = st.columns(3)
-                rc[0].metric("Joint (correlated)", f"{cr['joint_prob']:.1%}",
-                             delta=f"{cr['lift'] * 100:+.1f} pts vs indep")
-                rc[1].metric("If independent", f"{cr['independent_prob']:.1%}")
-                rc[2].metric("Fair price", ui.fmt_american(cr["fair_american"])
-                             if cr["fair_american"] is not None else "—")
-            else:
-                st.warning("Enter win percentages between 0 and 100.")
-        except ValueError:
-            st.warning("Enter comma-separated numbers, e.g. 55, 60, 50.")
-        st.caption("Positive correlation makes the true joint probability "
-                   "higher than the independent product — books price this in, "
-                   "so an unadjusted parlay price can be a trap or an edge. "
-                   "Compare the fair price here to the book's SGP price.")
+            r = _sgp.price_sgp(ps, rho=rho,
+                               quoted_american=quoted if quoted else None)
+            rc = st.columns(3)
+            rc[0].metric("Joint (correlated)", f"{r['joint_prob']:.1%}",
+                         delta=f"{r['lift'] * 100:+.1f} pts vs indep")
+            rc[1].metric("Fair price", ui.fmt_american(r["fair_american"])
+                         if r["fair_american"] is not None else "—")
+            rc[2].metric("If independent", ui.fmt_american(r["independent_american"])
+                         if r["independent_american"] is not None else "—")
+            if "ev" in r:
+                ec = st.columns(2)
+                ec[0].metric("EV vs book's SGP", f"{r['ev']:+.1%}",
+                             help="Positive = the book's SGP price beats the "
+                                  "correlation-adjusted fair value.")
+                ec[1].metric("¼-Kelly stake", f"{r['stake']:.1%}")
+        except ValueError as e:
+            st.warning(str(e))
+        st.caption("Pick the relationship between your legs (or set ρ directly). "
+                   "Positive correlation lifts the true joint probability above "
+                   "the independent product — so a book SGP priced near the "
+                   "independent number is +EV. Enter the book's price to grade it.")
 
 
 def ui_ev(prob: float, american) -> float:
@@ -1163,6 +1175,51 @@ def render_edges():
 
 
 # ---------------------------------------------------------------------------
+# EXPERTS: multi-source consensus (model + BettingPros experts + public)
+# ---------------------------------------------------------------------------
+
+def render_experts():
+    q = topbar("Expert Consensus")
+    date_sel = pick_date()
+    from onesource import experts
+    rows = experts.consensus_table(slates.get(date_sel, {}), query=q or "")
+    st.caption("Where independent reads agree: **our model**, **BettingPros' "
+               "expert recommendation** (with their ★ confidence), and the "
+               "**public** pick %. Search a player/team/market in the top bar.")
+    if not rows:
+        st.info("No props with a consensus signal on this slate yet. "
+                "BettingPros expert recommendations populate once the BP_USER "
+                "premium auth is configured; our model lean shows regardless.")
+        return
+    multi = [r for r in rows if r["n_sources"] >= 2]
+    unanimous = [r for r in rows if r["unanimous"]]
+    c = st.columns(4)
+    c[0].metric("Props", len(rows))
+    c[1].metric("Multi-source", len(multi))
+    c[2].metric("Unanimous", len(unanimous))
+    c[3].metric("Best EV", f"{max((r['ev'] or 0) for r in rows):+.1%}")
+
+    only_multi = st.toggle("Only props where 2+ sources have a lean",
+                           value=bool(multi))
+    show = multi if only_multi else rows
+    df = pd.DataFrame([{
+        "Sport": r["sport"], "Player": r["player"], "Market": r["market"],
+        "Line": r["line"] if pd.notna(r["line"]) else None,
+        "Consensus": ("✅ " if r["unanimous"] else "") + (r["consensus"] or "split"),
+        "Model": r["model_side"] or "—", "BP Expert": r["bp_side"] or "—",
+        "Public": r["public_side"] or "—", "BP ★": r["bp_rating"],
+        "Agree": f"{r['agree']}/{r['n_sources']}",
+        "EV %": (r["ev"] * 100) if r["ev"] is not None else None}
+        for r in show])
+    st.dataframe(df, width="stretch", hide_index=True, height=600, column_config={
+        "EV %": st.column_config.NumberColumn(format="%+.1f%%"),
+        "BP ★": st.column_config.NumberColumn(format="%.1f ★")})
+    st.caption("✅ = every available source agrees. BP Expert / Public / BP ★ "
+               "fill in when BettingPros premium auth is set; Model is always "
+               "shown. Click the **EV %** header to sort.")
+
+
+# ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
 
@@ -1176,6 +1233,8 @@ elif section == "PLAYS":
     render_plays()
 elif section == "EDGES":
     render_edges()
+elif section == "EXPERTS":
+    render_experts()
 elif section == "DFS":
     render_dfs()
 elif section == "TOOLS":
