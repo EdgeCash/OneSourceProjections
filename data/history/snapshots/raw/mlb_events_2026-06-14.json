@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98851,
+  "sr_id": "634783f0-106b-4180-b520-0a225e852a32",
+  "sport": "MLB",
+  "scheduled": "2026-06-14 16:15:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "MIA",
+  "link": "/mlb/matchups/miami-marlins-vs-pittsburgh-pirates/?date=2026-06-14",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47239",
+    "name": "Paul Skenes",
+    "link": "/mlb/props/paul-skenes/",
+    "player": {
+     "short_name": "P. Skenes",
+     "first_name": "Paul",
+     "last_name": "Skenes",
+     "image": "https://images.fantasypros.com/images/players/mlb/47239/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "paul-skenes",
+     "jersey_number": 30
+    }
+   },
+   "visitor_probable": {
+    "id": "43836",
+    "name": "Max Meyer",
+    "link": "/mlb/props/max-meyer/",
+    "player": {
+     "short_name": "M. Meyer",
+     "first_name": "Max",
+     "last_name": "Meyer",
+     "image": "https://images.fantasypros.com/images/players/mlb/43836/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "slug": "max-meyer",
+     "jersey_number": 23
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 35,
+      "L": 35,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 35,
+      "L": 35,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 72,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "SSW",
+   "forecast_wind_degree": 206,
+   "forecast_rain_chance": 34,
+   "forecast_icon": "Rain",
+   "forecast_pressure": 1007,
+   "forecast_humidity": 0.76
+  },
+  "broadcasts": [
+   {
+    "network": "Peacock",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nbc-peacock-alt-us.png"
+   }
+  ]
+ },
+ {
+  "id": 98689,
+  "sr_id": "511e3a94-80e8-47f4-ae59-c637d5234f52",
+  "sport": "MLB",
+  "scheduled": "2026-06-14 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "SD",
+  "link": "/mlb/matchups/baltimore-orioles-vs-san-diego-padres/?date=2026-06-14",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6995",
+    "name": "Trevor Rogers",
+    "link": "/mlb/props/trevor-rogers/",
+    "player": {
+     "short_name": "T. Rogers",
+     "first_name": "Trevor",
+     "last_name": "Rogers",
+     "image": "https://images.fantasypros.com/images/players/mlb/6995/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "trevor-rogers",
+     "jersey_number": 28
+    }
+   },
+   "visitor_probable": {
+    "id": "7002",
+    "name": "Walker Buehler",
+    "link": "/mlb/props/walker-buehler/",
+    "player": {
+     "short_name": "W. Buehler",
+     "first_name": "Walker",
+     "last_name": "Buehler",
+     "image": "https://images.fantasypros.com/images/players/mlb/7002/headshot/210x210.webp",
+     "position": "SP",
+     "team": "SD",
+     "conference": "NL",
+     "division": "West",
+     "slug": "walker-buehler",
+     "jersey_number": 10
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 34,
+      "L": 37,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "SD",
+    "name": "Padres",
+    "link": "/mlb/teams/san-diego-padres/",
+    "team": {
+     "city": "San Diego",
+     "abbreviation": "SD",
+     "conference": "NL",
+     "division": "West",
+     "record": {
+      "W": 35,
+      "L": 33,
+      "T": 0
+     },
+     "slug": "san-diego-padres",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 90,
+   "forecast_wind_speed": 18,
+   "forecast_wind_direction": "S",
+   "forecast_wind_degree": 191,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1008,
+   "forecast_humidity": 0.54
+  },
+  "broadcasts": [
+   {
+    "network": "MASN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

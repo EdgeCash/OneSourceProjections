@@ -1,0 +1,62 @@
+[
+ {
+  "id": 129,
+  "sport_id": 2,
+  "sport": "NBA",
+  "category": "game-odds",
+  "slug": "spread",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 00:56:43",
+  "sort": 59,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": true,
+   "player_id": -1,
+   "team_id": 1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Point Spread",
+   "short_label": "Spread",
+   "meta_title": "NBA Against the Spread Odds {MM/DD/YY} | Best Basketball Point Spreads",
+   "meta_description": "View {MM/DD/YY} NBA Against the Spread {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "NBA Against the Spread {ODDS_TYPE} - {MM/DD/YY} ({DISPLAY_SEASON} Season)",
+   "page_subtitle": "Point Spreads",
+   "app_top_label": "{pick_team_name_line_odds_fit}",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ },
+ {
+  "id": 128,
+  "sport_id": 2,
+  "sport": "NBA",
+  "category": "game-odds",
+  "slug": "total",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 00:56:19",
+  "sort": 60,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": true,
+   "player_id": -1,
+   "team_id": -1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Total Points",
+   "short_label": "Total Points",
+   "meta_title": "NBA Over/Under Points Odds {MM/DD/YY} | Best Basketball Totals Lines",
+   "meta_description": "View {MM/DD/YY} NBA Over/Under {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "NBA Over/Under {ODDS_TYPE} - {MM/DD/YY} ({DISPLAY_SEASON} Season)",
+   "page_subtitle": "Total Points",
+   "app_top_label": "{o_u_short}{line} {scoring_type_label} ({odds})",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ }
+]
