@@ -211,28 +211,33 @@ def pick_date() -> str:
 
 
 def ai_block(brief: str, key: str):
-    """Unified 'send to AI' panel: a one-click Claude analysis (when an API key
-    is configured) over the markdown brief, plus the copy-paste brief itself as
-    a fallback for any external AI. The analysis persists across reruns via
-    session_state so it doesn't vanish on the next interaction."""
-    with st.expander("🤖 AI analyst & copy-for-AI"):
-        ready, reason = ai.available()
-        out_key = f"ai_out_{key}"
+    """'Send to AI' panel. The free path is primary: copy the markdown brief and
+    paste it into Claude.ai (or any chatbot) on your own subscription — no API
+    cost. The in-app Claude analysis is offered second, clearly marked as a paid
+    API call, and only when a key is configured. The analysis persists across
+    reruns via session_state so it doesn't vanish on the next interaction."""
+    with st.expander("🤖 Send to AI  ·  free copy-paste"):
+        st.caption("**Free** — copy this brief and paste it into Claude.ai or "
+                   "any chatbot. Uses your own subscription; no API charge.")
+        st.code(brief, language="markdown")
+        st.caption("Hover the box and click ⧉ to copy.")
+        ready, _ = ai.available()
         if ready:
+            out_key = f"ai_out_{key}"
+            st.divider()
             c1, c2 = st.columns([1, 3])
-            if c1.button("✨ Analyze", key=f"ai_btn_{key}"):
+            if c1.button("✨ Analyze in-app", key=f"ai_btn_{key}",
+                         help="Optional: runs Claude via the Anthropic API "
+                              "(~5¢/click, billed to your API key — NOT your "
+                              "Claude subscription)."):
                 try:
                     with st.spinner("Claude is reading the brief…"):
                         st.session_state[out_key] = ai.analyze(brief)
                 except Exception as e:  # network/auth/rate-limit — show, don't crash
                     st.session_state[out_key] = f"⚠️ AI analyst error: {e}"
-            c2.caption("Claude reads the brief below and gives a grounded read.")
+            c2.caption("Optional paid one-click read (Anthropic API, ~5¢).")
             if st.session_state.get(out_key):
                 st.markdown(st.session_state[out_key])
-        else:
-            st.caption(f"💡 {reason}")
-        st.code(brief, language="markdown")
-        st.caption("Hover the box and click ⧉ to copy, then paste into any AI.")
 
 
 # ---------------------------------------------------------------------------
@@ -579,13 +584,14 @@ def render_plays():
     if board.empty:
         st.info(f"No bets clear the {min_edge:.1%} edge bar on {date_sel} yet.")
         return
+    games = board[board["type"] == "Game"]
+    props = board[board["type"] == "Prop"]
     c = st.columns(4)
     c[0].metric("Edges", len(board))
-    c[1].metric("Games", int((board["type"] == "Game").sum()))
-    c[2].metric("Props", int((board["type"] == "Prop").sum()))
+    c[1].metric("Games", len(games))
+    c[2].metric("Props", len(props))
     c[3].metric("Best EV", f"{board['ev'].max():+.1%}")
 
-    view = board.copy()
     # line shopping: best available price + book per bet from multi-book odds
     from onesource import lineshop
     shop = ({sp: lineshop.best_lines(sp, date_sel)
@@ -602,46 +608,59 @@ def render_plays():
                               r.get("_sidekey"))
         return pd.Series([hit["price"], hit["book"]] if hit else [None, None])
 
-    if {"_shop_mkt", "_home", "_away", "_sidekey"}.issubset(view.columns):
-        view[["_best_price", "_best_book"]] = view.apply(_shop, axis=1)
-    else:
-        view["_best_price"], view["_best_book"] = None, None
-    has_shop = view["_best_price"].notna().any()
-    view["best"] = [
-        f"{ui.fmt_american(p)} ({str(b).replace('_', ' ').title()})"
-        if p is not None and pd.notna(p) else "—"
-        for p, b in zip(view["_best_price"], view["_best_book"])]
+    def render_board(sub, key, kind):
+        if sub.empty:
+            st.info(f"No {kind} edges clear the {min_edge:.1%} bar on {date_sel}.")
+            return
+        view = sub.copy()
+        if {"_shop_mkt", "_home", "_away", "_sidekey"}.issubset(view.columns):
+            view[["_best_price", "_best_book"]] = view.apply(_shop, axis=1)
+        else:
+            view["_best_price"], view["_best_book"] = None, None
+        has_shop = view["_best_price"].notna().any()
+        view["best"] = [
+            f"{ui.fmt_american(p)} ({str(b).replace('_', ' ').title()})"
+            if p is not None and pd.notna(p) else "—"
+            for p, b in zip(view["_best_price"], view["_best_book"])]
 
-    view["price"] = view["price"].map(ui.fmt_american)
-    view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
-    view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
-    stake_ev = (view["ev"] / 100 * config.KELLY_FRACTION).clip(lower=0)
-    stake_ev[view["ev"] >= 30] = 0  # no stake on implausible edges
-    view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
-                     .fillna(stake_ev) * bankroll).round(0)
-    view["time"] = view["time"].map(ui.fmt_time_et)
-    cols = ["sport", "bet", "game", "time", "price"]
-    if has_shop:
-        cols.append("best")
-    cols += ["model_prob", "ev", "stake"]
-    if "flag" in view.columns and view["flag"].astype(bool).any():
-        cols.append("flag")
-    view = view[cols].rename(columns={
-        "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
-        "price": "Price", "best": "Best (book)", "model_prob": "Model %",
-        "ev": "EV %", "stake": "Stake $", "flag": "Note"})
-    st.dataframe(
-        ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
-        column_config={
-            "Model %": st.column_config.ProgressColumn(
-                "Model %", min_value=0, max_value=100, format="%.0f%%"),
-            "Stake $": st.column_config.NumberColumn(format="$%d")})
-    shop_note = (" **Best (book)** is the top price across books — shopping "
-                 "the best number is the most reliable edge there is."
-                 if has_shop else "")
-    st.caption("Every edge across sports for the slate, sorted by EV. "
-               "Stake = ¼-Kelly × bankroll." + shop_note)
-    ai_block(ui.ai_brief_board(board, date_sel), key=f"board_{date_sel}")
+        view["price"] = view["price"].map(ui.fmt_american)
+        view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
+        view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
+        stake_ev = (view["ev"] / 100 * config.KELLY_FRACTION).clip(lower=0)
+        stake_ev[view["ev"] >= 30] = 0  # no stake on implausible edges
+        view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
+                         .fillna(stake_ev) * bankroll).round(0)
+        view["time"] = view["time"].map(ui.fmt_time_et)
+        cols = ["sport", "bet", "game", "time", "price"]
+        if has_shop:
+            cols.append("best")
+        cols += ["model_prob", "ev", "stake"]
+        if "flag" in view.columns and view["flag"].astype(bool).any():
+            cols.append("flag")
+        view = view[cols].rename(columns={
+            "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
+            "price": "Price", "best": "Best (book)", "model_prob": "Model %",
+            "ev": "EV %", "stake": "Stake $", "flag": "Note"})
+        st.dataframe(
+            ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
+            column_config={
+                "Model %": st.column_config.ProgressColumn(
+                    "Model %", min_value=0, max_value=100, format="%.0f%%"),
+                "Stake $": st.column_config.NumberColumn(format="$%d")})
+        shop_note = (" **Best (book)** is the top price across books — shopping "
+                     "the best number is the most reliable edge there is."
+                     if has_shop else "")
+        st.caption("Sorted by EV. Stake = ¼-Kelly × bankroll." + shop_note)
+        ai_block(ui.ai_brief_board(sub, date_sel), key=key)
+
+    tab_g, tab_p = st.tabs([f"🏟️ Game plays ({len(games)})",
+                            f"🎯 Props ({len(props)})"])
+    with tab_g:
+        render_board(games, f"board_games_{date_sel}", "game")
+    with tab_p:
+        st.caption("Single props — sortable; click the **EV %** header for a "
+                   "quick high-to-low EV check.")
+        render_board(props, f"board_props_{date_sel}", "prop")
 
 
 # ---------------------------------------------------------------------------
