@@ -68,6 +68,69 @@ def slate(sport_key: str, date: str) -> list[dict]:
     return [g for g in _parse_events(data) if not g["completed"]]
 
 
+_TTL_LIVE = 45  # seconds — live scores refresh fast but cap the API calls
+
+
+def _parse_scoreboard(data: dict, sport_key: str) -> list[dict]:
+    out = []
+    for ev in data.get("events", []):
+        comp = (ev.get("competitions") or [{}])[0]
+        status = comp.get("status") or ev.get("status") or {}
+        stype = status.get("type") or {}
+        home = away = None
+        for c in comp.get("competitors", []):
+            t = c.get("team") or {}
+            entry = {
+                "team": t.get("displayName"), "abbrev": t.get("abbreviation"),
+                "logo": t.get("logo"), "score": _to_num(c.get("score")),
+                "record": (c.get("records") or [{}])[0].get("summary"),
+            }
+            (home, away) = (entry, away) if c.get("homeAway") == "home" else (home, entry)
+        if not home or not away:
+            continue
+        out.append({
+            "sport": sport_key, "game_id": ev.get("id"),
+            "game_time": ev.get("date"),
+            "state": stype.get("state"),          # pre / in / post
+            "detail": stype.get("shortDetail"),   # "Q3 4:21", "Final", "8:00 PM"
+            "home": home, "away": away,
+        })
+    return out
+
+
+def scoreboard(sport_key: str, date: str) -> list[dict]:
+    """All games on a date with live status + scores (for the scoreboard)."""
+    compact = date.replace("-", "")
+    data = cached_json(f"espn:scoreboard:{sport_key}:{date}", _TTL_LIVE,
+                       lambda: _get(sport_key, {"dates": compact}))
+    return _parse_scoreboard(data, sport_key)
+
+
+def box_score(sport_key: str, event_id) -> dict:
+    """Generic per-team player stat tables for a game (works across ESPN
+    sports), as {teams: [{team, columns, rows}], ...}. [] on any issue."""
+    try:
+        data = _summary(sport_key, event_id)
+    except Exception:
+        return {}
+    box = data.get("boxscore", {})
+    teams = []
+    for t in box.get("players", []):
+        meta = t.get("team", {})
+        label = meta.get("abbreviation") or meta.get("displayName") or ""
+        columns, rows = None, []
+        for block in t.get("statistics", []):
+            columns = block.get("labels") or block.get("names") or block.get("keys") or []
+            for ath in block.get("athletes", []):
+                stats = ath.get("stats", [])
+                name = (ath.get("athlete", {}) or {}).get("displayName")
+                if name and stats:
+                    rows.append([name, *stats])
+        teams.append({"team": label, "columns": ["Player", *(columns or [])],
+                      "rows": rows})
+    return {"teams": teams}
+
+
 def _summary(sport_key: str, event_id) -> dict:
     sp = SPORTS[sport_key]
     resp = requests.get(f"{BASE}/{sp.espn_path}/summary",

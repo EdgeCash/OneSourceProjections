@@ -120,7 +120,7 @@ with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
     st.caption("projections & research")
     section = st.radio("Navigate",
-                       NAV_SPORTS + ["PLAYS", "DFS", "TOOLS", "PERFORMANCE"],
+                       NAV_SPORTS + ["SCORES", "PLAYS", "DFS", "TOOLS", "PERFORMANCE"],
                        label_visibility="collapsed", key="nav")
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
@@ -622,6 +622,117 @@ def render_performance():
 
 
 # ---------------------------------------------------------------------------
+# SCORES: live scoreboard + box scores (follow results inside the app)
+# ---------------------------------------------------------------------------
+
+@st.cache_data(ttl=30, show_spinner=False)
+def load_scores(date_str: str) -> list[dict]:
+    from onesource import scores
+    return scores.live_scoreboard(date_str)
+
+
+def _score_ticker(games: list[dict]):
+    from onesource import scores
+    live = [g for g in games if g.get("state") == "in"] or games
+    chips = []
+    for g in live[:40]:
+        color = ("#3fb950" if g.get("state") == "in"
+                 else "#8b949e" if g.get("state") == "post" else "#58a6ff")
+        chips.append(
+            f"<span style='margin:0 18px;color:{color};font-weight:600;'>"
+            f"{scores.ticker_text(g)}</span>")
+    if not chips:
+        return
+    strip = "".join(chips)
+    st.markdown(
+        "<div style='overflow:hidden;white-space:nowrap;border:1px solid #232a36;"
+        "border-radius:8px;background:#0d1117;padding:8px 0;margin-bottom:10px;'>"
+        "<div style='display:inline-block;padding-left:100%;"
+        "animation:osp-marquee 60s linear infinite;'>" + strip + strip + "</div></div>"
+        "<style>@keyframes osp-marquee{0%{transform:translateX(0)}"
+        "100%{transform:translateX(-50%)}}</style>", unsafe_allow_html=True)
+
+
+def _score_card(g: dict) -> str:
+    def row(side):
+        s = g.get(side, {})
+        logo = (f"<img src='{s['logo']}' width='22' height='22' "
+                f"style='vertical-align:middle;margin-right:6px;'>" if s.get("logo") else "")
+        sc = s.get("score")
+        sc = "" if sc is None else (f"{int(sc) if float(sc) == int(sc) else sc}")
+        win = (g.get("state") == "post" and sc != "" and
+               (g.get(side, {}).get("score") or 0) >
+               (g.get("home" if side == "away" else "away", {}).get("score") or 0))
+        weight = "800" if win else "500"
+        rec = f"<span style='color:#6e7781;font-size:0.7rem;'> {s.get('record','')}</span>" if s.get("record") else ""
+        return (f"<div style='display:flex;justify-content:space-between;'>"
+                f"<span style='font-weight:{weight};'>{logo}{s.get('abbrev') or s.get('team') or '—'}{rec}</span>"
+                f"<span style='font-weight:{weight};font-size:1.05rem;'>{sc}</span></div>")
+    color = ("#3fb950" if g.get("state") == "in" else "#8b949e")
+    return ("<div style='background:#161b24;border:1px solid #232a36;border-radius:10px;"
+            "padding:10px 12px;'>"
+            + row("away") + "<div style='height:4px;'></div>" + row("home")
+            + f"<div style='color:{color};font-size:0.72rem;margin-top:6px;'>"
+            f"{g.get('detail') or ''}</div></div>")
+
+
+def _auto_fragment(**kw):
+    """st.fragment(run_every=…) when available, else a no-op decorator so the
+    page still renders (just without live auto-refresh) on older Streamlit."""
+    frag = getattr(st, "fragment", None)
+    return frag(**kw) if frag else (lambda f: f)
+
+
+@_auto_fragment(run_every=30)
+def render_scores_board(date_str: str):
+    games = load_scores(date_str)
+    _score_ticker(games)
+    if not games:
+        st.info("No games found for this date (or score sources are "
+                "unreachable right now).")
+        return
+    st.caption(f"{sum(g['state'] == 'in' for g in games)} live · "
+               f"{len(games)} games · auto-refreshes every 30s")
+    by_sport: dict = {}
+    for g in games:
+        by_sport.setdefault(g["sport"], []).append(g)
+    for sport, gs in by_sport.items():
+        st.markdown(f"##### {sport}")
+        cols = st.columns(3)
+        for i, g in enumerate(gs):
+            with cols[i % 3]:
+                st.markdown(_score_card(g), unsafe_allow_html=True)
+
+    # box-score drill-in
+    st.divider()
+    labels = [f"{g['sport']}: {g['away'].get('abbrev') or g['away'].get('team')} @ "
+              f"{g['home'].get('abbrev') or g['home'].get('team')}" for g in games]
+    pick = st.selectbox("📋 Open a box score", ["—", *labels], key="boxpick")
+    if pick != "—":
+        from onesource import scores
+        g = games[labels.index(pick)]
+        box = scores.box_score(g["sport"], g["game_id"])
+        if not box.get("teams"):
+            st.info("Box score not available yet for this game.")
+        for team in box["teams"]:
+            if not team["rows"]:
+                continue
+            st.markdown(f"**{team['team']}**")
+            st.dataframe(pd.DataFrame(team["rows"], columns=team["columns"]),
+                         width="stretch", hide_index=True)
+
+
+def render_scores():
+    topbar("Scoreboard", with_search=False)
+    et_today = pd.Timestamp.now(tz="America/New_York")
+    days = [(et_today - pd.Timedelta(days=d)).date().isoformat() for d in range(3)]
+    date_str = st.radio("Day", days, horizontal=True, label_visibility="collapsed",
+                        format_func=lambda d: "Today" if d == days[0]
+                        else "Yesterday" if d == days[1] else d, key="scoredate")
+    render_scores_board(date_str)
+
+
+# ---------------------------------------------------------------------------
 # TOOLS: the betting-math toolkit (devig / EV / arb / middle / hedge / Kelly)
 # ---------------------------------------------------------------------------
 
@@ -741,6 +852,8 @@ def ui_ev(prob: float, american) -> float:
 
 if section in NAV_SPORTS:
     render_sport(section)
+elif section == "SCORES":
+    render_scores()
 elif section == "PLAYS":
     render_plays()
 elif section == "DFS":
