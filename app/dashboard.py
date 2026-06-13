@@ -99,6 +99,12 @@ st.markdown("""
     border-radius:999px; margin-right:6px; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  /* clickable player names -> profile dialog */
+  a.osp-plink { color:#c9d1d9 !important; text-decoration:none;
+    border-bottom:1px dashed rgba(0,230,118,0.0); transition: color .12s ease,
+    border-color .12s ease; }
+  a.osp-plink:hover { color:#00e676 !important;
+    border-bottom-color:rgba(0,230,118,0.7); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1361,6 +1367,112 @@ def render_experts():
     st.caption("✅ = every available source agrees. BP Expert / Public / BP ★ "
                "fill in when BettingPros premium auth is set; Model is always "
                "shown. Click the **EV %** header to sort.")
+
+
+# ---------------------------------------------------------------------------
+# Player profile dialog (click any player name to open)
+# ---------------------------------------------------------------------------
+
+def _find_player_props(player: str, game_pk, sport: str | None):
+    """All prop rows for a player on the loaded slates, plus the sport they
+    were found in. game_pk disambiguates same-named players across games.
+    Names are normalised (accents/case) so lineup and prop spellings match."""
+    from onesource.names import normalize
+    target = normalize(player)
+    found, found_sport = [], sport
+    for _date, sl in (slates or {}).items():
+        for sp, blob in (sl or {}).items():
+            if sport and sp != sport:
+                continue
+            for p in blob.get("props", []) or []:
+                nm = p.get("norm_player") or normalize(p.get("player", ""))
+                if nm != target:
+                    continue
+                if game_pk and str(p.get("game_pk")) != str(game_pk):
+                    continue
+                found.append(p)
+                found_sport = sp
+    return found, (found_sport or "MLB")
+
+
+@st.dialog("Player profile", width="large")
+def player_dialog(player: str, game_pk, sport: str | None):
+    rows, sport = _find_player_props(player, game_pk, sport)
+    team = next((r.get("team") for r in rows if r.get("team")), "")
+    opp = next((r.get("opponent") for r in rows if r.get("opponent")), "")
+    initials = "".join(w[0] for w in str(player).split()[:2]).upper() or "?"
+    sub = " · ".join(x for x in (team, f"vs {opp}" if opp else "") if x)
+    st.markdown(
+        f"<div style='display:flex;align-items:center;gap:14px;margin-bottom:4px;'>"
+        f"<div style='width:54px;height:54px;border-radius:50%;flex:0 0 auto;"
+        f"display:flex;align-items:center;justify-content:center;font-weight:800;"
+        f"font-size:1.3rem;color:#06210f;"
+        f"background:linear-gradient(135deg,#00e676,#22d3ee);'>{initials}</div>"
+        f"<div><div style='font-size:1.5rem;font-weight:800;'>{player}</div>"
+        f"<div style='color:#8b949e;font-size:0.85rem;'>{sub}</div></div></div>",
+        unsafe_allow_html=True)
+
+    if not rows:
+        st.info("No props posted for this player on this slate yet — MLB props "
+                "firm up once lineups are official (~2-4h before first pitch).")
+        return
+
+    recs = []
+    for r in rows:
+        ev = pd.to_numeric(r.get("ev"), errors="coerce")
+        mop = pd.to_numeric(r.get("model_over_prob"), errors="coerce")
+        recs.append({
+            "Market": ui.short_market(r.get("market", "")),
+            "Line": pd.to_numeric(r.get("line"), errors="coerce"),
+            "Proj": pd.to_numeric(r.get("projection"), errors="coerce"),
+            "Model Over %": mop * 100 if pd.notna(mop) else None,
+            "EV %": ev * 100 if pd.notna(ev) else None,
+            "Pick": ("Over" if pd.notna(mop) and mop >= 0.5 else
+                     "Under" if pd.notna(mop) else "—"),
+        })
+    view = pd.DataFrame(recs)
+
+    sort = st.selectbox(
+        "Sort props by",
+        ["Edge (EV %)", "Market", "Line", "Projection", "Model Over %"],
+        key=f"pp_sort_{player}")
+    by, asc = {"Edge (EV %)": ("EV %", False), "Market": ("Market", True),
+               "Line": ("Line", True), "Projection": ("Proj", False),
+               "Model Over %": ("Model Over %", False)}[sort]
+    view = view.sort_values(by, ascending=asc, na_position="last").reset_index(drop=True)
+
+    def _ev_color(v):
+        if not isinstance(v, (int, float)) or pd.isna(v):
+            return ""
+        if v >= min_edge * 100:
+            return "color:#00e676;font-weight:700;"
+        return "color:#ff6b6b;" if v < 0 else ""
+    sty = (view.style.map(_ev_color, subset=["EV %"])
+           .format({"Line": "{:g}", "Proj": "{:.2f}", "Model Over %": "{:.0f}%",
+                    "EV %": "{:+.1f}%"}, na_rep="—"))
+    st.dataframe(sty, width="stretch", hide_index=True)
+
+    markets = view["Market"].tolist()
+    pick = st.selectbox("Open the full breakdown for", ["—"] + markets,
+                        key=f"pp_detail_{player}")
+    if pick != "—":
+        prop = next((r for r in rows if ui.short_market(r.get("market", "")) == pick),
+                    None)
+        if prop:
+            st.divider()
+            render_prop_detail(sport, prop, [])
+
+
+_clicked = st.query_params.get("player")
+if _clicked:
+    _gk = st.query_params.get("game")
+    _sp = st.query_params.get("s")
+    for _k in ("player", "game", "s"):
+        try:
+            del st.query_params[_k]
+        except KeyError:
+            pass
+    player_dialog(_clicked, _gk, _sp)
 
 
 # ---------------------------------------------------------------------------
