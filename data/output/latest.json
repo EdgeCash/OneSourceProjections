@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-13T03:32:02.980116+00:00",
+ "generated_at": "2026-06-13T04:19:45.215215+00:00",
  "primary_date": "2026-06-13",
  "dates": [
   "2026-06-12",
@@ -116,38 +116,38 @@
       "home_team": "Washington Nationals",
       "away_pitcher": "Bryce Miller",
       "home_pitcher": "Zack Littell",
-      "home_exp_runs": 4.748,
-      "away_exp_runs": 5.76,
-      "proj_total": 10.508,
-      "home_win_prob": 0.3666,
-      "away_win_prob": 0.6334,
+      "home_exp_runs": 4.649,
+      "away_exp_runs": 6.017,
+      "proj_total": 10.666,
+      "home_win_prob": 0.3265,
+      "away_win_prob": 0.6735,
       "over_probs": {
-       "7.5": 0.8343,
-       "8.0": 0.75945,
-       "8.5": 0.75945,
-       "9.0": 0.6268,
-       "9.5": 0.6268
+       "7.5": 0.8448,
+       "8.0": 0.7713,
+       "8.5": 0.7713,
+       "9.0": 0.63985,
+       "9.5": 0.63985
       },
       "home_rl_cover": {
-       "-1.5": 0.2248,
-       "1.5": 0.54585
+       "-1.5": 0.1955,
+       "1.5": 0.4971
       },
       "home_ml": 133.0,
       "away_ml": -133.0,
-      "home_ml_ev": -0.0729,
-      "away_ml_ev": 0.0548,
+      "home_ml_ev": -0.1196,
+      "away_ml_ev": 0.0899,
       "total_line": 9.5,
       "over_odds": 108.0,
       "under_odds": 119.0,
-      "model_over_prob": 0.6268,
+      "model_over_prob": 0.6399,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -122.0,
       "rl_away_odds": 118.0,
-      "model_home_rl": 0.5458,
-      "rl_home_ev": -0.0075,
-      "rl_away_ev": -0.0091
+      "model_home_rl": 0.4971,
+      "rl_home_ev": -0.0518,
+      "rl_away_ev": 0.0441
      },
      {
       "weather": {
@@ -430,7 +430,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 3,
+       "wind_dir": "SSW",
+       "precip_pct": 42
+      },
       "lineups": {
        "home": [
         "Carson Benge",
@@ -461,41 +466,46 @@
       "home_team": "New York Mets",
       "away_pitcher": "Spencer Strider",
       "home_pitcher": "Nolan McLean",
-      "home_exp_runs": 4.449,
-      "away_exp_runs": 4.102,
-      "proj_total": 8.551,
-      "home_win_prob": 0.5504,
-      "away_win_prob": 0.4496,
+      "home_exp_runs": 4.576,
+      "away_exp_runs": 4.182,
+      "proj_total": 8.757,
+      "home_win_prob": 0.556,
+      "away_win_prob": 0.444,
       "over_probs": {
-       "7.5": 0.6373,
-       "8.0": 0.53395,
-       "8.5": 0.53395,
-       "9.0": 0.375,
-       "9.5": 0.375
+       "7.5": 0.6711,
+       "8.0": 0.5644,
+       "8.5": 0.5644,
+       "9.0": 0.40295,
+       "9.5": 0.40295
       },
       "home_rl_cover": {
-       "-1.5": 0.36215,
-       "1.5": 0.72385
+       "-1.5": 0.36835,
+       "1.5": 0.72885
       },
       "home_ml": -115.0,
       "away_ml": 117.0,
-      "home_ml_ev": 0.0167,
-      "away_ml_ev": -0.01,
+      "home_ml_ev": 0.0219,
+      "away_ml_ev": -0.0161,
       "total_line": 8.5,
       "over_odds": 117.0,
       "under_odds": 105.0,
-      "model_over_prob": 0.534,
+      "model_over_prob": 0.5644,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
       "rl_away_odds": 178.0,
-      "model_home_rl": 0.3622,
+      "model_home_rl": 0.3684,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 75,
+       "wind_mph": 9,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [
         "George Springer",
@@ -721,21 +731,21 @@
       "home_team": "Kansas City Royals",
       "away_pitcher": "Tatsuya Imai",
       "home_pitcher": "Luinder Avila",
-      "home_exp_runs": 4.662,
-      "away_exp_runs": 4.703,
-      "proj_total": 9.365,
-      "home_win_prob": 0.4938,
-      "away_win_prob": 0.5062,
+      "home_exp_runs": 4.738,
+      "away_exp_runs": 4.951,
+      "proj_total": 9.69,
+      "home_win_prob": 0.4732,
+      "away_win_prob": 0.5268,
       "over_probs": {
-       "7.5": 0.73495,
-       "8.0": 0.6389,
-       "8.5": 0.6389,
-       "9.0": 0.48385,
-       "9.5": 0.48385
+       "7.5": 0.7646,
+       "8.0": 0.67315,
+       "8.5": 0.67315,
+       "9.0": 0.5229,
+       "9.5": 0.5229
       },
       "home_rl_cover": {
-       "-1.5": 0.31895,
-       "1.5": 0.6724
+       "-1.5": 0.30115,
+       "1.5": 0.6487
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -786,21 +796,21 @@
       "home_team": "Minnesota Twins",
       "away_pitcher": "Kyle Leahy",
       "home_pitcher": "Joe Ryan",
-      "home_exp_runs": 4.684,
-      "away_exp_runs": 3.861,
-      "proj_total": 8.546,
-      "home_win_prob": 0.6169,
-      "away_win_prob": 0.3831,
+      "home_exp_runs": 4.776,
+      "away_exp_runs": 3.981,
+      "proj_total": 8.757,
+      "home_win_prob": 0.6107,
+      "away_win_prob": 0.3893,
       "over_probs": {
-       "7.5": 0.639,
-       "8.0": 0.53195,
-       "8.5": 0.53195,
-       "9.0": 0.3737,
-       "9.5": 0.3737
+       "7.5": 0.66655,
+       "8.0": 0.55935,
+       "8.5": 0.55935,
+       "9.0": 0.4049,
+       "9.5": 0.4049
       },
       "home_rl_cover": {
-       "-1.5": 0.42105,
-       "1.5": 0.77785
+       "-1.5": 0.4123,
+       "1.5": 0.7693
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -820,12 +830,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 86,
-       "wind_mph": 7,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Zach Neto",
@@ -890,12 +895,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 96,
-       "wind_mph": 10,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Shea Langeliers",
@@ -961,8 +961,8 @@
      },
      {
       "weather": {
-       "temp_f": 61,
-       "wind_mph": 10,
+       "temp_f": 62,
+       "wind_mph": 12,
        "wind_dir": "W",
        "precip_pct": 1
       },
@@ -11455,7 +11455,7 @@
       "opponent": "Atlanta Braves",
       "projection": 6.33,
       "dist": "poisson",
-      "param": 6.3269236381800695,
+      "param": 6.3347097020477685,
       "n": NaN,
       "norm_player": "nolan mclean",
       "bp_line": NaN,
@@ -20135,7 +20135,7 @@
       "opponent": "St. Louis Cardinals",
       "projection": 6.29,
       "dist": "poisson",
-      "param": 6.291902131043445,
+      "param": 6.290706936534709,
       "n": NaN,
       "norm_player": "joe ryan",
       "bp_line": NaN,
@@ -21902,7 +21902,7 @@
       "opponent": "Los Angeles Angels",
       "projection": 5.37,
       "dist": "poisson",
-      "param": 5.369612976722476,
+      "param": 5.368615123729826,
       "n": NaN,
       "norm_player": "shane mcclanahan",
       "bp_line": NaN,
@@ -23605,9 +23605,9 @@
       "player": "Gage Jump",
       "team": "Athletics",
       "opponent": "Colorado Rockies",
-      "projection": 5.4,
+      "projection": 5.39,
       "dist": "poisson",
-      "param": 5.395763628309038,
+      "param": 5.394063148428626,
       "n": NaN,
       "norm_player": "gage jump",
       "bp_line": NaN,
@@ -23636,9 +23636,9 @@
       "player": "Sean Sullivan",
       "team": "Colorado Rockies",
       "opponent": "Athletics",
-      "projection": 5.02,
+      "projection": 5.01,
       "dist": "poisson",
-      "param": 5.017724886535552,
+      "param": 5.010591265060241,
       "n": NaN,
       "norm_player": "sean sullivan",
       "bp_line": NaN,
@@ -25341,9 +25341,9 @@
       "player": "Landen Roupp",
       "team": "San Francisco Giants",
       "opponent": "Chicago Cubs",
-      "projection": 5.91,
+      "projection": 5.9,
       "dist": "poisson",
-      "param": 5.907906310728991,
+      "param": 5.900136731746408,
       "n": NaN,
       "norm_player": "landen roupp",
       "bp_line": NaN,
@@ -25374,7 +25374,7 @@
       "opponent": "San Francisco Giants",
       "projection": 2.98,
       "dist": "poisson",
-      "param": 2.980192053047713,
+      "param": 2.9773412555018957,
       "n": NaN,
       "norm_player": "javier assad",
       "bp_line": NaN,
@@ -27082,23 +27082,23 @@
       "game_time": "2026-06-13T02:00Z",
       "away_team": "Golden State Valkyries",
       "home_team": "Seattle Storm",
-      "away_exp": 82.5,
-      "home_exp": 81.35,
-      "proj_total": 163.85,
-      "home_win_prob": 0.3218,
-      "away_win_prob": 0.6782,
+      "away_exp": 84.28,
+      "home_exp": 79.49,
+      "proj_total": 163.77,
+      "home_win_prob": 0.2792,
+      "away_win_prob": 0.7208,
       "home_ml": 400,
       "away_ml": -400,
-      "home_ml_ev": 0.3045,
-      "away_ml_ev": -0.0761,
+      "home_ml_ev": 0.198,
+      "away_ml_ev": -0.0495,
       "total_line": 158.0,
       "over_odds": -102.0,
-      "model_over_prob": 0.6517,
-      "over_ev": 0.2907,
+      "model_over_prob": 0.6498,
+      "over_ev": 0.2868,
       "spread_home_line": 9.5,
       "spread_home_odds": 100.0,
       "spread_away_odds": 113.0,
-      "model_home_cover": 0.7661,
+      "model_home_cover": 0.6589,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      }
@@ -31611,9 +31611,9 @@
      {
       "weather": {
        "temp_f": 74,
-       "wind_mph": 15,
+       "wind_mph": 16,
        "wind_dir": "WNW",
-       "precip_pct": 1
+       "precip_pct": 0
       },
       "lineups": {
        "home": [],
@@ -31625,44 +31625,44 @@
       "home_team": "Minnesota Twins",
       "away_pitcher": "Matthew Liberatore",
       "home_pitcher": "Connor Prielipp",
-      "home_exp_runs": 4.604,
-      "away_exp_runs": 4.247,
-      "proj_total": 8.851,
-      "home_win_prob": 0.5488,
-      "away_win_prob": 0.4512,
+      "home_exp_runs": 4.694,
+      "away_exp_runs": 4.378,
+      "proj_total": 9.072,
+      "home_win_prob": 0.5453,
+      "away_win_prob": 0.4547,
       "over_probs": {
-       "7.5": 0.6768,
-       "8.0": 0.576,
-       "8.5": 0.576,
-       "9.0": 0.41375,
-       "9.5": 0.41375
+       "7.5": 0.7018,
+       "8.0": 0.60215,
+       "8.5": 0.60215,
+       "9.0": 0.43985,
+       "9.5": 0.43985
       },
       "home_rl_cover": {
-       "-1.5": 0.3641,
-       "1.5": 0.72345
+       "-1.5": 0.3594,
+       "1.5": 0.71635
       },
       "home_ml": -104.0,
       "away_ml": 104.0,
-      "home_ml_ev": 0.0382,
-      "away_ml_ev": -0.0398,
+      "home_ml_ev": 0.0348,
+      "away_ml_ev": -0.0362,
       "total_line": 9.0,
       "over_odds": 102.0,
       "under_odds": 108.0,
-      "model_over_prob": 0.4138,
+      "model_over_prob": 0.4399,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -170.0,
       "rl_away_odds": 164.0,
-      "model_home_rl": 0.7235,
-      "rl_home_ev": 0.0703,
-      "rl_away_ev": -0.1391
+      "model_home_rl": 0.7164,
+      "rl_home_ev": 0.0647,
+      "rl_away_ev": -0.1298
      },
      {
       "weather": {
-       "temp_f": 81,
-       "wind_mph": 11,
-       "wind_dir": "S",
+       "temp_f": 80,
+       "wind_mph": 12,
+       "wind_dir": "SSW",
        "precip_pct": 2
       },
       "lineups": {
@@ -31754,7 +31754,12 @@
       "rl_away_ev": -0.0562
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 90,
+       "wind_mph": 8,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -31765,41 +31770,46 @@
       "home_team": "Washington Nationals",
       "away_pitcher": "Luis Castillo",
       "home_pitcher": "Cade Cavalli",
-      "home_exp_runs": 5.124,
-      "away_exp_runs": 4.527,
-      "proj_total": 9.651,
-      "home_win_prob": 0.5823,
-      "away_win_prob": 0.4177,
+      "home_exp_runs": 5.017,
+      "away_exp_runs": 4.73,
+      "proj_total": 9.747,
+      "home_win_prob": 0.5376,
+      "away_win_prob": 0.4624,
       "over_probs": {
-       "7.5": 0.7611,
-       "8.0": 0.6695,
-       "8.5": 0.6695,
-       "9.0": 0.51865,
-       "9.5": 0.51865
+       "7.5": 0.77005,
+       "8.0": 0.6805,
+       "8.5": 0.6805,
+       "9.0": 0.52895,
+       "9.5": 0.52895
       },
       "home_rl_cover": {
-       "-1.5": 0.40135,
-       "1.5": 0.743
+       "-1.5": 0.36395,
+       "1.5": 0.7051
       },
       "home_ml": 100.0,
       "away_ml": -104.0,
-      "home_ml_ev": 0.0774,
-      "away_ml_ev": -0.0952,
+      "home_ml_ev": 0.0327,
+      "away_ml_ev": -0.0513,
       "total_line": 9.0,
       "over_odds": 109.0,
       "under_odds": 109.0,
-      "model_over_prob": 0.5187,
+      "model_over_prob": 0.529,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -170.0,
       "rl_away_odds": 163.0,
-      "model_home_rl": 0.743,
-      "rl_home_ev": 0.0851,
-      "rl_away_ev": -0.1669
+      "model_home_rl": 0.7051,
+      "rl_home_ev": 0.0551,
+      "rl_away_ev": -0.1171
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 88,
+       "wind_mph": 7,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -31846,7 +31856,7 @@
      {
       "weather": {
        "temp_f": 89,
-       "wind_mph": 8,
+       "wind_mph": 6,
        "wind_dir": "SW",
        "precip_pct": 0
       },
@@ -31897,7 +31907,7 @@
       "weather": {
        "temp_f": 84,
        "wind_mph": 6,
-       "wind_dir": "NW",
+       "wind_dir": "WNW",
        "precip_pct": 0
       },
       "lineups": {
@@ -31944,7 +31954,12 @@
       "rl_away_ev": -0.1082
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 90,
+       "wind_mph": 10,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -31989,7 +32004,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 90,
+       "wind_mph": 9,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -32000,41 +32020,46 @@
       "home_team": "New York Mets",
       "away_pitcher": "Mart\u00edn P\u00e9rez",
       "home_pitcher": NaN,
-      "home_exp_runs": 4.36,
-      "away_exp_runs": 4.214,
-      "proj_total": 8.574,
-      "home_win_prob": 0.5184,
-      "away_win_prob": 0.4816,
+      "home_exp_runs": 4.485,
+      "away_exp_runs": 4.295,
+      "proj_total": 8.78,
+      "home_win_prob": 0.5236,
+      "away_win_prob": 0.4764,
       "over_probs": {
-       "7.5": 0.643,
-       "8.0": 0.53485,
-       "8.5": 0.53485,
-       "9.0": 0.38075,
-       "9.5": 0.38075
+       "7.5": 0.6672,
+       "8.0": 0.566,
+       "8.5": 0.566,
+       "9.0": 0.4068,
+       "9.5": 0.4068
       },
       "home_rl_cover": {
-       "-1.5": 0.3318,
-       "1.5": 0.7021
+       "-1.5": 0.34105,
+       "1.5": 0.7066
       },
       "home_ml": 100.0,
       "away_ml": 104.0,
-      "home_ml_ev": 0.0234,
-      "away_ml_ev": -0.0038,
+      "home_ml_ev": 0.0286,
+      "away_ml_ev": -0.0091,
       "total_line": 8.5,
       "over_odds": 118.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.5349,
+      "model_over_prob": 0.566,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -178.0,
       "rl_away_odds": 170.0,
-      "model_home_rl": 0.7021,
-      "rl_home_ev": 0.043,
-      "rl_away_ev": -0.1031
+      "model_home_rl": 0.7066,
+      "rl_home_ev": 0.0465,
+      "rl_away_ev": -0.1092
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 80,
+       "wind_mph": 12,
+       "wind_dir": "SW",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -32083,7 +32108,7 @@
        "temp_f": 95,
        "wind_mph": 11,
        "wind_dir": "SSW",
-       "precip_pct": 32
+       "precip_pct": 28
       },
       "lineups": {
        "home": [],
@@ -32095,21 +32120,21 @@
       "home_team": "Kansas City Royals",
       "away_pitcher": "Mike Burrows",
       "home_pitcher": "Noah Cameron",
-      "home_exp_runs": 4.793,
-      "away_exp_runs": 4.239,
-      "proj_total": 9.032,
-      "home_win_prob": 0.5792,
-      "away_win_prob": 0.4208,
+      "home_exp_runs": 4.871,
+      "away_exp_runs": 4.463,
+      "proj_total": 9.335,
+      "home_win_prob": 0.5598,
+      "away_win_prob": 0.4402,
       "over_probs": {
-       "7.5": 0.6922,
-       "8.0": 0.59715,
-       "8.5": 0.59715,
-       "9.0": 0.43785,
-       "9.5": 0.43785
+       "7.5": 0.72875,
+       "8.0": 0.63405,
+       "8.5": 0.63405,
+       "9.0": 0.47855,
+       "9.5": 0.47855
       },
       "home_rl_cover": {
-       "-1.5": 0.3874,
-       "1.5": 0.7465
+       "-1.5": 0.3753,
+       "1.5": 0.7237
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -32129,12 +32154,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 83,
-       "wind_mph": 11,
-       "wind_dir": "WSW",
-       "precip_pct": 13
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -32179,12 +32199,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 87,
-       "wind_mph": 11,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -32229,12 +32244,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 58,
-       "wind_mph": 17,
-       "wind_dir": "W",
-       "precip_pct": 2
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -32279,12 +32289,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 75,
-       "wind_mph": 7,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -32338,7 +32343,7 @@
       "opponent": "St. Louis Cardinals",
       "projection": 4.96,
       "dist": "poisson",
-      "param": 4.956446805977834,
+      "param": 4.955505291332189,
       "norm_player": "connor prielipp",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33026,9 +33031,9 @@
       "player": "Kyle Freeland",
       "team": "Colorado Rockies",
       "opponent": "Athletics",
-      "projection": 3.48,
+      "projection": 3.47,
       "dist": "poisson",
-      "param": 3.4799111910700407,
+      "param": 3.474963855421686,
       "norm_player": "kyle freeland",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33056,9 +33061,9 @@
       "player": "Trevor McDonald",
       "team": "San Francisco Giants",
       "opponent": "Chicago Cubs",
-      "projection": 5.09,
+      "projection": 5.08,
       "dist": "poisson",
-      "param": 5.086452739908539,
+      "param": 5.079763467224557,
       "norm_player": "trevor mcdonald",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33088,7 +33093,7 @@
       "opponent": "San Francisco Giants",
       "projection": 6.21,
       "dist": "poisson",
-      "param": 6.213559650351571,
+      "param": 6.2076158721363734,
       "norm_player": "ben brown",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33118,7 +33123,7 @@
       "opponent": "Tampa Bay Rays",
       "projection": 6.25,
       "dist": "poisson",
-      "param": 6.250612922756568,
+      "param": 6.2511745441766005,
       "norm_player": "jose soriano",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33148,7 +33153,7 @@
       "opponent": "Los Angeles Angels",
       "projection": 3.43,
       "dist": "poisson",
-      "param": 3.432130384307621,
+      "param": 3.4314925801325353,
       "norm_player": "griffin jax",
       "bp_line": NaN,
       "bp_projection": NaN,
@@ -33181,48 +33186,48 @@
       "game_time": "2026-06-13T22:00Z",
       "away_team": "Indiana Fever",
       "home_team": "Connecticut Sun",
-      "away_exp": 85.53,
-      "home_exp": 83.06,
-      "proj_total": 168.58,
-      "home_win_prob": 0.2556,
-      "away_win_prob": 0.7444,
+      "away_exp": 90.58,
+      "home_exp": 82.78,
+      "proj_total": 173.36,
+      "home_win_prob": 0.1975,
+      "away_win_prob": 0.8025,
       "home_ml": 456,
       "away_ml": -450,
-      "home_ml_ev": 0.2116,
-      "away_ml_ev": -0.0441,
+      "home_ml_ev": 0.05,
+      "away_ml_ev": -0.0086,
       "total_line": 171.5,
       "over_odds": 100.0,
-      "model_over_prob": 0.4228,
-      "over_ev": -0.1543,
+      "model_over_prob": 0.5493,
+      "over_ev": 0.0987,
       "spread_home_line": 10.5,
       "spread_home_odds": -105.0,
       "spread_away_odds": 104.0,
-      "model_home_cover": 0.7575,
-      "spread_home_ev": 0.2383,
-      "spread_away_ev": -0.2538
+      "model_home_cover": 0.5928,
+      "spread_home_ev": 0.0775,
+      "spread_away_ev": -0.0859
      },
      {
       "game_id": "401856987",
       "game_time": "2026-06-14T00:00Z",
       "away_team": "Minnesota Lynx",
       "home_team": "Las Vegas Aces",
-      "away_exp": 84.85,
-      "home_exp": 84.57,
-      "proj_total": 169.42,
-      "home_win_prob": 0.4946,
-      "away_win_prob": 0.5054,
+      "away_exp": 89.15,
+      "home_exp": 85.68,
+      "proj_total": 174.83,
+      "home_win_prob": 0.4565,
+      "away_win_prob": 0.5435,
       "home_ml": -133,
       "away_ml": 136,
-      "home_ml_ev": -0.064,
-      "away_ml_ev": 0.0991,
+      "home_ml_ev": -0.0974,
+      "away_ml_ev": 0.1441,
       "total_line": 175.0,
       "over_odds": -102.0,
-      "model_over_prob": 0.3549,
-      "over_ev": -0.2971,
+      "model_over_prob": 0.4955,
+      "over_ev": -0.0188,
       "spread_home_line": -4.0,
       "spread_home_odds": 112.0,
       "spread_away_odds": 108.0,
-      "model_home_cover": 0.3549,
+      "model_home_cover": 0.258,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      },
@@ -33231,23 +33236,23 @@
       "game_time": "2026-06-14T00:30Z",
       "away_team": "Dallas Wings",
       "home_team": "Portland Fire",
-      "away_exp": 84.81,
-      "home_exp": 83.42,
-      "proj_total": 168.22,
-      "home_win_prob": 0.3541,
-      "away_win_prob": 0.6459,
+      "away_exp": 89.06,
+      "home_exp": 83.58,
+      "proj_total": 172.64,
+      "home_win_prob": 0.3068,
+      "away_win_prob": 0.6932,
       "home_ml": 213,
       "away_ml": -210,
-      "home_ml_ev": 0.0557,
-      "away_ml_ev": -0.0217,
+      "home_ml_ev": -0.0183,
+      "away_ml_ev": 0.0132,
       "total_line": 170.5,
       "over_odds": 101.0,
-      "model_over_prob": 0.4396,
-      "over_ev": -0.1164,
+      "model_over_prob": 0.5567,
+      "over_ev": 0.119,
       "spread_home_line": 4.5,
       "spread_home_odds": 122.0,
       "spread_away_odds": 104.0,
-      "model_home_cover": 0.6066,
+      "model_home_cover": 0.466,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      },
@@ -33256,23 +33261,23 @@
       "game_time": "2026-06-14T02:00Z",
       "away_team": "Los Angeles Sparks",
       "home_team": "Phoenix Mercury",
-      "away_exp": 83.28,
-      "home_exp": 85.32,
-      "proj_total": 168.6,
-      "home_win_prob": 0.5165,
-      "away_win_prob": 0.4835,
+      "away_exp": 85.86,
+      "home_exp": 87.35,
+      "proj_total": 173.21,
+      "home_win_prob": 0.5101,
+      "away_win_prob": 0.4899,
       "home_ml": 107,
       "away_ml": -108,
-      "home_ml_ev": 0.0334,
-      "away_ml_ev": -0.0356,
+      "home_ml_ev": 0.0268,
+      "away_ml_ev": -0.0294,
       "total_line": 176.5,
       "over_odds": 100.0,
-      "model_over_prob": 0.2992,
-      "over_ev": -0.4016,
+      "model_over_prob": 0.4132,
+      "over_ev": -0.1736,
       "spread_home_line": -1.5,
       "spread_home_odds": 117.0,
       "spread_away_odds": 108.0,
-      "model_home_cover": 0.5187,
+      "model_home_cover": 0.4997,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      }
@@ -33288,25 +33293,25 @@
       "game_time": "2026-06-14T00:30Z",
       "away_team": "New York Knicks",
       "home_team": "San Antonio Spurs",
-      "away_exp": 111.91,
-      "home_exp": 110.98,
-      "proj_total": 222.89,
-      "home_win_prob": 0.4705,
-      "away_win_prob": 0.5295,
+      "away_exp": 110.95,
+      "home_exp": 106.72,
+      "proj_total": 217.67,
+      "home_win_prob": 0.3678,
+      "away_win_prob": 0.6322,
       "home_ml": -181,
       "away_ml": 180,
-      "home_ml_ev": -0.1354,
-      "away_ml_ev": 0.2407,
+      "home_ml_ev": -0.2151,
+      "away_ml_ev": 0.3844,
       "total_line": 216.5,
       "over_odds": 113.0,
-      "model_over_prob": 0.6317,
-      "over_ev": 0.3455,
+      "model_over_prob": 0.5246,
+      "over_ev": 0.1173,
       "spread_home_line": -5.5,
       "spread_home_odds": 104.0,
       "spread_away_odds": 100.0,
-      "model_home_cover": 0.3035,
-      "spread_home_ev": -0.1855,
-      "spread_away_ev": 0.2015
+      "model_home_cover": 0.2182,
+      "spread_home_ev": -0.2725,
+      "spread_away_ev": 0.2868
      }
     ],
     "props": [
