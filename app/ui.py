@@ -259,53 +259,159 @@ def _rank_badge(rank, n_teams: int) -> str:
             f"{rank}</span>")
 
 
-def _stat_table_html(title: str, rows: list[dict], n_teams: int) -> str:
+def _adv_badge(adv: int) -> str:
+    """Center advantage marker: filled green chevrons when the offense
+    out-ranks the defense it faces, a muted dash otherwise."""
+    if not adv:
+        return "<span style='color:#39414d;'>·</span>"
+    return (f"<span style='color:#0d1117;background:#2ea043;border-radius:5px;"
+            f"padding:1px 5px;font-size:0.66rem;font-weight:800;'>"
+            f"{'▲' * adv}</span>")
+
+
+def _stat_table_html(title: str, rows: list[dict], n_teams: int,
+                     off_label: str = "OFF", def_label: str = "DEF") -> str:
+    """Mirrored split table: the offense team's spread on the left, the
+    opposing defense's spread mirrored on the right, advantage in the
+    middle. Columns each side: Season · situational (home/away) · L10 · L5 ·
+    rank."""
+    osl = (rows[0].get("off_situ_label") if rows else None) or off_label
+    dsl = (rows[0].get("def_situ_label") if rows else None) or def_label
+    th = "text-align:right;padding:3px 5px;"
     head = (
-        "<tr style='color:#8b949e;font-size:0.7rem;text-transform:uppercase;'>"
-        "<th style='text-align:left;padding:4px 6px;'>Stat</th>"
-        "<th style='text-align:right;'>Season</th>"
-        "<th style='text-align:right;'>L5</th><th>Rk</th>"
-        "<th style='width:34px;'></th>"
-        "<th>Rk</th><th style='text-align:right;'>Opp L5</th>"
-        "<th style='text-align:right;padding-right:6px;'>Opp Szn</th></tr>"
+        "<tr style='color:#7d8794;font-size:0.62rem;text-transform:uppercase;"
+        "letter-spacing:0.3px;'>"
+        "<th style='text-align:left;padding:3px 6px;'>Stat</th>"
+        f"<th style='{th}'>Szn</th><th style='{th}'>{osl}</th>"
+        f"<th style='{th}'>L10</th><th style='{th}'>L5</th><th>Rk</th>"
+        "<th style='width:30px;'>Adv</th>"
+        f"<th>Rk</th><th style='{th}'>L5</th><th style='{th}'>L10</th>"
+        f"<th style='{th}'>{dsl}</th><th style='{th}'>Szn</th></tr>"
     )
     body = []
     for r in rows:
-        stars = "★" * r.get("adv", 0)
-        star_html = (f"<span style='color:#e3b341;'>{stars}</span>" if stars
-                     else "")
+        s = r["stat"]
+        muted = "text-align:right;padding:3px 5px;color:#7d8794;"
+        strong = "text-align:right;padding:3px 5px;font-weight:700;"
+        norm = "text-align:right;padding:3px 5px;"
         body.append(
             "<tr style='border-top:1px solid #1c2330;'>"
-            f"<td style='text-align:left;padding:4px 6px;font-weight:600;'>{r['stat']}</td>"
-            f"<td style='text-align:right;color:#8b949e;'>{_fmt_stat(r['stat'], r.get('off_season'))}</td>"
-            f"<td style='text-align:right;font-weight:600;'>{_fmt_stat(r['stat'], r['off_l5'])}</td>"
-            f"<td style='text-align:center;'>{_rank_badge(r['off_rank'], n_teams)}</td>"
-            f"<td style='text-align:center;'>{star_html}</td>"
-            f"<td style='text-align:center;'>{_rank_badge(r['def_rank'], n_teams)}</td>"
-            f"<td style='text-align:right;'>{_fmt_stat(r['stat'], r['def_l5'])}</td>"
-            f"<td style='text-align:right;padding-right:6px;color:#8b949e;'>"
-            f"{_fmt_stat(r['stat'], r.get('def_season'))}</td></tr>"
+            f"<td style='text-align:left;padding:3px 6px;font-weight:600;'>{s}</td>"
+            f"<td style='{muted}'>{_fmt_stat(s, r.get('off_season'))}</td>"
+            f"<td style='{norm}'>{_fmt_stat(s, r.get('off_situ'))}</td>"
+            f"<td style='{norm}'>{_fmt_stat(s, r.get('off_l10'))}</td>"
+            f"<td style='{strong}'>{_fmt_stat(s, r.get('off_l5'))}</td>"
+            f"<td style='text-align:center;'>{_rank_badge(r.get('off_rank'), n_teams)}</td>"
+            f"<td style='text-align:center;'>{_adv_badge(r.get('adv', 0))}</td>"
+            f"<td style='text-align:center;'>{_rank_badge(r.get('def_rank'), n_teams)}</td>"
+            f"<td style='{strong}'>{_fmt_stat(s, r.get('def_l5'))}</td>"
+            f"<td style='{norm}'>{_fmt_stat(s, r.get('def_l10'))}</td>"
+            f"<td style='{norm}'>{_fmt_stat(s, r.get('def_situ'))}</td>"
+            f"<td style='{muted}'>{_fmt_stat(s, r.get('def_season'))}</td></tr>"
         )
     return (
-        f"<div style='font-size:0.78rem;color:#58a6ff;font-weight:700;"
-        f"text-transform:uppercase;margin:10px 0 2px;'>{title}</div>"
-        "<table style='width:100%;border-collapse:collapse;font-size:0.85rem;'>"
+        f"<div style='font-size:0.74rem;color:#58a6ff;font-weight:700;"
+        f"text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 2px;'>{title}</div>"
+        "<table style='width:100%;border-collapse:collapse;font-size:0.82rem;'>"
         f"{head}{''.join(body)}</table>"
     )
 
 
-def _gauge_pill(label: str, value: str, ev, threshold: float) -> str:
-    play = ev is not None and pd.notna(ev) and ev >= threshold
-    color = "#3fb950" if play else "#6e7781"
-    tag = "PLAY" if play else "PASS"
-    ev_txt = f" · {ev * 100:+.1f}% EV" if ev is not None and pd.notna(ev) else ""
+def _conviction(ev) -> float:
+    """Map a model edge (EV) to a 0–10 conviction score: roughly one point
+    per percentage point of edge, capped at 10. Negative edge → 0."""
+    if ev is None or pd.isna(ev):
+        return 0.0
+    return round(min(10.0, max(0.0, float(ev) * 100)), 1)
+
+
+def _conv_color(score: float) -> str:
+    return "#3fb950" if score >= 6 else "#e3b341" if score >= 3 else "#f85149"
+
+
+def market_convictions(g: dict) -> dict:
+    """Per-market lean + conviction for the dials and the analysis footer.
+    Returns {label: {"side": str, "score": float, "ev": float|None}} for
+    Moneyline, Run Line/Spread, and Total."""
+    home, away = g.get("home_team", ""), g.get("away_team", "")
+    out: dict = {}
+
+    hwp = g.get("home_win_prob") or 0
+    if hwp >= 0.5:
+        ev = g.get("home_ml_ev", g.get("home_ev"))
+        side = f"{home.split()[-1]} {fmt_american(g.get('home_ml'))}".strip()
+    else:
+        ev = g.get("away_ml_ev", g.get("away_ev"))
+        side = f"{away.split()[-1]} {fmt_american(g.get('away_ml'))}".strip()
+    out["Moneyline"] = {"side": side or "—", "score": _conviction(ev), "ev": ev}
+
+    sp_line = g.get("rl_home_line", g.get("spread_home_line"))
+    sp_label = "Run Line" if "rl_home_line" in g else "Spread"
+    eh = g.get("rl_home_ev", g.get("spread_home_ev"))
+    ea = g.get("rl_away_ev", g.get("spread_away_ev"))
+    best = max([e for e in (eh, ea) if e is not None and pd.notna(e)], default=None)
+    if sp_line is not None and pd.notna(sp_line):
+        side = (f"{home.split()[-1]} {sp_line:+g}" if best == eh
+                else f"{away.split()[-1]} {-sp_line:+g}")
+    else:
+        side = "—"
+    out[sp_label] = {"side": side, "score": _conviction(best), "ev": best}
+
+    oe, ue = g.get("over_ev"), g.get("under_ev")
+    best = max([e for e in (oe, ue) if e is not None and pd.notna(e)], default=None)
+    line = g.get("total_line")
+    if line is not None and pd.notna(line):
+        side = f"{'Over' if best == oe else 'Under'} {line:g}"
+    else:
+        side = "—"
+    out["Total"] = {"side": side, "score": _conviction(best), "ev": best}
+    return out
+
+
+def _conviction_dial(label: str, side: str, score: float) -> str:
+    """A conic-gradient ring filled to score/10, the number in the middle,
+    colored by conviction — the at-a-glance read the mockups lead with."""
+    color = _conv_color(score)
+    pct = max(0.0, min(100.0, score * 10))
     return (
-        f"<div style='flex:1;background:#0d1117;border:1px solid {color};"
-        f"border-radius:10px;padding:8px 12px;text-align:center;'>"
-        f"<div style='color:#8b949e;font-size:0.7rem;text-transform:uppercase;'>{label}</div>"
-        f"<div style='font-size:1.0rem;font-weight:700;margin:2px 0;'>{value}</div>"
-        f"<div style='color:{color};font-size:0.72rem;font-weight:700;'>{tag}{ev_txt}</div>"
+        "<div style='flex:1;text-align:center;padding:4px 6px;'>"
+        f"<div style='color:#8b949e;font-size:0.66rem;font-weight:700;"
+        f"text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;'>{label}</div>"
+        f"<div style='width:62px;height:62px;border-radius:50%;margin:0 auto;"
+        f"background:conic-gradient({color} {pct}%, #21262d {pct}% 100%);"
+        f"display:flex;align-items:center;justify-content:center;'>"
+        f"<div style='width:48px;height:48px;border-radius:50%;background:#0d1117;"
+        f"display:flex;align-items:center;justify-content:center;"
+        f"font-size:1.15rem;font-weight:800;color:{color};'>{score:g}</div></div>"
+        f"<div style='font-size:0.74rem;font-weight:600;margin-top:4px;'>{side}</div>"
         "</div>"
+    )
+
+
+def _form_html(badge: str, team: str, form: dict, align: str) -> str:
+    """A team block for the header: badge, name, W-L record + streak, and
+    last-5 result chips (green win / red loss)."""
+    rec = ""
+    if form:
+        streak = f" · {form['streak']}" if form.get("streak") else ""
+        rec = (f"<div style='color:#8b949e;font-size:0.72rem;'>"
+               f"{form.get('w', 0)}-{form.get('l', 0)}{streak}</div>")
+    chips = ""
+    for r in (form or {}).get("last5", []):
+        c = "#2ea043" if r["win"] else "#da3633"
+        chips += (f"<span title='{r.get('opp', '')} {r['score']}' "
+                  f"style='display:inline-block;width:16px;height:16px;border-radius:4px;"
+                  f"background:{c};margin:0 1px;'></span>")
+    chips_html = (f"<div style='margin-top:3px;text-align:{align};'>{chips}</div>"
+                  if chips else "")
+    name_row = (f"<span style='font-weight:700;font-size:1.0rem;'>{team}</span>{badge}"
+                if align == "right"
+                else f"{badge}<span style='font-weight:700;font-size:1.0rem;'>{team}</span>")
+    return (
+        f"<div style='flex:1;'>"
+        f"<div style='display:flex;align-items:center;gap:8px;"
+        f"justify-content:flex-{'end' if align == 'right' else 'start'};'>{name_row}</div>"
+        f"<div style='text-align:{align};'>{rec}</div>{chips_html}</div>"
     )
 
 
@@ -315,49 +421,37 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     h_badge = assets.team_badge_html(sport, home, 38)
     n = matchup.get("n_teams", 30)
 
-    # header
+    # header: team form on each side, matchup facts in the middle
     header = (
-        "<div style='display:flex;align-items:center;gap:14px;'>"
-        f"<div style='flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end;'>"
-        f"<span style='font-weight:700;'>{away}</span>{a_badge}</div>"
-        "<span style='color:#8b949e;font-size:0.8rem;'>@</span>"
-        f"<div style='flex:1;display:flex;align-items:center;gap:8px;'>"
-        f"{h_badge}<span style='font-weight:700;'>{home}</span></div></div>"
-        f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:4px;'>"
+        "<div style='display:flex;align-items:flex-start;gap:14px;'>"
+        + _form_html(a_badge, away, matchup.get("away_form") or {}, "right")
+        + "<span style='color:#8b949e;font-size:0.8rem;padding-top:6px;'>@</span>"
+        + _form_html(h_badge, home, matchup.get("home_form") or {}, "left")
+        + "</div>"
+        f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:6px;'>"
         f"{fmt_time_et(g.get('game_time'))} · O/U {_num(g.get('total_line') or g.get('proj_total'))}"
         f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}{_weather_txt(g)}</div>"
     )
 
-    # gauges (model): moneyline / run line-spread / total
-    ml_fav = (g.get("home_win_prob") or 0) >= (g.get("away_win_prob") or 0)
-    ml_team = home if ml_fav else away
-    ml_prob = g.get("home_win_prob") if ml_fav else g.get("away_win_prob")
-    ml_ev = g.get("home_ml_ev", g.get("home_ev")) if ml_fav else g.get("away_ml_ev", g.get("away_ev"))
-    sp_line = g.get("rl_home_line", g.get("spread_home_line"))
-    sp_cover = g.get("model_home_rl", g.get("model_home_cover"))
-    sp_ev = g.get("rl_home_ev", g.get("spread_home_ev"))
-    sp_label = "Run Line" if "rl_home_line" in g else "Spread"
-    if sp_line is not None and pd.notna(sp_line):
-        sp_value = f"{home.split()[-1]} {sp_line:+g} · {_pct(sp_cover)}"
-    else:
-        sp_value = "— · —"
-    gauges = (
-        "<div style='display:flex;gap:8px;margin:10px 0;'>"
-        + _gauge_pill("Moneyline", f"{ml_team} {_pct(ml_prob)}", ml_ev, min_edge)
-        + _gauge_pill(sp_label, sp_value, sp_ev, min_edge)
-        + _gauge_pill("Total", f"O {_num(g.get('total_line'))} · {_pct(g.get('model_over_prob'))}",
-                      g.get("over_ev"), min_edge)
+    # conviction dials (model): moneyline / run line-spread / total
+    conv = market_convictions(g)
+    dials = (
+        "<div style='display:flex;gap:8px;margin:14px 0 6px;"
+        "background:#0d1117;border:1px solid #21262d;border-radius:12px;"
+        "padding:10px 8px;'>"
+        + "".join(_conviction_dial(label, c["side"], c["score"])
+                  for label, c in conv.items())
         + "</div>"
     )
 
     # stat tables
-    away_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
+    off_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
     tables = ""
     if matchup.get("away_off_vs_home_def"):
-        tables += _stat_table_html(f"{away} {away_lbl}",
+        tables += _stat_table_html(f"{away} {off_lbl}",
                                    matchup["away_off_vs_home_def"], n)
     if matchup.get("home_off_vs_away_def"):
-        tables += _stat_table_html(f"{home} {away_lbl}",
+        tables += _stat_table_html(f"{home} {off_lbl}",
                                    matchup["home_off_vs_away_def"], n)
 
     # trends (MLB)
@@ -380,7 +474,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     return (
         "<div style='background:#161b24;border:1px solid #232a36;border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
-        f"{header}{gauges}{tables}{trends}{lineups}{analysis}</div>"
+        f"{header}{dials}{tables}{trends}{lineups}{analysis}</div>"
     )
 
 
@@ -505,15 +599,22 @@ def _implied(american: float) -> float:
 
 def _analysis_html(sport, g, matchup, min_edge) -> str:
     rows = matchup_analysis(sport, g, matchup, min_edge)
+    conf = {k.upper(): c["score"] for k, c in market_convictions(g).items()}
     items = []
     for r in rows:
         color = {"PLAY": "#3fb950", "PASS": "#8b949e", "NOTE": "#e3b341"}[r["decision"]]
+        score = conf.get(r["market"])
+        conf_html = ""
+        if r["decision"] != "NOTE":
+            verdict = "DECISION: " + r["decision"]
+            if score is not None:
+                verdict += (f" <span style='color:{_conv_color(score)};'>"
+                            f"· CONFIDENCE {score:g}</span>")
+            conf_html = f"<span style='color:{color};font-weight:700;'>{verdict}</span>"
         items.append(
             "<div style='margin:6px 0;font-size:0.84rem;'>"
             f"<span style='color:#58a6ff;font-weight:700;'>{r['market']}:</span> "
-            f"{r['text']} "
-            f"<span style='color:{color};font-weight:700;'>"
-            f"{'' if r['decision'] == 'NOTE' else 'DECISION: ' + r['decision']}</span></div>"
+            f"{r['text']} {conf_html}</div>"
         )
     return (
         "<div style='border-top:1px solid #232a36;margin-top:10px;padding-top:8px;'>"
