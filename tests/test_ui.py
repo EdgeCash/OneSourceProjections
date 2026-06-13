@@ -130,6 +130,64 @@ def test_calibration_curve_empty():
     assert ui.calibration_chart(ui.calibration_curve([])) is None
 
 
+def test_ai_brief_game():
+    g = _slates()["MLB"]["games"][0]
+    matchup = {
+        "away_form": {"w": 12, "l": 8, "streak": "W3",
+                      "last5": [{"win": True}, {"win": False}, {"win": True}]},
+        "home_form": {"w": 10, "l": 10},
+        "home_off_vs_away_def": [
+            {"stat": "Runs", "adv": 2, "off_rank": 3, "def_rank": 27}],
+    }
+    md = ui.ai_brief_game("MLB", g, matchup, min_edge=0.02)
+    assert md.startswith("# MLB — New York Yankees @ Boston Red Sox")
+    assert "## Model read" in md
+    assert "Moneyline" in md and "PLAY" in md       # +6% home ML clears 2%
+    assert "confidence" in md                        # conviction annotated
+    assert "12-8 (W3)" in md                         # team form line
+    assert "Biggest stat mismatches" in md and "#3 offense vs #27 defense" in md
+    assert "not financial advice" in md
+
+
+def test_ai_brief_game_no_matchup():
+    # works off the slate alone (no team-stat matchup available)
+    g = _slates()["MLB"]["games"][0]
+    md = ui.ai_brief_game("MLB", g)
+    assert "## Model read" in md
+    assert "Team form" not in md  # nothing to show without a matchup
+
+
+def test_ai_brief_prop():
+    p = dict(_slates()["MLB"]["props"][0],
+             hr_l5=0.8, hr_l10=0.7, bp_projection=6.8,
+             bp_recommended_side="over", bp_bet_rating=3, opp_rank=27)
+    md = ui.ai_brief_prop("MLB", p)
+    assert md.startswith("# MLB Prop — Gerrit Cole · Pitcher Ks 6.5")
+    assert "New York Yankees vs Boston Red Sox" in md
+    assert "Best side: **Over 6.5**" in md and "+16.0%" in md
+    assert "Suggested stake: **4.0%**" in md
+    assert "L5 80% · L10 70%" in md
+    assert "BettingPros projects 6.8" in md and "BP lean OVER ★★★" in md
+    assert "#27 defending this stat" in md
+
+
+def test_ai_brief_prop_two_sided():
+    p = _slates()["WNBA"]["props"][0]  # ev_over +14%, ev_under -20%
+    md = ui.ai_brief_prop("WNBA", p)
+    assert "Best side: **Over 22.5**" in md  # picks the positive side
+    assert "+14.0%" in md
+
+
+def test_ai_brief_board():
+    board = ui.build_best_bets(_slates(), min_edge=0.02)
+    md = ui.ai_brief_board(board, date="2026-06-13")
+    assert md.startswith("# Slate edges — 2026-06-13")
+    assert "| Sport | Bet | Game | Price | Model % | EV % |" in md
+    assert md.count("\n|") >= 4 + 1  # header + separator + 4 edge rows
+    assert "+16.0%" in md  # Cole Ks, the top edge
+    assert ui.ai_brief_board(pd.DataFrame()).startswith("No model edges")
+
+
 def test_lineup_status():
     confirmed = {"lineups": {"home": list(range(9)), "away": list(range(9))}}
     assert ui.lineup_status("MLB", confirmed)["state"] == "confirmed"

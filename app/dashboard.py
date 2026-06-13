@@ -256,6 +256,9 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
+    with st.expander("🤖 Copy this matchup for AI"):
+        st.code(ui.ai_brief_game(sport, g, m, min_edge), language="markdown")
+        st.caption("Hover the box and click ⧉ to copy, then paste into any AI.")
     if caption:
         st.caption("Offense L5 vs the opponent's matching defense L5; small "
                    "numbers are league ranks (green = top third). ★ = the "
@@ -461,6 +464,10 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
         if bits:
             st.markdown("\n\n".join(bits))
 
+    with st.expander("🤖 Copy this prop for AI"):
+        st.code(ui.ai_brief_prop(sport, p), language="markdown")
+        st.caption("Hover the box and click ⧉ to copy, then paste into any AI.")
+
 
 def _player_profile(sport: str, player: str, market: str) -> str | None:
     """Season profile line (MLB: box-log rates + prior-season Statcast
@@ -574,6 +581,9 @@ def render_plays():
                  if has_shop else "")
     st.caption("Every edge across sports for the slate, sorted by EV. "
                "Stake = ¼-Kelly × bankroll." + shop_note)
+    with st.expander("🤖 Copy this board for AI"):
+        st.code(ui.ai_brief_board(board, date_sel), language="markdown")
+        st.caption("Hover the box and click ⧉ to copy, then paste into any AI.")
 
 
 # ---------------------------------------------------------------------------
