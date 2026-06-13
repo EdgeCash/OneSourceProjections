@@ -731,6 +731,62 @@ def cumulative_units(ledger: list[dict]) -> pd.DataFrame:
     return daily.cumsum().rename("units").to_frame()
 
 
+def calibration_curve(ledger: list[dict], n_bins: int = 10) -> pd.DataFrame:
+    """Reliability curve from the model_winprob ledger rows: bucket games by
+    predicted home win-prob and compare to the empirical win rate. Columns:
+    predicted (mean prediction in bin), empirical (actual win rate), n."""
+    rows = [r for r in ledger if r.get("market") == "model_winprob"
+            and r.get("pred_home_wp") is not None and r.get("home_won") is not None]
+    if not rows:
+        return pd.DataFrame()
+    df = pd.DataFrame(rows)
+    df["p"] = pd.to_numeric(df["pred_home_wp"], errors="coerce")
+    df["won"] = pd.to_numeric(df["home_won"], errors="coerce")
+    df = df.dropna(subset=["p", "won"])
+    if df.empty:
+        return pd.DataFrame()
+    edges = [i / n_bins for i in range(n_bins + 1)]
+    df["bin"] = pd.cut(df["p"], bins=edges, include_lowest=True)
+    g = (df.groupby("bin", observed=True)
+           .agg(predicted=("p", "mean"), empirical=("won", "mean"), n=("won", "size"))
+           .reset_index(drop=True))
+    return g
+
+
+def calibration_error(curve: pd.DataFrame) -> float | None:
+    """Expected calibration error: average gap between predicted and actual,
+    weighted by games per bin. 0 = perfectly calibrated."""
+    if curve.empty:
+        return None
+    w = curve["n"].sum()
+    if not w:
+        return None
+    return float((curve["n"] * (curve["predicted"] - curve["empirical"]).abs()).sum() / w)
+
+
+def calibration_chart(curve: pd.DataFrame):
+    """Reliability diagram: predicted vs actual win-rate with the perfect-
+    calibration diagonal. Points sized by sample count. None if no data."""
+    import altair as alt
+
+    if curve.empty:
+        return None
+    diag = alt.Chart(pd.DataFrame({"x": [0, 1], "y": [0, 1]})).mark_line(
+        strokeDash=[4, 4], color="#6e7781").encode(x="x:Q", y="y:Q")
+    base = alt.Chart(curve)
+    line = base.mark_line(color="#58a6ff").encode(
+        x=alt.X("predicted:Q", title="Model predicted win %",
+                scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")),
+        y=alt.Y("empirical:Q", title="Actual win %",
+                scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")))
+    pts = base.mark_circle(color="#3fb950").encode(
+        x="predicted:Q", y="empirical:Q",
+        size=alt.Size("n:Q", title="games"),
+        tooltip=[alt.Tooltip("predicted:Q", format=".0%"),
+                 alt.Tooltip("empirical:Q", format=".0%"), "n:Q"])
+    return (diag + line + pts).properties(height=320, width="container")
+
+
 def recent_bets(ledger: list[dict], n: int = 25) -> pd.DataFrame:
     bets = [r for r in ledger if "pnl" in r]
     if not bets:
