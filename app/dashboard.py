@@ -525,10 +525,14 @@ def render_plays():
              for sp in board["sport"].unique()} if not board.empty else {})
 
     def _shop(r):
-        if not r.get("_shop_mkt"):
+        # prop rows leave these as NaN floats; `not NaN` is False, so guard on
+        # the type, not truthiness, or normalize() blows up on a float.
+        mkt, home, away = r.get("_shop_mkt"), r.get("_home"), r.get("_away")
+        if not (isinstance(mkt, str) and isinstance(home, str)
+                and isinstance(away, str)):
             return pd.Series([None, None])
-        hit = lineshop.lookup(shop.get(r["sport"], {}), r.get("_home"),
-                              r.get("_away"), r["_shop_mkt"], r.get("_sidekey"))
+        hit = lineshop.lookup(shop.get(r["sport"], {}), home, away, mkt,
+                              r.get("_sidekey"))
         return pd.Series([hit["price"], hit["book"]] if hit else [None, None])
 
     if {"_shop_mkt", "_home", "_away", "_sidekey"}.issubset(view.columns):
