@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 import logging
 
-from . import config, odds
+from . import clv, config, odds
 from .clients import espn, mlb_statsapi
 from .names import normalize
 
@@ -98,6 +98,7 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
         finals = _finals(sport, date)
         if not finals:
             continue
+        closes = _closing_lines(sport, date)
         for g in games:
             fin = _match(g, finals)
             if not fin or fin.get("home_score") is None:
@@ -106,6 +107,8 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
             label = f"{g.get('away_team')} @ {g.get('home_team')}"
             home_won = 1 if hs > as_ else 0
             total = hs + as_
+            close = closes.get(frozenset({normalize(g.get("home_team", "")),
+                                          normalize(g.get("away_team", ""))}), {})
 
             # win-probability tracking (every game, no bet required)
             hwp = g.get("home_win_prob")
@@ -119,14 +122,19 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                     "proj_total": g.get("proj_total"), "actual_total": total,
                 })
 
+            ml_close = close.get("moneyline", {})
+            tot_close = close.get("total", {})
+
             # moneyline bets recommended at projection time
             for side, won in (("home", home_won == 1), ("away", home_won == 0)):
                 price = g.get(f"{side}_ml")
                 ev = g.get(f"{side}_ml_ev", g.get(f"{side}_ev"))
                 k = (date, label, "moneyline", side)
                 if price and ev is not None and ev >= min_edge and k not in seen:
+                    fair = ml_close.get(normalize(g.get(f"{side}_team", "")))
                     new_rows.append(_bet_row(date, sport, label, "moneyline", side,
-                                             price, won, ev))
+                                             price, won, ev,
+                                             clv=clv.clv_pct(price, fair)))
 
             # total bet recommended at projection time
             line = g.get("total_line")
@@ -137,7 +145,8 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                 if over_ev >= min_edge and k not in seen:
                     new_rows.append(_bet_row(date, sport, label, "total", "over",
                                              over_odds, total > line, over_ev,
-                                             line=line))
+                                             line=line,
+                                             clv=clv.clv_pct(over_odds, tot_close.get("over"))))
 
     _append(new_rows)
     if new_rows:
@@ -166,11 +175,22 @@ def grade_recent(asof: str, days: int = 4, min_edge: float | None = None) -> int
     return total
 
 
-def _bet_row(date, sport, game, market, side, price, won, ev, line=None) -> dict:
+def _closing_lines(sport: str, date: str) -> dict:
+    """De-vigged closing lines for CLV; isolated for testing. Never raises."""
+    try:
+        return clv.closing_lines(sport, date)
+    except Exception as e:
+        log.warning("closing lines unavailable for %s %s: %s", sport, date, e)
+        return {}
+
+
+def _bet_row(date, sport, game, market, side, price, won, ev, line=None,
+             clv=None) -> dict:
     dec = odds.american_to_decimal(float(price))
     return {"date": date, "sport": sport, "game": game, "market": market,
             "side": side, "line": line, "price": price, "ev": round(float(ev), 4),
-            "won": bool(won), "pnl": round(dec - 1 if won else -1.0, 4)}
+            "won": bool(won), "pnl": round(dec - 1 if won else -1.0, 4),
+            "clv": clv}
 
 
 def load_ledger() -> list[dict]:
@@ -197,6 +217,7 @@ def _summarize(rows: list[dict]) -> dict:
     pnl = sum(r["pnl"] for r in bets)
     wins = sum(1 for r in bets if r["won"])
     brier = (sum(r["brier"] for r in games) / len(games)) if games else None
+    clvs = [r["clv"] for r in bets if r.get("clv") is not None]
     return {
         "graded_games": len(games),
         "model_brier": round(brier, 4) if brier is not None else None,
@@ -204,4 +225,8 @@ def _summarize(rows: list[dict]) -> dict:
         "bet_win_rate": round(wins / staked, 4) if staked else None,
         "units": round(pnl, 2),
         "roi_pct": round(100 * pnl / staked, 2) if staked else None,
+        "avg_clv_pct": round(100 * sum(clvs) / len(clvs), 2) if clvs else None,
+        "clv_beat_rate": round(sum(1 for c in clvs if c > 0) / len(clvs), 4)
+        if clvs else None,
+        "clv_bets": len(clvs),
     }

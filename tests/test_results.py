@@ -33,10 +33,11 @@ def _finals(_sport, _date):
     ]
 
 
-def _wire(tmp_path, monkeypatch):
+def _wire(tmp_path, monkeypatch, closes=None):
     monkeypatch.setattr(results, "PROJ_DIR", tmp_path / "proj")
     monkeypatch.setattr(results, "LEDGER", tmp_path / "results.jsonl")
     monkeypatch.setattr(results, "_finals", _finals)
+    monkeypatch.setattr(results, "_closing_lines", lambda s, d: closes or {})
 
 
 def test_grade_date_records_brier_and_bets(tmp_path, monkeypatch):
@@ -79,6 +80,34 @@ def test_grade_recent_sweeps_window(tmp_path, monkeypatch):
     dates = {r["date"] for r in results.load_ledger()}
     assert dates == {"2026-06-10", "2026-06-12"}
     assert total == len(results.load_ledger())
+
+
+def test_grade_attaches_clv_from_closing_lines(tmp_path, monkeypatch):
+    from onesource.names import normalize
+    # closing line has the home side fair at 50% — our bet was at -130 (56.5%
+    # implied), so we got a WORSE price than the close -> negative CLV.
+    closes = {
+        frozenset({normalize("Boston Red Sox"), normalize("New York Yankees")}): {
+            "moneyline": {normalize("Boston Red Sox"): 0.50,
+                          normalize("New York Yankees"): 0.50},
+            "total": {"line": 8.5, "over": 0.55, "under": 0.45},
+        }
+    }
+    _wire(tmp_path, monkeypatch, closes=closes)
+    results.archive_projections("2026-06-12", _slate())
+    results.grade_date("2026-06-12")
+
+    bets = [r for r in results.load_ledger() if "pnl" in r]
+    ml = next(b for b in bets if b["market"] == "moneyline")
+    # CLV = EV at the closing fair prob: 0.50 at -130 is negative
+    assert ml["clv"] is not None and ml["clv"] < 0
+    tot = next(b for b in bets if b["market"] == "total")
+    # over bet at -105 with a 55% closing fair prob -> positive CLV
+    assert tot["clv"] is not None and tot["clv"] > 0
+
+    perf = results.performance()["overall"]
+    assert perf["clv_bets"] == len(bets)
+    assert perf["avg_clv_pct"] is not None and perf["clv_beat_rate"] is not None
 
 
 def test_performance_summary_shape(tmp_path, monkeypatch):

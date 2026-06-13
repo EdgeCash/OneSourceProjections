@@ -555,6 +555,28 @@ def render_performance():
     roi = overall.get("roi_pct")
     c[4].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—")
 
+    # Closing Line Value — the fastest, lowest-variance read on real edge.
+    clv_bets = overall.get("clv_bets") or 0
+    st.subheader("Closing line value")
+    if not clv_bets:
+        st.info("CLV accrues once recommended bets are graded against the "
+                "captured closing line. Beating the no-vig close is the "
+                "strongest early signal an edge is real — it converges long "
+                "before win/loss ROI does.")
+    else:
+        cl = st.columns(3)
+        avg_clv = overall.get("avg_clv_pct")
+        beat = overall.get("clv_beat_rate")
+        cl[0].metric("Avg CLV", f"{avg_clv:+.2f}%" if avg_clv is not None else "—",
+                     help="Average edge vs the de-vigged closing line. Positive "
+                          "= we beat the close. The best proxy for skill.")
+        cl[1].metric("Beat-close rate", f"{beat * 100:.0f}%" if beat is not None else "—",
+                     help="Share of graded bets that beat the closing line. "
+                          "Above ~55–60% over a few hundred bets signals real edge.")
+        cl[2].metric("Bets w/ close", clv_bets)
+        st.caption("CLV is measured against our own captured BettingPros "
+                   "closing line; it sharpens as more books are added.")
+
     equity = ui.cumulative_units(ledger)
     if not equity.empty:
         st.subheader("Cumulative units")
