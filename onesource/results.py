@@ -110,20 +110,25 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
             close = closes.get(frozenset({normalize(g.get("home_team", "")),
                                           normalize(g.get("away_team", ""))}), {})
 
-            # win-probability tracking (every game, no bet required)
+            ml_close = close.get("moneyline", {})
+            tot_close = close.get("total", {})
+
+            # win-probability tracking (every game, no bet required). Capture
+            # the market's de-vigged home win prob too, so the model-vs-market
+            # scorecard can grade where we disagree with the market.
             hwp = g.get("home_win_prob")
             key = (date, label, "model_winprob", "")
             if hwp is not None and key not in seen:
+                mkt_home = ml_close.get(normalize(g.get("home_team", "")))
                 new_rows.append({
                     "date": date, "sport": sport, "game": label,
                     "market": "model_winprob", "side": "",
                     "pred_home_wp": round(float(hwp), 4), "home_won": home_won,
+                    "market_home_wp": (round(float(mkt_home), 4)
+                                       if mkt_home is not None else None),
                     "brier": round((float(hwp) - home_won) ** 2, 4),
                     "proj_total": g.get("proj_total"), "actual_total": total,
                 })
-
-            ml_close = close.get("moneyline", {})
-            tot_close = close.get("total", {})
 
             # moneyline bets recommended at projection time
             for side, won in (("home", home_won == 1), ("away", home_won == 0)):

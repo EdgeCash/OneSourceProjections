@@ -822,6 +822,58 @@ def render_performance():
                    "were under-confident; below, over-confident. Bubble size = "
                    "games in that bucket.")
 
+    # Model vs market: does the model add signal where it disagrees with the
+    # market? The honest test of independent skill, not market-following.
+    from onesource import scorecard as _sc
+    sc = _sc.scorecard(ledger)
+    st.subheader("Model vs market")
+    d, a = sc["disagree"], sc["agree"]
+    if not d["n"] and not a["n"]:
+        st.info("Accrues once games are graded with a captured closing line. "
+                "Compares the model's win-probability calibration where it "
+                "**agrees** vs **disagrees** with the market — the disagreement "
+                "bucket is the real test of independent edge (this lands on "
+                "games graded from here on, as the market prob is now captured).")
+    else:
+        be, macc, kacc = d["brier_edge"], d["model_acc"], d["market_acc"]
+        mc = st.columns(3)
+        mc[0].metric("Disagreement games", d["n"])
+        mc[1].metric("Model Brier edge vs market",
+                     f"{be:+.3f}" if be is not None else "—",
+                     help="Market Brier − model Brier on games where our pick "
+                          "differs from the market. Positive = the model is "
+                          "better calibrated exactly where it breaks from the "
+                          "market — independent skill.")
+        mc[2].metric("Model acc. on disagreements",
+                     f"{macc:.0%}" if macc is not None else "—",
+                     delta=(f"{(macc - kacc) * 100:+.0f} pts vs market"
+                            if macc is not None and kacc is not None else None))
+        tbl = pd.DataFrame({
+            "Bucket": ["Disagrees w/ market", "Agrees w/ market", "All games"],
+            "Games": [d["n"], a["n"], sc["n_games"]],
+            "Model Brier": [d["model_brier"], a["model_brier"],
+                            sc["overall"]["model_brier"]],
+            "Market Brier": [d["market_brier"], a["market_brier"],
+                             sc["overall"]["market_brier"]],
+            "Model acc": [d["model_acc"], a["model_acc"], sc["overall"]["model_acc"]],
+            "Market acc": [d["market_acc"], a["market_acc"], sc["overall"]["market_acc"]],
+        })
+        st.dataframe(tbl, width="stretch", hide_index=True)
+        bsc = _sc.bet_scorecard(ledger)
+        con, wm = bsc["contrarian"], bsc["with_market"]
+        if con["n"] or wm["n"]:
+            st.markdown("**Bets by stance**")
+            st.dataframe(pd.DataFrame({
+                "Stance": ["Contrarian (vs market)", "With market"],
+                "Bets": [con["n"], wm["n"]],
+                "ROI %": [con["roi_pct"], wm["roi_pct"]],
+                "Win rate": [con["win_rate"], wm["win_rate"]],
+                "Avg CLV %": [con["avg_clv_pct"], wm["avg_clv_pct"]],
+            }), width="stretch", hide_index=True)
+        st.caption("If the model only wins when it agrees with the market, it's "
+                   "following it. A positive Brier edge and higher accuracy on "
+                   "the disagreement bucket is the proof the model adds signal.")
+
     by_sport = perf.get("by_sport", {})
     if by_sport:
         st.subheader("By sport")
