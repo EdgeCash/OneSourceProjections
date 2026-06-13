@@ -172,6 +172,19 @@ reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
 `python scripts/make_preview.py --sport WNBA`.
 
+## Model-vs-market scorecard (proof of independent skill)
+
+`onesource/scorecard.py` answers the question that matters most: does the model
+add signal, or just echo the market? At grading time every game now stores both
+our win probability and the market's de-vigged win probability, so the
+scorecard splits graded games into where the model **agrees** vs **disagrees**
+with the market and scores each — Brier, accuracy, and the model's Brier edge
+over the market. If the model is better calibrated and more accurate *on the
+disagreement bucket*, that's independent edge worth betting; if not, the edges
+are noise and `MARKET_SHRINK` should rise. A bet-level view splits ROI/CLV into
+contrarian vs with-the-market stances. Shown under **Performance → Model vs
+market**; pure functions, unit-tested in `tests/test_scorecard.py`.
+
 ## Multi-book edge scanner (the sharp layer)
 
 `onesource/edge.py` adds what the elite tools (OddsJam, Unabated) are built on:
