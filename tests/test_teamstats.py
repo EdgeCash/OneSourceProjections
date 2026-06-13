@@ -69,3 +69,35 @@ def test_advantage_scaling():
     assert ts._advantage(2, 28) == 3    # huge edge
     assert ts._advantage(10, 12) == 0   # negligible
     assert ts._advantage(None, 5) == 0  # missing -> no advantage
+
+
+def test_default_slate_date_stays_on_today_during_evening():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    from onesource.sports import default_slate_date
+
+    et = ZoneInfo("America/New_York")
+    dates = ["2026-06-12", "2026-06-13"]
+    slates = {
+        "2026-06-12": {"MLB": {"games": [
+            {"game_time": "2026-06-12T23:05:00Z"},  # 7:05 PM ET
+            {"game_time": "2026-06-12T23:10:00Z"}]}},
+        "2026-06-13": {"MLB": {"games": [
+            {"game_time": "2026-06-13T23:05:00Z"}]}},
+    }
+    # evening of game day, games underway -> still today's slate
+    assert default_slate_date(dates, slates,
+                              datetime(2026, 6, 12, 19, 22, tzinfo=et)) == "2026-06-12"
+    # morning of game day -> today, not tomorrow
+    assert default_slate_date(dates, slates,
+                              datetime(2026, 6, 12, 9, 0, tzinfo=et)) == "2026-06-12"
+    # late night after today's games finished -> roll to tomorrow
+    assert default_slate_date(dates, slates,
+                              datetime(2026, 6, 12, 23, 30, tzinfo=et)) == "2026-06-13"
+    # afternoon-only slate, evening -> games done, roll forward
+    aft = {"2026-06-12": {"MLB": {"games": [{"game_time": "2026-06-12T17:05:00Z"}]}},
+           "2026-06-13": {}}
+    assert default_slate_date(dates, aft,
+                              datetime(2026, 6, 12, 19, 22, tzinfo=et)) == "2026-06-13"
+    assert default_slate_date([], {}) is None

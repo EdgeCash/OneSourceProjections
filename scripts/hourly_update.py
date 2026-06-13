@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from onesource import pipeline, playerlogs, results, snapshots  # noqa: E402
 from onesource.config import OUTPUT_DIR  # noqa: E402
-from onesource.sports import active_sports  # noqa: E402
+from onesource.sports import active_sports, default_slate_date  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("hourly")
@@ -93,9 +93,10 @@ def main():
 
     # 4) write the combined site data file
     perf = results.performance()
+    primary = default_slate_date(upcoming, slates) or today.isoformat()
     out = {
         "generated_at": datetime.now(ET).isoformat(),
-        "primary_date": tomorrow.isoformat(),
+        "primary_date": primary,
         "dates": upcoming,
         "slates": slates,
         "performance": perf,
@@ -103,7 +104,7 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / "latest.json").write_text(json.dumps(out, indent=1, default=str))
     log.info("wrote latest.json | primary=%s | in-season=%s | perf=%s",
-             tomorrow, active_sports(tomorrow.isoformat()), perf["overall"])
+             primary, active_sports(primary), perf["overall"])
     print(f"OK: slates {upcoming}, graded {graded}, "
           f"record {perf['overall']}")
 
