@@ -16,11 +16,25 @@ from .sports import SPORTS, active_sports
 
 log = logging.getLogger(__name__)
 
+# Extra ESPN leagues we show scores for but don't project — so the scoreboard
+# is a true one-stop board. Each value is the ESPN sport path. Leagues with no
+# games on a date simply return nothing.
+EXTRA_LEAGUES = {
+    "NFL": "football/nfl",
+    "NCAAB (M)": "basketball/mens-college-basketball",
+    "NCAAB (W)": "basketball/womens-college-basketball",
+    "MLS": "soccer/usa.1",
+    "EPL": "soccer/eng.1",
+    "UCL": "soccer/uefa.champions",
+}
+
 
 def _sport_scoreboard(sport: str, date: str) -> list[dict]:
     try:
         if sport == "MLB":
             return mlb_statsapi.scoreboard(date)
+        if sport in EXTRA_LEAGUES:
+            return espn.scoreboard_at(EXTRA_LEAGUES[sport], date, sport)
         if SPORTS.get(sport) and SPORTS[sport].espn_path:
             return espn.scoreboard(sport, date)
     except Exception as e:
@@ -29,8 +43,11 @@ def _sport_scoreboard(sport: str, date: str) -> list[dict]:
 
 
 def live_scoreboard(date: str, sports: list[str] | None = None) -> list[dict]:
-    """Every game across the in-season sports for a date, in-progress first."""
-    sports = sports or [s for s in SPORTS if s in active_sports(date)]
+    """Every game across in-season projection sports + the extra score-only
+    leagues for a date, in-progress first."""
+    if sports is None:
+        sports = [s for s in SPORTS if s in active_sports(date)]
+        sports += list(EXTRA_LEAGUES)
     games: list[dict] = []
     for sp in sports:
         games += _sport_scoreboard(sp, date)
@@ -44,6 +61,8 @@ def box_score(sport: str, game_id) -> dict:
     try:
         if sport == "MLB":
             return mlb_statsapi.box_score(int(game_id))
+        if sport in EXTRA_LEAGUES:
+            return espn.box_score_at(EXTRA_LEAGUES[sport], game_id)
         return espn.box_score(sport, game_id)
     except Exception as e:
         log.warning("box score %s %s failed: %s", sport, game_id, e)

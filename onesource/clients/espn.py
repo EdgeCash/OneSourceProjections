@@ -98,6 +98,13 @@ def _parse_scoreboard(data: dict, sport_key: str) -> list[dict]:
     return out
 
 
+def _get_path(path: str, params: dict, endpoint: str = "scoreboard") -> dict:
+    merged = {"limit": 1000, **params}
+    resp = requests.get(f"{BASE}/{path}/{endpoint}", params=merged, timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
 def scoreboard(sport_key: str, date: str) -> list[dict]:
     """All games on a date with live status + scores (for the scoreboard)."""
     compact = date.replace("-", "")
@@ -106,13 +113,16 @@ def scoreboard(sport_key: str, date: str) -> list[dict]:
     return _parse_scoreboard(data, sport_key)
 
 
-def box_score(sport_key: str, event_id) -> dict:
-    """Generic per-team player stat tables for a game (works across ESPN
-    sports), as {teams: [{team, columns, rows}], ...}. [] on any issue."""
-    try:
-        data = _summary(sport_key, event_id)
-    except Exception:
-        return {}
+def scoreboard_at(path: str, date: str, label: str) -> list[dict]:
+    """Scoreboard for any ESPN league by raw path (e.g. 'soccer/eng.1'),
+    for leagues we show scores for but don't project."""
+    compact = date.replace("-", "")
+    data = cached_json(f"espn:sbpath:{path}:{date}", _TTL_LIVE,
+                       lambda: _get_path(path, {"dates": compact}))
+    return _parse_scoreboard(data, label)
+
+
+def _parse_box(data: dict) -> dict:
     box = data.get("boxscore", {})
     teams = []
     for t in box.get("players", []):
@@ -129,6 +139,23 @@ def box_score(sport_key: str, event_id) -> dict:
         teams.append({"team": label, "columns": ["Player", *(columns or [])],
                       "rows": rows})
     return {"teams": teams}
+
+
+def box_score(sport_key: str, event_id) -> dict:
+    """Generic per-team player stat tables for a game (works across ESPN
+    sports), as {teams: [{team, columns, rows}], ...}. {} on any issue."""
+    try:
+        return _parse_box(_summary(sport_key, event_id))
+    except Exception:
+        return {}
+
+
+def box_score_at(path: str, event_id) -> dict:
+    """Box score for any ESPN league by raw path."""
+    try:
+        return _parse_box(_get_path(path, {"event": event_id}, endpoint="summary"))
+    except Exception:
+        return {}
 
 
 def _summary(sport_key: str, event_id) -> dict:
