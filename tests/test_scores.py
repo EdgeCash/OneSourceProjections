@@ -77,6 +77,25 @@ def test_live_scoreboard_sorts_live_first(monkeypatch):
     monkeypatch.setattr(scores, "_sport_scoreboard", lambda s, d: [
         {"sport": "MLB", "state": "post", "game_time": "1", "home": {}, "away": {}},
         {"sport": "MLB", "state": "in", "game_time": "2", "home": {}, "away": {}},
-        {"sport": "MLB", "state": "pre", "game_time": "3", "home": {}, "away": {}}])
+        {"sport": "MLB", "state": "pre", "game_time": "3", "home": {}, "away": {}}]
+        if s == "MLB" else [])
     states = [g["state"] for g in scores.live_scoreboard("2026-06-12")]
     assert states == ["in", "pre", "post"]
+
+
+def test_live_scoreboard_includes_extra_leagues(monkeypatch):
+    monkeypatch.setattr(scores, "active_sports", lambda d: [])
+    seen = []
+    monkeypatch.setattr(scores, "_sport_scoreboard",
+                        lambda s, d: seen.append(s) or [])
+    scores.live_scoreboard("2026-06-12")
+    # the extra score-only leagues are queried even with no projection sports
+    assert "EPL" in seen and "NFL" in seen and "NCAAB (M)" in seen
+
+
+def test_extra_league_routes_by_path(monkeypatch):
+    captured = {}
+    monkeypatch.setattr(scores.espn, "scoreboard_at",
+                        lambda path, date, label: captured.update(path=path, label=label) or [])
+    scores._sport_scoreboard("EPL", "2026-06-12")
+    assert captured == {"path": "soccer/eng.1", "label": "EPL"}
