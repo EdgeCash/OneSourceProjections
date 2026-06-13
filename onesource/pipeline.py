@@ -19,7 +19,7 @@ from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
 from .models import props as prop_model
-from .models.elo import Elo
+from .models.elo import Elo, EloConfig
 from .names import normalize
 from .sports import SPORTS, active_sports
 
@@ -660,7 +660,8 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
     # season for cross-season carryover), then blend its win prob in.
     elo = None
     if sport.elo_blend > 0:
-        elo = Elo()
+        elo = Elo(EloConfig(k=sport.elo_k, home_edge=sport.elo_home_edge,
+                            season_regress=sport.elo_regress))
         try:
             elo_results = espn.results_range(
                 sport_key, mlb_statsapi._shift_date(date, -500), date)

@@ -31,6 +31,11 @@ class Sport:
     fp_projections: str | None = None   # FantasyPros projections support
     espn_params: dict = field(default_factory=dict)
     elo_blend: float = 0.0   # weight on Elo win prob vs the off/def model (0 = off)
+    # Per-sport Elo configuration (used when elo_blend > 0). Defaults match the
+    # WNBA-tuned EloConfig; other leagues set league-appropriate values below.
+    elo_k: float = 16.0          # update step (fewer games -> larger k)
+    elo_home_edge: float = 50.0  # home advantage in Elo points
+    elo_regress: float = 0.25    # between-season pull back toward the mean
     # how the off/def ratings combine into an expected score:
     #   "additive"       -> (team offense + opp defense) / 2   (midpoint)
     #   "multiplicative" -> league × (off/league) × (oppDef/league)  (log5-for-
@@ -57,12 +62,18 @@ SPORTS: dict[str, Sport] = {
         league_ppg=114.0, hfa=2.5, sigma_margin=12.5, sigma_total=19.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
         fp_projections="daily", score_method="multiplicative",
+        # Elo primed for season openers (carries prior-season strength so the
+        # first weeks aren't coin flips). Mirrors WNBA's strong basketball
+        # result; validate/tune via Performance -> Model vs market once games run.
+        elo_blend=0.60, elo_k=20.0, elo_home_edge=65.0, elo_regress=0.25,
     ),
     "NFL": Sport(
         key="NFL", espn_path="football/nfl", model="normal",
         league_ppg=22.5, hfa=1.8, sigma_margin=13.5, sigma_total=13.5,
         in_season_months=(9, 10, 11, 12, 1, 2), form_days=140,
         fp_projections="weekly", score_method="multiplicative",
+        # Few games/season -> larger k and a heavier between-season regression.
+        elo_blend=0.50, elo_k=20.0, elo_home_edge=48.0, elo_regress=0.33,
     ),
     "NCAAF": Sport(
         key="NCAAF", espn_path="football/college-football", model="normal",
@@ -70,12 +81,16 @@ SPORTS: dict[str, Sport] = {
         in_season_months=(8, 9, 10, 11, 12, 1), form_days=140,
         espn_params={"groups": 80, "limit": 400},  # FBS only
         score_method="multiplicative",
+        # Heavy roster turnover -> regress harder toward the mean each season.
+        elo_blend=0.50, elo_k=22.0, elo_home_edge=65.0, elo_regress=0.45,
     ),
     "NHL": Sport(
         key="NHL", espn_path="hockey/nhl", model="poisson",
         league_ppg=3.0, hfa=0.15, sigma_margin=0.0, sigma_total=0.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
         score_method="multiplicative",
+        # Low-event sport -> small k (single results carry little signal).
+        elo_blend=0.50, elo_k=6.0, elo_home_edge=50.0, elo_regress=0.30,
     ),
 }
 

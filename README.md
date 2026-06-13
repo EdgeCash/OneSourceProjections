@@ -172,6 +172,26 @@ reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
 `python scripts/make_preview.py --sport WNBA`.
 
+## Per-sport game models
+
+MLB has its own richer pipeline (Statcast, xFIP, park factors → Poisson Monte
+Carlo). Every other sport runs through the generic engine (`models/generic.py`),
+parameterized per sport in `onesource/sports.py`: scoring environment
+(`league_ppg`), home edge (`hfa`), the margin/total standard deviations that
+turn projections into probabilities, a `normal` (basketball/football) or
+`poisson` (hockey) distribution, and a log5-style `multiplicative` score method.
+
+All team sports are **Elo-primed**: each carries a per-sport Elo (`elo_k`,
+`elo_home_edge`, `elo_regress`) blended with the off/def ratings (`elo_blend`),
+with cross-season carryover and between-season regression. This matters most at
+**season openers** — without it, thin early-season samples collapse to league
+average and every game is a coin flip; with it, the out-of-season sports (NBA,
+NHL, NFL, NCAAF) are ready to flip on with prior-season strength baked in. The
+blends are literature-based priming defaults to validate via **Performance →
+Model vs market** once games accrue. Readiness is locked by
+`tests/test_sport_models.py` (every sport: favorites favored, HFA tilts even
+games home, valid/monotonic totals, and Elo responding to results).
+
 ## Model-vs-market scorecard (proof of independent skill)
 
 `onesource/scorecard.py` answers the question that matters most: does the model
