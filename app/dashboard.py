@@ -119,7 +119,8 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NHL", "NCAAF") if s in SPORTS]
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
     st.caption("projections & research")
-    section = st.radio("Navigate", NAV_SPORTS + ["PLAYS", "DFS", "PERFORMANCE"],
+    section = st.radio("Navigate",
+                       NAV_SPORTS + ["PLAYS", "DFS", "TOOLS", "PERFORMANCE"],
                        label_visibility="collapsed", key="nav")
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
@@ -621,6 +622,120 @@ def render_performance():
 
 
 # ---------------------------------------------------------------------------
+# TOOLS: the betting-math toolkit (devig / EV / arb / middle / hedge / Kelly)
+# ---------------------------------------------------------------------------
+
+def render_tools():
+    from onesource import calculators as calc
+
+    topbar("Betting Tools", with_search=False)
+    st.caption("The deterministic toolkit — fair odds, edge, and staking math "
+               "on any prices you paste in.")
+    t1, t2, t3, t4, t5 = st.tabs(["De-vig & EV", "Arbitrage & Middle", "Hedge",
+                                  "Kelly & Risk", "Parlay & Correlation"])
+
+    with t1:
+        c = st.columns(3)
+        over = c[0].number_input("Side A odds", value=-110, step=5, key="dv_a")
+        under = c[1].number_input("Side B odds", value=-110, step=5, key="dv_b")
+        meth = c[2].selectbox("De-vig method", ["multiplicative", "power"])
+        fair = calc.no_vig(over, under, method=meth)
+        m = st.columns(3)
+        m[0].metric("Fair A", f"{fair[0]:.1%}")
+        m[1].metric("Fair B", f"{fair[1]:.1%}")
+        m[2].metric("Hold (vig)", f"{calc.hold(over, under):.2%}")
+        st.divider()
+        st.markdown("**Expected value** of a price vs your win probability")
+        e = st.columns(3)
+        p = e[0].number_input("Your win %", 0.0, 100.0, 55.0, 0.5, key="ev_p") / 100
+        price = e[1].number_input("Offered odds", value=-110, step=5, key="ev_price")
+        ev = ui_ev(p, price)
+        e[2].metric("EV per $1", f"{ev:+.1%}",
+                    help="Positive means the price pays more than your probability.")
+        st.caption("Tip: set 'Your win %' to a sharp book's de-vigged fair "
+                   "probability to screen for +EV against the market.")
+
+    with t2:
+        st.markdown("**Arbitrage** — best price on each side across books")
+        a = st.columns(3)
+        oa = a[0].number_input("Outcome A best", value=110, step=5, key="ar_a")
+        ob = a[1].number_input("Outcome B best", value=110, step=5, key="ar_b")
+        stake = a[2].number_input("Total stake $", value=100, step=10, key="ar_s")
+        arb = calc.arbitrage([oa, ob], total=stake)
+        if arb:
+            st.success(f"Arb! Lock **${arb['profit']:.2f}** "
+                       f"({arb['profit_pct']:.2f}%). Stake "
+                       f"${arb['stakes'][0]:.2f} / ${arb['stakes'][1]:.2f}.")
+        else:
+            st.info("No arbitrage — the two prices imply ≥100%.")
+        st.divider()
+        mid = st.number_input("Middle vig (both sides)", value=-110, step=5,
+                              key="mid")
+        st.metric("Break-even hit rate", f"{calc.middle_breakeven(mid):.1%}",
+                  help="How often the middle must land to be +EV at this vig.")
+
+    with t3:
+        h = st.columns(3)
+        os_ = h[0].number_input("Original stake $", value=100, step=10, key="h_s")
+        oo = h[1].number_input("Original odds", value=200, step=10, key="h_o")
+        ho = h[2].number_input("Hedge odds (other side)", value=-150, step=10,
+                               key="h_h")
+        res = calc.hedge(os_, oo, ho)
+        hc = st.columns(3)
+        hc[0].metric("Hedge stake", f"${res['hedge_stake']:.2f}")
+        hc[1].metric("Guaranteed profit", f"${res['guaranteed_profit']:.2f}")
+        hc[2].metric("Total outlay", f"${res['total_outlay']:.2f}")
+
+    with t4:
+        k = st.columns(3)
+        kp = k[0].number_input("Win %", 0.0, 100.0, 55.0, 0.5, key="k_p") / 100
+        ko = k[1].number_input("Odds", value=-110, step=5, key="k_o")
+        kf = k[2].slider("Kelly fraction", 0.0, 1.0, 0.25, 0.05)
+        from onesource import odds as _odds
+        stake_frac = _odds.kelly_stake(kp, ko, kf)
+        ror = calc.risk_of_ruin(kp, ko, fraction=kf)
+        kc = st.columns(3)
+        kc[0].metric("Stake (% bankroll)", f"{stake_frac:.1%}")
+        kc[1].metric("EV per $1", f"{ui_ev(kp, ko):+.1%}")
+        kc[2].metric("Risk of 50% drawdown", f"{ror:.0%}",
+                     help="Monte-Carlo chance of halving the bankroll over 500 "
+                          "bets at this fraction.")
+
+    with t5:
+        st.markdown("**Independent parlay**")
+        legs_txt = st.text_input("Leg odds (comma-separated American)",
+                                 "-110, -110, +120", key="par")
+        try:
+            legs = [float(x) for x in legs_txt.split(",") if x.strip()]
+            par = calc.parlay(legs)
+            pc = st.columns(2)
+            pc[0].metric("Parlay price", ui.fmt_american(par["american"]))
+            pc[1].metric("Implied win %", f"{par['implied_prob']:.1%}")
+        except ValueError:
+            st.warning("Enter comma-separated numbers, e.g. -110, +120.")
+        st.divider()
+        st.markdown("**Two correlated legs** (same-game)")
+        cc = st.columns(3)
+        pa = cc[0].number_input("Leg A win %", 0.0, 100.0, 50.0, 1.0, key="c_a") / 100
+        pb = cc[1].number_input("Leg B win %", 0.0, 100.0, 50.0, 1.0, key="c_b") / 100
+        rho = cc[2].slider("Correlation ρ", -1.0, 1.0, 0.3, 0.05)
+        cr = calc.correlated_two_leg(pa, pb, rho)
+        rc = st.columns(3)
+        rc[0].metric("Joint win %", f"{cr['joint_prob']:.1%}")
+        rc[1].metric("If independent", f"{cr['independent_prob']:.1%}")
+        rc[2].metric("Fair price", ui.fmt_american(cr["fair_american"])
+                     if cr["fair_american"] is not None else "—")
+        st.caption("Positive correlation makes the true joint probability "
+                   "higher than the independent product — books price this in, "
+                   "so an unadjusted parlay price can be a trap or an edge.")
+
+
+def ui_ev(prob: float, american) -> float:
+    from onesource import odds as _odds
+    return _odds.expected_value(prob, american)
+
+
+# ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
 
@@ -630,5 +745,7 @@ elif section == "PLAYS":
     render_plays()
 elif section == "DFS":
     render_dfs()
+elif section == "TOOLS":
+    render_tools()
 elif section == "PERFORMANCE":
     render_performance()
