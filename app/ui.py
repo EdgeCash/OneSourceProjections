@@ -659,6 +659,154 @@ def _analysis_html(sport, g, matchup, min_edge) -> str:
 
 
 # ---------------------------------------------------------------------------
+# AI briefs — clean markdown exports to paste straight into an AI chat
+# ---------------------------------------------------------------------------
+
+def _form_line(team: str, form: dict) -> str:
+    """One-line team form: '12-8 (W3) — last 5: W W L W W'."""
+    if not form:
+        return f"{team}: —"
+    rec = f"{form.get('w', 0)}-{form.get('l', 0)}"
+    streak = f" ({form['streak']})" if form.get("streak") else ""
+    last5 = " ".join("W" if r.get("win") else "L"
+                     for r in (form.get("last5") or []))
+    last5 = f" — last 5: {last5}" if last5 else ""
+    return f"{team}: {rec}{streak}{last5}"
+
+
+def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
+                  min_edge: float = 0.02) -> str:
+    """A clean markdown brief of one game — model reads, team form, and the
+    biggest stat mismatches — built to paste straight into an AI chat or share.
+    Robust to a missing/partial matchup dict so it works off the slate alone."""
+    matchup = matchup or {}
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    head = (f"# {sport} — {away} @ {home}\n"
+            f"*{fmt_time_et(g.get('game_time'))} ET · "
+            f"O/U {_num(g.get('total_line') or g.get('proj_total'))} · "
+            f"proj {_num(_exp(g, 'away'))}–{_num(_exp(g, 'home'))}*")
+
+    conv = {k.upper(): c for k, c in market_convictions(g).items()}
+    reads = ["## Model read"]
+    for r in matchup_analysis(sport, g, matchup, min_edge):
+        if r["market"] == "EDGES":
+            continue
+        tag = r["decision"]
+        c = conv.get(r["market"])
+        if c is not None and r["decision"] != "NOTE":
+            tag += f", confidence {c['score']:g}/10"
+        reads.append(f"- **{r['market'].title()}** — {tag}: {r['text']}")
+    parts = [head, "\n".join(reads)]
+
+    aform, hform = matchup.get("away_form"), matchup.get("home_form")
+    if aform or hform:
+        parts.append("## Team form\n"
+                     f"- {_form_line(away, aform or {})}\n"
+                     f"- {_form_line(home, hform or {})}")
+
+    stars = []
+    for key, team in (("away_off_vs_home_def", away),
+                      ("home_off_vs_away_def", home)):
+        for r in matchup.get(key, []) or []:
+            if r.get("adv", 0) >= 2:
+                stars.append(f"- {team} {r['stat']} (#{r.get('off_rank')} "
+                             f"offense vs #{r.get('def_rank')} defense)")
+    if stars:
+        parts.append("## Biggest stat mismatches\n" + "\n".join(stars[:6]))
+
+    parts.append("_OneSource Projections — model estimates, not financial "
+                 "advice._")
+    return "\n\n".join(parts)
+
+
+def ai_brief_prop(sport: str, p: dict) -> str:
+    """Markdown brief of one prop — projection, model read, hit-rate splits,
+    and market context — for pasting into an AI chat."""
+    player = p.get("player", "")
+    market = short_market(p.get("market", ""))
+    line = p.get("line")
+    line_txt = (f" {line:g}" if isinstance(line, (int, float)) and pd.notna(line)
+                else "")
+
+    cands = []
+    if p.get("ev") is not None and pd.notna(p.get("ev")):
+        cands.append(("Over", p["ev"], p.get("odds")))
+    if p.get("ev_over") is not None and pd.notna(p.get("ev_over")):
+        cands.append(("Over", p["ev_over"], p.get("over_odds")))
+    if p.get("ev_under") is not None and pd.notna(p.get("ev_under")):
+        cands.append(("Under", p["ev_under"], p.get("under_odds")))
+    side, ev, price = (max(cands, key=lambda c: c[1]) if cands
+                       else ("", None, None))
+
+    matchup = " vs ".join(x for x in (p.get("team"), p.get("opponent")) if x)
+    parts = [f"# {sport} Prop — {player} · {market}{line_txt}"
+             + (f"\n*{matchup}*" if matchup else "")]
+
+    facts = []
+    mop = p.get("model_over_prob")
+    if p.get("projection") is not None and pd.notna(p.get("projection")):
+        facts.append(f"- Our projection: **{p['projection']}** (line {_num(line)})")
+    if mop is not None and pd.notna(mop):
+        facts.append(f"- Model Over %: **{mop * 100:.0f}%**")
+    if side and ev is not None and pd.notna(ev):
+        facts.append(f"- Best side: **{side}{line_txt}** at "
+                     f"**{fmt_american(price)}** — EV **{ev:+.1%}**")
+    k = p.get("kelly")
+    if k is not None and pd.notna(k) and k > 0:
+        facts.append(f"- Suggested stake: **{k:.1%}** of bankroll (¼-Kelly)")
+    if facts:
+        parts.append("\n".join(facts))
+
+    hr = [(lbl, p.get(key)) for lbl, key in
+          (("L5", "hr_l5"), ("L10", "hr_l10"), ("L20", "hr_l20"),
+           ("Season", "hr_season"), ("H2H", "hr_h2h"))]
+    hr_bits = [f"{lbl} {v * 100:.0f}%" for lbl, v in hr
+               if v is not None and pd.notna(v)]
+    if hr_bits:
+        parts.append("## Hit rate (over the line)\n" + " · ".join(hr_bits))
+
+    ctx = []
+    bp_proj, bp_side = p.get("bp_projection"), p.get("bp_recommended_side")
+    bp_rating = p.get("bp_bet_rating")
+    if bp_proj is not None and pd.notna(bp_proj):
+        ctx.append(f"BettingPros projects {bp_proj:g}")
+    if bp_side:
+        stars = ("★" * int(bp_rating)) if bp_rating and pd.notna(bp_rating) else ""
+        ctx.append(f"BP lean {str(bp_side).upper()} {stars}".strip())
+    opp_rank = p.get("opp_rank")
+    if opp_rank is not None and pd.notna(opp_rank):
+        ctx.append(f"opponent ranks #{int(opp_rank)} defending this stat")
+    if ctx:
+        parts.append("## Market context\n- " + "\n- ".join(ctx))
+
+    parts.append("_OneSource Projections — model estimates, not financial "
+                 "advice._")
+    return "\n\n".join(parts)
+
+
+def ai_brief_board(board: pd.DataFrame, date: str | None = None,
+                   limit: int = 40) -> str:
+    """Markdown table of the slate's edges (the PLAYS board) for pasting into
+    an AI chat. `board` is the build_best_bets frame (raw ev/prob floats)."""
+    if board is None or board.empty:
+        return "No model edges clear the threshold on this slate."
+    head = f"# Slate edges{(' — ' + date) if date else ''}"
+    lines = [head, "", "| Sport | Bet | Game | Price | Model % | EV % |",
+             "|---|---|---|---|---|---|"]
+    for _, r in board.head(limit).iterrows():
+        mp = pd.to_numeric(r.get("model_prob"), errors="coerce")
+        ev = pd.to_numeric(r.get("ev"), errors="coerce")
+        lines.append("| {} | {} | {} | {} | {} | {} |".format(
+            r.get("sport", ""), r.get("bet", ""), r.get("game", ""),
+            fmt_american(r.get("price")),
+            f"{mp * 100:.0f}%" if pd.notna(mp) else "—",
+            f"{ev * 100:+.1f}%" if pd.notna(ev) else "—"))
+    lines += ["", "_OneSource Projections — ¼-Kelly staking, model estimates, "
+              "not financial advice._"]
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
 # View preparation (friendly columns + column_config-ready values)
 # ---------------------------------------------------------------------------
 

@@ -10,6 +10,7 @@ board, or the PERFORMANCE tracker.
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -20,29 +21,64 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import config, dfs, playerlogs, results, teamstats  # noqa: E402
+from onesource import ai, config, dfs, edge, playerlogs, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
 st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
 
+# Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
+# environment so the anthropic SDK (and onesource.ai) can find them.
+for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
+    try:
+        if _k not in os.environ and _k in st.secrets:
+            os.environ[_k] = str(st.secrets[_k])
+    except Exception:
+        pass
+
 require_password()
 
 st.markdown("""
 <style>
-  .block-container { padding-top: 1.4rem; padding-bottom: 2rem; max-width: 1300px; }
-  section[data-testid="stSidebar"] { background: #0b0f16; border-right: 1px solid #1c2330; }
-  section[data-testid="stSidebar"] .stRadio label { font-size: 0.98rem; padding: 2px 0; }
+  :root { --osp-accent:#3fb950; --osp-accent2:#58a6ff; --osp-card:#161b24;
+          --osp-line:#232a36; --osp-bg:#0d1117; }
+  .stApp { background:
+    radial-gradient(1200px 600px at 12% -8%, rgba(63,185,80,0.07), transparent 55%),
+    radial-gradient(1000px 500px at 100% 0%, rgba(88,166,255,0.06), transparent 50%),
+    var(--osp-bg); }
+  .block-container { padding-top: 1.2rem; padding-bottom: 2rem; max-width: 1320px; }
+  section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg,#0c1119 0%,#0a0e15 100%);
+    border-right: 1px solid #1c2330; }
+  section[data-testid="stSidebar"] .stRadio label { font-size: 0.99rem; padding: 3px 0; }
+  /* nav radio: pill-style active row */
+  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
+    border-radius: 8px; padding: 4px 8px; transition: background .15s ease; }
+  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
+    background: rgba(88,166,255,0.08); }
   [data-testid="stMetric"] {
-    background: rgba(40,60,50,0.22); border: 1px solid rgba(80,160,120,0.22);
-    border-radius: 10px; padding: 10px 14px;
-  }
-  [data-testid="stMetricLabel"] { opacity: 0.75; }
-  .osp-brand { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px;
-    margin: 0 0 0.2rem 0; }
-  .osp-title { font-size: 1.7rem; font-weight: 800; margin: 0; }
-  div[data-testid="stCaptionContainer"] { opacity: 0.65; }
+    background: linear-gradient(160deg, rgba(63,185,80,0.10), rgba(88,166,255,0.05));
+    border: 1px solid rgba(80,160,120,0.22); border-radius: 12px;
+    padding: 12px 16px; box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset; }
+  [data-testid="stMetricLabel"] { opacity: 0.72; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.4px; }
+  [data-testid="stMetricValue"] { font-weight: 800; letter-spacing: -0.5px; }
+  .osp-brand { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.6px;
+    margin: 0 0 0.1rem 0;
+    background: linear-gradient(90deg,#3fb950,#58a6ff); -webkit-background-clip: text;
+    background-clip: text; -webkit-text-fill-color: transparent; }
+  .osp-title { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+  div[data-testid="stCaptionContainer"] { opacity: 0.66; }
   .stTabs [data-baseweb="tab"] { font-size: 0.95rem; }
+  .stButton > button { border-radius: 9px; border: 1px solid var(--osp-line);
+    font-weight: 600; transition: border-color .15s ease, transform .05s ease; }
+  .stButton > button:hover { border-color: var(--osp-accent); }
+  .stButton > button:active { transform: translateY(1px); }
+  .osp-hero { background: linear-gradient(135deg, rgba(63,185,80,0.10), rgba(88,166,255,0.06));
+    border: 1px solid var(--osp-line); border-radius: 16px; padding: 16px 20px;
+    margin-bottom: 14px; }
+  .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:2px 9px;
+    border-radius:999px; margin-right:6px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -120,7 +156,8 @@ with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
     st.caption("projections & research")
     section = st.radio("Navigate",
-                       NAV_SPORTS + ["SCORES", "PLAYS", "DFS", "TOOLS", "PERFORMANCE"],
+                       ["HOME"] + NAV_SPORTS
+                       + ["SCORES", "PLAYS", "EDGES", "DFS", "TOOLS", "PERFORMANCE"],
                        label_visibility="collapsed", key="nav")
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
@@ -171,6 +208,31 @@ def pick_date() -> str:
     return st.radio("Slate", dates, horizontal=True, label_visibility="collapsed",
                     index=dates.index(default_date) if default_date in dates else 0,
                     key="slate")
+
+
+def ai_block(brief: str, key: str):
+    """Unified 'send to AI' panel: a one-click Claude analysis (when an API key
+    is configured) over the markdown brief, plus the copy-paste brief itself as
+    a fallback for any external AI. The analysis persists across reruns via
+    session_state so it doesn't vanish on the next interaction."""
+    with st.expander("🤖 AI analyst & copy-for-AI"):
+        ready, reason = ai.available()
+        out_key = f"ai_out_{key}"
+        if ready:
+            c1, c2 = st.columns([1, 3])
+            if c1.button("✨ Analyze", key=f"ai_btn_{key}"):
+                try:
+                    with st.spinner("Claude is reading the brief…"):
+                        st.session_state[out_key] = ai.analyze(brief)
+                except Exception as e:  # network/auth/rate-limit — show, don't crash
+                    st.session_state[out_key] = f"⚠️ AI analyst error: {e}"
+            c2.caption("Claude reads the brief below and gives a grounded read.")
+            if st.session_state.get(out_key):
+                st.markdown(st.session_state[out_key])
+        else:
+            st.caption(f"💡 {reason}")
+        st.code(brief, language="markdown")
+        st.caption("Hover the box and click ⧉ to copy, then paste into any AI.")
 
 
 # ---------------------------------------------------------------------------
@@ -256,6 +318,8 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
+    ai_block(ui.ai_brief_game(sport, g, m, min_edge),
+             key=f"game_{sport}_{date_sel}_{g.get('away_team','')}_{g.get('home_team','')}")
     if caption:
         st.caption("Offense L5 vs the opponent's matching defense L5; small "
                    "numbers are league ranks (green = top third). ★ = the "
@@ -461,6 +525,9 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
         if bits:
             st.markdown("\n\n".join(bits))
 
+    ai_block(ui.ai_brief_prop(sport, p),
+             key=f"prop_{sport}_{p.get('player','')}_{p.get('market','')}_{p.get('line','')}")
+
 
 def _player_profile(sport: str, player: str, market: str) -> str | None:
     """Season profile line (MLB: box-log rates + prior-season Statcast
@@ -574,6 +641,7 @@ def render_plays():
                  if has_shop else "")
     st.caption("Every edge across sports for the slate, sorted by EV. "
                "Stake = ¼-Kelly × bankroll." + shop_note)
+    ai_block(ui.ai_brief_board(board, date_sel), key=f"board_{date_sel}")
 
 
 # ---------------------------------------------------------------------------
@@ -942,15 +1010,153 @@ def ui_ev(prob: float, american) -> float:
 
 
 # ---------------------------------------------------------------------------
+# HOME: command-center overview
+# ---------------------------------------------------------------------------
+
+def render_home():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Command Center"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption(f"Updated {gen} ET · {len(NAV_SPORTS)} sports tracked · "
+               "model estimates, not financial advice")
+    day = slates.get(default_date, {})
+    board = ui.build_best_bets(day, min_edge)
+    if hide_wild and not board.empty:
+        board = board[pd.to_numeric(board["ev"], errors="coerce") < 0.30]
+    perf = (data or {}).get("performance", {}).get("overall", {})
+    games_today = sum(len(b.get("games", []) or []) for b in day.values())
+
+    c = st.columns(4)
+    c[0].metric("Slate", default_date or "—")
+    c[1].metric("Games", games_today)
+    c[2].metric("Edges ≥ thresh", 0 if board.empty else len(board))
+    c[3].metric("Best EV", f"{board['ev'].max():+.1%}" if not board.empty else "—")
+    c2 = st.columns(4)
+    c2[0].metric("Graded games", perf.get("graded_games", 0))
+    c2[1].metric("Model Brier", perf.get("model_brier") or "—",
+                 help="Win-probability error; 0.25 = coin flip, lower is better.")
+    roi = perf.get("roi_pct")
+    c2[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—")
+    clv = perf.get("avg_clv_pct")
+    c2[3].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+                 help="Edge vs the closing line — the truest early skill signal.")
+
+    left, right = st.columns([3, 2])
+    with left:
+        st.markdown("##### 🔥 Today's top edges")
+        if board.empty:
+            st.info("No edges over the current threshold yet — lower **Min edge** "
+                    "in the sidebar, or check back as lineups post.")
+        else:
+            view = board.head(8).copy()
+            view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
+            view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
+            view["price"] = view["price"].map(ui.fmt_american)
+            view = view[["sport", "bet", "ev", "price", "model_prob"]].rename(
+                columns={"sport": "Sport", "bet": "Bet", "ev": "EV %",
+                         "price": "Price", "model_prob": "Model %"})
+            st.dataframe(view, width="stretch", hide_index=True, column_config={
+                "EV %": st.column_config.NumberColumn(format="%+.1f%%"),
+                "Model %": st.column_config.ProgressColumn(
+                    "Model %", min_value=0, max_value=100, format="%.0f%%")})
+            st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
+    with right:
+        st.markdown("##### 🗓️ Slate at a glance")
+        any_rows = False
+        for sport in NAV_SPORTS:
+            b = day.get(sport, {})
+            ng, npr = len(b.get("games", []) or []), len(b.get("props", []) or [])
+            if ng or npr:
+                any_rows = True
+                st.markdown(f"- **{sport}** — {ng} games · {npr} props")
+        if not any_rows:
+            st.caption("No games scheduled on this slate.")
+        ready, _ = ai.available()
+        chip = ("<span class='osp-pill' style='background:rgba(63,185,80,0.18);"
+                "color:#3fb950;'>● AI analyst on</span>" if ready else
+                "<span class='osp-pill' style='background:rgba(110,118,129,0.18);"
+                "color:#8b949e;'>○ AI analyst off</span>")
+        st.markdown(chip, unsafe_allow_html=True)
+        st.caption("Open any matchup, prop, or board and hit **✨ Analyze** for a "
+                   "Claude read." if ready else
+                   "Add ANTHROPIC_API_KEY (secret) to enable one-click Claude analysis.")
+
+
+# ---------------------------------------------------------------------------
+# EDGES: multi-book consensus scanner (+EV / arb / middles / low-hold)
+# ---------------------------------------------------------------------------
+
+def _book(b) -> str:
+    return str(b).replace("_", " ").title()
+
+
+def render_edges():
+    topbar("Edge Scanner", with_search=False)
+    date_sel = pick_date()
+    st.caption("Multi-book **consensus** edges: +EV vs the de-vigged market (the "
+               "OddsJam/Unabated standard), plus arbitrage, middles, and soft "
+               "low-hold markets — computed from the captured Odds API multi-book "
+               "lines.")
+    found = False
+    for sport in NAV_SPORTS:
+        try:
+            scan = edge.scan_slate(sport, date_sel, min_ev=min_edge)
+        except Exception:
+            continue
+        if not any(scan.get(k) for k in ("plus_ev", "arbs", "middles", "low_holds")):
+            continue
+        found = True
+        st.markdown(f"#### {sport}")
+        pev = scan["plus_ev"]
+        if pev:
+            st.markdown("**➕ Positive EV vs consensus**")
+            df = pd.DataFrame([{
+                "Market": r["market"], "Game": r["game"], "Side": r["side"],
+                "Best": ui.fmt_american(r["price"]), "Book": _book(r["book"]),
+                "Fair %": r["fair_prob"] * 100, "EV %": r["ev"] * 100,
+                "#bk": r["n_books"]} for r in pev])
+            st.dataframe(df, width="stretch", hide_index=True, column_config={
+                "Fair %": st.column_config.NumberColumn(format="%.0f%%"),
+                "EV %": st.column_config.NumberColumn(format="%+.1f%%")})
+        for a in scan["arbs"]:
+            legs = " · ".join(
+                f"{l['side']} {ui.fmt_american(l['price'])} ({_book(l['book'])}) "
+                f"${l['stake']:.0f}" for l in a["legs"])
+            st.success(f"**Arb — {a['game']} ({a['market']})**: lock "
+                       f"{a['profit_pct']:.2f}% — {legs}")
+        if scan["middles"]:
+            st.markdown("**🎯 Middles**")
+            mdf = pd.DataFrame([{
+                "Game": m["game"], "Window": f"{m['low']:g}–{m['high']:g}",
+                "Width": m["width"],
+                "Over": f"{ui.fmt_american(m['over']['price'])} ({_book(m['over']['book'])})",
+                "Under": f"{ui.fmt_american(m['under']['price'])} ({_book(m['under']['book'])})",
+                "Breakeven %": m["breakeven"] * 100} for m in scan["middles"]])
+            st.dataframe(mdf, width="stretch", hide_index=True, column_config={
+                "Breakeven %": st.column_config.NumberColumn(format="%.1f%%")})
+        for h in scan["low_holds"]:
+            st.info(f"**Low hold — {h['game']} ({h['market']})**: "
+                    f"{h['hold'] * 100:.2f}% market margin (soft, near-arb).")
+    if not found:
+        st.info("No multi-book edges for this slate yet. The scanner reads the "
+                "Odds API multi-book capture in the snapshot store — once that's "
+                "flowing and books diverge, +EV / arbitrage / middles surface "
+                "here automatically. (The math is unit-tested and ready.)")
+
+
+# ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
 
-if section in NAV_SPORTS:
+if section == "HOME":
+    render_home()
+elif section in NAV_SPORTS:
     render_sport(section)
 elif section == "SCORES":
     render_scores()
 elif section == "PLAYS":
     render_plays()
+elif section == "EDGES":
+    render_edges()
 elif section == "DFS":
     render_dfs()
 elif section == "TOOLS":
