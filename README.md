@@ -209,7 +209,10 @@ correlation, `price_sgp` returns the correlation-adjusted joint probability, the
 fair vs naive-independent prices, the "lift", and — with the book's quoted SGP
 price — the EV and ¼-Kelly stake. Surfaced in **Tools → Parlay & Correlation**:
 positive correlation lifts the true joint probability above the independent
-product, so a book SGP priced near the independent number is +EV.
+product, so a book SGP priced near the independent number is +EV. The
+BettingPros `/props` call also pulls `include_correlated_picks` (no extra
+request, so the 5k/day budget is untouched) — its correlated-leg suggestions
+show on each prop's deep-dive card to seed an SGP.
 
 ## AI analyst (built-in "send to AI")
 
@@ -223,12 +226,12 @@ leaving the app.
 
 ## Dashboard layout
 
-A left sidebar opens on a **Command Center** home (KPI tiles for today's edges,
-best EV, and model Brier/ROI/CLV, plus a top-edges table), then navigates by
-sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays** (the cross-sport best-bets
-board, split into Game/Props tabs), **Edges** (the multi-book consensus
-scanner), **Experts** (multi-source consensus, searchable), **Scores**, **DFS**,
-**Tools**, and **Performance** (the forward-test tracker). The top bar shows the
+A left sidebar uses two-tier navigation grouped logically: **🏠 Home** (the
+Command Center overview — KPI tiles for today's edges, best EV, and model
+Brier/ROI/CLV, plus a top-edges table), **🔬 Research** (by sport: MLB, WNBA,
+NBA, NHL, NCAAF), **🎯 Bets** (Best bets / Edge scanner / Expert consensus / DFS
+optimizer), **📡 Live** (Scores), **🧰 Tools**, and **📈 Performance** (the
+forward-test tracker). Picking an area reveals its pages. The top bar shows the
 section title and a team/player search; each
 sport view has Games (matchup cards with team logos, projected score, win
 %, and the best model edge) and Props tabs. Team logos come from free CDNs

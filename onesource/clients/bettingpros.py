@@ -203,6 +203,8 @@ def props(
         "page": 1,
         "include_selections": "true",
         "include_markets": "false",
+        "include_correlated_picks": "true",  # BP's own SGP correlation suggestions
+        "correlated_picks_limit": 6,
         "ev_threshold": "false",  # we want the full board, not just BP's edges
     }
     if market_ids:
@@ -316,6 +318,9 @@ def flatten_props(raw_props: list[dict]) -> list[dict]:
                 row[f"{side}_open"] = _num_or_none(opening.get("cost"))
         if row["bp_line"] is None:
             row["bp_line"] = row.get("over_line")
+        # BettingPros' own correlated-pick suggestions for same-game parlays
+        # (include_correlated_picks=true — adds no extra request).
+        row["correlated_picks"] = _correlated_picks(p)
         # public consensus: BettingPros pick counts per side
         def _picks(sd):
             pk = ((sd or {}).get("selection") or {}).get("picks") or {}
@@ -369,6 +374,37 @@ def _num_or_none(v):
         return float(v)
     except (TypeError, ValueError):
         return None
+
+
+def _correlated_picks(p: dict) -> list[dict]:
+    """Flatten BettingPros' correlated-pick suggestions (from
+    include_correlated_picks=true) into ``[{player, market, side, line, odds,
+    correlation}]``. The nested shape isn't documented field-by-field, so every
+    field is pulled defensively from several candidate paths and missing values
+    come back None; an unexpected shape yields an empty list rather than an
+    error."""
+    raw = p.get("correlated_picks") or p.get("correlated") or []
+    if not isinstance(raw, list):
+        return []
+    out = []
+    for c in raw:
+        if not isinstance(c, dict):
+            continue
+        name = _dig(c, "participant.name", "participant.player.name",
+                    "player.name", "participant", "name", "label")
+        side = (c.get("recommended_side") or c.get("side")
+                or _dig(c, "selection.label", "pick.side"))
+        out.append({
+            "player": name if isinstance(name, str) else None,
+            "market": _dig(c, "market.name", "market_name", "market", "market_id"),
+            "side": side if isinstance(side, str) else None,
+            "line": _num_or_none(_dig(c, "line", "selection.line")),
+            "odds": _num_or_none(_dig(c, "cost", "odds", "selection.cost")),
+            "correlation": _num_or_none(
+                _dig(c, "correlation", "correlation_coefficient",
+                     "correlation_value", "r")),
+        })
+    return out
 
 
 # Resolve our prop-market names to live BettingPros market ids by keyword

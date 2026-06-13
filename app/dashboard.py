@@ -152,14 +152,32 @@ slates = slates_by_date(data) if data else {}
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NHL", "NCAAF") if s in SPORTS]
 
+# Two-tier navigation: a top-level area, then (when an area has several pages) a
+# sub-page. Grouped logically: overview -> research by sport -> bet-finding ->
+# live -> tools -> tracking.
+NAV_GROUPS = {
+    "🏠 Home": ["HOME"],
+    "🔬 Research": NAV_SPORTS,
+    "🎯 Bets": ["PLAYS", "EDGES", "EXPERTS", "DFS"],
+    "📡 Live": ["SCORES"],
+    "🧰 Tools": ["TOOLS"],
+    "📈 Performance": ["PERFORMANCE"],
+}
+_PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
+                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer"}
+
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
     st.caption("projections & research")
-    section = st.radio("Navigate",
-                       ["HOME"] + NAV_SPORTS
-                       + ["SCORES", "PLAYS", "EDGES", "EXPERTS", "DFS", "TOOLS",
-                          "PERFORMANCE"],
-                       label_visibility="collapsed", key="nav")
+    area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
+                    label_visibility="collapsed", key="nav_area")
+    pages = NAV_GROUPS[area]
+    if len(pages) == 1:
+        section = pages[0]
+    else:
+        section = st.radio(
+            area, pages, label_visibility="collapsed", key=f"nav_{area}",
+            format_func=lambda p: _PAGE_LABELS.get(p, p.title()))
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
                          format="%.3f")
@@ -530,6 +548,28 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
             bits.append(f"{p.get('team', '')} vs {p.get('opponent', '')}.")
         if bits:
             st.markdown("\n\n".join(bits))
+
+    corr = p.get("correlated_picks") or []
+    if isinstance(corr, list) and corr:
+        with st.expander(f"🔗 Correlated picks for an SGP ({len(corr)})"):
+            for c in corr:
+                if not isinstance(c, dict):
+                    continue
+                parts = [f"**{c.get('player') or '—'}**"]
+                if c.get("market"):
+                    parts.append(str(c["market"]))
+                if c.get("side"):
+                    parts.append(str(c["side"]).title())
+                if c.get("line") is not None and pd.notna(c["line"]):
+                    parts.append(f"{c['line']:g}")
+                if c.get("odds") is not None and pd.notna(c["odds"]):
+                    parts.append(ui.fmt_american(c["odds"]))
+                r = c.get("correlation")
+                tail = f" · ρ≈{r:+.2f}" if (r is not None and pd.notna(r)) else ""
+                st.markdown("- " + " ".join(parts) + tail)
+            st.caption("BettingPros' correlated-leg suggestions — pair with this "
+                       "prop in a same-game parlay, then price it in "
+                       "**Tools → Parlay & Correlation**.")
 
     ai_block(ui.ai_brief_prop(sport, p),
              key=f"prop_{sport}_{p.get('player','')}_{p.get('market','')}_{p.get('line','')}")
