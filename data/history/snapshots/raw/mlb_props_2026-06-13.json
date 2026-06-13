@@ -1,0 +1,302 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 98615,
+  "participant": {
+   "id": "7247",
+   "name": "Ranger Suarez",
+   "link": "/mlb/props/ranger-suarez/",
+   "player": {
+    "short_name": "R. Suarez",
+    "first_name": "Ranger",
+    "last_name": "Suarez",
+    "image": "https://images.fantasypros.com/images/players/mlb/7247/headshot/210x210.webp",
+    "slug": "ranger-suarez",
+    "position": "SP",
+    "team": "BOS",
+    "popularity": 147,
+    "jersey_number": 55
+   }
+  },
+  "over": {
+   "line": 17.5,
+   "odds": -137,
+   "book": 36,
+   "consensus_line": 17.5,
+   "consensus_odds": -140,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -140,
+     "book_id": 49,
+     "created": "2026-06-13 02:37:04"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "be3036c28253f13b16ad92bcf2450052"
+   },
+   "probability": 0.30655374106121,
+   "expected_value": -0.46968440414958557,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 17.5,
+   "odds": 102,
+   "book": 36,
+   "consensus_line": 17.5,
+   "consensus_odds": 100,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": 100,
+     "book_id": 49,
+     "created": "2026-06-13 02:37:04"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "85762a46f9d06eecc9d2970a4d811493"
+   },
+   "probability": 0.69344625893879,
+   "expected_value": 0.40076144305635575,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 15.63,
+   "probability": 0.69344625893879,
+   "expected_value": 0.40076144305635575,
+   "bet_rating": 5,
+   "diff": -1.87
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "deGrom (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 15,
+    "value": 0.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/ranger-suarez/outs-recorded/",
+   "analyzer": "/mlb/props/ranger-suarez/outs-recorded/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 5,
+    "under": 10,
+    "push": 0
+   },
+   "last_20": {
+    "over": 9,
+    "under": 11,
+    "push": 0
+   },
+   "season": {
+    "over": 4,
+    "under": 8,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 18,
+    "under": 8,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "over"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 99958,
+  "participant": {
+   "id": "44664",
+   "name": "Jordan Lawlar",
+   "link": "/mlb/props/jordan-lawlar/",
+   "player": {
+    "short_name": "J. Lawlar",
+    "first_name": "Jordan",
+    "last_name": "Lawlar",
+    "image": "https://images.fantasypros.com/images/players/mlb/44664/headshot/210x210.webp",
+    "slug": "jordan-lawlar",
+    "position": "3B,LF",
+    "team": "ARI",
+    "popularity": 300,
+    "jersey_number": 10
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": 100,
+   "book": 14,
+   "consensus_line": 1.5,
+   "consensus_odds": 100,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -105,
+     "book_id": 14,
+     "created": "2026-06-13 00:55:08"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "496bd9de4ccc6e9835d505de225d0ed8",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 62
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 1.5,
+   "odds": -136,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -140,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -135,
+     "book_id": 14,
+     "created": "2026-06-13 00:55:08"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "077d88e3466ed93c92e36e75d12b2ca4",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 49
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 0.07,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -1.43
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Lowder (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 24,
+    "value": 0.5,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/jordan-lawlar/runs-hits-rbis/",
+   "analyzer": "/mlb/props/jordan-lawlar/runs-hits-rbis/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 10,
+    "under": 10,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 9,
+    "under": 19,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "over"
+  }
+ }
+]
