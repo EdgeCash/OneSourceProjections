@@ -87,6 +87,8 @@ Required secrets (env vars, `.env`, or Streamlit secrets):
 | `BP_PARTNER_KEY` | BettingPros partner key, sent as `x-api-key` on every call |
 | `BP_USER`, `BP_USER_KEY` | BettingPros premium tier: sent as `auth=user&user=…&key=…` query params to unlock projections/EV/recommended sides |
 | `APP_PASSWORD` | Dashboard password gate |
+| `ANTHROPIC_API_KEY` | Optional — enables the in-app **AI analyst** (`✨ Analyze`). Without it the dashboard still offers copy-for-AI briefs. |
+| `OSP_AI_MODEL` | Optional — override the analyst model (default `claude-opus-4-8`). |
 
 ### API notes
 
@@ -170,11 +172,37 @@ reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
 `python scripts/make_preview.py --sport WNBA`.
 
+## Multi-book edge scanner (the sharp layer)
+
+`onesource/edge.py` adds what the elite tools (OddsJam, Unabated) are built on:
+edges measured against the **de-vigged market consensus**, not a single price.
+It takes every book's price on a market from the captured Odds API snapshots,
+strips the vig from each, averages the fair probabilities, and grades the best
+available price against the consensus of the *other* books — a price is only
+flagged +EV when it beats the market's own fair estimate. On top of consensus
+it scans each slate for **arbitrage**, **middles** (totals/spreads with a line
+gap), and **low-hold** soft markets. Everything is pure functions over
+`{book: {side: price}}` dicts (unit-tested in `tests/test_edge.py`), with a
+snapshot-store adapter (`slate_books` / `scan_slate`). The **EDGES** tab renders
+all four; it lights up automatically as multi-book odds accumulate.
+
+## AI analyst (built-in "send to AI")
+
+Every game card, prop deep-dive, and the Plays board carries a **🤖 AI analyst
+& copy-for-AI** panel. It always offers a clean markdown brief
+(`app.ui.ai_brief_*`) to copy into any chatbot, and — when `ANTHROPIC_API_KEY`
+is set — a one-click **✨ Analyze** button that streams a grounded read from
+Claude (`onesource/ai.py`, Opus 4.8 with adaptive thinking). It degrades
+gracefully: no key or SDK → the copy-paste brief is still there.
+
 ## Dashboard layout
 
-A left sidebar navigates by sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays**
-(the cross-sport best-bets board) and **Performance** (the forward-test
-tracker). The top bar shows the section title and a team/player search; each
+A left sidebar opens on a **Command Center** home (KPI tiles for today's edges,
+best EV, and model Brier/ROI/CLV, plus a top-edges table), then navigates by
+sport (MLB, WNBA, NBA, NHL, NCAAF) plus **Plays** (the cross-sport best-bets
+board), **Edges** (the multi-book consensus scanner), **Scores**, **DFS**,
+**Tools**, and **Performance** (the forward-test tracker). The top bar shows the
+section title and a team/player search; each
 sport view has Games (matchup cards with team logos, projected score, win
 %, and the best model edge) and Props tabs. Team logos come from free CDNs
 (MLB: mlbstatic by team id; WNBA/NBA/NHL: ESPN by abbreviation) with a
