@@ -62,3 +62,20 @@ def test_correlated_two_leg():
     pos = calc.correlated_two_leg(0.5, 0.5, 0.4)
     assert pos["joint_prob"] > 0.25
     assert math.isclose(pos["joint_prob"], 0.25 + 0.4 * 0.25)
+
+
+def test_correlated_parlay_copula():
+    probs = [0.55, 0.6, 0.5]
+    indep = 0.55 * 0.6 * 0.5
+    # rho=0 returns the exact independent product
+    zero = calc.correlated_parlay(probs, rho=0.0)
+    assert abs(zero["joint_prob"] - indep) < 1e-9 and zero["lift"] == 0.0
+    # positive correlation lifts the all-hit probability above independent
+    pos = calc.correlated_parlay(probs, rho=0.5)
+    assert pos["joint_prob"] > indep and pos["lift"] > 0
+    # Monte-Carlo with rho=0 should land near the independent product
+    mc0 = calc.correlated_parlay(probs, rho=0.01)
+    assert abs(mc0["joint_prob"] - indep) < 0.02
+    # invalid rho (below the PSD bound) falls back to independent
+    bad = calc.correlated_parlay([0.5, 0.5, 0.5], rho=-0.9)
+    assert bad["joint_prob"] == bad["independent_prob"]

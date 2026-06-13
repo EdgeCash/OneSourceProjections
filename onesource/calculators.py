@@ -130,3 +130,47 @@ def correlated_two_leg(p_a: float, p_b: float, rho: float) -> dict:
     return {"joint_prob": round(joint, 4),
             "independent_prob": round(indep, 4),
             "fair_american": odds.decimal_to_american(1 / joint) if joint > 0 else None}
+
+
+def correlated_parlay(probs: list[float], rho: float = 0.0,
+                      sims: int = 40000, seed: int = 7) -> dict:
+    """All-legs-hit probability for N correlated binary legs via a Gaussian
+    copula with equicorrelation ρ (the standard way books price same-game
+    parlays). ρ=0 reduces to the independent product; positive ρ (same-game
+    legs that move together) raises the true joint probability, so a price
+    quoted as if independent is too generous.
+
+    Returns the joint probability, the naive independent product, and the
+    fair price of the parlay. Falls back to the independent product if the
+    correlation matrix isn't valid for the requested ρ.
+    """
+    n = len(probs)
+    indep = 1.0
+    for p in probs:
+        indep *= p
+    out = {"joint_prob": round(indep, 4), "independent_prob": round(indep, 4),
+           "fair_american": odds.decimal_to_american(1 / indep) if indep > 0 else None,
+           "lift": 0.0}
+    if n < 2 or rho == 0.0:
+        return out
+    # equicorrelation matrix is PSD only for rho >= -1/(n-1)
+    if rho < -1.0 / (n - 1) or rho > 1.0:
+        return out
+    from scipy.stats import norm
+
+    cov = np.full((n, n), float(rho))
+    np.fill_diagonal(cov, 1.0)
+    try:
+        chol = np.linalg.cholesky(cov)
+    except np.linalg.LinAlgError:
+        return out
+    rng = np.random.default_rng(seed)
+    z = rng.standard_normal((sims, n)) @ chol.T
+    u = norm.cdf(z)
+    # a leg "hits" with prob p -> uniform draw below p
+    hits = u <= np.array(probs)
+    joint = float(hits.all(axis=1).mean())
+    out.update({"joint_prob": round(joint, 4),
+                "fair_american": odds.decimal_to_american(1 / joint) if joint > 0 else None,
+                "lift": round(joint - indep, 4)})
+    return out

@@ -897,20 +897,29 @@ def render_tools():
         except ValueError:
             st.warning("Enter comma-separated numbers, e.g. -110, +120.")
         st.divider()
-        st.markdown("**Two correlated legs** (same-game)")
-        cc = st.columns(3)
-        pa = cc[0].number_input("Leg A win %", 0.0, 100.0, 50.0, 1.0, key="c_a") / 100
-        pb = cc[1].number_input("Leg B win %", 0.0, 100.0, 50.0, 1.0, key="c_b") / 100
-        rho = cc[2].slider("Correlation ρ", -1.0, 1.0, 0.3, 0.05)
-        cr = calc.correlated_two_leg(pa, pb, rho)
-        rc = st.columns(3)
-        rc[0].metric("Joint win %", f"{cr['joint_prob']:.1%}")
-        rc[1].metric("If independent", f"{cr['independent_prob']:.1%}")
-        rc[2].metric("Fair price", ui.fmt_american(cr["fair_american"])
-                     if cr["fair_american"] is not None else "—")
+        st.markdown("**Same-game parlay** — N correlated legs (Gaussian copula)")
+        legs_p = st.text_input("Leg win % (comma-separated)", "55, 60, 50",
+                               key="sgp_p")
+        rho = st.slider("Same-game correlation ρ", -0.5, 1.0, 0.3, 0.05,
+                        key="sgp_rho")
+        try:
+            ps = [float(x) / 100 for x in legs_p.split(",") if x.strip()]
+            if 1 <= len(ps) and all(0 < p < 1 for p in ps):
+                cr = calc.correlated_parlay(ps, rho=rho)
+                rc = st.columns(3)
+                rc[0].metric("Joint (correlated)", f"{cr['joint_prob']:.1%}",
+                             delta=f"{cr['lift'] * 100:+.1f} pts vs indep")
+                rc[1].metric("If independent", f"{cr['independent_prob']:.1%}")
+                rc[2].metric("Fair price", ui.fmt_american(cr["fair_american"])
+                             if cr["fair_american"] is not None else "—")
+            else:
+                st.warning("Enter win percentages between 0 and 100.")
+        except ValueError:
+            st.warning("Enter comma-separated numbers, e.g. 55, 60, 50.")
         st.caption("Positive correlation makes the true joint probability "
                    "higher than the independent product — books price this in, "
-                   "so an unadjusted parlay price can be a trap or an edge.")
+                   "so an unadjusted parlay price can be a trap or an edge. "
+                   "Compare the fair price here to the book's SGP price.")
 
 
 def ui_ev(prob: float, american) -> float:
