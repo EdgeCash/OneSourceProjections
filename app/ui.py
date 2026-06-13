@@ -181,6 +181,32 @@ def _best_edge(game: dict) -> tuple[str, float] | None:
     return max(cands, key=lambda c: c[1]) if cands else None
 
 
+def lineup_status(sport: str, g: dict) -> dict:
+    """Confirmation readiness of a game — the latency signal that props are
+    live and the market is about to move. {state, label} where state is
+    'confirmed' / 'partial' / 'pending'."""
+    lu = g.get("lineups") or {}
+    home, away = lu.get("home") or [], lu.get("away") or []
+    if len(home) >= 9 and len(away) >= 9:
+        return {"state": "confirmed", "label": "Lineups confirmed"}
+    if sport == "MLB" and g.get("home_pitcher") and g.get("away_pitcher"):
+        return {"state": "partial", "label": "Pitchers set · lineups pending"}
+    if home or away:
+        return {"state": "partial", "label": "Partial lineups"}
+    return {"state": "pending", "label": "Lineups pending"}
+
+
+_STATUS_COLOR = {"confirmed": "#3fb950", "partial": "#e3b341", "pending": "#6e7781"}
+
+
+def _status_badge(sport: str, g: dict) -> str:
+    s = lineup_status(sport, g)
+    c = _STATUS_COLOR[s["state"]]
+    dot = "●" if s["state"] == "confirmed" else "○"
+    return (f"<span style='color:{c};font-size:0.72rem;font-weight:600;'>"
+            f"{dot} {s['label']}</span>")
+
+
 def game_card_html(sport: str, g: dict) -> str:
     """A compact matchup card: logos, projected score, win %, line/total,
     and the best model edge. Designed to read at a glance."""
@@ -227,8 +253,11 @@ def game_card_html(sport: str, g: dict) -> str:
     return (
         "<div style='background:#161b24;border:1px solid #232a36;border-radius:12px;"
         "padding:14px 16px;margin-bottom:12px;'>"
-        f"<div style='color:#8b949e;font-size:0.78rem;margin-bottom:8px;'>"
-        f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</div>"
+        f"<div style='display:flex;justify-content:space-between;align-items:center;"
+        f"margin-bottom:8px;'>"
+        f"<span style='color:#8b949e;font-size:0.78rem;'>"
+        f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</span>"
+        f"{_status_badge(sport, g)}</div>"
         f"{side(a_badge, away, a_exp, a_wp, not home_fav)}"
         "<div style='height:8px;'></div>"
         f"{side(h_badge, home, h_exp, h_wp, home_fav)}"

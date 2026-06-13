@@ -196,6 +196,11 @@ def render_sport(sport: str):
                  f"{g.get('home_team','')} {g.get('away_team','')}".lower()]
         if not shown:
             st.info("No games match the search." if q else "No games.")
+        confirmed = sum(ui.lineup_status(sport, g)["state"] == "confirmed"
+                        for g in shown)
+        if shown:
+            st.caption(f"🔔 {confirmed} of {len(shown)} lineups confirmed — "
+                       "props and edges firm up (and lines move) as lineups post.")
         cols = st.columns(2)
         for i, g in enumerate(shown):
             with cols[i % 2]:
