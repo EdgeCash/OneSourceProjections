@@ -557,16 +557,42 @@ def render_performance():
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:
+        st.subheader("Cumulative units")
         st.line_chart(equity, y="units", height=260)
+
+    # Calibration: do our stated win-probabilities match reality?
+    curve = ui.calibration_curve(ledger)
+    st.subheader("Win-probability calibration")
+    if curve.empty:
+        st.info("Calibration accrues as projected games finish. Each graded "
+                "game adds a point comparing our predicted win % to the actual "
+                "result — once enough land, the curve should hug the diagonal.")
+    else:
+        ece = ui.calibration_error(curve)
+        cc = st.columns([3, 1])
+        with cc[0]:
+            st.altair_chart(ui.calibration_chart(curve))
+        with cc[1]:
+            st.metric("Calibration error", f"{ece:.1%}" if ece is not None else "—",
+                      help="Avg gap between predicted and actual win %, weighted "
+                           "by games. Lower is better; under ~5% is well "
+                           "calibrated.")
+            st.metric("Graded games", int(curve["n"].sum()))
+        st.caption("Dashed line = perfect calibration. Points above it mean we "
+                   "were under-confident; below, over-confident. Bubble size = "
+                   "games in that bucket.")
+
     by_sport = perf.get("by_sport", {})
     if by_sport:
+        st.subheader("By sport")
         st.dataframe(pd.DataFrame(by_sport).T, width="stretch")
     recent = ui.recent_bets(ledger)
     if not recent.empty:
         st.subheader("Recent graded bets")
         st.dataframe(recent, width="stretch", hide_index=True)
-    st.caption("Forward-test record at projection-time prices. Brier covers "
-               "every projected game; units/ROI cover recommended bets only.")
+    st.caption("Forward-test record at projection-time prices. Brier + "
+               "calibration cover every projected game; units/ROI cover "
+               "recommended bets only.")
 
 
 # ---------------------------------------------------------------------------

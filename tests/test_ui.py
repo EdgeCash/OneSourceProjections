@@ -91,6 +91,35 @@ def test_prep_props_formats():
     assert abs(view.loc[0, "EV"] - 16.0) < 1e-9
 
 
+def test_calibration_curve_and_error():
+    ledger = [
+        {"market": "model_winprob", "pred_home_wp": 0.80, "home_won": 1},
+        {"market": "model_winprob", "pred_home_wp": 0.80, "home_won": 1},
+        {"market": "model_winprob", "pred_home_wp": 0.80, "home_won": 1},
+        {"market": "model_winprob", "pred_home_wp": 0.80, "home_won": 0},
+        {"market": "model_winprob", "pred_home_wp": 0.30, "home_won": 0},
+        {"market": "model_winprob", "pred_home_wp": 0.30, "home_won": 1},
+        {"market": "model_winprob", "pred_home_wp": 0.30, "home_won": 0},
+        {"market": "moneyline", "pnl": 1.0, "won": True},  # ignored
+    ]
+    curve = ui.calibration_curve(ledger)
+    assert len(curve) == 2
+    top = curve[curve["predicted"] > 0.5].iloc[0]
+    assert top["n"] == 4 and abs(top["empirical"] - 0.75) < 1e-9
+    low = curve[curve["predicted"] < 0.5].iloc[0]
+    assert low["n"] == 3 and abs(low["empirical"] - 1 / 3) < 1e-9
+    ece = ui.calibration_error(curve)
+    assert abs(ece - (4 * 0.05 + 3 * abs(0.30 - 1 / 3)) / 7) < 1e-9
+    assert ui.calibration_chart(curve) is not None
+
+
+def test_calibration_curve_empty():
+    assert ui.calibration_curve([]).empty
+    assert ui.calibration_curve([{"market": "moneyline", "pnl": 1}]).empty
+    assert ui.calibration_error(ui.calibration_curve([])) is None
+    assert ui.calibration_chart(ui.calibration_curve([])) is None
+
+
 def test_cumulative_units_and_recent():
     ledger = [
         {"date": "2026-06-12", "sport": "MLB", "game": "g1", "market": "moneyline",
