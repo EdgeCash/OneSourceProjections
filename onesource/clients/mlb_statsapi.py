@@ -76,6 +76,78 @@ def final_scores(date: str) -> list[dict]:
     return out
 
 
+_TTL_LIVE = 45  # seconds
+
+
+def scoreboard(date: str) -> list[dict]:
+    """All games on a date with live status, scores, and inning (for the
+    scoreboard). Mirrors the ESPN scoreboard shape so the UI is uniform."""
+    data = cached_json(
+        f"statsapi:scoreboard:{date}", _TTL_LIVE,
+        lambda: _get("schedule", {"sportId": 1, "date": date,
+                                  "hydrate": "linescore,team"}))
+    out = []
+    for day in data.get("dates", []):
+        for g in day.get("games", []):
+            status = g.get("status", {})
+            state = {"P": "pre", "I": "in", "F": "post"}.get(
+                status.get("abstractGameCode") or "", "pre")
+            ls = g.get("linescore", {})
+            if state == "in":
+                half = ls.get("inningHalf", "")
+                detail = f"{half[:3]} {ls.get('currentInningOrdinal', '')}".strip()
+            elif state == "post":
+                detail = "Final"
+            else:
+                detail = status.get("detailedState", "Scheduled")
+            home, away = g["teams"]["home"], g["teams"]["away"]
+
+            def side(t):
+                tm = t.get("team", {})
+                return {"team": tm.get("name"), "abbrev": tm.get("abbreviation"),
+                        "logo": f"https://www.mlbstatic.com/team-logos/{tm.get('id')}.svg",
+                        "score": t.get("score"), "record":
+                        f"{(t.get('leagueRecord') or {}).get('wins', '')}-"
+                        f"{(t.get('leagueRecord') or {}).get('losses', '')}".strip("-")}
+
+            out.append({"sport": "MLB", "game_id": g["gamePk"],
+                        "game_time": g.get("gameDate"), "state": state,
+                        "detail": detail, "home": side(home), "away": side(away)})
+    return out
+
+
+def box_score(game_pk: int) -> dict:
+    """Batting + pitching stat tables for a game, as {teams: [{team, columns,
+    rows}]} matching the ESPN box_score shape."""
+    try:
+        data = cached_json(f"statsapi:box:{game_pk}", _TTL_LIVE,
+                           lambda: _get(f"game/{game_pk}/boxscore"))
+    except Exception:
+        return {}
+    bat_cols = ["Player", "AB", "R", "H", "RBI", "BB", "K", "AVG"]
+    pit_cols = ["Pitcher", "IP", "H", "R", "ER", "BB", "K", "ERA"]
+    teams = []
+    for side in ("away", "home"):
+        t = data.get("teams", {}).get(side, {})
+        label = t.get("team", {}).get("abbreviation") or t.get("team", {}).get("name")
+        bat, pit = [], []
+        for p in t.get("players", {}).values():
+            nm = p.get("person", {}).get("fullName", "")
+            s = p.get("stats", {})
+            b, pi = s.get("batting", {}), s.get("pitching", {})
+            if b.get("atBats") is not None and (b.get("atBats") or b.get("plateAppearances")):
+                bat.append([nm, b.get("atBats"), b.get("runs"), b.get("hits"),
+                            b.get("rbi"), b.get("baseOnBalls"), b.get("strikeOuts"),
+                            (p.get("seasonStats", {}).get("batting", {}) or {}).get("avg")])
+            if pi.get("inningsPitched") is not None:
+                pit.append([nm, pi.get("inningsPitched"), pi.get("hits"), pi.get("runs"),
+                            pi.get("earnedRuns"), pi.get("baseOnBalls"), pi.get("strikeOuts"),
+                            (p.get("seasonStats", {}).get("pitching", {}) or {}).get("era")])
+        teams.append({"team": f"{label} — Batting", "columns": bat_cols, "rows": bat})
+        teams.append({"team": f"{label} — Pitching", "columns": pit_cols, "rows": pit})
+    return {"teams": teams}
+
+
 def box_player_logs(game_pk: int) -> list[dict]:
     """Per-player batting + pitching lines from a finished game's boxscore,
     shaped for the player-log store (name, date, opponent, stat fields)."""
