@@ -270,9 +270,16 @@ def render_sport(sport: str):
     games = blob.get("games", []) or []
     props = blob.get("props", []) or []
     if blob.get("error"):
-        st.warning(f"{sport} pipeline error: {blob['error']}")
+        st.caption(f"⚠️ Some {sport} data is temporarily unavailable "
+                   f"({blob['error']}). It refreshes on the next update.")
     if not games and not props:
-        st.info(f"No games scheduled for {sport} on {date_sel}.")
+        nxt = next((d for d in dates if d != date_sel
+                    and (slates.get(d, {}).get(sport, {}).get("games")
+                         or slates.get(d, {}).get(sport, {}).get("props"))), None)
+        msg = f"No {sport} games scheduled for {date_sel}."
+        if nxt:
+            msg += f" The **{nxt}** slate has {sport} games — switch dates above."
+        st.info(msg)
         return
 
     tab_g, tab_p = st.tabs([f"📅 Games ({len(games)})", f"👤 Props ({len(props)})"])
