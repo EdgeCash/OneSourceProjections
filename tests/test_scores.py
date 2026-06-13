@@ -90,7 +90,18 @@ def test_live_scoreboard_includes_extra_leagues(monkeypatch):
                         lambda s, d: seen.append(s) or [])
     scores.live_scoreboard("2026-06-12")
     # the extra score-only leagues are queried even with no projection sports
-    assert "EPL" in seen and "NFL" in seen and "NCAAB (M)" in seen
+    assert "EPL" in seen and "MLS" in seen and "NCAAB (M)" in seen
+
+
+def test_live_scoreboard_no_duplicate_projection_leagues(monkeypatch):
+    # NFL is a projection sport; it must not also be queried as an extra league
+    monkeypatch.setattr(scores, "active_sports",
+                        lambda d: ["NFL", "NBA", "NHL"])
+    seen = []
+    monkeypatch.setattr(scores, "_sport_scoreboard",
+                        lambda s, d: seen.append(s) or [])
+    scores.live_scoreboard("2026-10-15")
+    assert seen.count("NFL") == 1 and len(seen) == len(set(seen))
 
 
 def test_extra_league_routes_by_path(monkeypatch):

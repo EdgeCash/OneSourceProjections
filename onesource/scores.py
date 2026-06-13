@@ -18,9 +18,9 @@ log = logging.getLogger(__name__)
 
 # Extra ESPN leagues we show scores for but don't project — so the scoreboard
 # is a true one-stop board. Each value is the ESPN sport path. Leagues with no
-# games on a date simply return nothing.
+# games on a date simply return nothing. (Leagues we already project, like NFL
+# and NCAAF, are intentionally excluded — they come in as projection sports.)
 EXTRA_LEAGUES = {
-    "NFL": "football/nfl",
     "NCAAB (M)": "basketball/mens-college-basketball",
     "NCAAB (W)": "basketball/womens-college-basketball",
     "MLS": "soccer/usa.1",
@@ -47,7 +47,7 @@ def live_scoreboard(date: str, sports: list[str] | None = None) -> list[dict]:
     leagues for a date, in-progress first."""
     if sports is None:
         sports = [s for s in SPORTS if s in active_sports(date)]
-        sports += list(EXTRA_LEAGUES)
+        sports += [s for s in EXTRA_LEAGUES if s not in sports]
     games: list[dict] = []
     for sp in sports:
         games += _sport_scoreboard(sp, date)
