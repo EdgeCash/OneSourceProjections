@@ -91,6 +91,16 @@ def test_prep_props_formats():
     assert abs(view.loc[0, "EV"] - 16.0) < 1e-9
 
 
+def test_prep_props_surfaces_def_rank():
+    props = pd.DataFrame([{
+        "player": "A'ja Wilson", "market": "Points", "line": 22.5,
+        "over_odds": -115, "model_over_prob": 0.60, "ev_over": 0.05,
+        "opp_rank": 3,
+    }])
+    view = ui.prep_props(props)
+    assert "Def Rk" in view.columns and view.loc[0, "Def Rk"] == 3
+
+
 def test_calibration_curve_and_error():
     ledger = [
         {"market": "model_winprob", "pred_home_wp": 0.80, "home_won": 1},

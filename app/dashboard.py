@@ -330,12 +330,17 @@ def render_props(sport: str, props: list, q: str, injuries: list | None = None):
         styler = styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100,
                                             subset=heat) \
                        .format({c: "{:.0f}%" for c in heat}, na_rep="—")
+    if "Def Rk" in view.columns and view["Def Rk"].notna().any():
+        # opponent rank defending this stat: high rank = soft matchup = green
+        styler = styler.background_gradient(cmap="RdYlGn", subset=["Def Rk"]) \
+                       .format({"Def Rk": "{:.0f}"}, na_rep="—")
     sel = st.dataframe(styler, width="stretch", hide_index=True, height=480,
                        on_select="rerun", selection_mode="single-row",
                        key=f"props_table_{sport}")
     st.caption("👆 Tap a row for the player deep-dive. L5/L10/L20/Season/H2H "
                "= how often the player has gone OVER the line (our game "
-               "logs). bp_* are BettingPros' consensus.")
+               "logs). **Def Rk** = where the opponent ranks defending this "
+               "stat (green = softer matchup). bp_* are BettingPros' consensus.")
 
     rows = (sel.selection.rows if sel and getattr(sel, "selection", None) else [])
     if rows:
