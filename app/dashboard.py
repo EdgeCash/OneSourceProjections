@@ -250,10 +250,50 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
+    _shop_line(sport, g, date_sel)
     if caption:
         st.caption("Offense L5 vs the opponent's matching defense L5; small "
                    "numbers are league ranks (green = top third). ★ = the "
                    "offense out-ranks the defense it faces.")
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def load_best_lines(sport: str, date_sel: str) -> dict:
+    from onesource import lineshop
+    # frozenset keys aren't JSON-friendly for caching, so stringify them
+    return {" vs ".join(sorted(k)): v
+            for k, v in lineshop.best_lines(sport, date_sel).items()}
+
+
+def _shop_line(sport: str, g: dict, date_sel: str):
+    from onesource.names import normalize
+    best = load_best_lines(sport, date_sel)
+    key = " vs ".join(sorted({normalize(g.get("home_team", "")),
+                              normalize(g.get("away_team", ""))}))
+    rec = best.get(key)
+    if not rec:
+        return
+
+    def book(b):
+        return str(b).replace("_", " ").title()
+
+    bits = []
+    ml = rec.get("moneyline") or {}
+    for side in ("away_team", "home_team"):
+        info = ml.get(normalize(g.get(side, "")))
+        if info:
+            short = g.get(side, "").split()[-1]
+            bits.append(f"{short} ML {ui.fmt_american(info['price'])} "
+                        f"({book(info['book'])})")
+    tot = rec.get("total") or {}
+    for side in ("over", "under"):
+        info = tot.get(side)
+        if info:
+            ln = f" {info['line']:g}" if info.get("line") is not None else ""
+            bits.append(f"{side.title()}{ln} {ui.fmt_american(info['price'])} "
+                        f"({book(info['book'])})")
+    if bits:
+        st.markdown("🛒 **Best available:** " + " · ".join(bits))
 
 
 def render_props(sport: str, props: list, q: str, injuries: list | None = None):
@@ -631,6 +671,10 @@ def render_performance():
                       help="Avg gap between predicted and actual win %, weighted "
                            "by games. Lower is better; under ~5% is well "
                            "calibrated.")
+            ll = overall.get("model_log_loss")
+            st.metric("Log loss", ll if ll is not None else "—",
+                      help="Kelly-aligned probability score (= log-wealth "
+                           "growth). Lower is better; 0.69 = coin flip.")
             st.metric("Graded games", int(curve["n"].sum()))
         st.caption("Dashed line = perfect calibration. Points above it mean we "
                    "were under-confident; below, over-confident. Bubble size = "

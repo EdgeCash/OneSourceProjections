@@ -119,3 +119,14 @@ def test_performance_summary_shape(tmp_path, monkeypatch):
     assert perf["overall"]["model_brier"] is not None
     assert perf["overall"]["bets"] >= 1
     assert "MLB" in perf["by_sport"]
+
+
+def test_log_loss_computed(tmp_path, monkeypatch):
+    import math
+    _wire(tmp_path, monkeypatch)
+    results.archive_projections("2026-06-12", _slate())
+    results.grade_date("2026-06-12")
+    ll = results.performance()["overall"]["model_log_loss"]
+    # game1: pred 0.60, home won (y=1); game2: pred 0.52, home lost (y=0)
+    expected = (-math.log(0.60) - math.log(1 - 0.52)) / 2
+    assert abs(ll - expected) < 1e-3

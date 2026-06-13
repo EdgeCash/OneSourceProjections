@@ -211,16 +211,26 @@ def performance() -> dict:
 
 
 def _summarize(rows: list[dict]) -> dict:
+    import math
     bets = [r for r in rows if "pnl" in r]
     games = [r for r in rows if r["market"] == "model_winprob"]
     staked = len(bets)
     pnl = sum(r["pnl"] for r in bets)
     wins = sum(1 for r in bets if r["won"])
     brier = (sum(r["brier"] for r in games) / len(games)) if games else None
+    log_loss = None
+    if games:
+        tot = 0.0
+        for r in games:
+            p = min(max(float(r["pred_home_wp"]), 1e-6), 1 - 1e-6)
+            y = r["home_won"]
+            tot += -(y * math.log(p) + (1 - y) * math.log(1 - p))
+        log_loss = tot / len(games)
     clvs = [r["clv"] for r in bets if r.get("clv") is not None]
     return {
         "graded_games": len(games),
         "model_brier": round(brier, 4) if brier is not None else None,
+        "model_log_loss": round(log_loss, 4) if log_loss is not None else None,
         "bets": staked,
         "bet_win_rate": round(wins / staked, 4) if staked else None,
         "units": round(pnl, 2),
