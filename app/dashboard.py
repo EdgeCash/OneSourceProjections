@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
 from onesource import config, dfs, playerlogs, results, teamstats  # noqa: E402
-from onesource.sports import SPORTS  # noqa: E402
+from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
 st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
@@ -59,18 +59,22 @@ def load_ledger() -> list[dict]:
 
 
 def refresh():
-    from datetime import date, timedelta
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
 
     from onesource import pipeline
 
-    today, tomorrow = date.today().isoformat(), (date.today() + timedelta(1)).isoformat()
+    et = ZoneInfo("America/New_York")
+    today = datetime.now(et).date()
+    today, tomorrow = today.isoformat(), (today + timedelta(1)).isoformat()
     with st.spinner("Re-running projections (a couple of minutes)..."):
         slates = {}
         for d in (today, tomorrow):
             slates[d] = pipeline.run(d, write=False)["sports"]
             results.archive_projections(d, slates[d])
+        primary = default_slate_date([today, tomorrow], slates) or today
         out = {"generated_at": pd.Timestamp.now("UTC").isoformat(),
-               "primary_date": tomorrow, "dates": [today, tomorrow],
+               "primary_date": primary, "dates": [today, tomorrow],
                "slates": slates, "performance": results.performance()}
         (config.OUTPUT_DIR / "latest.json").write_text(json.dumps(out, default=str))
     load_data.clear()
@@ -135,7 +139,10 @@ if not slates:
     st.stop()
 
 dates = data.get("dates") or sorted(slates.keys(), reverse=True)
-default_date = data.get("primary_date", dates[0]) if dates else None
+# Choose the default slate live (ET-anchored) rather than trusting the baked
+# primary_date: keeps the app on today's slate until today's games finish.
+default_date = (default_slate_date(dates, slates)
+                or data.get("primary_date", dates[0])) if dates else None
 gen = str(data.get("generated_at", ""))[:16].replace("T", " ")
 
 

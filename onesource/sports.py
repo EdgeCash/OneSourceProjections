@@ -11,6 +11,10 @@ converting projections into probabilities.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
+ET = ZoneInfo("America/New_York")
 
 
 @dataclass(frozen=True)
@@ -75,3 +79,46 @@ def in_season(sport_key: str, date: str) -> bool:
 
 def active_sports(date: str) -> list[str]:
     return [k for k in SPORTS if in_season(k, date)]
+
+
+def _game_start_et(ts) -> datetime | None:
+    """Parse a game_time (UTC ISO) into an ET-aware datetime."""
+    if not ts:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ET)
+    return dt.astimezone(ET)
+
+
+def default_slate_date(dates: list[str], slates: dict,
+                       now_et: datetime | None = None,
+                       live_hours: float = 4.0) -> str | None:
+    """Which slate to show by default.
+
+    Stays on *today* while today still has games that are upcoming or
+    recently underway (within ``live_hours`` of the last first pitch/tip),
+    then rolls forward to the next date. Anchored to Eastern time so the app
+    doesn't flip to tomorrow's slate at the start of the day — or, on a UTC
+    host, jump a day early in the evening.
+    """
+    if not dates:
+        return None
+    now_et = now_et or datetime.now(ET)
+    today = now_et.date().isoformat()
+    later = sorted(d for d in dates if d > today)
+    nxt = later[0] if later else None
+    if today not in dates:
+        past = sorted((d for d in dates if d <= today), reverse=True)
+        return past[0] if past else sorted(dates)[0]
+    starts = [t for blob in (slates.get(today) or {}).values()
+              for g in (blob.get("games") or [])
+              if (t := _game_start_et(g.get("game_time"))) is not None]
+    if not starts:
+        return nxt or today
+    if now_et < max(starts) + timedelta(hours=live_hours):
+        return today
+    return nxt or today
