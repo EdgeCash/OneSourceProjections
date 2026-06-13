@@ -130,6 +130,18 @@ def test_calibration_curve_empty():
     assert ui.calibration_chart(ui.calibration_curve([])) is None
 
 
+def test_lineup_status():
+    confirmed = {"lineups": {"home": list(range(9)), "away": list(range(9))}}
+    assert ui.lineup_status("MLB", confirmed)["state"] == "confirmed"
+    pitchers = {"home_pitcher": "Cole", "away_pitcher": "Sale"}
+    assert ui.lineup_status("MLB", pitchers)["state"] == "partial"
+    assert ui.lineup_status("MLB", {})["state"] == "pending"
+    # a card renders the badge text
+    assert "Lineups confirmed" in ui.game_card_html("MLB", {
+        "home_team": "Boston Red Sox", "away_team": "New York Yankees",
+        "lineups": {"home": list(range(9)), "away": list(range(9))}})
+
+
 def test_cumulative_units_and_recent():
     ledger = [
         {"date": "2026-06-12", "sport": "MLB", "game": "g1", "market": "moneyline",
