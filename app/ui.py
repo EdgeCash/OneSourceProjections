@@ -4,6 +4,7 @@ shapes so they're testable without Streamlit."""
 
 from __future__ import annotations
 
+import urllib.parse
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -12,6 +13,21 @@ import pandas as pd
 from app import assets
 
 ET = ZoneInfo("America/New_York")
+
+
+def player_link(name: str, game_pk=None, sport: str | None = None) -> str:
+    """A clickable player name. Navigates the app to ?player=… so the
+    dashboard can open the player-profile dialog. Falls back to plain text
+    when there's no name."""
+    if not name or (isinstance(name, float) and pd.isna(name)):
+        return ""
+    q = {"player": str(name)}
+    if game_pk is not None and pd.notna(game_pk):
+        q["game"] = str(game_pk)
+    if sport:
+        q["s"] = sport
+    return (f"<a class='osp-plink' target='_self' "
+            f"href='?{urllib.parse.urlencode(q)}'>{name}</a>")
 
 
 # ---------------------------------------------------------------------------
@@ -238,13 +254,19 @@ def game_card_html(sport: str, g: dict) -> str:
     else:
         edge_html = "<span style='color:#8b949e;'>no edge ≥ threshold</span>"
 
-    def side(badge, name, exp, wp, fav):
+    gpk = g.get("game_pk")
+
+    def side(badge, name, exp, wp, fav, pitcher=None):
         weight = "700" if fav else "500"
+        sp_row = (f"<div style='color:#8b949e;font-size:0.74rem;margin-top:1px;'>"
+                  f"⚾ {player_link(pitcher, gpk, sport)}</div>"
+                  if pitcher and pd.notna(pitcher) else "")
         return (
             f"<div style='display:flex;align-items:center;gap:10px;flex:1;'>"
             f"{badge}"
             f"<div><div style='font-weight:{weight};font-size:0.95rem;'>{name}</div>"
-            f"<div style='color:#8b949e;font-size:0.8rem;'>win {_pct(wp)}</div></div>"
+            f"<div style='color:#8b949e;font-size:0.8rem;'>win {_pct(wp)}</div>"
+            f"{sp_row}</div>"
             f"<div style='margin-left:auto;font-size:1.5rem;font-weight:700;'>"
             f"{_num(exp)}</div></div>"
         )
@@ -258,9 +280,9 @@ def game_card_html(sport: str, g: dict) -> str:
         f"<span style='color:#8b949e;font-size:0.78rem;'>"
         f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</span>"
         f"{_status_badge(sport, g)}</div>"
-        f"{side(a_badge, away, a_exp, a_wp, not home_fav)}"
+        f"{side(a_badge, away, a_exp, a_wp, not home_fav, g.get('away_pitcher'))}"
         "<div style='height:8px;'></div>"
-        f"{side(h_badge, home, h_exp, h_wp, home_fav)}"
+        f"{side(h_badge, home, h_exp, h_wp, home_fav, g.get('home_pitcher'))}"
         f"{market_line}"
         "<div style='border-top:1px solid #1e2636;margin-top:10px;padding-top:8px;"
         f"font-size:0.85rem;'>{edge_html}</div>"
@@ -422,9 +444,11 @@ def _conviction_dial(label: str, side: str, score: float) -> str:
     )
 
 
-def _form_html(badge: str, team: str, form: dict, align: str) -> str:
-    """A team block for the header: badge, name, W-L record + streak, and
-    last-5 result chips (green win / red loss)."""
+def _form_html(badge: str, team: str, form: dict, align: str,
+               extra: str = "") -> str:
+    """A team block for the header: badge, name, W-L record + streak,
+    last-5 result chips (green win / red loss), and an optional extra row
+    (e.g. the probable starting pitcher)."""
     rec = ""
     if form:
         streak = f" · {form['streak']}" if form.get("streak") else ""
@@ -445,7 +469,7 @@ def _form_html(badge: str, team: str, form: dict, align: str) -> str:
         f"<div style='flex:1;'>"
         f"<div style='display:flex;align-items:center;gap:8px;"
         f"justify-content:flex-{'end' if align == 'right' else 'start'};'>{name_row}</div>"
-        f"<div style='text-align:{align};'>{rec}</div>{chips_html}</div>"
+        f"<div style='text-align:{align};'>{rec}</div>{chips_html}{extra}</div>"
     )
 
 
@@ -454,13 +478,22 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     a_badge = assets.team_badge_html(sport, away, 38)
     h_badge = assets.team_badge_html(sport, home, 38)
     n = matchup.get("n_teams", 30)
+    gpk = g.get("game_pk")
 
-    # header: team form on each side, matchup facts in the middle
+    def _sp(name, align):
+        if not name or (isinstance(name, float) and pd.isna(name)):
+            return ""
+        return (f"<div style='text-align:{align};font-size:0.74rem;color:#8b949e;"
+                f"margin-top:5px;'>⚾ {player_link(name, gpk, sport)}</div>")
+
+    # header: team form + probable starter on each side, facts in the middle
     header = (
         "<div style='display:flex;align-items:flex-start;gap:14px;'>"
-        + _form_html(a_badge, away, matchup.get("away_form") or {}, "right")
+        + _form_html(a_badge, away, matchup.get("away_form") or {}, "right",
+                     _sp(g.get("away_pitcher"), "right"))
         + "<span style='color:#8b949e;font-size:0.8rem;padding-top:6px;'>@</span>"
-        + _form_html(h_badge, home, matchup.get("home_form") or {}, "left")
+        + _form_html(h_badge, home, matchup.get("home_form") or {}, "left",
+                     _sp(g.get("home_pitcher"), "left"))
         + "</div>"
         f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:6px;'>"
         f"{fmt_time_et(g.get('game_time'))} · O/U {_num(g.get('total_line') or g.get('proj_total'))}"
@@ -503,7 +536,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
                   "(away / home)</div>"
                   f"<div style='display:flex;gap:6px;'>{cells}</div>")
 
-    lineups = _lineups_html(g)
+    lineups = _lineups_html(g, sport)
     analysis = _analysis_html(sport, g, matchup, min_edge)
     return (
         "<div style='background:#121826;border:1px solid #1e2636;border-radius:14px;"
@@ -522,15 +555,17 @@ def _weather_txt(g: dict) -> str:
     return bits
 
 
-def _lineups_html(g: dict) -> str:
+def _lineups_html(g: dict, sport: str | None = None) -> str:
     lu = g.get("lineups") or {}
     home, away = lu.get("home") or [], lu.get("away") or []
     if not home and not away:
         return ""
+    gpk = g.get("game_pk")
 
     def col(team, names):
         rows = "".join(
-            f"<div style='font-size:0.78rem;color:#c9d1d9;'>{i+1}. {n}</div>"
+            f"<div style='font-size:0.78rem;'>{i+1}. "
+            f"{player_link(n, gpk, sport)}</div>"
             for i, n in enumerate(names[:9]))
         return (f"<div style='flex:1;'><div style='color:#8b949e;font-size:0.72rem;"
                 f"font-weight:700;'>{team}</div>{rows or '—'}</div>")
