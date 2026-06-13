@@ -404,7 +404,7 @@ class BetLog:
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
-                      use_park: bool = False) -> dict:
+                      use_park: bool = False, shrink: float = 0.0) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
@@ -480,20 +480,24 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 if rec["moneyline"]:
                     m = rec["moneyline"]
                     clv_deltas.append(hwp - m["home_fair"])
+                    # blend the model prob toward the de-vigged closing line
+                    # before deciding bets (shrink=0 -> raw model behavior)
+                    p_home = odds.blend_toward_market(hwp, m["home_fair"], shrink)
                     for side, prob, price, won in (
-                        ("home", hwp, m["home_best"], home_won == 1),
-                        ("away", 1 - hwp, m["away_best"], home_won == 0)):
+                        ("home", p_home, m["home_best"], home_won == 1),
+                        ("away", 1 - p_home, m["away_best"], home_won == 0)):
                         if odds.expected_value(prob, price) >= min_edge:
                             ml_bets.add(won, odds.american_to_decimal(price))
                 if rec["total"]:
                     t = rec["total"]
                     po = prob_over(t["line"])
+                    p_over = odds.blend_toward_market(po, t["over_fair"], shrink)
                     over_won = actual_total > t["line"]
                     push = actual_total == t["line"]
                     if not push:
-                        if odds.expected_value(po, t["over_best"]) >= min_edge:
+                        if odds.expected_value(p_over, t["over_best"]) >= min_edge:
                             total_bets.add(over_won, odds.american_to_decimal(t["over_best"]))
-                        if odds.expected_value(1 - po, t["under_best"]) >= min_edge:
+                        if odds.expected_value(1 - p_over, t["under_best"]) >= min_edge:
                             total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]))
         form.update(g)
         if elo is not None:

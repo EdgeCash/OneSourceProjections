@@ -27,6 +27,48 @@ log = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# Market evaluation: price sanity + de-vig + shrink toward market
+# ---------------------------------------------------------------------------
+
+def _market_eval(p_model_a: float, a_price, b_price) -> dict:
+    """Evaluate a two-way market for both sides from one model probability.
+
+    Rejects incoherent price pairs, shrinks the model probability toward the
+    de-vigged market consensus, and returns shrunk EVs. Keeps the raw-price
+    EV nowhere — only the blended, sanity-checked numbers reach the site.
+
+    Returns {p_used, p_fair, ev_a, ev_b}; ev_* are None where that side has
+    no usable price. ``p_used`` falls back to the raw model prob when there's
+    no market to anchor to.
+    """
+    a_ok = a_price is not None and pd.notna(a_price)
+    b_ok = b_price is not None and pd.notna(b_price)
+    out = {"p_used": p_model_a, "p_fair": None, "ev_a": None, "ev_b": None}
+    if a_ok and b_ok:
+        fair = odds.fair_two_way(float(a_price), float(b_price),
+                                 config.VIG_SUM_MIN, config.VIG_SUM_MAX)
+        if fair is None:
+            return out  # incoherent pair -> no edge either side
+        p_fair = fair[0]
+    elif a_ok:
+        p_fair = odds.fair_one_way(float(a_price))
+    elif b_ok:
+        pf_b = odds.fair_one_way(float(b_price))
+        p_fair = (1.0 - pf_b) if pf_b is not None else None
+    else:
+        return out
+    if p_fair is None:
+        return out  # implausible single price
+    p = odds.blend_toward_market(p_model_a, p_fair, config.MARKET_SHRINK)
+    out["p_used"], out["p_fair"] = round(p, 4), round(p_fair, 4)
+    if a_ok:
+        out["ev_a"] = round(odds.expected_value(p, float(a_price)), 4)
+    if b_ok:
+        out["ev_b"] = round(odds.expected_value(1 - p, float(b_price)), 4)
+    return out
+
+
+# ---------------------------------------------------------------------------
 # Reference data
 # ---------------------------------------------------------------------------
 
@@ -383,10 +425,12 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
         p = prob_over_for_row(row, float(row["line"]))
         if p is None:
             return pd.Series({"model_over_prob": None, "ev": None, "kelly": None})
-        ev = odds.expected_value(p, float(row["odds"]))
-        k = odds.kelly_stake(p, float(row["odds"]), config.KELLY_FRACTION)
-        return pd.Series({"model_over_prob": round(p, 4), "ev": round(ev, 4),
-                          "kelly": round(k, 4)})
+        ev = _market_eval(p, row["odds"], None)
+        k = (round(odds.kelly_stake(ev["p_used"], float(row["odds"]),
+                                    config.KELLY_FRACTION), 4)
+             if ev["ev_a"] is not None else None)
+        return pd.Series({"model_over_prob": round(p, 4), "ev": ev["ev_a"],
+                          "kelly": k})
 
     merged = pd.concat([merged, merged.apply(compute, axis=1)], axis=1)
     merged = _attach_bp_consensus_keyed(merged, date)
@@ -440,9 +484,11 @@ def _attach_bp_consensus_keyed(props: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["model_over_prob"] = round(p, 4)
                     price = row.get("odds")
                     if price is not None and pd.notna(price):
-                        out["ev"] = round(odds.expected_value(p, float(price)), 4)
-                        out["kelly"] = round(odds.kelly_stake(
-                            p, float(price), config.KELLY_FRACTION), 4)
+                        ev = _market_eval(p, price, None)
+                        out["ev"] = ev["ev_a"]
+                        if ev["ev_a"] is not None:
+                            out["kelly"] = round(odds.kelly_stake(
+                                ev["p_used"], float(price), config.KELLY_FRACTION), 4)
         return pd.Series(out)
 
     recomputed = merged.apply(compute, axis=1)
@@ -514,14 +560,19 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
         # moneyline: best price per side by team-name match within the event
         mlg = event_offer(ml, row)
         if mlg is not None and not mlg.empty:
+            prices = {}
             for side in ("home", "away"):
                 m = mlg[mlg["participant"].map(
                     lambda p: _teams_match(row[f"{side}_team"], p or ""))]
                 if not m.empty:
-                    price = float(m["odds"].max())
-                    out[f"{side}_ml"] = price
-                    out[f"{side}_ml_ev"] = round(odds.expected_value(
-                        row[f"{side}_win_prob"], price), 4)
+                    prices[side] = float(m["odds"].max())
+                    out[f"{side}_ml"] = prices[side]
+            ev = _market_eval(row["home_win_prob"], prices.get("home"),
+                              prices.get("away"))
+            if ev["ev_a"] is not None:
+                out["home_ml_ev"] = ev["ev_a"]
+            if ev["ev_b"] is not None:
+                out["away_ml_ev"] = ev["ev_b"]
         # total
         tg = event_offer(tot, row)
         if tg is not None and not tg.empty and "line" in tg.columns:
@@ -537,14 +588,17 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                 if p is None:
                     p = float(1 - _st.poisson.cdf(int(line), row["proj_total"]))
                 out.update({"total_line": line, "over_odds": float(best_o["odds"]),
-                            "model_over_prob": round(float(p), 4),
-                            "over_ev": round(odds.expected_value(
-                                float(p), float(best_o["odds"])), 4)})
+                            "model_over_prob": round(float(p), 4)})
+                under_price = None
                 if not unders.empty:
                     best_u = unders.sort_values("odds", ascending=False).iloc[0]
-                    out["under_odds"] = float(best_u["odds"])
-                    out["under_ev"] = round(odds.expected_value(
-                        1 - float(p), float(best_u["odds"])), 4)
+                    under_price = float(best_u["odds"])
+                    out["under_odds"] = under_price
+                ev = _market_eval(float(p), float(best_o["odds"]), under_price)
+                if ev["ev_a"] is not None:
+                    out["over_ev"] = ev["ev_a"]
+                if ev["ev_b"] is not None:
+                    out["under_ev"] = ev["ev_b"]
         # run line (home -1.5 / +1.5)
         rg = event_offer(rl, row)
         if rg is not None and not rg.empty and "line" in rg.columns:
@@ -561,15 +615,18 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                 p_cover = cover.get(spread, cover.get(str(spread)))
                 out["rl_home_line"] = spread
                 out["rl_home_odds"] = float(best_h["odds"])
+                away_price = None
+                if not away_rows.empty:
+                    best_a = away_rows.sort_values("odds", ascending=False).iloc[0]
+                    away_price = float(best_a["odds"])
+                    out["rl_away_odds"] = away_price
                 if p_cover is not None:
                     out["model_home_rl"] = round(float(p_cover), 4)
-                    out["rl_home_ev"] = round(odds.expected_value(
-                        float(p_cover), float(best_h["odds"])), 4)
-                if not away_rows.empty and p_cover is not None:
-                    best_a = away_rows.sort_values("odds", ascending=False).iloc[0]
-                    out["rl_away_odds"] = float(best_a["odds"])
-                    out["rl_away_ev"] = round(odds.expected_value(
-                        1 - float(p_cover), float(best_a["odds"])), 4)
+                    ev = _market_eval(float(p_cover), float(best_h["odds"]), away_price)
+                    if ev["ev_a"] is not None:
+                        out["rl_home_ev"] = ev["ev_a"]
+                    if ev["ev_b"] is not None:
+                        out["rl_away_ev"] = ev["ev_b"]
         return pd.Series(out, dtype=object)
 
     extra = games.apply(per_game, axis=1)
@@ -672,10 +729,12 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         for side in ("home", "away"):
             games[f"{side}_ml"] = games[f"{side}_team"].map(
                 lambda t: _best_price_for_team(t, pairs))
-            games[f"{side}_ml_ev"] = games.apply(
-                lambda r: round(odds.expected_value(
-                    r[f"{side}_win_prob"], r[f"{side}_ml"]), 4)
-                if pd.notna(r[f"{side}_ml"]) else None, axis=1)
+
+        def _ml_ev(r):
+            ev = _market_eval(r["home_win_prob"], r.get("home_ml"), r.get("away_ml"))
+            return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"]})
+
+        games = pd.concat([games, games.apply(_ml_ev, axis=1)], axis=1)
 
     tot = flat_by_market.get("total", pd.DataFrame())
     if not tot.empty and "line" in tot.columns:
@@ -699,11 +758,12 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                                   "model_over_prob": None, "over_ev": None})
             line = float(offer["line"])
             p = row["_proj"].prob_over(line, sport)
+            ev = _market_eval(p, float(offer["odds"]), None)
             return pd.Series({
                 "total_line": line,
                 "over_odds": offer["odds"],
                 "model_over_prob": round(p, 4),
-                "over_ev": round(odds.expected_value(p, float(offer["odds"])), 4),
+                "over_ev": ev["ev_a"],
             })
 
         games = pd.concat([games, games.apply(total_cols, axis=1)], axis=1)
@@ -729,19 +789,19 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
             best_h = home_rows.sort_values("odds", ascending=False).iloc[0]
             spread = float(best_h["line"])
             p = row["_proj"].home_cover_prob(spread, sport)
-            out.update({"spread_home_line": spread,
-                        "spread_home_odds": float(best_h["odds"]),
-                        "model_home_cover": round(p, 4),
-                        "spread_home_ev": round(odds.expected_value(
-                            p, float(best_h["odds"])), 4)})
             away_rows = g[g["participant"].map(
                 lambda p_: _teams_match(row["away_team"], p_ or ""))
                 & g["line"].notna()]
-            if not away_rows.empty:
-                best_a = away_rows.sort_values("odds", ascending=False).iloc[0]
-                out["spread_away_odds"] = float(best_a["odds"])
-                out["spread_away_ev"] = round(odds.expected_value(
-                    1 - p, float(best_a["odds"])), 4)
+            away_price = (float(away_rows.sort_values("odds", ascending=False)
+                                .iloc[0]["odds"]) if not away_rows.empty else None)
+            ev = _market_eval(p, float(best_h["odds"]), away_price)
+            out.update({"spread_home_line": spread,
+                        "spread_home_odds": float(best_h["odds"]),
+                        "model_home_cover": round(p, 4),
+                        "spread_home_ev": ev["ev_a"]})
+            if away_price is not None:
+                out["spread_away_odds"] = away_price
+                out["spread_away_ev"] = ev["ev_b"]
             return pd.Series(out)
 
         games = pd.concat([games, games.apply(spread_cols, axis=1)], axis=1)
@@ -898,18 +958,15 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         if projection is not None and pd.notna(line):
             p_over = generic.prop_prob_over(float(projection), float(line), market_name)
             row["model_over_prob"] = round(p_over, 4)
-            if pd.notna(r.get("over_odds")):
-                row["ev_over"] = round(odds.expected_value(p_over, float(r["over_odds"])), 4)
-            if pd.notna(r.get("under_odds")):
-                row["ev_under"] = round(
-                    odds.expected_value(1 - p_over, float(r["under_odds"])), 4)
+            ev = _market_eval(p_over, r.get("over_odds"), r.get("under_odds"))
+            row["ev_over"], row["ev_under"] = ev["ev_a"], ev["ev_b"]
             best_ev = max(
                 [v for v in (row["ev_over"], row["ev_under"]) if v is not None],
                 default=None)
             if best_ev is not None and best_ev > 0:
-                side_odds = (r["over_odds"] if best_ev == row["ev_over"]
-                             else r["under_odds"])
-                side_prob = p_over if best_ev == row["ev_over"] else 1 - p_over
+                over_side = best_ev == row["ev_over"]
+                side_odds = r["over_odds"] if over_side else r["under_odds"]
+                side_prob = ev["p_used"] if over_side else 1 - ev["p_used"]
                 row["kelly"] = round(odds.kelly_stake(
                     side_prob, float(side_odds), config.KELLY_FRACTION), 4)
         rows.append(row)

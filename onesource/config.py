@@ -69,6 +69,19 @@ FP_BLEND_WEIGHT = 0.5
 MIN_EDGE = 0.02  # only surface bets with >= 2% EV edge
 KELLY_FRACTION = 0.25  # quarter Kelly
 
+# Market-blend / price-sanity knobs. The raw model finds far too many fat
+# edges (a sign of over-confidence + stale price inputs, not alpha), so before
+# computing EV we (1) reject incoherent two-way prices and (2) shrink the
+# model probability toward the de-vigged market consensus.
+#   MARKET_SHRINK: weight on the market's fair prob vs the model (0 = pure
+#     model, 1 = pure market). 0.5 roughly halved a losing backtest's bet
+#     volume and flipped moneyline ROI positive; tune via run_backtest.
+MARKET_SHRINK = 0.5
+#   A two-way market's raw implied probs must sum within this band to count
+#   as a coherent quote; outside it the prices are stale/mismatched/alt-line.
+VIG_SUM_MIN = 0.98
+VIG_SUM_MAX = 1.30
+
 # BettingPros market ids vary by sport/account tier. These are sensible
 # defaults for MLB; run `python scripts/discover_markets.py` once with your
 # keys to print the live list and adjust here if needed.
