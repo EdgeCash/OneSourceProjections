@@ -92,12 +92,14 @@ def main():
     # 4) write the combined site data file
     perf = results.performance()
     primary = default_slate_date(upcoming, slates) or today.isoformat()
+    from onesource.clients import oddsapi
     out = {
         "generated_at": datetime.now(ET).isoformat(),
         "primary_date": primary,
         "dates": upcoming,
         "slates": slates,
         "performance": perf,
+        "odds_api_credits": oddsapi.credits_remaining(),
     }
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / "latest.json").write_text(json.dumps(out, indent=1, default=str))

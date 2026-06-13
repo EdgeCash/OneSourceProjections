@@ -34,6 +34,17 @@ BP_PARTNER_KEY = lambda: secret("BP_PARTNER_KEY")  # noqa: E731
 BP_USER = lambda: secret("BP_USER")  # noqa: E731
 BP_USER_KEY = lambda: secret("BP_USER_KEY")  # noqa: E731
 APP_PASSWORD = lambda: secret("APP_PASSWORD")  # noqa: E731
+THE_ODDS_API_KEY = lambda: secret("THE_ODDS_API_KEY")  # noqa: E731
+
+# The Odds API (multi-book lines). Credit-frugal defaults: us region, the
+# three cheap featured markets, cached ~hourly, and a hard credit floor below
+# which we stop calling so the monthly balance can never drain to zero.
+# Only the markets we actually consume (CLV + grading use moneyline + totals);
+# 2 credits per sport per call. Add "spreads" when line-shopping needs it.
+ODDS_API_REGIONS = "us"
+ODDS_API_MARKETS = "h2h,totals"
+ODDS_API_TTL = 3300  # seconds (~55 min) — at most one spend per sport per hour
+ODDS_API_MIN_CREDITS = 1000  # stop calling once the account drops below this
 
 # ---------------------------------------------------------------------------
 # Model knobs. Tune these as you collect results.

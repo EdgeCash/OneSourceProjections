@@ -128,6 +128,9 @@ with st.sidebar:
     show_all = st.checkbox("Show rows without edges", value=False)
     hide_wild = st.checkbox("Hide implausible edges (≥30%)", value=True)
     st.caption(f"Stakes are {config.KELLY_FRACTION:.0%}-Kelly × bankroll.")
+    credits = (data or {}).get("odds_api_credits")
+    if credits is not None:
+        st.caption(f"📊 Odds API: {int(credits):,} credits left")
     if st.button("↻ Refresh", width="stretch"):
         refresh()
         st.rerun()

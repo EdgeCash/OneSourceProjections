@@ -15,7 +15,7 @@ import logging
 from datetime import datetime, timezone
 
 from . import config
-from .clients import bettingpros
+from .clients import bettingpros, oddsapi
 from .sports import SPORTS, active_sports
 
 log = logging.getLogger(__name__)
@@ -113,6 +113,14 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
                     rows.append(r)
         except Exception as e:
             log.warning("%s snapshot: game offers unavailable: %s", sk, e)
+
+        # multi-book game odds (The Odds API) — credit-guarded inside the
+        # client; adds a market-consensus closing line for sharper CLV
+        try:
+            events_oa = oddsapi.game_odds(sk)
+            rows += oddsapi.snapshot_rows(events_oa, sk, date, captured)
+        except Exception as e:
+            log.warning("%s snapshot: Odds API unavailable: %s", sk, e)
 
         # player props (BettingPros consensus + premium projection/EV)
         try:
