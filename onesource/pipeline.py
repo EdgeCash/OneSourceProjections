@@ -45,22 +45,26 @@ def _market_eval(p_model_a: float, a_price, b_price) -> dict:
     b_ok = b_price is not None and pd.notna(b_price)
     out = {"p_used": p_model_a, "p_fair": None, "ev_a": None, "ev_b": None}
     if a_ok and b_ok:
+        # two-way market: de-vig to a clean consensus and shrink toward it
         fair = odds.fair_two_way(float(a_price), float(b_price),
                                  config.VIG_SUM_MIN, config.VIG_SUM_MAX)
         if fair is None:
             return out  # incoherent pair -> no edge either side
         p_fair = fair[0]
-    elif a_ok:
-        p_fair = odds.fair_one_way(float(a_price))
-    elif b_ok:
-        pf_b = odds.fair_one_way(float(b_price))
-        p_fair = (1.0 - pf_b) if pf_b is not None else None
+        p = odds.blend_toward_market(p_model_a, p_fair, config.MARKET_SHRINK)
+        out["p_fair"] = round(p_fair, 4)
+    elif a_ok or b_ok:
+        # single quoted side: the lone implied prob still carries the book's
+        # vig, so it is NOT a clean consensus — shrinking toward it would bias
+        # the probability up and erase genuine edges (this silently gutted the
+        # props board). Reject only implausible prices; trust the model prob.
+        price = float(a_price if a_ok else b_price)
+        if odds.fair_one_way(price) is None:
+            return out  # implausible single price
+        p = p_model_a
     else:
         return out
-    if p_fair is None:
-        return out  # implausible single price
-    p = odds.blend_toward_market(p_model_a, p_fair, config.MARKET_SHRINK)
-    out["p_used"], out["p_fair"] = round(p, 4), round(p_fair, 4)
+    out["p_used"] = round(p, 4)
     if a_ok:
         out["ev_a"] = round(odds.expected_value(p, float(a_price)), 4)
     if b_ok:
