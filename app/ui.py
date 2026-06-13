@@ -87,24 +87,29 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
 def _game_edges(sport: str, g: dict) -> list[dict]:
     rows = []
     matchup = f"{g.get('away_team')} @ {g.get('home_team')}"
+    home_t, away_t = g.get("home_team"), g.get("away_team")
 
-    def add(market, bet, line, price, prob, ev):
+    def add(market, bet, line, price, prob, ev, shop_mkt=None, sidekey=None):
         if ev is not None and price is not None and pd.notna(ev) and pd.notna(price):
             rows.append({"sport": sport, "type": "Game", "market": market,
                          "bet": bet, "game": matchup, "line": line,
                          "price": price, "model_prob": prob, "ev": ev,
-                         "kelly": None, "time": g.get("game_time")})
+                         "kelly": None, "time": g.get("game_time"),
+                         "_home": home_t, "_away": away_t,
+                         "_shop_mkt": shop_mkt, "_sidekey": sidekey})
 
     for side in ("home", "away"):
         add("Moneyline", f"{g.get(f'{side}_team')} ML", None,
             g.get(f"{side}_ml"), g.get(f"{side}_win_prob"),
-            g.get(f"{side}_ml_ev", g.get(f"{side}_ev")))
+            g.get(f"{side}_ml_ev", g.get(f"{side}_ev")),
+            shop_mkt="moneyline", sidekey=g.get(f"{side}_team"))
     add("Total", f"Over {g.get('total_line')}", g.get("total_line"),
-        g.get("over_odds"), g.get("model_over_prob"), g.get("over_ev"))
+        g.get("over_odds"), g.get("model_over_prob"), g.get("over_ev"),
+        shop_mkt="total", sidekey="over")
     mop = g.get("model_over_prob")
     add("Total", f"Under {g.get('total_line')}", g.get("total_line"),
         g.get("under_odds"), (1 - mop) if mop is not None else None,
-        g.get("under_ev"))
+        g.get("under_ev"), shop_mkt="total", sidekey="under")
     # run line / spread (home side line; away is the opposite handicap)
     sp_line = g.get("rl_home_line", g.get("spread_home_line"))
     sp_label = "Run Line" if "rl_home_line" in g else "Spread"

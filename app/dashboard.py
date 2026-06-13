@@ -469,6 +469,28 @@ def render_plays():
     c[3].metric("Best EV", f"{board['ev'].max():+.1%}")
 
     view = board.copy()
+    # line shopping: best available price + book per bet from multi-book odds
+    from onesource import lineshop
+    shop = ({sp: lineshop.best_lines(sp, date_sel)
+             for sp in board["sport"].unique()} if not board.empty else {})
+
+    def _shop(r):
+        if not r.get("_shop_mkt"):
+            return pd.Series([None, None])
+        hit = lineshop.lookup(shop.get(r["sport"], {}), r.get("_home"),
+                              r.get("_away"), r["_shop_mkt"], r.get("_sidekey"))
+        return pd.Series([hit["price"], hit["book"]] if hit else [None, None])
+
+    if {"_shop_mkt", "_home", "_away", "_sidekey"}.issubset(view.columns):
+        view[["_best_price", "_best_book"]] = view.apply(_shop, axis=1)
+    else:
+        view["_best_price"], view["_best_book"] = None, None
+    has_shop = view["_best_price"].notna().any()
+    view["best"] = [
+        f"{ui.fmt_american(p)} ({str(b).replace('_', ' ').title()})"
+        if p is not None and pd.notna(p) else "—"
+        for p, b in zip(view["_best_price"], view["_best_book"])]
+
     view["price"] = view["price"].map(ui.fmt_american)
     view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
     view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
@@ -477,21 +499,27 @@ def render_plays():
     view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
                      .fillna(stake_ev) * bankroll).round(0)
     view["time"] = view["time"].map(ui.fmt_time_et)
-    cols = ["sport", "bet", "game", "time", "price", "model_prob", "ev", "stake"]
+    cols = ["sport", "bet", "game", "time", "price"]
+    if has_shop:
+        cols.append("best")
+    cols += ["model_prob", "ev", "stake"]
     if "flag" in view.columns and view["flag"].astype(bool).any():
         cols.append("flag")
     view = view[cols].rename(columns={
         "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
-        "price": "Price", "model_prob": "Model %", "ev": "EV %",
-        "stake": "Stake $", "flag": "Note"})
+        "price": "Price", "best": "Best (book)", "model_prob": "Model %",
+        "ev": "EV %", "stake": "Stake $", "flag": "Note"})
     st.dataframe(
         ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
         column_config={
             "Model %": st.column_config.ProgressColumn(
                 "Model %", min_value=0, max_value=100, format="%.0f%%"),
             "Stake $": st.column_config.NumberColumn(format="$%d")})
+    shop_note = (" **Best (book)** is the top price across books — shopping "
+                 "the best number is the most reliable edge there is."
+                 if has_shop else "")
     st.caption("Every edge across sports for the slate, sorted by EV. "
-               "Stake = ¼-Kelly × bankroll.")
+               "Stake = ¼-Kelly × bankroll." + shop_note)
 
 
 # ---------------------------------------------------------------------------
