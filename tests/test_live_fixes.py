@@ -212,3 +212,34 @@ def test_props_have_line_column_even_without_offers(monkeypatch):
     out = pipeline.attach_prop_edges(props, "2026-06-13")
     for col in ("line", "odds", "ev", "model_over_prob", "bp_projection"):
         assert col in out.columns
+
+
+# ---------------------------------------------------------------------------
+# market eval: single-sided prices must not shrink toward a vigged anchor
+# (regression — over-shrinking gutted the props board to red zeros)
+# ---------------------------------------------------------------------------
+
+def test_market_eval_single_price_uses_raw_model_prob():
+    from onesource import pipeline
+    # one-sided -110 prop, model 56%: edge must survive (no shrink toward vig)
+    out = pipeline._market_eval(0.56, -110, None)
+    assert out["p_used"] == 0.56 and out["p_fair"] is None
+    assert out["ev_a"] > 0.06  # ~+6.9% EV, not halved away
+    assert out["ev_b"] is None
+
+
+def test_market_eval_two_way_still_shrinks():
+    from onesource import pipeline, config
+    # symmetric -110/-110 fair = 0.50; model 0.60 should be pulled toward 0.50
+    out = pipeline._market_eval(0.60, -110, -110)
+    assert out["p_fair"] == 0.5
+    expected = (1 - config.MARKET_SHRINK) * 0.60 + config.MARKET_SHRINK * 0.5
+    assert abs(out["p_used"] - round(expected, 4)) < 1e-9
+    assert out["p_used"] < 0.60  # genuinely shrunk
+
+
+def test_market_eval_rejects_implausible_single_price():
+    from onesource import pipeline
+    # an implied prob outside [0.01, 0.99] is rejected, no edge surfaced
+    out = pipeline._market_eval(0.5, -100000, None)
+    assert out["ev_a"] is None and out["p_fair"] is None
