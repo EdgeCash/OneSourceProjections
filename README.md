@@ -188,12 +188,13 @@ all four; it lights up automatically as multi-book odds accumulate.
 
 ## AI analyst (built-in "send to AI")
 
-Every game card, prop deep-dive, and the Plays board carries a **🤖 AI analyst
-& copy-for-AI** panel. It always offers a clean markdown brief
-(`app.ui.ai_brief_*`) to copy into any chatbot, and — when `ANTHROPIC_API_KEY`
-is set — a one-click **✨ Analyze** button that streams a grounded read from
-Claude (`onesource/ai.py`, Opus 4.8 with adaptive thinking). It degrades
-gracefully: no key or SDK → the copy-paste brief is still there.
+Every game card, prop deep-dive, and the Plays board carries a **🤖 Send to AI**
+panel. The **free** path is primary: copy the clean markdown brief
+(`app.ui.ai_brief_*`) into Claude.ai or any chatbot on your own subscription —
+no API cost. When `ANTHROPIC_API_KEY` is set, an optional **✨ Analyze in-app**
+button (clearly marked as a paid ~5¢ Anthropic API call) returns a grounded
+read from Claude (`onesource/ai.py`, Opus 4.8 with adaptive thinking) without
+leaving the app.
 
 ## Dashboard layout
 
