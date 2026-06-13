@@ -38,57 +38,85 @@ def _best(rows: list[dict]) -> float | None:
     return max(odds_) if odds_ else None
 
 
+def _group_fair(ers: list[dict]) -> tuple[frozenset | None, dict]:
+    """De-vigged fair probs for one source-event's latest capture: identifies
+    the game by its two moneyline teams, then de-vigs moneyline + total."""
+    last = max((r.get("captured_at") or "") for r in ers)
+    ers = [r for r in ers if (r.get("captured_at") or "") == last]
+    by_team: dict = defaultdict(list)
+    for r in ers:
+        if r.get("market") == "moneyline" and r.get("participant"):
+            by_team[normalize(r["participant"])].append(r)
+    prices = {t: _best(rs) for t, rs in by_team.items()}
+    prices = {t: p for t, p in prices.items() if p is not None}
+    if len(prices) != 2:
+        return None, {}
+    teams = frozenset(prices)
+    rec: dict = {}
+    (ta, oa), (tb, ob) = prices.items()
+    fair = odds.fair_two_way(oa, ob)
+    if fair:
+        rec["moneyline"] = {ta: fair[0], tb: fair[1]}
+    overs = [r for r in ers if r.get("market") == "total"
+             and "over" in str(r.get("selection", "")).lower()]
+    unders = [r for r in ers if r.get("market") == "total"
+              and "under" in str(r.get("selection", "")).lower()]
+    bo, bu = _best(overs), _best(unders)
+    if bo is not None and bu is not None:
+        fair = odds.fair_two_way(bo, bu)
+        if fair:
+            lines = sorted(r["line"] for r in overs if r.get("line") is not None)
+            rec["total"] = {"line": lines[len(lines) // 2] if lines else None,
+                            "over": fair[0]}
+    return teams, rec
+
+
 def closing_lines(sport: str, date: str, snap_dir=None) -> dict:
     """Per-game de-vigged closing probabilities from the snapshot store.
 
-    Returns {frozenset({norm_home, norm_away}): {"moneyline": {norm_team:
-    fair_prob}, "total": {"line": x, "over": p, "under": 1-p}}}. Uses the
-    latest capture in the day's log as the close and best price per side.
+    Merges every captured source (BettingPros + The Odds API) into one
+    market-consensus close per game: each source-event is de-vigged on its
+    own latest capture, then averaged across sources by matchup. Returns
+    {frozenset({norm_home, norm_away}): {"moneyline": {norm_team: prob},
+    "total": {"line": x, "over": p}}}.
     """
     rows = [r for r in _load_rows(sport, date, snap_dir) if r.get("kind") == "game"]
     if not rows:
         return {}
-    last = max((r.get("captured_at") or "") for r in rows)
-    rows = [r for r in rows if (r.get("captured_at") or "") == last]
 
-    events: dict = defaultdict(list)
+    # group by (source, event) so totals associate with the event's teams
+    groups: dict = defaultdict(list)
     for r in rows:
-        events[r.get("event_id")].append(r)
+        groups[(r.get("source", "bp"), r.get("event_id"))].append(r)
+
+    # collect each source's fair probs per matchup, then average them
+    ml_acc: dict = defaultdict(lambda: defaultdict(list))
+    tot_over: dict = defaultdict(list)
+    tot_line: dict = defaultdict(list)
+    for ers in groups.values():
+        teams, rec = _group_fair(ers)
+        if not teams:
+            continue
+        for team, p in (rec.get("moneyline") or {}).items():
+            ml_acc[teams][team].append(p)
+        if rec.get("total"):
+            tot_over[teams].append(rec["total"]["over"])
+            if rec["total"].get("line") is not None:
+                tot_line[teams].append(rec["total"]["line"])
 
     out: dict = {}
-    for ers in events.values():
-        teams = {normalize(r["participant"]) for r in ers
-                 if r.get("market") == "moneyline" and r.get("participant")}
+    for teams in set(ml_acc) | set(tot_over):
         rec: dict = {}
-
-        # moneyline: best price per team -> de-vig two-way
-        by_team: dict = defaultdict(list)
-        for r in ers:
-            if r.get("market") == "moneyline" and r.get("participant"):
-                by_team[normalize(r["participant"])].append(r)
-        prices = {t: _best(rs) for t, rs in by_team.items()}
-        prices = {t: p for t, p in prices.items() if p is not None}
-        if len(prices) == 2:
-            (ta, oa), (tb, ob) = prices.items()
-            fair = odds.fair_two_way(oa, ob)
-            if fair:
-                rec["moneyline"] = {ta: fair[0], tb: fair[1]}
-
-        # total: best over / best under -> de-vig
-        overs = [r for r in ers if r.get("market") == "total"
-                 and "over" in str(r.get("selection", "")).lower()]
-        unders = [r for r in ers if r.get("market") == "total"
-                  and "under" in str(r.get("selection", "")).lower()]
-        bo, bu = _best(overs), _best(unders)
-        if bo is not None and bu is not None:
-            fair = odds.fair_two_way(bo, bu)
-            if fair:
-                lines = sorted(r["line"] for r in overs if r.get("line") is not None)
-                rec["total"] = {"line": lines[len(lines) // 2] if lines else None,
-                                "over": fair[0], "under": fair[1]}
-
-        if rec and teams:
-            out[frozenset(teams)] = rec
+        if ml_acc.get(teams):
+            rec["moneyline"] = {t: round(sum(ps) / len(ps), 4)
+                                for t, ps in ml_acc[teams].items()}
+        if tot_over.get(teams):
+            ov = tot_over[teams]
+            lines = sorted(tot_line.get(teams) or [])
+            rec["total"] = {"over": round(sum(ov) / len(ov), 4),
+                            "line": lines[len(lines) // 2] if lines else None}
+        if rec:
+            out[teams] = rec
     return out
 
 
