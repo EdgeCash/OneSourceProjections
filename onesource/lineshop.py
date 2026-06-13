@@ -56,6 +56,10 @@ def best_lines(sport: str, date: str, snap_dir=None) -> dict:
 def lookup(best: dict, home: str, away: str, market: str, sidekey: str) -> dict | None:
     """Best price for one bet. ``market`` is 'moneyline' or 'total';
     ``sidekey`` is a normalized team name (moneyline) or 'over'/'under'."""
+    # prop rows carry no team context (NaN floats) — nothing to shop.
+    if not (isinstance(home, str) and isinstance(away, str)
+            and isinstance(market, str)):
+        return None
     rec = best.get(frozenset({normalize(home), normalize(away)}))
     if not rec:
         return None

@@ -63,6 +63,16 @@ def test_lookup_by_market_and_side(tmp_path):
                            "moneyline", "Chicago Cubs") is None
 
 
+def test_lookup_ignores_propless_nan_teams(tmp_path):
+    _write(tmp_path)
+    best = lineshop.best_lines("MLB", "2026-06-12", snap_dir=tmp_path)
+    # prop rows carry NaN home/away/market — must return None, not crash in
+    # normalize() (this exception aborted the whole PLAYS tab render)
+    assert lineshop.lookup(best, float("nan"), float("nan"),
+                           float("nan"), None) is None
+    assert lineshop.lookup({}, None, None, "moneyline", "x") is None
+
+
 def test_best_lines_empty_without_oddsapi_rows(tmp_path):
     (tmp_path / "mlb").mkdir(parents=True)
     assert lineshop.best_lines("MLB", "2026-06-12", snap_dir=tmp_path) == {}
