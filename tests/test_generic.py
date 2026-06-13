@@ -73,6 +73,33 @@ def test_prop_distributions():
             > generic.prop_prob_over(6, 9.5, "Assists"))
 
 
+def test_multiplicative_amplifies_matchup_extremes():
+    import dataclasses
+    nba = SPORTS["NBA"]
+    assert nba.score_method == "multiplicative"
+    league = nba.league_ppg
+    # elite offense (well above league) vs leaky defense (allows well above league)
+    good, bad = _ratings(128, 118, 118, 128, league)
+    mult = generic.expected_score(nba, good, bad)
+    add = generic.expected_score(dataclasses.replace(nba, score_method="additive"),
+                                 good, bad)
+    # the home elite-O / away-leaky-D side scores higher under multiplicative
+    assert mult[0] > add[0]
+    # ...and above the simple midpoint of the two raw rates it blends
+    assert mult[0] > (good.scored + bad.allowed) / 2
+
+
+def test_multiplicative_matches_additive_for_average_teams():
+    import dataclasses
+    nba = SPORTS["NBA"]
+    a, b = _ratings(114, 114, 114, 114, nba.league_ppg)
+    mult = generic.expected_score(nba, a, b)
+    add = generic.expected_score(dataclasses.replace(nba, score_method="additive"),
+                                 a, b)
+    # league-average everywhere: the two methods coincide
+    assert abs(mult[0] - add[0]) < 1e-9 and abs(mult[1] - add[1]) < 1e-9
+
+
 def test_sports_registry():
     assert set(SPORTS) == {"MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL"}
     assert in_season("MLB", "2026-06-12")

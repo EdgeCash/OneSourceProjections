@@ -64,8 +64,15 @@ def expected_score(
     h_def = home.allowed if home else league
     a_off = away.scored if away else league
     a_def = away.allowed if away else league
-    h_exp = (h_off + a_def) / 2 + sport.hfa / 2
-    a_exp = (a_off + h_def) / 2 - sport.hfa / 2
+    if getattr(sport, "score_method", "additive") == "multiplicative" and league > 0:
+        # log5-for-points: base scoring environment scaled by how good the
+        # offense is and how leaky the opposing defense is, relative to league.
+        # Captures matchup extremes the midpoint average compresses.
+        h_exp = league * (h_off / league) * (a_def / league) + sport.hfa / 2
+        a_exp = league * (a_off / league) * (h_def / league) - sport.hfa / 2
+    else:
+        h_exp = (h_off + a_def) / 2 + sport.hfa / 2
+        a_exp = (a_off + h_def) / 2 - sport.hfa / 2
     return max(h_exp, league * 0.3), max(a_exp, league * 0.3)
 
 

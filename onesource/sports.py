@@ -31,6 +31,11 @@ class Sport:
     fp_projections: str | None = None   # FantasyPros projections support
     espn_params: dict = field(default_factory=dict)
     elo_blend: float = 0.0   # weight on Elo win prob vs the off/def model (0 = off)
+    # how the off/def ratings combine into an expected score:
+    #   "additive"       -> (team offense + opp defense) / 2   (midpoint)
+    #   "multiplicative" -> league × (off/league) × (oppDef/league)  (log5-for-
+    #                       points: strong O vs weak D scores above either mean)
+    score_method: str = "additive"
 
 
 SPORTS: dict[str, Sport] = {
@@ -45,29 +50,32 @@ SPORTS: dict[str, Sport] = {
         league_ppg=82.0, hfa=2.5, sigma_margin=11.5, sigma_total=15.0,
         in_season_months=(5, 6, 7, 8, 9, 10), form_days=45,
         elo_blend=0.65,  # 0.35 off/def model + 0.65 Elo (backtested)
+        score_method="multiplicative",
     ),
     "NBA": Sport(
         key="NBA", espn_path="basketball/nba", model="normal",
         league_ppg=114.0, hfa=2.5, sigma_margin=12.5, sigma_total=19.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
-        fp_projections="daily",
+        fp_projections="daily", score_method="multiplicative",
     ),
     "NFL": Sport(
         key="NFL", espn_path="football/nfl", model="normal",
         league_ppg=22.5, hfa=1.8, sigma_margin=13.5, sigma_total=13.5,
         in_season_months=(9, 10, 11, 12, 1, 2), form_days=140,
-        fp_projections="weekly",
+        fp_projections="weekly", score_method="multiplicative",
     ),
     "NCAAF": Sport(
         key="NCAAF", espn_path="football/college-football", model="normal",
         league_ppg=28.0, hfa=2.7, sigma_margin=16.0, sigma_total=16.5,
         in_season_months=(8, 9, 10, 11, 12, 1), form_days=140,
         espn_params={"groups": 80, "limit": 400},  # FBS only
+        score_method="multiplicative",
     ),
     "NHL": Sport(
         key="NHL", espn_path="hockey/nhl", model="poisson",
         league_ppg=3.0, hfa=0.15, sigma_margin=0.0, sigma_total=0.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
+        score_method="multiplicative",
     ),
 }
 
