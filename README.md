@@ -182,8 +182,12 @@ with the market and scores each — Brier, accuracy, and the model's Brier edge
 over the market. If the model is better calibrated and more accurate *on the
 disagreement bucket*, that's independent edge worth betting; if not, the edges
 are noise and `MARKET_SHRINK` should rise. A bet-level view splits ROI/CLV into
-contrarian vs with-the-market stances. Shown under **Performance → Model vs
-market**; pure functions, unit-tested in `tests/test_scorecard.py`.
+contrarian vs with-the-market stances. It also runs **calibration-driven
+tuning**: `optimal_shrink` scans the model↔market blend weight and reports the
+`MARKET_SHRINK` value that *would have* minimized Brier over graded games (gated
+behind a minimum sample), turning the config knob into a data-backed decision.
+Shown under **Performance → Model vs market**; pure functions, unit-tested in
+`tests/test_scorecard.py`.
 
 ## Multi-book edge scanner (the sharp layer)
 
