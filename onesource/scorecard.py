@@ -78,6 +78,59 @@ def scorecard(rows: list[dict], min_edge: float = 0.0) -> dict:
             "disagree": _agg(disagree), "n_games": len(games)}
 
 
+def optimal_shrink(rows: list[dict], current: float | None = None,
+                   grid: list[float] | None = None, min_games: int = 30) -> dict:
+    """Calibration-driven tuning for ``MARKET_SHRINK``.
+
+    The published probability is ``(1 - alpha) * model + alpha * market``. Using
+    graded games (which carry both probs), this scans ``alpha`` in [0, 1] and
+    finds the value that *would have* minimized Brier and log-loss — i.e. the
+    data-optimal blend between our model and the market. ``alpha = 0`` is
+    model-only, ``alpha = 1`` is market-only; the optimum sitting near 0 means
+    the model is carrying its weight, near 1 means we should defer to the
+    market. Returns ``ready: False`` until ``min_games`` games are graded so a
+    thin sample can't drive a config change. Pass ``current`` (the live
+    ``MARKET_SHRINK``) to get its Brier for comparison.
+    """
+    import math
+
+    games = classified_games(rows)
+    n = len(games)
+    out: dict = {"n": n, "min_games": min_games, "ready": n >= min_games}
+    if not out["ready"]:
+        return out
+    grid = grid or [round(i / 20, 2) for i in range(21)]  # 0.00 .. 1.00 step .05
+
+    def blended(alpha: float, g: dict) -> float:
+        return (1 - alpha) * g["model_wp"] + alpha * g["market_wp"]
+
+    def brier(alpha: float) -> float:
+        return sum((blended(alpha, g) - g["home_won"]) ** 2 for g in games) / n
+
+    def logloss(alpha: float) -> float:
+        t = 0.0
+        for g in games:
+            p = min(max(blended(alpha, g), 1e-6), 1 - 1e-6)
+            y = g["home_won"]
+            t += -(y * math.log(p) + (1 - y) * math.log(1 - p))
+        return t / n
+
+    briers = {a: brier(a) for a in grid}
+    lls = {a: logloss(a) for a in grid}
+    best_b = min(briers, key=lambda a: briers[a])
+    best_l = min(lls, key=lambda a: lls[a])
+    out.update({
+        "best_brier_alpha": best_b, "best_brier": round(briers[best_b], 4),
+        "best_logloss_alpha": best_l, "best_logloss": round(lls[best_l], 4),
+        "model_only_brier": round(briers[0.0], 4),
+        "market_only_brier": round(briers[1.0], 4),
+    })
+    if current is not None:
+        out["current_alpha"] = current
+        out["current_brier"] = round(brier(current), 4)
+    return out
+
+
 def bet_scorecard(rows: list[dict]) -> dict:
     """ROI / win-rate / CLV on the model's *bets*, split by whether the model
     disagreed with the market on that game (joined by date+game)."""

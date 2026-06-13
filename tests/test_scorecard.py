@@ -64,7 +64,36 @@ def test_bet_scorecard_splits_contrarian_vs_with_market():
     assert bs["contrarian"]["avg_clv_pct"] == 3.0
 
 
+def test_optimal_shrink_needs_enough_games():
+    rows = [_g(f"d{i}", "A@B", 0.6, 0.5, 1) for i in range(10)]
+    out = scorecard.optimal_shrink(rows, min_games=30)
+    assert out["ready"] is False and out["n"] == 10
+
+
+def test_optimal_shrink_picks_model_when_model_is_better():
+    # model is perfect (prob == outcome), market is a coin flip -> alpha ~ 0
+    rows = []
+    for i in range(40):
+        won = i % 2
+        rows.append(_g(f"d{i}", "A@B", float(won), 0.5, won))
+    out = scorecard.optimal_shrink(rows, current=0.5, min_games=30)
+    assert out["ready"] is True
+    assert out["best_brier_alpha"] == 0.0
+    assert out["model_only_brier"] < out["market_only_brier"]
+    assert out["current_brier"] >= out["best_brier"]  # current 0.5 is worse
+
+
+def test_optimal_shrink_picks_market_when_market_is_better():
+    rows = []
+    for i in range(40):
+        won = i % 2
+        rows.append(_g(f"d{i}", "A@B", 0.5, float(won), won))  # market perfect
+    out = scorecard.optimal_shrink(rows, min_games=30)
+    assert out["best_brier_alpha"] == 1.0
+
+
 def test_empty_inputs():
     assert scorecard.scorecard([])["n_games"] == 0
     assert scorecard.scorecard([])["disagree"]["n"] == 0
     assert scorecard.bet_scorecard([])["contrarian"]["n"] == 0
+    assert scorecard.optimal_shrink([])["ready"] is False

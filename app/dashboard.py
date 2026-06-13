@@ -874,6 +874,31 @@ def render_performance():
                    "following it. A positive Brier edge and higher accuracy on "
                    "the disagreement bucket is the proof the model adds signal.")
 
+        # Calibration-driven tuning: the blend weight that would have minimized
+        # Brier over graded games — a data-grounded MARKET_SHRINK recommendation.
+        tune = _sc.optimal_shrink(ledger, current=config.MARKET_SHRINK)
+        st.markdown("**Calibration-driven tuning**")
+        if not tune.get("ready"):
+            st.caption(f"Optimal-shrink tuning unlocks after {tune['min_games']} "
+                       f"graded games ({tune['n']} so far). It will recommend the "
+                       "model/market blend that minimizes Brier.")
+        else:
+            improv = tune["current_brier"] - tune["best_brier"]
+            tc = st.columns(3)
+            tc[0].metric("Current MARKET_SHRINK", f"{tune['current_alpha']:.2f}")
+            tc[1].metric("Data-optimal shrink", f"{tune['best_brier_alpha']:.2f}",
+                         help="The model↔market blend weight that minimizes Brier "
+                              "over graded games. 0 = trust the model fully; "
+                              "1 = defer to the market.")
+            tc[2].metric("Brier if retuned", f"{tune['best_brier']:.4f}",
+                         delta=f"{-improv:+.4f} vs current", delta_color="inverse")
+            st.caption(
+                f"Over {tune['n']} graded games, `MARKET_SHRINK = "
+                f"{tune['best_brier_alpha']:.2f}` would have minimized win-prob "
+                f"Brier (model-only {tune['model_only_brier']:.4f} · market-only "
+                f"{tune['market_only_brier']:.4f}). Recommendation only — update "
+                "config.py when the sample is large enough to trust.")
+
     by_sport = perf.get("by_sport", {})
     if by_sport:
         st.subheader("By sport")
