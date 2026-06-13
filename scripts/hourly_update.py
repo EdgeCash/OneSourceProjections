@@ -76,14 +76,12 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
-    # 3) grade games that have finished (yesterday + today) and ingest box
-    #    scores so prop hit-rate heatmaps stay fresh past the backfill
-    graded = ingested = 0
+    # 3) grade finished games and ingest box scores. Grading sweeps a short
+    #    window (idempotent) so missed runs or late-posting finals still get
+    #    picked up; box-score ingest stays on yesterday+today (heavier).
+    graded = results.grade_recent(today.isoformat(), days=4)
+    ingested = 0
     for d in (yesterday.isoformat(), today.isoformat()):
-        try:
-            graded += results.grade_date(d)
-        except Exception as e:
-            log.error("grading %s failed: %s", d, e)
         for sport in active_sports(d):
             try:
                 ingested += playerlogs.ingest(sport, d)

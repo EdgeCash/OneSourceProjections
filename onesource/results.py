@@ -145,6 +145,27 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
     return len(new_rows)
 
 
+def grade_recent(asof: str, days: int = 4, min_edge: float | None = None) -> int:
+    """Grade the last ``days`` dates ending at ``asof`` (inclusive).
+
+    Grading is idempotent (de-duped by row key), so re-checking a window
+    each run is cheap and makes the forward test resilient: if a run is
+    missed, finals post late, or a slate is graded before its games end,
+    the next run still catches the day. Returns total rows added.
+    """
+    from datetime import date as _d, timedelta
+
+    base = _d.fromisoformat(asof)
+    total = 0
+    for i in range(days):
+        d = (base - timedelta(days=i)).isoformat()
+        try:
+            total += grade_date(d, min_edge=min_edge)
+        except Exception as e:
+            log.error("grading %s failed: %s", d, e)
+    return total
+
+
 def _bet_row(date, sport, game, market, side, price, won, ev, line=None) -> dict:
     dec = odds.american_to_decimal(float(price))
     return {"date": date, "sport": sport, "game": game, "market": market,
