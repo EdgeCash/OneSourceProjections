@@ -1052,19 +1052,47 @@ def _sport_injuries(sport: str) -> list[dict]:
         return []
 
 
+def _records(df) -> list[dict]:
+    return df.to_dict(orient="records") if hasattr(df, "to_dict") else (df or [])
+
+
+def _safe_step(fn, label: str, key: str) -> tuple[list[dict], str | None]:
+    """Run one pipeline step, returning (records, error_note). A failure in one
+    half (e.g. props hitting a data KeyError) no longer blanks the other half
+    (games) — the slate stays alive with whatever succeeded."""
+    try:
+        return _records(fn()), None
+    except Exception as e:
+        log.error("%s %s step failed: %s", key, label, e)
+        return [], f"{label} unavailable ({type(e).__name__}: {e})"
+
+
+def _bundle(games: list[dict], props: list[dict], *errs: str | None) -> dict:
+    out = {"games": games, "props": props}
+    note = "; ".join(e for e in errs if e)
+    if note:
+        out["error"] = note
+    return out
+
+
 def _run_mlb(date: str) -> dict:
-    games = attach_game_edges(project_games(date), date)
-    props = attach_hit_rates(attach_prop_edges(project_props(date), date), "MLB", date)
-    return {"games": games.to_dict(orient="records"),
-            "props": props.to_dict(orient="records")}
+    games, ge = _safe_step(
+        lambda: attach_game_edges(project_games(date), date), "games", "MLB")
+    props, pe = _safe_step(
+        lambda: attach_hit_rates(attach_prop_edges(project_props(date), date),
+                                 "MLB", date), "props", "MLB")
+    return _bundle(games, props, ge, pe)
 
 
 def _run_generic(sport_key: str, date: str) -> dict:
-    games = attach_generic_game_edges(project_generic_games(sport_key, date),
-                                      sport_key, date)
-    props = attach_hit_rates(project_generic_props(sport_key, date), sport_key, date)
-    return {"games": games.to_dict(orient="records"),
-            "props": props.to_dict(orient="records")}
+    games, ge = _safe_step(
+        lambda: attach_generic_game_edges(
+            project_generic_games(sport_key, date), sport_key, date),
+        "games", sport_key)
+    props, pe = _safe_step(
+        lambda: attach_hit_rates(project_generic_props(sport_key, date),
+                                 sport_key, date), "props", sport_key)
+    return _bundle(games, props, ge, pe)
 
 
 def run(date: str | None = None, sports: list[str] | None = None,
