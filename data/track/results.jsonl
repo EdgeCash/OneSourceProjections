@@ -21,3 +21,5 @@
 {"date": "2026-06-12", "sport": "WNBA", "game": "Golden State Valkyries @ Seattle Storm", "market": "model_winprob", "side": "", "pred_home_wp": 0.3218, "home_won": 0, "brier": 0.1036, "proj_total": 163.85, "actual_total": 148.0}
 {"date": "2026-06-12", "sport": "WNBA", "game": "Golden State Valkyries @ Seattle Storm", "market": "moneyline", "side": "home", "line": null, "price": 400, "ev": 0.3045, "won": false, "pnl": -1.0, "clv": null}
 {"date": "2026-06-12", "sport": "WNBA", "game": "Golden State Valkyries @ Seattle Storm", "market": "total", "side": "over", "line": 158.0, "price": -102.0, "ev": 0.1453, "won": false, "pnl": -1.0, "clv": -0.0098}
+{"date": "2026-06-13", "sport": "MLB", "game": "St. Louis Cardinals @ Minnesota Twins", "market": "model_winprob", "side": "", "pred_home_wp": 0.5485, "home_won": 0, "market_home_wp": 0.2385, "brier": 0.3009, "proj_total": 9.124, "actual_total": 15}
+{"date": "2026-06-13", "sport": "MLB", "game": "St. Louis Cardinals @ Minnesota Twins", "market": "moneyline", "side": "home", "line": null, "price": 104.0, "ev": 0.0595, "won": false, "pnl": -1.0, "clv": -0.5135}
