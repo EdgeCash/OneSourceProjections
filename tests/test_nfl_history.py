@@ -88,6 +88,71 @@ def test_closing_line_rows_schema():
     assert all(r["event_id"] == g["game_id"] for r in rows)
 
 
+NFLVERSE_ROWS = [
+    # away favorite: CAR -3 @ DEN  -> home DEN underdog, home spread +3
+    {"game_id": "2016_01_CAR_DEN", "season": 2016, "week": 1, "game_type": "REG",
+     "gameday": "2016-09-08", "away_team": "CAR", "home_team": "DEN",
+     "away_score": 20.0, "home_score": 21.0, "spread_line": -3.0, "total_line": 40.5,
+     "away_moneyline": -150.0, "home_moneyline": 136.0, "home_spread_odds": -111.0,
+     "away_spread_odds": 101.0, "over_odds": -100.0, "under_odds": -110.0,
+     "location": "Home", "overtime": 0.0},
+    # home favorite: ATL -2.5 vs TB
+    {"game_id": "2016_01_TB_ATL", "season": 2016, "week": 1, "game_type": "REG",
+     "gameday": "2016-09-11", "away_team": "TB", "home_team": "ATL",
+     "away_score": 31.0, "home_score": 24.0, "spread_line": 2.5, "total_line": 46.5,
+     "away_moneyline": 120.0, "home_moneyline": -133.0, "home_spread_odds": -108.0,
+     "away_spread_odds": -102.0, "over_odds": -105.0, "under_odds": -105.0,
+     "location": "Home", "overtime": 0.0},
+    # relocated franchise (OAK -> current name) + neutral-site playoff
+    {"game_id": "2016_22_NE_ATL", "season": 2016, "week": 22, "game_type": "SB",
+     "gameday": "2017-02-05", "away_team": "NE", "home_team": "ATL",
+     "away_score": 34.0, "home_score": 28.0, "spread_line": -3.0, "total_line": 57.0,
+     "away_moneyline": -155.0, "home_moneyline": 135.0, "home_spread_odds": -110.0,
+     "away_spread_odds": -110.0, "over_odds": -110.0, "under_odds": -110.0,
+     "location": "Neutral", "overtime": 1.0},
+    {"game_id": "2016_05_X_OAK", "season": 2016, "week": 5, "game_type": "REG",
+     "gameday": "2016-10-09", "away_team": "SD", "home_team": "OAK",
+     "away_score": 31.0, "home_score": 34.0, "spread_line": 3.0, "total_line": 50.5,
+     "away_moneyline": 130.0, "home_moneyline": -150.0, "home_spread_odds": -110.0,
+     "away_spread_odds": -110.0, "over_odds": -110.0, "under_odds": -110.0,
+     "location": "Home", "overtime": 0.0},
+]
+
+
+def test_nflverse_spread_sign_and_names():
+    games = {g["game_id"]: g for g in nh.games_from_nflverse(NFLVERSE_ROWS)}
+    den = games["2016_01_CAR_DEN"]
+    assert den["home_team"] == "Denver Broncos" and den["away_team"] == "Carolina Panthers"
+    assert den["spread_home"] == 3.0          # away CAR favored -3 -> home +3
+    assert den["home_ml"] == 136.0 and den["away_ml"] == -150.0
+    atl = games["2016_01_TB_ATL"]
+    assert atl["spread_home"] == -2.5         # home ATL favored
+    # relocated franchises map to current names
+    assert games["2016_05_X_OAK"]["home_team"] == "Las Vegas Raiders"
+    assert games["2016_05_X_OAK"]["away_team"] == "Los Angeles Chargers"
+
+
+def test_nflverse_playoff_and_ot_and_neutral():
+    sb = next(g for g in nh.games_from_nflverse(NFLVERSE_ROWS)
+              if g["game_id"] == "2016_22_NE_ATL")
+    assert sb["season_type"] == 3 and sb["playoff_round"] == "SB"
+    assert sb["is_ot"] and sb["neutral_site"]
+    assert sb["ml_winner"] == "New England Patriots"
+
+
+def test_nflverse_closing_rows_include_moneyline_and_real_odds():
+    den = next(g for g in nh.games_from_nflverse(NFLVERSE_ROWS)
+               if g["game_id"] == "2016_01_CAR_DEN")
+    rows = {(r["market"], r["side"]): r for r in nh.closing_line_rows(den)}
+    assert set(rows) == {("spread", "home"), ("spread", "away"),
+                         ("total", "over"), ("total", "under"),
+                         ("moneyline", "home"), ("moneyline", "away")}
+    assert rows[("spread", "home")]["line"] == 3.0
+    assert rows[("spread", "home")]["american_odds"] == -111      # real odds, not -110
+    assert rows[("moneyline", "home")]["american_odds"] == 136
+    assert rows[("moneyline", "home")]["line"] is None
+
+
 def test_write_history_roundtrip(tmp_path):
     games = nh.parse_games(SAMPLE)
     counts = nh.write_history(games, tmp_path)

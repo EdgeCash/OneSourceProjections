@@ -208,13 +208,31 @@ def _prewarm_elo(elo: Elo, sport_key: str, first_season: int, lookback: int = 8)
     warm = [s for s in range(first_season - lookback, first_season) if s >= 2002]
     if not warm:
         return
-    if sport_key == "WNBA":
-        games = _wnba_games(warm)
-    else:
-        return
+    games = _wnba_games(warm) if sport_key == "WNBA" else _generic_games(sport_key, warm)
     for g in games:
         elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
                    int(g["date"][:4]))
+
+
+def _generic_games(sport_key: str, seasons: list[int]) -> list[dict]:
+    """Completed games for any sport with a committed backfill (NBA, NFL,
+    NCAAF, NHL), keyed by full team name for the non-WNBA join."""
+    df = history.backfill_games(sport_key.lower(), seasons=seasons)
+    if df.empty:
+        return []
+    rows = []
+    for _, r in df.iterrows():
+        if not r.get("completed", True):
+            continue
+        if pd.isna(r.get("home_score")) or pd.isna(r.get("away_score")):
+            continue
+        rows.append({
+            "date": str(r["date"])[:10], "home": r["home_team"], "away": r["away_team"],
+            "home_score": r["home_score"], "away_score": r["away_score"],
+            "game_pk": r.get("game_id"),
+        })
+    rows.sort(key=lambda r: r["date"])
+    return rows
 
 
 def _wnba_games(seasons: list[int]) -> list[dict]:
@@ -408,7 +426,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
-             else _wnba_games(seasons))
+             else _wnba_games(seasons) if sport_key == "WNBA"
+             else _generic_games(sport_key, seasons))
     window = 30 if sport_key == "MLB" else 15
     form = _Form(window)
     consensus = closing_consensus(sport_key)
