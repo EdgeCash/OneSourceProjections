@@ -173,13 +173,98 @@ _BBALL_KEYS = {
 }
 
 
+# ESPN football boxscore: category name -> {our field: machine stat key}.
+# Combo keys ("a/b", "a-b") are split — (key, index) takes that part.
+_FBALL_CATS = {
+    "passing": {
+        "passing_yards": "passingYards",
+        "passing_tds": "passingTouchdowns",
+        "interceptions": "interceptions",
+        "completions": ("completions/passingAttempts", 0),
+        "pass_attempts": ("completions/passingAttempts", 1),
+    },
+    "rushing": {
+        "rushing_yards": "rushingYards",
+        "rushing_tds": "rushingTouchdowns",
+        "rushing_attempts": "rushingAttempts",
+        "long_rush": "longRushing",
+    },
+    "receiving": {
+        "receptions": "receptions",
+        "receiving_yards": "receivingYards",
+        "receiving_tds": "receivingTouchdowns",
+        "long_reception": "longReception",
+        "targets": "receivingTargets",
+    },
+    "kicking": {
+        "field_goals_made": ("fieldGoalsMade/fieldGoalAttempts", 0),
+        "kicking_points": "totalKickingPoints",
+    },
+}
+
+
+def _combo_part(raw, idx: int):
+    for sep in ("/", "-"):
+        if raw is not None and sep in str(raw):
+            parts = str(raw).split(sep)
+            return parts[idx] if idx < len(parts) else None
+    return raw if idx == 0 else None
+
+
+def _football_box(data: dict, event_id) -> list[dict]:
+    """Per-player passing/rushing/receiving/kicking lines for a finished
+    football game. Defensive: shaped to ESPN's documented football summary
+    keys; verify against live data once the season is on."""
+    box = data.get("boxscore", {})
+    teams = box.get("players", [])
+    abbr = [(t.get("team", {}) or {}).get("abbreviation")
+            or (t.get("team", {}) or {}).get("displayName") or ""
+            for t in teams]
+    players: dict[str, dict] = {}
+    for idx, t in enumerate(teams):
+        opp = abbr[1 - idx] if len(abbr) == 2 else ""
+        for block in t.get("statistics", []):
+            fields = _FBALL_CATS.get((block.get("name") or "").lower())
+            if not fields:
+                continue
+            keys = block.get("keys") or block.get("names") or []
+            for ath in block.get("athletes", []):
+                vals = dict(zip(keys, ath.get("stats", []) or []))
+                name = (ath.get("athlete", {}) or {}).get("displayName")
+                if not name or not vals:
+                    continue
+                row = players.setdefault(
+                    name, {"game_pk": event_id, "opponent": opp, "name": name})
+                for field, key in fields.items():
+                    if isinstance(key, tuple):
+                        v = _to_num(_combo_part(vals.get(key[0]), key[1]))
+                    else:
+                        v = _to_num(vals.get(key))
+                    if v is not None:
+                        row[field] = v
+    for row in players.values():
+        ry, recy = row.get("rushing_yards"), row.get("receiving_yards")
+        if ry is not None or recy is not None:
+            row["scrim_yards"] = (ry or 0) + (recy or 0)
+        rtd, rectd = row.get("rushing_tds"), row.get("receiving_tds")
+        if rtd is not None or rectd is not None:
+            row["scrim_tds"] = (rtd or 0) + (rectd or 0)
+    return list(players.values())
+
+
 def box_player_logs(sport_key: str, event_id) -> list[dict]:
-    """Per-player box-score lines for a finished basketball game (points,
-    rebounds, assists, steals, blocks, threes). Returns [] on any issue."""
+    """Per-player box-score lines for a finished game. Basketball: points,
+    rebounds, assists, steals, blocks, threes. Football: passing/rushing/
+    receiving/kicking stat lines. Returns [] on any issue."""
     try:
         data = _summary(sport_key, event_id)
     except Exception:
         return []
+    if "football" in (SPORTS[sport_key].espn_path or ""):
+        try:
+            return _football_box(data, event_id)
+        except Exception:
+            return []
     box = data.get("boxscore", {})
     teams = box.get("players", [])
     abbr = []

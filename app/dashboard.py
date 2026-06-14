@@ -176,7 +176,7 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
 data = load_data()
 slates = slates_by_date(data) if data else {}
 
-NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NHL", "NCAAF") if s in SPORTS]
+NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
 
 # Two-tier navigation: a top-level area, then (when an area has several pages) a
 # sub-page. Grouped logically: overview -> research by sport -> bet-finding ->

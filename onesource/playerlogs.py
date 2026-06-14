@@ -40,6 +40,25 @@ MARKET_STAT = {
     "blocks": ("blocks", None),
     "pts+reb+ast": ("pra", None),
     "pra": ("pra", None),
+    # Football (flat columns from ESPN box logs; keyed by normalized market)
+    "passing yards": ("passing_yards", None),
+    "rushing yards": ("rushing_yards", None),
+    "receiving yards": ("receiving_yards", None),
+    "rushing + receiving yards": ("scrim_yards", None),
+    "rush + rec yards": ("scrim_yards", None),
+    "receptions": ("receptions", None),
+    "passing touchdowns": ("passing_tds", None),
+    "interceptions": ("interceptions", None),
+    "completions": ("completions", None),
+    "pass completions": ("completions", None),
+    "pass attempts": ("pass_attempts", None),
+    "passing attempts": ("pass_attempts", None),
+    "field goals made": ("field_goals_made", None),
+    "kicking points": ("kicking_points", None),
+    "anytime touchdown": ("scrim_tds", None),
+    "anytime td": ("scrim_tds", None),
+    "longest reception": ("long_reception", None),
+    "longest rush": ("long_rush", None),
 }
 
 
@@ -219,7 +238,7 @@ def ingest(sport: str, date: str) -> int:
     """Append finished-game player logs for any supported sport."""
     if sport == "MLB":
         return ingest_mlb(date)
-    if sport in ("WNBA", "NBA"):
+    if sport in ("WNBA", "NBA", "NFL", "NCAAF"):
         return ingest_espn(sport, date)
     return 0
 
