@@ -165,27 +165,33 @@ def _parse_line(line: str, season: int, week: int, season_type: int):
 
 
 def closing_line_rows(g: dict) -> list[dict]:
-    """Spread (home/away) and total (over/under) rows at -110 for one game,
-    in the schema history.closing_lines / backtest.closing_consensus expect."""
+    """Closing-line rows for one game in the schema history.closing_lines /
+    backtest.closing_consensus expect. Emits spread (home/away) + total
+    (over/under) always, and moneyline (home/away) when prices are present.
+    Uses real American odds where given, else -110."""
     base = {
         "event_id": g["game_id"], "book": "close",
         "captured_at": f"{g['date']}T12:00:00Z",
         "scheduled_start": f"{g['date']}T12:00:00Z",
         "home_team": g["home_team"], "away_team": g["away_team"],
-        "american_odds": _ML, "decimal_odds": _DEC,
         "season": g["season"], "sport": "NFL", "sport_key": "NFL",
     }
-    rows = []
+    rows: list[dict] = []
+
+    def add(market, side, line, american):
+        am = int(american) if american is not None else _ML
+        rows.append({**base, "market": market, "side": side, "line": line,
+                     "american_odds": am, "decimal_odds": _american_to_decimal(am)})
+
     if g.get("spread_home") is not None:
-        rows.append({**base, "market": "spread", "side": "home",
-                     "line": g["spread_home"]})
-        rows.append({**base, "market": "spread", "side": "away",
-                     "line": -g["spread_home"]})
+        add("spread", "home", g["spread_home"], g.get("home_spread_odds"))
+        add("spread", "away", -g["spread_home"], g.get("away_spread_odds"))
     if g.get("over_under") is not None:
-        rows.append({**base, "market": "total", "side": "over",
-                     "line": g["over_under"]})
-        rows.append({**base, "market": "total", "side": "under",
-                     "line": g["over_under"]})
+        add("total", "over", g["over_under"], g.get("over_odds"))
+        add("total", "under", g["over_under"], g.get("under_odds"))
+    if g.get("home_ml") is not None and g.get("away_ml") is not None:
+        add("moneyline", "home", None, g["home_ml"])
+        add("moneyline", "away", None, g["away_ml"])
     return rows
 
 
@@ -216,25 +222,114 @@ def write_history(games: list[dict], root: Path, overwrite_games: bool = False) 
     return counts
 
 
+# nflverse team abbreviation -> current franchise full name (relocated teams
+# map to their current name across all eras so Elo keeps franchise continuity
+# and 2025 lines join the ESPN backfill, which uses current names).
+TEAM_FULL = {
+    "ARI": "Arizona Cardinals", "ATL": "Atlanta Falcons", "BAL": "Baltimore Ravens",
+    "BUF": "Buffalo Bills", "CAR": "Carolina Panthers", "CHI": "Chicago Bears",
+    "CIN": "Cincinnati Bengals", "CLE": "Cleveland Browns", "DAL": "Dallas Cowboys",
+    "DEN": "Denver Broncos", "DET": "Detroit Lions", "GB": "Green Bay Packers",
+    "HOU": "Houston Texans", "IND": "Indianapolis Colts", "JAX": "Jacksonville Jaguars",
+    "KC": "Kansas City Chiefs", "LV": "Las Vegas Raiders", "OAK": "Las Vegas Raiders",
+    "LAC": "Los Angeles Chargers", "SD": "Los Angeles Chargers",
+    "LA": "Los Angeles Rams", "LAR": "Los Angeles Rams", "STL": "Los Angeles Rams",
+    "MIA": "Miami Dolphins", "MIN": "Minnesota Vikings", "NE": "New England Patriots",
+    "NO": "New Orleans Saints", "NYG": "New York Giants", "NYJ": "New York Jets",
+    "PHI": "Philadelphia Eagles", "PIT": "Pittsburgh Steelers",
+    "SF": "San Francisco 49ers", "SEA": "Seattle Seahawks",
+    "TB": "Tampa Bay Buccaneers", "TEN": "Tennessee Titans",
+    "WAS": "Washington Commanders",
+}
+
+
+def _num(v):
+    """NaN/empty -> None, else the value."""
+    if v is None:
+        return None
+    if isinstance(v, float) and v != v:   # NaN
+        return None
+    return v
+
+
+def games_from_nflverse(records: list[dict]) -> list[dict]:
+    """Map nflverse games.csv rows -> our game records (results + closing
+    spread/total/moneyline). spread_line is home-favored-by-X (positive), so
+    the American home spread is its negation."""
+    out = []
+    for r in records:
+        if _num(r.get("home_score")) is None or _num(r.get("away_score")) is None:
+            continue                                   # unplayed
+        season = int(r["season"])
+        gt = str(r.get("game_type", "REG"))
+        home = TEAM_FULL.get(r["home_team"], r["home_team"])
+        away = TEAM_FULL.get(r["away_team"], r["away_team"])
+        hs, as_ = int(r["home_score"]), int(r["away_score"])
+        sl = _num(r.get("spread_line"))
+        out.append({
+            "season": season, "week": int(r["week"]),
+            "season_type": 2 if gt == "REG" else 3,
+            "playoff_round": None if gt == "REG" else gt,
+            "game_id": str(r.get("game_id") or f"{season}_{r['week']}_{away}_{home}"),
+            "date": str(r["gameday"])[:10],
+            "home_team": home, "away_team": away,
+            "home_score": hs, "away_score": as_,
+            "total_points": hs + as_, "margin": hs - as_,
+            "ml_winner": "" if hs == as_ else (home if hs > as_ else away),
+            "completed": True,
+            "neutral_site": str(_num(r.get("location"))) == "Neutral",
+            "is_ot": _num(r.get("overtime")) in (1, 1.0),
+            "spread_home": (-float(sl)) if sl is not None else None,
+            "over_under": _num(r.get("total_line")),
+            "home_ml": _num(r.get("home_moneyline")),
+            "away_ml": _num(r.get("away_moneyline")),
+            "home_spread_odds": _num(r.get("home_spread_odds")),
+            "away_spread_odds": _num(r.get("away_spread_odds")),
+            "over_odds": _num(r.get("over_odds")),
+            "under_odds": _num(r.get("under_odds")),
+        })
+    return out
+
+
+def ingest_nflverse(csv_path: str | Path, root: Path,
+                    seasons: range | None = None,
+                    overwrite_games: bool = False) -> dict:
+    """Read an nflverse games.csv and write our backfill + closing-line stores
+    for the requested seasons (default 2016-2025)."""
+    import pandas as pd
+
+    seasons = seasons or range(2016, 2026)
+    df = pd.read_csv(csv_path)
+    df = df[df["season"].isin(list(seasons))]
+    games = games_from_nflverse(df.to_dict("records"))
+    return write_history(games, Path(root), overwrite_games)
+
+
 def main(argv: list[str] | None = None) -> None:
     import argparse
 
     from . import config
 
-    ap = argparse.ArgumentParser(description="Ingest sportsoddshistory NFL dump")
-    ap.add_argument("input", help="raw pasted text file")
+    ap = argparse.ArgumentParser(description="Ingest NFL history (results + lines)")
+    ap.add_argument("input", help="nflverse games.csv, or sportsoddshistory text")
+    ap.add_argument("--format", choices=("nflverse", "sportsoddshistory"),
+                    default="nflverse")
     ap.add_argument("--root", default=str(config.REPO_ROOT / "data" / "history"))
     ap.add_argument("--overwrite-games", action="store_true")
     args = ap.parse_args(argv)
 
-    text = Path(args.input).read_text()
-    games = parse_games(text)
-    counts = write_history(games, Path(args.root), args.overwrite_games)
+    if args.format == "nflverse":
+        counts = ingest_nflverse(args.input, Path(args.root),
+                                 overwrite_games=args.overwrite_games)
+    else:
+        games = parse_games(Path(args.input).read_text())
+        counts = write_history(games, Path(args.root), args.overwrite_games)
+
     total_g = sum(c["games"] for c in counts.values())
     total_l = sum(c["lines"] for c in counts.values())
-    print(f"parsed {total_g} games across {len(counts)} seasons "
+    print(f"wrote {total_g} games across {len(counts)} seasons "
           f"({total_l} closing-line rows)")
-    for season, c in counts.items():
+    for season, c in sorted(counts.items()):
         print(f"  {season}: {c['games']} games, {c['lines']} lines")
 
 

@@ -19,9 +19,17 @@ def _jsonl(path: Path) -> pd.DataFrame:
     return pd.read_json(path, lines=True) if path.exists() else pd.DataFrame()
 
 
-def closing_lines(sport: str, season: int = 2026) -> pd.DataFrame:
-    """One row per event/market/side/book at close."""
-    return _jsonl(HISTORY_DIR / "closing_lines" / sport.lower() / f"{season}.jsonl.gz")
+def closing_lines(sport: str, season: int | None = None) -> pd.DataFrame:
+    """One row per event/market/side/book at close. season=None loads every
+    season on file (e.g. NFL 2016-2025); pass a season for just that year."""
+    base = HISTORY_DIR / "closing_lines" / sport.lower()
+    if season is not None:
+        return _jsonl(base / f"{season}.jsonl.gz")
+    if not base.exists():
+        return pd.DataFrame()
+    frames = [_jsonl(p) for p in sorted(base.glob("*.jsonl.gz"))]
+    frames = [f for f in frames if not f.empty]
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
 def results(sport: str, season: int = 2026) -> pd.DataFrame:
