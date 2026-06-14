@@ -1,0 +1,122 @@
+[
+ {
+  "id": 2579,
+  "sr_id": "039c0c83-036d-4728-bfcd-639c28c91f57",
+  "sport": "WNBA",
+  "scheduled": "2026-06-16 00:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DAL",
+  "visitor": "LVA",
+  "link": "/wnba/matchups/dallas-wings-vs-las-vegas-aces/",
+  "series_summary": null,
+  "popularity": 1,
+  "venue": {
+   "name": "College Park Center",
+   "city": "Arlington",
+   "state": "TX",
+   "country": "USA",
+   "zip": "76019",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "DAL",
+    "name": "Wings",
+    "link": "/wnba/teams/dallas-wings/",
+    "team": {
+     "city": "Dallas",
+     "abbreviation": "DAL",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 8,
+      "L": 4,
+      "T": 0
+     },
+     "slug": "dallas-wings"
+    }
+   },
+   {
+    "id": "LVA",
+    "name": "Aces",
+    "link": "/wnba/teams/las-vegas-aces/",
+    "team": {
+     "city": "Las Vegas",
+     "abbreviation": "LVA",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 9,
+      "L": 3,
+      "T": 0
+     },
+     "slug": "las-vegas-aces"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2580,
+  "sr_id": "2f8f5558-abd5-4add-9ae3-a624509c706c",
+  "sport": "WNBA",
+  "scheduled": "2026-06-16 00:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIN",
+  "visitor": "PDX",
+  "link": "/wnba/matchups/minnesota-lynx-vs-portland-fire/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Target Center",
+   "city": "Minneapolis",
+   "state": "MN",
+   "country": "USA",
+   "zip": "55403",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Lynx",
+    "link": "/wnba/teams/minnesota-lynx/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 10,
+      "L": 2,
+      "T": 0
+     },
+     "slug": "minnesota-lynx"
+    }
+   },
+   {
+    "id": "PDX",
+    "name": "Fire",
+    "link": "/wnba/teams/portland-fire/",
+    "team": {
+     "city": "Portland",
+     "abbreviation": "PDX",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 6,
+      "L": 8,
+      "T": 0
+     },
+     "slug": "portland-fire"
+    }
+   }
+  ],
+  "broadcasts": []
+ }
+]

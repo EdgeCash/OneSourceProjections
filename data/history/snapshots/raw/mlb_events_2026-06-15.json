@@ -1,0 +1,240 @@
+[
+ {
+  "id": 98884,
+  "sr_id": "66365662-5699-47ed-9e7c-4f5af7ae1251",
+  "sport": "MLB",
+  "scheduled": "2026-06-15 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PHI",
+  "visitor": "MIA",
+  "link": "/mlb/matchups/miami-marlins-vs-philadelphia-phillies/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "4603",
+    "name": "Zack Wheeler",
+    "link": "/mlb/props/zack-wheeler/",
+    "player": {
+     "short_name": "Z. Wheeler",
+     "first_name": "Zack",
+     "last_name": "Wheeler",
+     "image": "https://images.fantasypros.com/images/players/mlb/4603/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "zack-wheeler",
+     "jersey_number": 45
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PHI",
+   "season": "2025",
+   "split": "A",
+   "r": "1.017",
+   "1b": "0.955",
+   "2b": "0.929",
+   "3b": "1.009",
+   "hr": "1.131",
+   "name": "Citizens Bank Park"
+  },
+  "venue": {
+   "name": "Citizens Bank Park",
+   "address": "One Citizens Bank Way",
+   "city": "Philadelphia",
+   "state": "PA",
+   "country": "USA",
+   "zip": "19148",
+   "surface": "grass",
+   "capacity": 42901,
+   "stadium_type": "outdoor",
+   "id": "b4186004-b6d0-42e7-8dc1-82ef0d946ecc"
+  },
+  "participants": [
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 38,
+      "L": 32,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 35,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 76,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 308,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1008,
+   "forecast_humidity": 0.42
+  },
+  "broadcasts": [
+   {
+    "network": "NBCS-PH",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98718,
+  "sr_id": "53495a48-744a-47d0-9f26-2896082caa3e",
+  "sport": "MLB",
+  "scheduled": "2026-06-15 22:45:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WSH",
+  "visitor": "KC",
+  "link": "/mlb/matchups/kansas-city-royals-vs-washington-nationals/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7354090",
+    "name": "Andrew Alvarez",
+    "link": "/mlb/props/andrew-alvarez/",
+    "player": {
+     "short_name": "A. Alvarez",
+     "first_name": "Andrew",
+     "last_name": "Alvarez",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354090/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "andrew-alvarez",
+     "jersey_number": 54
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "WSH",
+   "season": "2025",
+   "split": "A",
+   "r": "1.011",
+   "1b": "0.976",
+   "2b": "1.004",
+   "3b": "0.889",
+   "hr": "1.054",
+   "name": "Nationals Park"
+  },
+  "venue": {
+   "name": "Nationals Park",
+   "address": "1500 South Capitol Street SE",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20003",
+   "surface": "grass",
+   "capacity": 41376,
+   "stadium_type": "outdoor",
+   "id": "bb062fb1-e268-412e-b3d2-2ddb6acc1822"
+  },
+  "participants": [
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 36,
+      "L": 35,
+      "T": 0
+     },
+     "slug": "washington-nationals",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "KC",
+    "name": "Royals",
+    "link": "/mlb/teams/kansas-city-royals/",
+    "team": {
+     "city": "Kansas City",
+     "abbreviation": "KC",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 28,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "kansas-city-royals",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 79,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 314,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1009,
+   "forecast_humidity": 0.42
+  },
+  "broadcasts": [
+   {
+    "network": "NATS",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
