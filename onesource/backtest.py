@@ -343,6 +343,13 @@ def closing_consensus(sport: str) -> dict[tuple, dict]:
     if cl.empty:
         return {}
     cl = cl.copy()
+    # drop malformed prices: real American odds are always |odds| >= 100
+    # (some legacy NBA/NHL rows carry junk like 5.85, which would poison the
+    # de-vig and crash american->decimal).
+    am = pd.to_numeric(cl["american_odds"], errors="coerce")
+    cl = cl[am.abs() >= 100]
+    if cl.empty:
+        return {}
     cl["date"] = cl["scheduled_start"].str[:10]  # UTC date; ±1d in lookup
     # latest capture per book/market/side
     cl = cl.sort_values("captured_at").groupby(
@@ -353,7 +360,8 @@ def closing_consensus(sport: str) -> dict[tuple, dict]:
         first = ev.iloc[0]
         key = _team_key(sport, first["home_team"], first["away_team"])
         rec = {"date": first["date"], "home": first["home_team"],
-               "away": first["away_team"], "moneyline": None, "total": None}
+               "away": first["away_team"], "moneyline": None, "total": None,
+               "spread": None}
 
         ml = ev[ev["market"] == "moneyline"]
         home_fairs, away_fairs = [], []
@@ -388,6 +396,24 @@ def closing_consensus(sport: str) -> dict[tuple, dict]:
                 "over_fair": float(np.mean(over_fairs)),
                 "over_best": float(tot[tot["side"] == "over"]["american_odds"].max()),
                 "under_best": float(tot[tot["side"] == "under"]["american_odds"].max()),
+            }
+
+        sp = ev[ev["market"] == "spread"]
+        cover_fairs, slines = [], []
+        for _, bk in sp.groupby("book"):
+            h = bk[bk["side"] == "home"]; a = bk[bk["side"] == "away"]
+            if len(h) and len(a):
+                ph = odds.implied_prob(h.iloc[0]["american_odds"])
+                pa = odds.implied_prob(a.iloc[0]["american_odds"])
+                fh, _ = odds.devig_two_way(ph, pa)
+                cover_fairs.append(fh)
+                slines.append(h.iloc[0]["line"])
+        if cover_fairs:
+            rec["spread"] = {
+                "line": float(np.median([l for l in slines if pd.notna(l)])),
+                "home_fair": float(np.mean(cover_fairs)),
+                "home_best": float(sp[sp["side"] == "home"]["american_odds"].max()),
+                "away_best": float(sp[sp["side"] == "away"]["american_odds"].max()),
             }
         out[key].append((rec["date"], rec))
     return dict(out)
@@ -448,8 +474,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     total_abs = total_sq = n_tot = 0.0
     cal_bins = defaultdict(lambda: [0, 0.0])  # bin -> [count, wins]
     # betting accumulators
-    ml_bets, total_bets = BetLog(), BetLog()
-    clv_deltas = []
+    ml_bets, total_bets, spread_bets = BetLog(), BetLog(), BetLog()
+    clv_deltas, spread_clv = [], []
     n_matched = 0
     n_with_starter = 0
 
@@ -470,7 +496,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 home_pf, away_pf = pf_venue, parks.factor(g["away"])
             else:
                 pf_venue = home_pf = away_pf = 1.0
-            hwp, tmean, prob_over, _ = _project(
+            hwp, tmean, prob_over, cover_fn = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
                 home_bp, away_bp, pf_venue, home_pf, away_pf)
             if elo is not None:
@@ -518,6 +544,19 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                             total_bets.add(over_won, odds.american_to_decimal(t["over_best"]))
                         if odds.expected_value(1 - p_over, t["under_best"]) >= min_edge:
                             total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]))
+                if rec["spread"]:
+                    s = rec["spread"]
+                    pc = cover_fn(s["line"])           # model P(home covers home line)
+                    spread_clv.append(pc - s["home_fair"])
+                    p_cover = odds.blend_toward_market(pc, s["home_fair"], shrink)
+                    margin = g["home_score"] - g["away_score"]
+                    home_cover = (margin + s["line"]) > 0
+                    push = (margin + s["line"]) == 0
+                    if not push:
+                        if odds.expected_value(p_cover, s["home_best"]) >= min_edge:
+                            spread_bets.add(home_cover, odds.american_to_decimal(s["home_best"]))
+                        if odds.expected_value(1 - p_cover, s["away_best"]) >= min_edge:
+                            spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]))
         form.update(g)
         if elo is not None:
             elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
@@ -542,8 +581,11 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
         "closing_line": {
             "games_matched": n_matched,
             "avg_clv_vs_fair": round(float(np.mean(clv_deltas)), 4) if clv_deltas else None,
+            "avg_spread_clv_vs_fair": (round(float(np.mean(spread_clv)), 4)
+                                       if spread_clv else None),
             "moneyline_bets": ml_bets.summary(),
             "total_bets": total_bets.summary(),
+            "spread_bets": spread_bets.summary(),
         },
     }
 
