@@ -174,25 +174,27 @@ _BBALL_KEYS = {
 
 
 # ESPN football boxscore: category name -> {our field: machine stat key}.
-# Combo keys ("a/b", "a-b") are split — (key, index) takes that part.
+# Combo keys ("a/b", "a-b") are split — (key, index) takes that part. Field
+# names match the committed backfill schema so the forward store and history
+# line up (pass_yards/rush_yards/rec_yards/scrimmage_yards/carries/…).
 _FBALL_CATS = {
     "passing": {
-        "passing_yards": "passingYards",
-        "passing_tds": "passingTouchdowns",
+        "pass_yards": "passingYards",
+        "pass_touchdowns": "passingTouchdowns",
         "interceptions": "interceptions",
-        "completions": ("completions/passingAttempts", 0),
+        "pass_completions": ("completions/passingAttempts", 0),
         "pass_attempts": ("completions/passingAttempts", 1),
     },
     "rushing": {
-        "rushing_yards": "rushingYards",
-        "rushing_tds": "rushingTouchdowns",
-        "rushing_attempts": "rushingAttempts",
+        "rush_yards": "rushingYards",
+        "rush_touchdowns": "rushingTouchdowns",
+        "carries": "rushingAttempts",
         "long_rush": "longRushing",
     },
     "receiving": {
         "receptions": "receptions",
-        "receiving_yards": "receivingYards",
-        "receiving_tds": "receivingTouchdowns",
+        "rec_yards": "receivingYards",
+        "rec_touchdowns": "receivingTouchdowns",
         "long_reception": "longReception",
         "targets": "receivingTargets",
     },
@@ -243,10 +245,10 @@ def _football_box(data: dict, event_id) -> list[dict]:
                     if v is not None:
                         row[field] = v
     for row in players.values():
-        ry, recy = row.get("rushing_yards"), row.get("receiving_yards")
+        ry, recy = row.get("rush_yards"), row.get("rec_yards")
         if ry is not None or recy is not None:
-            row["scrim_yards"] = (ry or 0) + (recy or 0)
-        rtd, rectd = row.get("rushing_tds"), row.get("receiving_tds")
+            row["scrimmage_yards"] = (ry or 0) + (recy or 0)
+        rtd, rectd = row.get("rush_touchdowns"), row.get("rec_touchdowns")
         if rtd is not None or rectd is not None:
             row["scrim_tds"] = (rtd or 0) + (rectd or 0)
     return list(players.values())

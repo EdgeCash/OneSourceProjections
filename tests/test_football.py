@@ -64,11 +64,11 @@ def test_dispersion_routing_avoids_keyword_collisions():
 # --- market -> box-score stat ----------------------------------------------
 
 @pytest.mark.parametrize("market,field", [
-    ("Passing Yards", "passing_yards"),
-    ("Rushing Yards", "rushing_yards"),
-    ("Receiving Yards", "receiving_yards"),
+    ("Passing Yards", "pass_yards"),
+    ("Rushing Yards", "rush_yards"),
+    ("Receiving Yards", "rec_yards"),
     ("Receptions", "receptions"),
-    ("Passing Touchdowns", "passing_tds"),
+    ("Passing Touchdowns", "pass_touchdowns"),
     ("Interceptions", "interceptions"),
     ("Field Goals Made", "field_goals_made"),
     ("Anytime TD", "scrim_tds"),
@@ -125,21 +125,98 @@ def test_football_box_parses_all_categories():
     rows = {r["name"]: r for r in espn._football_box(_fb_summary(), 401)}
 
     qb = rows["Patrick Mahomes"]
-    assert qb["passing_yards"] == 320 and qb["passing_tds"] == 3
+    assert qb["pass_yards"] == 320 and qb["pass_touchdowns"] == 3
     assert qb["interceptions"] == 1
-    assert qb["completions"] == 25 and qb["pass_attempts"] == 35
+    assert qb["pass_completions"] == 25 and qb["pass_attempts"] == 35
     assert qb["opponent"] == "BUF"
 
     rb = rows["Isiah Pacheco"]
-    assert rb["rushing_yards"] == 95 and rb["rushing_tds"] == 1
-    assert rb["long_rush"] == 22
-    assert rb["scrim_yards"] == 95 and rb["scrim_tds"] == 1
+    assert rb["rush_yards"] == 95 and rb["rush_touchdowns"] == 1
+    assert rb["carries"] == 18 and rb["long_rush"] == 22
+    assert rb["scrimmage_yards"] == 95 and rb["scrim_tds"] == 1
 
     te = rows["Travis Kelce"]
-    assert te["receptions"] == 8 and te["receiving_yards"] == 104
-    assert te["receiving_tds"] == 1 and te["long_reception"] == 27
+    assert te["receptions"] == 8 and te["rec_yards"] == 104
+    assert te["rec_touchdowns"] == 1 and te["long_reception"] == 27
     assert te["targets"] == 10
-    assert te["scrim_yards"] == 104 and te["scrim_tds"] == 1
+    assert te["scrimmage_yards"] == 104 and te["scrim_tds"] == 1
 
     k = rows["Harrison Butker"]
     assert k["field_goals_made"] == 2 and k["kicking_points"] == 9
+
+
+# --- research cards + projections from committed backdata --------------------
+
+from onesource import teamstats  # noqa: E402
+from onesource.models.generic import TeamRating, project_game  # noqa: E402
+from onesource.sports import SPORTS  # noqa: E402
+
+
+def _rating(df, team, season):
+    d = df[(df["team"] == team) & (df["season"] == season)]
+    if d.empty:
+        return None
+    return TeamRating(games=len(d), scored=float(d["pts"].mean()),
+                      allowed=float(d["opp_pts"].mean()))
+
+
+def test_nfl_matchup_built_from_backdata():
+    m = teamstats.matchup("NFL", "Kansas City Chiefs", "Buffalo Bills",
+                          "2025-12-15", seasons=(2025,))
+    assert m and m["n_teams"] >= 20
+    # team form from game results
+    assert m["home_form"]["w"] + m["home_form"]["l"] >= 5
+    assert m["home_form"]["last5"]
+    # offense-vs-defense rows incl. yardage from player logs
+    labels = [r["stat"] for r in m["home_off_vs_away_def"]]
+    assert "Points/G" in labels and "Pass Yds/G" in labels
+    pts = next(r for r in m["home_off_vs_away_def"] if r["stat"] == "Points/G")
+    assert pts["off_season"] is not None and pts["off_rank"] is not None
+    pyd = next(r for r in m["home_off_vs_away_def"] if r["stat"] == "Pass Yds/G")
+    assert pyd["off_season"] is not None  # NFL player logs populate yardage
+
+
+def test_nfl_projection_from_backdata_is_valid():
+    df = teamstats.team_games("NFL", (2025,))
+    home = _rating(df, "kansas city chiefs", 2025)
+    away = _rating(df, "buffalo bills", 2025)
+    assert home and away
+    proj = project_game(SPORTS["NFL"], home, away)
+    assert 0.0 < proj.home_win_prob < 1.0
+    assert 20 < proj.total_mean < 75       # sane NFL total
+    assert proj.home_exp > 0 and proj.away_exp > 0
+
+
+def test_research_card_renders_from_backdata():
+    from app import ui
+    m = teamstats.matchup("NFL", "Kansas City Chiefs", "Buffalo Bills",
+                          "2025-12-15", seasons=(2025,))
+    df = teamstats.team_games("NFL", (2025,))
+    proj = project_game(SPORTS["NFL"], _rating(df, "kansas city chiefs", 2025),
+                        _rating(df, "buffalo bills", 2025))
+    g = {"away_team": "Buffalo Bills", "home_team": "Kansas City Chiefs",
+         "game_pk": "bd1", "game_time": "2025-12-15T18:00:00Z",
+         "proj_total": proj.total_mean, "home_exp": proj.home_exp,
+         "away_exp": proj.away_exp, "home_win_prob": proj.home_win_prob,
+         "away_win_prob": 1 - proj.home_win_prob}
+    html = ui.research_card_html("NFL", g, m, 0.02)
+    assert "Kansas City" in html and "Buffalo" in html and "Points/G" in html
+
+
+def test_nfl_player_hit_rates_from_backdata():
+    hr = playerlogs.hit_rates("NFL", "Patrick Mahomes", "passing yards",
+                              250.0, season=2025)
+    assert hr and 0.0 <= hr["season"] <= 1.0 and hr["n_l5"] >= 1
+    td = playerlogs.hit_rates("NFL", "Saquon Barkley", "anytime td", 0.5,
+                              season=2025)
+    assert td and 0.0 <= td["season"] <= 1.0  # scrim TDs computed from backfill
+
+
+def test_ncaaf_matchup_builds_despite_sparse_backdata():
+    # NCAAF backfill is results-only and partial — cards still build (points
+    # rows populate; yardage stays empty until player logs are imported).
+    df = teamstats.team_games("NCAAF", (2024,))
+    assert not df.empty and {"pts", "opp_pts"} <= set(df.columns)
+    top = df["team"].value_counts().index[:2].tolist()
+    m = teamstats.matchup("NCAAF", top[0], top[1], "2025-02-01", seasons=(2024,))
+    assert m and any(r["stat"] == "Points/G" for r in m["home_off_vs_away_def"])

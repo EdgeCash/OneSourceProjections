@@ -40,23 +40,28 @@ MARKET_STAT = {
     "blocks": ("blocks", None),
     "pts+reb+ast": ("pra", None),
     "pra": ("pra", None),
-    # Football (flat columns from ESPN box logs; keyed by normalized market)
-    "passing yards": ("passing_yards", None),
-    "rushing yards": ("rushing_yards", None),
-    "receiving yards": ("receiving_yards", None),
-    "rushing + receiving yards": ("scrim_yards", None),
-    "rush + rec yards": ("scrim_yards", None),
+    # Football — flat columns matching the committed backfill schema
+    # (data/history/backfill/<nfl|ncaaf>/<year>/player_games.jsonl.gz).
+    "passing yards": ("pass_yards", None),
+    "rushing yards": ("rush_yards", None),
+    "receiving yards": ("rec_yards", None),
+    "rushing + receiving yards": ("scrimmage_yards", None),
+    "rush + rec yards": ("scrimmage_yards", None),
     "receptions": ("receptions", None),
-    "passing touchdowns": ("passing_tds", None),
+    "passing touchdowns": ("pass_touchdowns", None),
+    "rushing touchdowns": ("rush_touchdowns", None),
+    "receiving touchdowns": ("rec_touchdowns", None),
     "interceptions": ("interceptions", None),
-    "completions": ("completions", None),
-    "pass completions": ("completions", None),
+    "completions": ("pass_completions", None),
+    "pass completions": ("pass_completions", None),
     "pass attempts": ("pass_attempts", None),
     "passing attempts": ("pass_attempts", None),
-    "field goals made": ("field_goals_made", None),
-    "kicking points": ("kicking_points", None),
+    "carries": ("carries", None),
+    "rushing attempts": ("carries", None),
     "anytime touchdown": ("scrim_tds", None),
     "anytime td": ("scrim_tds", None),
+    "field goals made": ("field_goals_made", None),
+    "kicking points": ("kicking_points", None),
     "longest reception": ("long_reception", None),
     "longest rush": ("long_rush", None),
 }
@@ -114,6 +119,19 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
                 "blocks", "pra"):
         if col in df.columns:
             base[col] = df[col]
+    # Football flat columns (backfill + forward store share these names)
+    for col in ("pass_yards", "rush_yards", "rec_yards", "scrimmage_yards",
+                "receptions", "pass_touchdowns", "rush_touchdowns",
+                "rec_touchdowns", "interceptions", "pass_completions",
+                "pass_attempts", "carries", "scrim_tds", "field_goals_made",
+                "kicking_points", "long_reception", "long_rush"):
+        if col in df.columns:
+            base[col] = df[col]
+    # Anytime-TD: a player's scrimmage TDs (backfill stores rush/rec TDs apart)
+    if "scrim_tds" not in base.columns and \
+            {"rush_touchdowns", "rec_touchdowns"} <= set(df.columns):
+        base["scrim_tds"] = (pd.to_numeric(df["rush_touchdowns"], errors="coerce").fillna(0)
+                             + pd.to_numeric(df["rec_touchdowns"], errors="coerce").fillna(0))
     return base
 
 
