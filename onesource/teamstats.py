@@ -44,10 +44,23 @@ MLB_TRENDS = [
     ("NRFI%", "nrfi"), ("F5 Win%", "f5_win"), ("RL Cover%", "rl_cover"),
     ("Over%", "over_hit"), ("Pythag%", "pythag"),
 ]
+# Football (NFL/NCAAF). Points come from game results; the yardage rows are
+# filled from player box logs where we have them (NFL backfill); NCAAF has
+# results only, so those rows show "—" until player logs are imported.
+FOOTBALL_PAIRS = [
+    ("Points/G", "pts", "opp_pts", "high"),
+    ("Total Yds/G", "tot_yds", "opp_tot_yds", "high"),
+    ("Pass Yds/G", "pass_yds", "opp_pass_yds", "high"),
+    ("Rush Yds/G", "rush_yds", "opp_rush_yds", "high"),
+    ("Pass TD/G", "pass_td", None, "high"),
+    ("Giveaways/G", "giveaways", None, "low"),
+]
 
 STAT_SPECS = {
     "WNBA": {"pairs": WNBA_PAIRS},
     "MLB": {"pairs": MLB_PAIRS, "trends": MLB_TRENDS},
+    "NFL": {"pairs": FOOTBALL_PAIRS},
+    "NCAAF": {"pairs": FOOTBALL_PAIRS},
 }
 
 # ranking direction per column ("low" = lower is better)
@@ -62,13 +75,57 @@ DIRECTIONS = {
     "opp_pts": "low", "opp_fg2_pct": "low", "opp_fg3_pct": "low",
     "opp_reb": "low", "opp_runs": "low", "opp_hits": "low", "opp_f1": "low",
     "pk": "high",
+    # football offense (high good) + allowed (low good); giveaways low good
+    "tot_yds": "high", "pass_yds": "high", "rush_yds": "high", "pass_td": "high",
+    "giveaways": "low",
+    "opp_tot_yds": "low", "opp_pass_yds": "low", "opp_rush_yds": "low",
 }
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=6)
 def team_games(sport: str, seasons: tuple[int, ...]) -> pd.DataFrame:
-    return (_wnba_team_games(seasons) if sport == "WNBA"
-            else _mlb_team_games(seasons))
+    if sport == "WNBA":
+        return _wnba_team_games(seasons)
+    if sport in ("NFL", "NCAAF"):
+        return _football_team_games(sport, seasons)
+    return _mlb_team_games(seasons)
+
+
+def _football_team_games(sport: str, seasons) -> pd.DataFrame:
+    """One row per team-game from committed backfill: points from the game
+    results (NFL/NCAAF), plus offensive yardage aggregated from player box
+    logs where available (NFL). Opponent's offense joins back as 'allowed'."""
+    games = history.backfill_games(sport, seasons=list(seasons))
+    if games.empty:
+        return pd.DataFrame()
+    rows = []
+    for _, r in games.iterrows():
+        for side, opp_side in (("home", "away"), ("away", "home")):
+            rows.append({
+                "game_id": str(r.get("game_id")), "date": str(r["date"])[:10],
+                "season": r.get("season"),
+                "team": teams.canon(sport, r[f"{side}_team"]),
+                "opp": teams.canon(sport, r[f"{opp_side}_team"]),
+                "is_home": side == "home",
+                "pts": r.get(f"{side}_score"), "opp_pts": r.get(f"{opp_side}_score"),
+            })
+    df = pd.DataFrame(rows)
+
+    pg = history.player_games(sport, seasons=list(seasons))
+    if not pg.empty:
+        pg = pg.copy()
+        pg["game_id"] = pg["game_id"].astype(str)
+        agg = pg.groupby(["game_id", "team"], as_index=False).agg(
+            pass_yds=("pass_yards", "sum"), rush_yds=("rush_yards", "sum"),
+            pass_td=("pass_touchdowns", "sum"), giveaways=("interceptions", "sum"))
+        agg["tot_yds"] = agg["pass_yds"] + agg["rush_yds"]
+        agg["team"] = agg["team"].map(lambda t: teams.canon(sport, t))
+        df = df.merge(agg, on=["game_id", "team"], how="left")
+        allowed = agg[["game_id", "team", "pass_yds", "rush_yds", "tot_yds"]].rename(
+            columns={"team": "opp", "pass_yds": "opp_pass_yds",
+                     "rush_yds": "opp_rush_yds", "tot_yds": "opp_tot_yds"})
+        df = df.merge(allowed, on=["game_id", "opp"], how="left")
+    return df.sort_values("date")
 
 
 def _wnba_team_games(seasons) -> pd.DataFrame:
