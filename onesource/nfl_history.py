@@ -164,17 +164,17 @@ def _parse_line(line: str, season: int, week: int, season_type: int):
     }
 
 
-def closing_line_rows(g: dict) -> list[dict]:
+def closing_line_rows(g: dict, sport: str = "NFL") -> list[dict]:
     """Closing-line rows for one game in the schema history.closing_lines /
     backtest.closing_consensus expect. Emits spread (home/away) + total
-    (over/under) always, and moneyline (home/away) when prices are present.
-    Uses real American odds where given, else -110."""
+    (over/under) + moneyline (home/away) whenever each is present, using real
+    American odds where given, else -110."""
     base = {
         "event_id": g["game_id"], "book": "close",
         "captured_at": f"{g['date']}T12:00:00Z",
         "scheduled_start": f"{g['date']}T12:00:00Z",
         "home_team": g["home_team"], "away_team": g["away_team"],
-        "season": g["season"], "sport": "NFL", "sport_key": "NFL",
+        "season": g["season"], "sport": sport, "sport_key": sport,
     }
     rows: list[dict] = []
 
@@ -195,31 +195,69 @@ def closing_line_rows(g: dict) -> list[dict]:
     return rows
 
 
-def write_history(games: list[dict], root: Path, overwrite_games: bool = False) -> dict:
-    """Write per-season games + closing_lines stores. Existing games.json.gz
-    is preserved unless overwrite_games (so the ESPN 2025 backfill with player
-    logs stays). Returns {season: {games, lines}} counts."""
+def write_history(games: list[dict], root: Path, sport: str = "NFL",
+                  overwrite_games: bool = False) -> dict:
+    """Write per-season games + closing_lines stores for a sport. Existing
+    games.json.gz is preserved unless overwrite_games (so e.g. the ESPN NFL
+    2025 backfill with player logs stays). Returns {season: {games, lines}}."""
+    sk = sport.lower()
     by_season: dict[int, list[dict]] = {}
     for g in games:
         by_season.setdefault(g["season"], []).append(g)
 
     counts: dict[int, dict] = {}
     for season, gs in sorted(by_season.items()):
-        gdir = root / "backfill" / "nfl" / str(season)
+        gdir = root / "backfill" / sk / str(season)
         gdir.mkdir(parents=True, exist_ok=True)
         gpath = gdir / "games.json.gz"
         if overwrite_games or not gpath.exists():
             with gzip.open(gpath, "wt") as f:
                 json.dump(gs, f)
 
-        cdir = root / "closing_lines" / "nfl"
+        cdir = root / "closing_lines" / sk
         cdir.mkdir(parents=True, exist_ok=True)
-        rows = [r for g in gs for r in closing_line_rows(g)]
+        rows = [r for g in gs for r in closing_line_rows(g, sport)]
         with gzip.open(cdir / f"{season}.jsonl.gz", "wt") as f:
             for r in rows:
                 f.write(json.dumps(r) + "\n")
         counts[season] = {"games": len(gs), "lines": len(rows)}
     return counts
+
+
+def games_from_legacy_multi(rows: list[dict]) -> list[dict]:
+    """Convert the committed legacy history (data/history/backtest/legacy/
+    history_<lg>_multi.jsonl.gz) — NBA/NHL games with closing moneyline +
+    total — into our game records. Season label = the season's start year
+    (Sep+ -> that year, else prior year). No spread in this source."""
+    out = []
+    for r in rows:
+        if not r.get("graded") or r.get("actual_home") is None or r.get("actual_away") is None:
+            continue
+        d = str(r["date"])[:10]
+        y, m = int(d[:4]), int(d[5:7])
+        season = y if m >= 9 else y - 1
+        home, away = r["home"], r["away"]
+        hs, as_ = int(r["actual_home"]), int(r["actual_away"])
+        out.append({
+            "season": season, "week": None, "season_type": 2, "playoff_round": None,
+            "game_id": f"{d}_{away}_{home}",
+            "date": d, "home_team": home, "away_team": away,
+            "home_score": hs, "away_score": as_,
+            "total_points": hs + as_, "margin": hs - as_,
+            "ml_winner": "" if hs == as_ else (home if hs > as_ else away),
+            "completed": True, "neutral_site": False, "is_ot": False,
+            "spread_home": _num(r.get("mkt_spread_home")),
+            "over_under": _num(r.get("mkt_total")),
+            "home_ml": _num(r.get("mkt_home_ml")), "away_ml": _num(r.get("mkt_away_ml")),
+        })
+    return out
+
+
+def ingest_legacy_multi(jsonl_gz: str | Path, root: Path, sport: str) -> dict:
+    """Read a legacy history_<lg>_multi.jsonl.gz and write the sport's backfill
+    + closing-line stores (results + moneyline/total)."""
+    rows = [json.loads(ln) for ln in gzip.open(jsonl_gz, "rt") if ln.strip()]
+    return write_history(games_from_legacy_multi(rows), Path(root), sport)
 
 
 # nflverse team abbreviation -> current franchise full name (relocated teams
@@ -302,7 +340,7 @@ def ingest_nflverse(csv_path: str | Path, root: Path,
     df = pd.read_csv(csv_path)
     df = df[df["season"].isin(list(seasons))]
     games = games_from_nflverse(df.to_dict("records"))
-    return write_history(games, Path(root), overwrite_games)
+    return write_history(games, Path(root), "NFL", overwrite_games)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -323,7 +361,7 @@ def main(argv: list[str] | None = None) -> None:
                                  overwrite_games=args.overwrite_games)
     else:
         games = parse_games(Path(args.input).read_text())
-        counts = write_history(games, Path(args.root), args.overwrite_games)
+        counts = write_history(games, Path(args.root), "NFL", args.overwrite_games)
 
     total_g = sum(c["games"] for c in counts.values())
     total_l = sum(c["lines"] for c in counts.values())

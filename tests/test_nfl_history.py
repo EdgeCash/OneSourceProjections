@@ -153,6 +153,40 @@ def test_nflverse_closing_rows_include_moneyline_and_real_odds():
     assert rows[("moneyline", "home")]["line"] is None
 
 
+LEGACY_ROWS = [
+    {"date": "2020-12-26", "home": "MEM", "away": "ATL", "actual_home": 112,
+     "actual_away": 122, "mkt_home_ml": -117.0, "mkt_away_ml": 105.0,
+     "mkt_total": 236.96, "mkt_spread_home": None, "graded": True},
+    # June game -> belongs to the prior (start) year's season label
+    {"date": "2021-06-10", "home": "PHX", "away": "DEN", "actual_home": 123,
+     "actual_away": 98, "mkt_home_ml": -250.0, "mkt_away_ml": 210.0,
+     "mkt_total": 220.5, "mkt_spread_home": None, "graded": True},
+    # ungraded / no score -> dropped
+    {"date": "2021-01-01", "home": "BOS", "away": "MIA", "actual_home": None,
+     "actual_away": None, "graded": False},
+]
+
+
+def test_legacy_multi_conversion_and_seasons():
+    games = {g["game_id"]: g for g in nh.games_from_legacy_multi(LEGACY_ROWS)}
+    assert len(games) == 2                       # ungraded dropped
+    g1 = games["2020-12-26_ATL_MEM"]
+    assert g1["season"] == 2020 and g1["home_team"] == "MEM"
+    assert g1["home_score"] == 112 and g1["ml_winner"] == "ATL"   # ATL won 122-112
+    assert g1["home_ml"] == -117.0 and g1["over_under"] == 236.96
+    # June 2021 -> 2020-21 season label = 2020
+    assert games["2021-06-10_DEN_PHX"]["season"] == 2020
+
+
+def test_legacy_closing_rows_sport_label():
+    g = nh.games_from_legacy_multi(LEGACY_ROWS)[0]
+    rows = nh.closing_line_rows(g, sport="NBA")
+    assert rows and all(r["sport"] == "NBA" and r["sport_key"] == "NBA" for r in rows)
+    markets = {(r["market"], r["side"]) for r in rows}
+    assert markets == {("total", "over"), ("total", "under"),
+                       ("moneyline", "home"), ("moneyline", "away")}  # no spread
+
+
 def test_write_history_roundtrip(tmp_path):
     games = nh.parse_games(SAMPLE)
     counts = nh.write_history(games, tmp_path)

@@ -69,11 +69,15 @@ SPORTS: dict[str, Sport] = {
     ),
     "NFL": Sport(
         key="NFL", espn_path="football/nfl", model="normal",
-        league_ppg=22.5, hfa=1.8, sigma_margin=13.5, sigma_total=13.5,
+        # sigma_margin 13.5 -> 16.0 and elo_blend 0.50 -> 0.60 from the 2019-2024
+        # game backtest (nflverse closing lines): the off/def model was
+        # overconfident at the tails, so this de-biases win-prob calibration
+        # (log-loss 0.6385 -> 0.6372, Brier 0.2233 -> 0.2228). Re-tune as data grows.
+        league_ppg=22.5, hfa=1.8, sigma_margin=16.0, sigma_total=13.5,
         in_season_months=(9, 10, 11, 12, 1, 2), form_days=140,
         fp_projections="weekly", score_method="multiplicative",
         # Few games/season -> larger k and a heavier between-season regression.
-        elo_blend=0.50, elo_k=20.0, elo_home_edge=48.0, elo_regress=0.33,
+        elo_blend=0.60, elo_k=20.0, elo_home_edge=48.0, elo_regress=0.33,
     ),
     "NCAAF": Sport(
         key="NCAAF", espn_path="football/college-football", model="normal",
