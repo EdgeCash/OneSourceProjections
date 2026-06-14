@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T09:55:12.316570-04:00",
+ "generated_at": "2026-06-14T11:50:39.704017-04:00",
  "primary_date": "2026-06-14",
  "dates": [
   "2026-06-14",
@@ -12,13 +12,33 @@
      {
       "weather": {
        "temp_f": 81,
-       "wind_mph": 9,
+       "wind_mph": 11,
        "wind_dir": "SSW",
        "precip_pct": 19
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Spencer Horwitz",
+        "Brandon Lowe",
+        "Bryan Reynolds",
+        "Ryan O'Hearn",
+        "Nick Gonzales",
+        "Tyler Callihan",
+        "Jake Mangum",
+        "Jared Triolo",
+        "Henry Davis"
+       ],
+       "away": [
+        "Liam Hicks",
+        "Otto Lopez",
+        "Kyle Stowers",
+        "Xavier Edwards",
+        "Heriberto Hern\u00e1ndez",
+        "Owen Caissie",
+        "Jakob Marsee",
+        "Joe Mack",
+        "Connor Norby"
+       ]
       },
       "game_pk": 823368,
       "game_time": "2026-06-14T16:15:00Z",
@@ -42,33 +62,53 @@
        "-1.5": 0.38315,
        "1.5": 0.7494
       },
-      "home_ml": -146.0,
-      "away_ml": 150.0,
-      "home_ml_ev": -0.0107,
-      "away_ml_ev": 0.0321,
+      "home_ml": -138.0,
+      "away_ml": 144.0,
+      "home_ml_ev": 0.0027,
+      "away_ml_ev": 0.0214,
       "total_line": 7.5,
-      "over_odds": 115.0,
+      "over_odds": 113.0,
       "under_odds": 100.0,
       "model_over_prob": 0.6103,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 148.0,
+      "rl_home_odds": 147.0,
       "rl_away_odds": -150.0,
       "model_home_rl": 0.3831,
-      "rl_home_ev": -0.0265,
-      "rl_away_ev": 0.0124
+      "rl_home_ev": -0.0292,
+      "rl_away_ev": 0.0116
      },
      {
       "weather": {
        "temp_f": 92,
-       "wind_mph": 13,
-       "wind_dir": "S",
+       "wind_mph": 11,
+       "wind_dir": "SSW",
        "precip_pct": 0
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Taylor Ward",
+        "Gunnar Henderson",
+        "Adley Rutschman",
+        "Pete Alonso",
+        "Samuel Basallo",
+        "Leody Taveras",
+        "Colton Cowser",
+        "Jeremiah Jackson",
+        "Blaze Alexander"
+       ],
+       "away": [
+        "Fernando Tatis Jr.",
+        "Jackson Merrill",
+        "Manny Machado",
+        "Xander Bogaerts",
+        "Gavin Sheets",
+        "Samad Taylor",
+        "Nick Solak",
+        "Jase Bowen",
+        "Rodolfo Dur\u00e1n"
+       ]
       },
       "game_pk": 824823,
       "game_time": "2026-06-14T17:35:00Z",
@@ -92,83 +132,123 @@
        "-1.5": 0.38785,
        "1.5": 0.75255
       },
-      "home_ml": -122.0,
-      "away_ml": 124.0,
-      "home_ml_ev": 0.0376,
-      "away_ml_ev": -0.0373,
+      "home_ml": -127.0,
+      "away_ml": 128.0,
+      "home_ml_ev": 0.0271,
+      "away_ml_ev": -0.0302,
       "total_line": 10.5,
-      "over_odds": 122.0,
-      "under_odds": 106.0,
+      "over_odds": 105.0,
+      "under_odds": -102.0,
       "model_over_prob": 0.2364,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": -0.254,
+      "under_ev": 0.2597,
       "rl_home_line": -1.5,
-      "rl_home_odds": 156.0,
-      "rl_away_odds": -156.0,
+      "rl_home_odds": 152.0,
+      "rl_away_odds": -154.0,
       "model_home_rl": 0.3878,
-      "rl_home_ev": -0.0036,
-      "rl_away_ev": 0.0023
+      "rl_home_ev": -0.0129,
+      "rl_away_ev": 0.0033
      },
      {
       "weather": {
        "temp_f": 91,
        "wind_mph": 12,
-       "wind_dir": "S",
+       "wind_dir": "SSW",
        "precip_pct": 0
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "James Wood",
+        "Luis Garc\u00eda Jr.",
+        "Dylan Crews",
+        "CJ Abrams",
+        "Keibert Ruiz",
+        "Daylen Lile",
+        "Nasim Nu\u00f1ez",
+        "Jorbit Vivas",
+        "Jacob Young"
+       ],
+       "away": [
+        "Cole Young",
+        "Julio Rodr\u00edguez",
+        "Josh Naylor",
+        "Luke Raley",
+        "Dominic Canzone",
+        "Victor Robles",
+        "Miles Mastrobuoni",
+        "Jhonny Pereda",
+        "Colt Emerson"
+       ]
       },
       "game_pk": 822722,
       "game_time": "2026-06-14T17:35:00Z",
       "away_team": "Seattle Mariners",
       "home_team": "Washington Nationals",
       "away_pitcher": "Emerson Hancock",
-      "home_pitcher": "Miles Mikolas",
+      "home_pitcher": "PJ Poulin",
       "home_exp_runs": 4.886,
-      "away_exp_runs": 5.735,
-      "proj_total": 10.62,
-      "home_win_prob": 0.3898,
-      "away_win_prob": 0.6101,
+      "away_exp_runs": 5.385,
+      "proj_total": 10.271,
+      "home_win_prob": 0.4355,
+      "away_win_prob": 0.5645,
       "over_probs": {
-       "7.5": 0.84255,
-       "8.0": 0.7712,
-       "8.5": 0.7712,
-       "9.0": 0.63675,
-       "9.5": 0.63675
+       "7.5": 0.8142,
+       "8.0": 0.733,
+       "8.5": 0.733,
+       "9.0": 0.59865,
+       "9.5": 0.59865
       },
       "home_rl_cover": {
-       "-1.5": 0.2432,
-       "1.5": 0.5626
+       "-1.5": 0.2777,
+       "1.5": 0.60495
       },
       "home_ml": 127.0,
-      "away_ml": -124.0,
-      "home_ml_ev": -0.0546,
-      "away_ml_ev": 0.0541,
+      "away_ml": -122.0,
+      "home_ml_ev": -0.0007,
+      "away_ml_ev": 0.0186,
       "total_line": 10.5,
       "over_odds": 113.0,
-      "under_odds": 113.0,
-      "model_over_prob": 0.494,
+      "under_odds": 106.0,
+      "model_over_prob": 0.4508,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
-      "rl_home_odds": -122.0,
-      "rl_away_odds": 123.0,
-      "model_home_rl": 0.5626,
-      "rl_home_ev": 0.0129,
-      "rl_away_ev": -0.0113
+      "rl_home_odds": -126.0,
+      "rl_away_odds": 122.0,
+      "model_home_rl": 0.6049,
+      "rl_home_ev": 0.0386,
+      "rl_away_ev": -0.0654
      },
      {
       "weather": {
-       "temp_f": 66,
-       "wind_mph": 7,
-       "wind_dir": "WNW",
+       "temp_f": 63,
+       "wind_mph": 0,
+       "wind_dir": "SW",
        "precip_pct": 64
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "George Springer",
+        "Nathan Lukes",
+        "Alejandro Kirk",
+        "Yohendrick Pi\u00f1ango",
+        "Kazuma Okamoto",
+        "Jes\u00fas S\u00e1nchez",
+        "Ernie Clement",
+        "Davis Schneider",
+        "Charles McAdoo"
+       ],
+       "away": [
+        "Paul Goldschmidt",
+        "Ben Rice",
+        "Jasson Dom\u00ednguez",
+        "Cody Bellinger",
+        "Amed Rosario",
+        "Jos\u00e9 Caballero",
+        "Max Schuemann",
+        "Anthony Volpe",
+        "Ali S\u00e1nchez"
+       ]
       },
       "game_pk": 822801,
       "game_time": "2026-06-14T17:37:00Z",
@@ -193,41 +273,51 @@
        "1.5": 0.6224
       },
       "home_ml": 117.0,
-      "away_ml": -117.0,
-      "home_ml_ev": -0.0402,
-      "away_ml_ev": 0.0343,
+      "away_ml": -120.0,
+      "home_ml_ev": -0.0433,
+      "away_ml_ev": 0.0251,
       "total_line": 8.5,
-      "over_odds": 100.0,
-      "under_odds": 100.0,
+      "over_odds": 109.0,
+      "under_odds": 108.0,
       "model_over_prob": 0.5039,
-      "over_ev": 0.0038,
-      "under_ev": -0.0038,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": 1.5,
-      "rl_home_odds": -144.0,
+      "rl_home_odds": -138.0,
       "rl_away_odds": 138.0,
       "model_home_rl": 0.6224,
-      "rl_home_ev": 0.0222,
-      "rl_away_ev": -0.0558
+      "rl_home_ev": 0.0367,
+      "rl_away_ev": -0.0507
      },
      {
       "weather": {
-       "temp_f": 83,
-       "wind_mph": 13,
+       "temp_f": 81,
+       "wind_mph": 12,
        "wind_dir": "WSW",
        "precip_pct": 17
       },
       "lineups": {
-       "home": [],
+       "home": [
+        "Blake Dunn",
+        "JJ Bleday",
+        "Sal Stewart",
+        "Nathaniel Lowe",
+        "Eugenio Su\u00e1rez",
+        "Noelvi Marte",
+        "Matt McLain",
+        "Jose Trevino",
+        "Edwin Arroyo"
+       ],
        "away": [
         "Ketel Marte",
         "Corbin Carroll",
         "Gabriel Moreno",
         "Nolan Arenado",
-        "Pavin Smith",
+        "Ildemaro Vargas",
         "Geraldo Perdomo",
-        "Tommy Troy",
-        "Adrian Del Castillo",
-        "Ryan Waldschmidt"
+        "Jordan Lawlar",
+        "LuJames Groover",
+        "Tommy Troy"
        ]
       },
       "game_pk": 824506,
@@ -252,33 +342,53 @@
        "-1.5": 0.309,
        "1.5": 0.6455
       },
-      "home_ml": 101.0,
+      "home_ml": 104.0,
       "away_ml": -102.0,
-      "home_ml_ev": -0.0248,
-      "away_ml_ev": 0.0195,
+      "home_ml_ev": -0.014,
+      "away_ml_ev": 0.0232,
       "total_line": 10.0,
-      "over_odds": 104.0,
-      "under_odds": 115.0,
+      "over_odds": 106.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.4127,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
-      "rl_home_odds": -160.0,
-      "rl_away_odds": 156.0,
+      "rl_home_odds": -156.0,
+      "rl_away_odds": 151.0,
       "model_home_rl": 0.6455,
-      "rl_home_ev": 0.0215,
-      "rl_away_ev": -0.0492
+      "rl_home_ev": 0.0258,
+      "rl_away_ev": -0.059
      },
      {
       "weather": {
-       "temp_f": 82,
-       "wind_mph": 11,
+       "temp_f": 81,
+       "wind_mph": 13,
        "wind_dir": "SW",
        "precip_pct": 29
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Travis Bazzana",
+        "Brayan Rocchio",
+        "Kyle Manzardo",
+        "Rhys Hoskins",
+        "Daniel Schneemann",
+        "David Fry",
+        "Steven Kwan",
+        "Gabriel Arias",
+        "Patrick Bailey"
+       ],
+       "away": [
+        "Kevin McGonigle",
+        "Gleyber Torres",
+        "Riley Greene",
+        "Dillon Dingler",
+        "Kerry Carpenter",
+        "Colt Keith",
+        "Spencer Torkelson",
+        "James Outman",
+        "Jake Rogers"
+       ]
       },
       "game_pk": 824424,
       "game_time": "2026-06-14T17:40:00Z",
@@ -302,19 +412,19 @@
        "-1.5": 0.32565,
        "1.5": 0.7327
       },
-      "home_ml": -104.0,
-      "away_ml": 104.0,
-      "home_ml_ev": 0.0203,
-      "away_ml_ev": -0.0211,
+      "home_ml": 102.0,
+      "away_ml": 100.0,
+      "home_ml_ev": 0.0383,
+      "away_ml_ev": -0.028,
       "total_line": 7.5,
-      "over_odds": 117.0,
-      "under_odds": 107.0,
+      "over_odds": 123.0,
+      "under_odds": 104.0,
       "model_over_prob": 0.4401,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 185.0,
-      "rl_away_odds": 176.0,
+      "rl_away_odds": 172.0,
       "model_home_rl": 0.3256,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -327,8 +437,28 @@
        "precip_pct": 0
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Carson Benge",
+        "Bo Bichette",
+        "Juan Soto",
+        "Jared Young",
+        "A.J. Ewing",
+        "Marcus Semien",
+        "Brett Baty",
+        "MJ Melendez",
+        "Luis Torrens"
+       ],
+       "away": [
+        "Michael Harris II",
+        "Mauricio Dub\u00f3n",
+        "Matt Olson",
+        "Ozzie Albies",
+        "Dominic Smith",
+        "Austin Riley",
+        "Eli White",
+        "Mike Yastrzemski",
+        "Sandy Le\u00f3n"
+       ]
       },
       "game_pk": 823615,
       "game_time": "2026-06-14T17:40:00Z",
@@ -353,18 +483,18 @@
        "1.5": 0.67475
       },
       "home_ml": -113.0,
-      "away_ml": 114.0,
-      "home_ml_ev": -0.0384,
-      "away_ml_ev": 0.0483,
+      "away_ml": 113.0,
+      "home_ml_ev": -0.0395,
+      "away_ml_ev": 0.0446,
       "total_line": 8.5,
       "over_odds": -104.0,
-      "under_odds": 122.0,
+      "under_odds": 123.0,
       "model_over_prob": 0.4956,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 165.0,
-      "rl_away_odds": 176.0,
+      "rl_home_odds": 176.0,
+      "rl_away_odds": 170.0,
       "model_home_rl": 0.3014,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -372,13 +502,33 @@
      {
       "weather": {
        "temp_f": 74,
-       "wind_mph": 12,
+       "wind_mph": 11,
        "wind_dir": "NNW",
        "precip_pct": 0
       },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Carter Jensen",
+        "Bobby Witt Jr.",
+        "Jac Caglianone",
+        "Maikel Garcia",
+        "Michael Massey",
+        "Salvador Perez",
+        "Kameron Misner",
+        "Lane Thomas",
+        "Isaac Collins"
+       ],
+       "away": [
+        "Jeremy Pe\u00f1a",
+        "Yordan Alvarez",
+        "Christian Walker",
+        "Joey Loperfido",
+        "Cam Smith",
+        "Jake Meyers",
+        "Brice Matthews",
+        "Raynel Delgado",
+        "Collin Price"
+       ]
       },
       "game_pk": 824099,
       "game_time": "2026-06-14T18:10:00Z",
@@ -402,33 +552,48 @@
        "-1.5": 0.2618,
        "1.5": 0.616
       },
-      "home_ml": -108.0,
+      "home_ml": -111.0,
       "away_ml": 113.0,
-      "home_ml_ev": -0.0807,
-      "away_ml_ev": 0.1133,
+      "home_ml_ev": -0.0895,
+      "away_ml_ev": 0.1098,
       "total_line": 8.5,
-      "over_odds": -104.0,
-      "under_odds": 107.0,
+      "over_odds": -108.0,
+      "under_odds": 126.0,
       "model_over_prob": 0.6394,
-      "over_ev": 0.1307,
-      "under_ev": -0.1232,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
-      "rl_away_odds": 174.0,
+      "rl_away_odds": 178.0,
       "model_home_rl": 0.2618,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 69,
-       "wind_mph": 15,
-       "wind_dir": "NW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Trevor Larnach",
+        "Byron Buxton",
+        "Kody Clemens",
+        "Royce Lewis",
+        "Josh Bell",
+        "Victor Caratini",
+        "Brooks Lee",
+        "Tristan Gray",
+        "Luke Keaschall"
+       ],
+       "away": [
+        "JJ Wetherholt",
+        "Iv\u00e1n Herrera",
+        "Alec Burleson",
+        "Jordan Walker",
+        "Lars Nootbaar",
+        "Blaze Jordan",
+        "Bryan Torres",
+        "Jos\u00e9 Ferm\u00edn",
+        "Nathan Church"
+       ]
       },
       "game_pk": 823693,
       "game_time": "2026-06-14T18:10:00Z",
@@ -452,82 +617,102 @@
        "-1.5": 0.3635,
        "1.5": 0.721
       },
-      "home_ml": -103.0,
+      "home_ml": -102.0,
       "away_ml": 104.0,
-      "home_ml_ev": 0.0447,
-      "away_ml_ev": -0.0413,
+      "home_ml_ev": 0.0485,
+      "away_ml_ev": -0.0401,
       "total_line": 9.5,
-      "over_odds": 117.0,
-      "under_odds": 108.0,
+      "over_odds": 113.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.4413,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 175.0,
-      "rl_away_odds": 166.0,
+      "rl_away_odds": 160.0,
       "model_home_rl": 0.3635,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 68,
-       "wind_mph": 8,
-       "wind_dir": "NW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Sam Antonacci",
+        "Miguel Vargas",
+        "Andrew Benintendi",
+        "Colson Montgomery",
+        "Braden Montgomery",
+        "Chase Meidroth",
+        "Jacob Gonzalez",
+        "Tristan Peters",
+        "Drew Romo"
+       ],
+       "away": [
+        "Shohei Ohtani",
+        "Andy Pages",
+        "Freddie Freeman",
+        "Mookie Betts",
+        "Max Muncy",
+        "Kyle Tucker",
+        "Ryan Ward",
+        "Dalton Rushing",
+        "Alex Freeland"
+       ]
       },
       "game_pk": 824586,
       "game_time": "2026-06-14T18:10:00Z",
       "away_team": "Los Angeles Dodgers",
       "home_team": "Chicago White Sox",
       "away_pitcher": "Emmet Sheehan",
-      "home_pitcher": "Erick Fedde",
+      "home_pitcher": "Bryan Hudson",
       "home_exp_runs": 4.896,
-      "away_exp_runs": 6.386,
-      "proj_total": 11.282,
-      "home_win_prob": 0.3186,
-      "away_win_prob": 0.6814,
+      "away_exp_runs": 5.417,
+      "proj_total": 10.313,
+      "home_win_prob": 0.4324,
+      "away_win_prob": 0.5676,
       "over_probs": {
-       "7.5": 0.88485,
-       "8.0": 0.82255,
-       "8.5": 0.82255,
-       "9.0": 0.7063,
-       "9.5": 0.7063
+       "7.5": 0.82065,
+       "8.0": 0.7416,
+       "8.5": 0.7416,
+       "9.0": 0.60475,
+       "9.5": 0.60475
       },
       "home_rl_cover": {
-       "-1.5": 0.18955,
-       "1.5": 0.4828
+       "-1.5": 0.2778,
+       "1.5": 0.60635
       },
-      "home_ml": 178.0,
-      "away_ml": -178.0,
-      "home_ml_ev": -0.0571,
-      "away_ml_ev": 0.0321,
+      "home_ml": 183.0,
+      "away_ml": -184.0,
+      "home_ml_ev": 0.1112,
+      "away_ml_ev": -0.0626,
       "total_line": 10.0,
-      "over_odds": 122.0,
+      "over_odds": 118.0,
       "under_odds": -104.0,
-      "model_over_prob": 0.5733,
+      "model_over_prob": 0.4561,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": 113.0,
-      "rl_away_odds": -113.0,
-      "model_home_rl": 0.4828,
-      "rl_home_ev": 0.0142,
-      "rl_away_ev": -0.0126
+      "rl_away_odds": -114.0,
+      "model_home_rl": 0.6063,
+      "rl_home_ev": 0.1447,
+      "rl_away_ev": -0.1316
      },
      {
-      "weather": {
-       "temp_f": 68,
-       "wind_mph": 15,
-       "wind_dir": "NW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
-       "home": [],
+       "home": [
+        "Jackson Chourio",
+        "Andrew Vaughn",
+        "William Contreras",
+        "Gary S\u00e1nchez",
+        "Luis Rengifo",
+        "Garrett Mitchell",
+        "Blake Perkins",
+        "Joey Ortiz",
+        "David Hamilton"
+       ],
        "away": []
       },
       "game_pk": 823777,
@@ -570,12 +755,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 86,
-       "wind_mph": 8,
-       "wind_dir": "SW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -620,12 +800,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 68,
-       "wind_mph": 12,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -715,7 +890,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 85,
+       "wind_mph": 14,
+       "wind_dir": "S",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -742,12 +922,12 @@
        "-1.5": 0.30825,
        "1.5": 0.6611
       },
-      "home_ml": 178.0,
+      "home_ml": 183.0,
       "away_ml": NaN,
-      "home_ml_ev": 0.3441,
+      "home_ml_ev": 0.3683,
       "away_ml_ev": NaN,
       "total_line": 10.0,
-      "over_odds": 122.0,
+      "over_odds": 118.0,
       "under_odds": -104.0,
       "model_over_prob": 0.324,
       "over_ev": NaN,
@@ -764,94 +944,94 @@
     "error": "props unavailable (KeyError: 0)",
     "news": [
      {
-      "title": "Wyatt Langford collects three hits in loss to Red Sox",
+      "title": "Hunter Greene (elbow) will began rehab assignment June 18",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:51:48"
+      "when": "2026-06-14 15:49:43"
      },
      {
-      "title": "Jake Burger goes deep in loss to Red Sox",
+      "title": "Brandon Lockridge (knee) receives PRP injection",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:48:29"
+      "when": "2026-06-14 15:46:24"
      },
      {
-      "title": "Pete Crow-Armstrong continues torrid stretch in Saturday win",
+      "title": "Andres Gimenez (wrist) scratched from lineup Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:47:45"
+      "when": "2026-06-14 15:39:47"
      },
      {
-      "title": "Christian Walker goes deep as Astros edge Royals",
+      "title": "Eric Sabrowski (elbow) to begin rehab assignment Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:43:34"
+      "when": "2026-06-14 15:26:04"
      },
      {
-      "title": "Jose Altuve homers in win over Royals",
+      "title": "George Valera designated for assignment",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:39:21"
+      "when": "2026-06-14 15:23:13"
      },
      {
-      "title": "Brice Matthews goes yard in win over Royals",
+      "title": "Gabriel Arias (hamstring) activated from IL",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:35:22"
+      "when": "2026-06-14 15:21:09"
      },
      {
-      "title": "Kyle Freeland roughed up in Saturday loss to Athletics",
+      "title": "Jose Ramirez (hand) officially placed on IL",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:31:16"
+      "when": "2026-06-14 15:18:41"
      },
      {
-      "title": "Jake Meyers homers in tight win over Royals",
+      "title": "Hunter Brown (shoulder) to officially return Tuesday versus Tigers",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:31:06"
+      "when": "2026-06-14 15:14:21"
      },
      {
-      "title": "Yordan Alvarez racks up three hits in win over Royals",
+      "title": "Bobby Witt Jr. racks up extra-base hits, but Royals fall short",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:26:41"
+      "when": "2026-06-14 15:12:57"
      },
      {
-      "title": "Brett Sullivan goes deep in Saturday loss to Athletics",
+      "title": "Carter Jensen drives in three as Royals come up short",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:25:07"
+      "when": "2026-06-14 15:10:41"
      },
      {
-      "title": "Mike Burrows labors again in win over Royals",
+      "title": "Lane Thomas pops homer in tight loss",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:22:25"
+      "when": "2026-06-14 15:08:16"
      },
      {
-      "title": "Jackson Chourio belts two homers in loss to Phillies",
+      "title": "Alex Lange takes second consecutive loss",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:15:13"
+      "when": "2026-06-14 15:06:08"
      },
      {
-      "title": "Michael Soroka settles for no-decision Saturday",
+      "title": "Noah Cameron gets tagged early in tight loss to Astros",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:15:00"
+      "when": "2026-06-14 15:02:43"
      },
      {
-      "title": "William Contreras racks up three hits in tight loss",
+      "title": "Blaze Jordan crushes a big extra-base day vs. Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:12:02"
+      "when": "2026-06-14 14:58:10"
      },
      {
-      "title": "Garrett Mitchell goes deep but Brewers come up short",
+      "title": "Rhett Lowder solid in no-decision versus D-backs Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:07:12"
+      "when": "2026-06-14 14:54:48"
      }
     ],
     "injuries": [
@@ -1668,13 +1848,6 @@
       "note": ""
      },
      {
-      "player": "Jose Trevino",
-      "norm": "jose trevino",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
       "player": "Brendan Donovan",
       "norm": "brendan donovan",
       "team": "",
@@ -2116,6 +2289,13 @@
       "note": ""
      },
      {
+      "player": "George Valera",
+      "norm": "george valera",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Michel Otanez",
       "norm": "michel otanez",
       "team": "",
@@ -2151,15 +2331,15 @@
       "note": ""
      },
      {
-      "player": "Ryan Weiss",
-      "norm": "ryan weiss",
+      "player": "Tyler Heineman",
+      "norm": "tyler heineman",
       "team": "",
       "status": "DFA",
       "note": ""
      },
      {
-      "player": "Tyler Heineman",
-      "norm": "tyler heineman",
+      "player": "Ryan Weiss",
+      "norm": "ryan weiss",
       "team": "",
       "status": "DFA",
       "note": ""
@@ -2270,17 +2450,17 @@
       "home_win_prob": 0.7969,
       "away_win_prob": 0.2031,
       "home_ml": -614,
-      "away_ml": 625,
-      "home_ml_ev": -0.0356,
-      "away_ml_ev": 0.2373,
-      "total_line": 166.5,
-      "over_odds": -104.0,
-      "model_over_prob": 0.609,
-      "over_ev": 0.1945,
-      "spread_home_line": -14.5,
-      "spread_home_odds": 122.0,
+      "away_ml": 650,
+      "home_ml_ev": -0.0333,
+      "away_ml_ev": 0.265,
+      "total_line": 168.0,
+      "over_odds": 105.0,
+      "model_over_prob": 0.5701,
+      "over_ev": 0.1687,
+      "spread_home_line": -13.5,
+      "spread_home_odds": 108.0,
       "spread_away_odds": 113.0,
-      "model_home_cover": 0.2955,
+      "model_home_cover": 0.3262,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      },
@@ -2294,18 +2474,18 @@
       "proj_total": 172.78,
       "home_win_prob": 0.4317,
       "away_win_prob": 0.5683,
-      "home_ml": 228,
-      "away_ml": -233,
-      "home_ml_ev": 0.2057,
-      "away_ml_ev": -0.0962,
+      "home_ml": 233,
+      "away_ml": -242,
+      "home_ml_ev": 0.2149,
+      "away_ml_ev": -0.1024,
       "total_line": 171.5,
       "over_odds": 100.0,
       "model_over_prob": 0.534,
       "over_ev": 0.068,
-      "spread_home_line": -1.5,
+      "spread_home_line": 5.5,
       "spread_home_odds": 122.0,
-      "spread_away_odds": 105.0,
-      "model_home_cover": 0.4543,
+      "spread_away_odds": 107.0,
+      "model_home_cover": 0.6893,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      }
@@ -3789,23 +3969,24 @@
       "proj_total": 6.17,
       "home_win_prob": 0.4771,
       "away_win_prob": 0.5229,
-      "home_ml": 110,
-      "away_ml": -110,
-      "home_ml_ev": 0.001,
-      "away_ml_ev": -0.0009,
+      "home_ml": 111,
+      "away_ml": -109,
+      "home_ml_ev": 0.0056,
+      "away_ml_ev": 0.0036,
       "total_line": 6.0,
       "over_odds": 100.0,
       "model_over_prob": 0.421,
       "over_ev": -0.158,
       "spread_home_line": 1.5,
       "spread_home_odds": -233.0,
-      "spread_away_odds": 225.0,
+      "spread_away_odds": 233.0,
       "model_home_cover": 0.7134,
-      "spread_home_ev": 0.0061,
-      "spread_away_ev": -0.0379
+      "spread_home_ev": 0.0098,
+      "spread_away_ev": -0.0228
      }
     ],
     "props": [],
+    "error": "props unavailable (KeyError: 0)",
     "news": [
      {
       "title": "Rasmus Dahlin tallies two points in Saturday's loss to Capitals",
@@ -5306,7 +5487,12 @@
    "MLB": {
     "games": [
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 11,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -5315,7 +5501,7 @@
       "game_time": "2026-06-15T22:40:00Z",
       "away_team": "Miami Marlins",
       "home_team": "Philadelphia Phillies",
-      "away_pitcher": NaN,
+      "away_pitcher": "Ryan Gusto",
       "home_pitcher": NaN,
       "home_exp_runs": 4.186,
       "away_exp_runs": 4.226,
@@ -5334,9 +5520,9 @@
        "1.5": 0.67775
       },
       "home_ml": -194.0,
-      "away_ml": 178.0,
-      "home_ml_ev": -0.1368,
-      "away_ml_ev": 0.1965,
+      "away_ml": 186.0,
+      "home_ml_ev": -0.1319,
+      "away_ml_ev": 0.2217,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5351,7 +5537,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 13,
+       "wind_dir": "NW",
+       "precip_pct": 2
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -5424,9 +5615,9 @@
        "1.5": 0.6159
       },
       "home_ml": -113.0,
-      "away_ml": 104.0,
-      "home_ml_ev": -0.103,
-      "away_ml_ev": 0.0692,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0984,
+      "away_ml_ev": 0.0851,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5442,8 +5633,8 @@
      },
      {
       "weather": {
-       "temp_f": 79,
-       "wind_mph": 6,
+       "temp_f": 80,
+       "wind_mph": 7,
        "wind_dir": "W",
        "precip_pct": 0
       },
@@ -5492,8 +5683,8 @@
      },
      {
       "weather": {
-       "temp_f": 71,
-       "wind_mph": 9,
+       "temp_f": 70,
+       "wind_mph": 7,
        "wind_dir": "WSW",
        "precip_pct": 1
       },
@@ -5523,10 +5714,10 @@
        "-1.5": 0.3798,
        "1.5": 0.7475
       },
-      "home_ml": -186.0,
+      "home_ml": -178.0,
       "away_ml": 170.0,
-      "home_ml_ev": -0.0687,
-      "away_ml_ev": 0.0647,
+      "home_ml_ev": -0.0569,
+      "away_ml_ev": 0.0696,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5542,8 +5733,8 @@
      },
      {
       "weather": {
-       "temp_f": 80,
-       "wind_mph": 5,
+       "temp_f": 84,
+       "wind_mph": 8,
        "wind_dir": "E",
        "precip_pct": 5
       },
@@ -5573,10 +5764,10 @@
        "-1.5": 0.33055,
        "1.5": 0.69155
       },
-      "home_ml": -144.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0768,
-      "away_ml_ev": 0.0605,
+      "home_ml": -138.0,
+      "away_ml": 138.0,
+      "home_ml_ev": -0.0596,
+      "away_ml_ev": 0.0823,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5592,8 +5783,8 @@
      },
      {
       "weather": {
-       "temp_f": 80,
-       "wind_mph": 4,
+       "temp_f": 78,
+       "wind_mph": 6,
        "wind_dir": "E",
        "precip_pct": 25
       },
@@ -5673,10 +5864,10 @@
        "-1.5": 0.3328,
        "1.5": 0.68895
       },
-      "home_ml": -122.0,
+      "home_ml": -117.0,
       "away_ml": 122.0,
-      "home_ml_ev": -0.0303,
-      "away_ml_ev": 0.037,
+      "home_ml_ev": -0.0161,
+      "away_ml_ev": 0.0423,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5692,8 +5883,8 @@
      },
      {
       "weather": {
-       "temp_f": 91,
-       "wind_mph": 11,
+       "temp_f": 90,
+       "wind_mph": 10,
        "wind_dir": "SW",
        "precip_pct": 0
       },
@@ -5705,28 +5896,28 @@
       "game_time": "2026-06-16T01:40:00Z",
       "away_team": "Pittsburgh Pirates",
       "home_team": "Athletics",
-      "away_pitcher": NaN,
+      "away_pitcher": "Jared Jones",
       "home_pitcher": NaN,
-      "home_exp_runs": 4.554,
+      "home_exp_runs": 4.739,
       "away_exp_runs": 4.704,
-      "proj_total": 9.258,
-      "home_win_prob": 0.4813,
-      "away_win_prob": 0.5188,
+      "proj_total": 9.443,
+      "home_win_prob": 0.507,
+      "away_win_prob": 0.493,
       "over_probs": {
-       "7.5": 0.7191,
-       "8.0": 0.6237,
-       "8.5": 0.6237,
-       "9.0": 0.46655,
-       "9.5": 0.46655
+       "7.5": 0.7431,
+       "8.0": 0.64815,
+       "8.5": 0.64815,
+       "9.0": 0.4876,
+       "9.5": 0.4876
       },
       "home_rl_cover": {
-       "-1.5": 0.3047,
-       "1.5": 0.65695
+       "-1.5": 0.32805,
+       "1.5": 0.68415
       },
       "home_ml": -113.0,
       "away_ml": 113.0,
-      "home_ml_ev": -0.0464,
-      "away_ml_ev": 0.0524,
+      "home_ml_ev": -0.0222,
+      "away_ml_ev": 0.025,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -5742,7 +5933,7 @@
      },
      {
       "weather": {
-       "temp_f": 68,
+       "temp_f": 67,
        "wind_mph": 8,
        "wind_dir": "WSW",
        "precip_pct": 0
@@ -5792,6 +5983,32 @@
      }
     ],
     "props": [
+     {
+      "game_pk": 823452,
+      "market": "pitcher_strikeouts",
+      "player": "Ryan Gusto",
+      "team": "Miami Marlins",
+      "opponent": "Philadelphia Phillies",
+      "projection": 5.13,
+      "dist": "poisson",
+      "param": 5.1339673076923065,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
      {
       "game_pk": 824505,
       "market": "pitcher_strikeouts",
@@ -5895,98 +6112,124 @@
       "hr_l20": NaN,
       "hr_season": NaN,
       "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824993,
+      "market": "pitcher_strikeouts",
+      "player": "Jared Jones",
+      "team": "Pittsburgh Pirates",
+      "opponent": "Athletics",
+      "projection": 5.26,
+      "dist": "poisson",
+      "param": 5.264762076258951,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
      }
     ],
     "news": [
      {
-      "title": "Wyatt Langford collects three hits in loss to Red Sox",
+      "title": "Hunter Greene (elbow) will began rehab assignment June 18",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:51:48"
+      "when": "2026-06-14 15:49:43"
      },
      {
-      "title": "Jake Burger goes deep in loss to Red Sox",
+      "title": "Brandon Lockridge (knee) receives PRP injection",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:48:29"
+      "when": "2026-06-14 15:46:24"
      },
      {
-      "title": "Pete Crow-Armstrong continues torrid stretch in Saturday win",
+      "title": "Andres Gimenez (wrist) scratched from lineup Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:47:45"
+      "when": "2026-06-14 15:39:47"
      },
      {
-      "title": "Christian Walker goes deep as Astros edge Royals",
+      "title": "Eric Sabrowski (elbow) to begin rehab assignment Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:43:34"
+      "when": "2026-06-14 15:26:04"
      },
      {
-      "title": "Jose Altuve homers in win over Royals",
+      "title": "George Valera designated for assignment",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:39:21"
+      "when": "2026-06-14 15:23:13"
      },
      {
-      "title": "Brice Matthews goes yard in win over Royals",
+      "title": "Gabriel Arias (hamstring) activated from IL",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:35:22"
+      "when": "2026-06-14 15:21:09"
      },
      {
-      "title": "Kyle Freeland roughed up in Saturday loss to Athletics",
+      "title": "Jose Ramirez (hand) officially placed on IL",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:31:16"
+      "when": "2026-06-14 15:18:41"
      },
      {
-      "title": "Jake Meyers homers in tight win over Royals",
+      "title": "Hunter Brown (shoulder) to officially return Tuesday versus Tigers",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:31:06"
+      "when": "2026-06-14 15:14:21"
      },
      {
-      "title": "Yordan Alvarez racks up three hits in win over Royals",
+      "title": "Bobby Witt Jr. racks up extra-base hits, but Royals fall short",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:26:41"
+      "when": "2026-06-14 15:12:57"
      },
      {
-      "title": "Brett Sullivan goes deep in Saturday loss to Athletics",
+      "title": "Carter Jensen drives in three as Royals come up short",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:25:07"
+      "when": "2026-06-14 15:10:41"
      },
      {
-      "title": "Mike Burrows labors again in win over Royals",
+      "title": "Lane Thomas pops homer in tight loss",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:22:25"
+      "when": "2026-06-14 15:08:16"
      },
      {
-      "title": "Jackson Chourio belts two homers in loss to Phillies",
+      "title": "Alex Lange takes second consecutive loss",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:15:13"
+      "when": "2026-06-14 15:06:08"
      },
      {
-      "title": "Michael Soroka settles for no-decision Saturday",
+      "title": "Noah Cameron gets tagged early in tight loss to Astros",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:15:00"
+      "when": "2026-06-14 15:02:43"
      },
      {
-      "title": "William Contreras racks up three hits in tight loss",
+      "title": "Blaze Jordan crushes a big extra-base day vs. Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:12:02"
+      "when": "2026-06-14 14:58:10"
      },
      {
-      "title": "Garrett Mitchell goes deep but Brewers come up short",
+      "title": "Rhett Lowder solid in no-decision versus D-backs Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-14 13:07:12"
+      "when": "2026-06-14 14:54:48"
      }
     ],
     "injuries": [
@@ -6803,13 +7046,6 @@
       "note": ""
      },
      {
-      "player": "Jose Trevino",
-      "norm": "jose trevino",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
       "player": "Brendan Donovan",
       "norm": "brendan donovan",
       "team": "",
@@ -7251,6 +7487,13 @@
       "note": ""
      },
      {
+      "player": "George Valera",
+      "norm": "george valera",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Michel Otanez",
       "norm": "michel otanez",
       "team": "",
@@ -7286,15 +7529,15 @@
       "note": ""
      },
      {
-      "player": "Ryan Weiss",
-      "norm": "ryan weiss",
+      "player": "Tyler Heineman",
+      "norm": "tyler heineman",
       "team": "",
       "status": "DFA",
       "note": ""
      },
      {
-      "player": "Tyler Heineman",
-      "norm": "tyler heineman",
+      "player": "Ryan Weiss",
+      "norm": "ryan weiss",
       "team": "",
       "status": "DFA",
       "note": ""
@@ -7413,11 +7656,11 @@
       "model_over_prob": 0.5202,
       "over_ev": -0.0069,
       "spread_home_line": 2.5,
-      "spread_home_odds": -106.0,
+      "spread_home_odds": 100.0,
       "spread_away_odds": 103.0,
       "model_home_cover": 0.6963,
-      "spread_home_ev": 0.1731,
-      "spread_away_ev": -0.1954
+      "spread_home_ev": 0.2001,
+      "spread_away_ev": -0.1881
      },
      {
       "game_id": "401856993",
@@ -7439,10 +7682,10 @@
       "over_ev": -0.0002,
       "spread_home_line": -12.5,
       "spread_home_odds": -105.0,
-      "spread_away_odds": 100.0,
+      "spread_away_odds": 122.0,
       "model_home_cover": 0.5298,
-      "spread_home_ev": 0.0112,
-      "spread_away_ev": -0.0358
+      "spread_home_ev": NaN,
+      "spread_away_ev": NaN
      },
      {
       "game_id": "401856994",
@@ -7454,20 +7697,20 @@
       "proj_total": 175.19,
       "home_win_prob": 0.6591,
       "away_win_prob": 0.3409,
-      "home_ml": -165,
-      "away_ml": 170,
-      "home_ml_ev": 0.0328,
-      "away_ml_ev": -0.0363,
+      "home_ml": -163,
+      "away_ml": 163,
+      "home_ml_ev": 0.0317,
+      "away_ml_ev": -0.0517,
       "total_line": 172.5,
       "over_odds": -105.0,
       "model_over_prob": 0.5712,
       "over_ev": 0.1151,
       "spread_home_line": -4.5,
       "spread_home_odds": 100.0,
-      "spread_away_odds": 100.0,
+      "spread_away_odds": 108.0,
       "model_home_cover": 0.5612,
-      "spread_home_ev": 0.0612,
-      "spread_away_ev": -0.0612
+      "spread_home_ev": 0.071,
+      "spread_away_ev": -0.0338
      }
     ],
     "props": [],
@@ -10488,5 +10731,5 @@
    }
   }
  },
- "odds_api_credits": 25653
+ "odds_api_credits": 25632
 }
