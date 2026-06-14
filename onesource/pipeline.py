@@ -872,23 +872,57 @@ def _bp_event_teams(events: list[dict]) -> dict[int, list[str]]:
 
 
 _FP_STAT_KEYWORDS = {
+    # Basketball
     "point": ("PTS", "points"),
     "rebound": ("REB", "rebounds"),
     "assist": ("AST", "assists"),
     "three": ("3PM", "THREES", "three_pointers"),
     "steal": ("STL", "steals"),
     "block": ("BLK", "blocks"),
+    # Football (multiple candidate spellings; falls back to BettingPros'
+    # projection when FantasyPros' exact key differs — verify live in-season).
+    "passing yard": ("PASS_YDS", "passing_yards", "pass_yds", "PYDS"),
+    "rushing yard": ("RUSH_YDS", "rushing_yards", "rush_yds", "RYDS"),
+    "receiving yard": ("REC_YDS", "receiving_yards", "rec_yds", "RECYDS"),
+    "reception": ("REC", "receptions"),
+    "passing touchdown": ("PASS_TDS", "passing_tds", "pass_td", "PTD"),
+    "rushing touchdown": ("RUSH_TDS", "rushing_tds", "rush_td"),
+    "receiving touchdown": ("REC_TDS", "receiving_tds", "rec_td"),
+    "interception": ("INTS", "interceptions", "INT"),
+    "completion": ("CMP", "completions"),
+    "field goal": ("FG", "field_goals", "fg_made"),
 }
 
 
+def _nfl_week(date: str) -> int:
+    """Approximate NFL week number for a date. Week 1 ≈ the first Thursday on
+    or after Sept 1 (real kickoff is the Thursday after Labor Day — close
+    enough to fetch weekly projections; refine against the schedule live)."""
+    from datetime import date as _D, timedelta
+    d = _D.fromisoformat(date)
+    season = d.year if d.month >= 8 else d.year - 1
+    sept1 = _D(season, 9, 1)
+    kickoff = sept1 + timedelta(days=(3 - sept1.weekday()) % 7)  # Thursday = 3
+    return max(1, min((d - kickoff).days // 7 + 1, 18))
+
+
 def _fp_generic_index(sport_key: str, date: str) -> dict[str, dict]:
-    """Daily FantasyPros projections for sports that have them (NBA)."""
-    if SPORTS[sport_key].fp_projections != "daily" or sport_key == "MLB":
+    """FantasyPros projections for sports that have them (NBA daily, NFL
+    weekly). Empty dict when unsupported or unavailable."""
+    sp = SPORTS[sport_key]
+    if sport_key == "MLB" or not sp.fp_projections:
         return {}
     try:
         if sport_key == "NBA":
             players = fantasypros.nba_projections(_season(date), date)
-            return fantasypros.projection_index(players)
+        elif sport_key == "NFL":
+            from datetime import date as _D
+            d = _D.fromisoformat(date)
+            season = d.year if d.month >= 8 else d.year - 1
+            players = fantasypros.nfl_projections(season, _nfl_week(date))
+        else:
+            return {}
+        return fantasypros.projection_index(players)
     except Exception as e:
         log.warning("%s FantasyPros unavailable: %s", sport_key, e)
     return {}

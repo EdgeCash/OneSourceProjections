@@ -152,6 +152,17 @@ def _poisson_cover(lam_h: float, lam_a: float, spread: float) -> float:
 # were tuned against walk-forward calibration (reliability + bias) on
 # 2023-2025 box logs. Higher size = closer to Poisson.
 NB_DISPERSION = {
+    # Football counts (checked first so multi-word "field goal" beats the
+    # basketball "made", and so TD/scoring markets are matched). Short, collision
+    # -prone keys (e.g. "int", which is a substring of "point") are avoided.
+    # TD / scoring markets are near-Poisson at their low means (high size).
+    "touchdown": 12.0, "td": 12.0,
+    "reception": 8.0, "target": 8.0,
+    "completion": 18.0, "attempt": 18.0,
+    "interception": 8.0,
+    "field goal": 8.0, "extra point": 10.0,
+    "sack": 7.0, "tackle": 8.0,
+    # Basketball
     "point": 5.0, "pts": 5.0, "pra": 6.0,
     "rebound": 7.0, "reb": 7.0,
     "assist": 9.0, "ast": 9.0,
@@ -164,12 +175,14 @@ DEFAULT_NB_DISPERSION = 6.0
 def prop_prob_over(projection: float, line: float, market_name: str) -> float:
     """P(stat > line) given a point projection and the market's name.
 
-    Yardage markets (continuous, fairly symmetric) use a Normal; all
-    counting stats use a negative binomial whose dispersion is chosen by
-    market keyword (see NB_DISPERSION) to capture overdispersion and skew.
+    Yardage / "longest" markets (continuous, fairly symmetric) use a Normal;
+    all counting stats — basketball box stats and football counts (TDs,
+    receptions, completions, field goals, …) — use a negative binomial whose
+    dispersion is chosen by market keyword (see NB_DISPERSION). Anytime-TD /
+    "1+" markets fall out naturally: a 0.5 line on a TD count is P(X >= 1).
     """
     name = (market_name or "").lower()
-    if "yard" in name:
+    if "yard" in name or "longest" in name:
         sd = 0.25 * projection + 10
         return float(1 - stats.norm.cdf(line, projection, sd))
     size = next((v for k, v in NB_DISPERSION.items() if k in name), DEFAULT_NB_DISPERSION)
