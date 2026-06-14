@@ -1373,6 +1373,51 @@ def render_experts():
 # Player profile dialog (click any player name to open)
 # ---------------------------------------------------------------------------
 
+def _player_headshot(player: str, game_pk, sport: str | None):
+    """MLB headshot URL for a player, via the player_ids map the pipeline
+    attaches to each game. None when we don't have an id (or non-MLB)."""
+    if sport and sport != "MLB":
+        return None
+    from onesource.names import normalize
+    key = normalize(player)
+    for _date, sl in (slates or {}).items():
+        for sp, blob in (sl or {}).items():
+            if sport and sp != sport:
+                continue
+            for g in blob.get("games", []) or []:
+                if game_pk and str(g.get("game_pk")) != str(game_pk):
+                    continue
+                pid = (g.get("player_ids") or {}).get(key)
+                if pid:
+                    return ("https://img.mlbstatic.com/mlb-photos/image/upload/"
+                            "d_people:generic:headshot:67:current/w_120,q_auto:best/"
+                            f"v1/people/{pid}/headshot/67/current")
+    return None
+
+
+def _recent_form_fallback(player: str, sport: str) -> bool:
+    """When a player has no posted props yet, show recent game-log form so
+    the card still has something useful. Returns True if anything rendered."""
+    season = int(default_date[:4]) if default_date else None
+    for market, label in (("pitcher_strikeouts", "strikeouts"),
+                          ("batter_total_bases", "total bases"),
+                          ("batter_hits", "hits"),
+                          ("batter_home_runs", "home runs")):
+        try:
+            series = playerlogs.recent_series(sport, player, market, n=12,
+                                              season=season)
+        except Exception:
+            series = []
+        if series:
+            st.caption(f"No props posted yet — recent {label} "
+                       f"(last {len(series)} games):")
+            chart = ui.prop_chart(series, 0.0, f"{player} · {label.title()}")
+            if chart is not None:
+                st.altair_chart(chart)
+            return True
+    return False
+
+
 def _find_player_props(player: str, game_pk, sport: str | None):
     """All prop rows for a player on the loaded slates, plus the sport they
     were found in. game_pk disambiguates same-named players across games.
@@ -1402,19 +1447,26 @@ def player_dialog(player: str, game_pk, sport: str | None):
     opp = next((r.get("opponent") for r in rows if r.get("opponent")), "")
     initials = "".join(w[0] for w in str(player).split()[:2]).upper() or "?"
     sub = " · ".join(x for x in (team, f"vs {opp}" if opp else "") if x)
+    shot = _player_headshot(player, game_pk, sport)
+    img = (f"<img src='{shot}' style='position:absolute;inset:0;width:56px;"
+           f"height:56px;border-radius:50%;object-fit:cover;border:2px solid "
+           f"#00e676;' onerror=\"this.style.display='none'\">" if shot else "")
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:14px;margin-bottom:4px;'>"
-        f"<div style='width:54px;height:54px;border-radius:50%;flex:0 0 auto;"
-        f"display:flex;align-items:center;justify-content:center;font-weight:800;"
+        f"<div style='position:relative;width:56px;height:56px;flex:0 0 auto;'>"
+        f"<div style='position:absolute;inset:0;border-radius:50%;display:flex;"
+        f"align-items:center;justify-content:center;font-weight:800;"
         f"font-size:1.3rem;color:#06210f;"
         f"background:linear-gradient(135deg,#00e676,#22d3ee);'>{initials}</div>"
+        f"{img}</div>"
         f"<div><div style='font-size:1.5rem;font-weight:800;'>{player}</div>"
         f"<div style='color:#8b949e;font-size:0.85rem;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     if not rows:
-        st.info("No props posted for this player on this slate yet — MLB props "
-                "firm up once lineups are official (~2-4h before first pitch).")
+        if not _recent_form_fallback(player, sport):
+            st.info("No props or game logs for this player yet — MLB props firm "
+                    "up once lineups are official (~2-4h before first pitch).")
         return
 
     recs = []
@@ -1462,6 +1514,10 @@ def player_dialog(player: str, game_pk, sport: str | None):
             st.divider()
             render_prop_detail(sport, prop, [])
 
+
+# Carry the "remember sign-in" token through every player link so a click
+# (which reloads the page) doesn't drop it and force a re-login.
+ui.set_link_keep({"k": st.query_params.get("k")})
 
 _clicked = st.query_params.get("player")
 if _clicked:

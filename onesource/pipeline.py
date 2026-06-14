@@ -201,18 +201,30 @@ def project_games(date: str) -> pd.DataFrame:
             lu = mlb_statsapi.batting_order(g["game_pk"])
             lineups = {s_: [p["name"] for p in lu.get(s_, [])]
                        for s_ in ("home", "away")} if lu else None
+            pids = {}
+            for s_ in ("home", "away"):
+                for p in (lu or {}).get(s_, []):
+                    if p.get("name") and p.get("player_id"):
+                        pids[normalize(p["name"])] = p["player_id"]
         except Exception:
-            lineups = None
+            lineups, pids = None, {}
+        for side in ("home", "away"):
+            nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
+            if nm and pid:
+                pids[normalize(nm)] = pid
         rows.append(
             {
                 "weather": wx,
                 "lineups": lineups,
+                "player_ids": pids or None,
                 "game_pk": g["game_pk"],
                 "game_time": g["game_time"],
                 "away_team": g["away_team"],
                 "home_team": g["home_team"],
                 "away_pitcher": g["away_pitcher"],
                 "home_pitcher": g["home_pitcher"],
+                "away_pitcher_id": g.get("away_pitcher_id"),
+                "home_pitcher_id": g.get("home_pitcher_id"),
                 "home_exp_runs": proj.home_exp_runs,
                 "away_exp_runs": proj.away_exp_runs,
                 "proj_total": proj.total_mean,

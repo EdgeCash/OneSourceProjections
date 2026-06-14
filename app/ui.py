@@ -14,6 +14,15 @@ from app import assets
 
 ET = ZoneInfo("America/New_York")
 
+# Query params that every player link should carry through a click so a
+# full reload doesn't drop them (notably the ?k= "remember sign-in" token).
+_LINK_KEEP: dict = {}
+
+
+def set_link_keep(params: dict) -> None:
+    _LINK_KEEP.clear()
+    _LINK_KEEP.update({k: v for k, v in (params or {}).items() if v})
+
 
 def player_link(name: str, game_pk=None, sport: str | None = None) -> str:
     """A clickable player name. Navigates the app to ?player=… so the
@@ -21,7 +30,8 @@ def player_link(name: str, game_pk=None, sport: str | None = None) -> str:
     when there's no name."""
     if not name or (isinstance(name, float) and pd.isna(name)):
         return ""
-    q = {"player": str(name)}
+    q = dict(_LINK_KEEP)
+    q["player"] = str(name)
     if game_pk is not None and pd.notna(game_pk):
         q["game"] = str(game_pk)
     if sport:
