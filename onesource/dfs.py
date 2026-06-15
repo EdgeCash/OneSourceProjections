@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import pandas as pd
 
+from . import odds
+
 POWER = {2: 3.0, 3: 5.0, 4: 10.0, 5: 20.0, 6: 37.5}
 FLEX = {
     3: {3: 2.25, 2: 1.25},
@@ -22,8 +24,30 @@ FLEX = {
 PROB_CAP = 0.72  # don't let one hot projection dominate a slip
 
 
+def per_leg_breakeven(n: int) -> float | None:
+    """Win prob each leg must clear for a power play to break even (all-or-
+    nothing payout, independent legs): mult^(-1/n)."""
+    m = POWER.get(n)
+    return round(m ** (-1.0 / n), 4) if m else None
+
+
+def _book_prob(p: dict, side: str) -> float | None:
+    """De-vigged book probability for the chosen side, from the prop's
+    two-way prices. This is the 'market' we must beat — PrizePicks lines that
+    are softer than this are the edge."""
+    oo, uo = p.get("over_odds"), p.get("under_odds")
+    if oo is None or uo is None or pd.isna(oo) or pd.isna(uo):
+        return None
+    try:
+        fo, _ = odds.devig_two_way(odds.implied_prob(oo), odds.implied_prob(uo))
+    except Exception:
+        return None
+    return fo if side == "Over" else 1 - fo
+
+
 def candidates(day_slates: dict, cap: float = PROB_CAP) -> pd.DataFrame:
-    """One row per prop: the better side and its (capped) probability."""
+    """One row per prop: the better side, its (capped) model probability, the
+    de-vigged book probability, and our edge over the market."""
     rows = []
     for sport, blob in (day_slates or {}).items():
         for p in blob.get("props", []) or []:
@@ -32,18 +56,22 @@ def candidates(day_slates: dict, cap: float = PROB_CAP) -> pd.DataFrame:
             if mop is None or pd.isna(mop) or line is None or pd.isna(line):
                 continue
             side = "Over" if mop >= 0.5 else "Under"
-            prob = min(float(mop if mop >= 0.5 else 1 - mop), cap)
+            raw = float(max(mop, 1 - mop))
+            bp = _book_prob(p, side)
             rows.append({
                 "sport": sport, "player": p.get("player"),
                 "team": p.get("team") or "", "market": p.get("market"),
-                "line": float(line), "side": side, "prob": round(prob, 4),
-                "raw_prob": round(float(max(mop, 1 - mop)), 4),
+                "line": float(line), "side": side,
+                "prob": round(min(raw, cap), 4), "raw_prob": round(raw, 4),
+                "book_prob": round(bp, 4) if bp is not None else None,
+                "edge": round(raw - bp, 4) if bp is not None else None,
             })
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(rows)
-    # one pick per player (their best market), modest team concentration
-    df = df.sort_values("prob", ascending=False).drop_duplicates("player")
+    # one pick per player (their best edge, then probability)
+    df = df.sort_values(["edge", "prob"], ascending=False,
+                        na_position="last").drop_duplicates("player")
     return df.reset_index(drop=True)
 
 
@@ -73,13 +101,17 @@ def slip_evs(probs: list[float]) -> dict:
             "flex_ev": round(flex - 1, 4) if flex is not None else None}
 
 
-def best_slips(cands: pd.DataFrame, max_per_team: int = 2) -> list[dict]:
-    """Greedy top-probability slips for sizes 2-6 (legs are the highest-
-    probability picks subject to player/team caps)."""
+def best_slips(cands: pd.DataFrame, max_per_team: int = 2,
+               min_edge: float = 0.0) -> list[dict]:
+    """Greedy slips for sizes 2-6 from the legs where our model most beats the
+    market. Only legs with edge >= min_edge over the de-vigged book price are
+    eligible (no edge -> PrizePicks prices it the same -> no value)."""
     if cands is None or cands.empty:
         return []
+    pool = cands[cands["edge"].notna() & (cands["edge"] >= min_edge)]
+    pool = pool.sort_values(["prob", "edge"], ascending=False)
     legs, team_counts = [], {}
-    for _, r in cands.iterrows():
+    for _, r in pool.iterrows():
         t = r["team"]
         if team_counts.get(t, 0) >= max_per_team and t:
             continue
@@ -93,5 +125,6 @@ def best_slips(cands: pd.DataFrame, max_per_team: int = 2) -> list[dict]:
             break
         chosen = legs[:n]
         evs = slip_evs([l["prob"] for l in chosen])
-        out.append({"size": n, "legs": chosen, **evs})
+        out.append({"size": n, "legs": chosen,
+                    "breakeven": per_leg_breakeven(n), **evs})
     return out
