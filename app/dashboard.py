@@ -1756,6 +1756,37 @@ def _render_game_model():
         for i, g in enumerate(slate_games):
             cols[i % 2].markdown(_replay_card_html(g), unsafe_allow_html=True)
 
+        if sport in ("NFL", "NCAAF"):   # teamstats matchup engine = football
+            st.markdown("##### 📋 Full research card (historical)")
+            labels = [f"{g['away']} @ {g['home']}" for g in slate_games]
+            sel = st.selectbox("Matchup", labels, key=f"bt_card_{sport}")
+            _render_replay_research_card(sport, slate_games[labels.index(sel)])
+
+
+def _render_replay_research_card(sport: str, gd: dict):
+    """Full teamstats research card (form, off-vs-def splits, ranks) for a
+    historical matchup — built from backdata as of game day, no lookahead."""
+    from scipy.stats import norm
+    home, away, date = gd["home"], gd["away"], gd["date"]
+    m = _matchup(sport, home, away, date)
+    if not m:
+        st.info("Team-stat splits aren't available for this matchup yet.")
+        return
+    sig = SPORTS[sport].sigma_margin or 13.5
+    hwp = min(max(gd["home_win_prob"], 1e-4), 1 - 1e-4)
+    margin = sig * float(norm.ppf(hwp))            # implied home margin
+    total = gd["proj_total"]
+    g = {"away_team": away, "home_team": home, "game_pk": f"replay-{date}",
+         "game_time": f"{date}T17:00:00Z", "proj_total": total,
+         "home_exp": (total + margin) / 2, "away_exp": (total - margin) / 2,
+         "home_win_prob": round(gd["home_win_prob"], 4),
+         "away_win_prob": round(1 - gd["home_win_prob"], 4),
+         "total_line": gd.get("close_total")}
+    st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
+    st.caption(f"As-of {date} (pre-game, no lookahead). **Final: {away} "
+               f"{gd['away_score']} – {gd['home_score']} {home}** · close: "
+               f"spread {gd.get('close_spread')}, O/U {gd.get('close_total')}.")
+
 
 # ---------------------------------------------------------------------------
 # Route
