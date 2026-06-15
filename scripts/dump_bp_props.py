@@ -48,10 +48,22 @@ def main() -> None:
         print("   ", {k: r[k] for k in ("participant", "side", "line", "odds",
                                         "book_id", "book_name")})
 
-    out = config.REPO_ROOT / "data" / "history" / "raw" / f"bp_props_{sport}_{date}.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(raw[:5], indent=1, default=str))
-    print(f"\nWrote first 5 raw props to {out}")
+    raw_dir = config.REPO_ROOT / "data" / "history" / "raw"
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    # machine-readable book universe (committed by the Action so it can be read
+    # back without copy-pasting a phone log)
+    summary = {
+        "sport": sport, "date": date, "n_props": len(raw),
+        "books": [{"book_id": bid, "book_name": name, "n_lines": n}
+                  for (bid, name), n in sorted(counts.items(), key=lambda kv: -kv[1])],
+        "dfs_sample": [{k: r[k] for k in ("participant", "side", "line", "odds",
+                                          "book_id", "book_name")} for r in dfs[:10]],
+    }
+    (raw_dir / f"bp_books_{sport}_{date}.json").write_text(json.dumps(summary, indent=1))
+    (raw_dir / f"bp_props_{sport}_{date}.json").write_text(
+        json.dumps(raw[:5], indent=1, default=str))
+    print(f"\nWrote book universe -> {raw_dir}/bp_books_{sport}_{date}.json")
+    print(f"Wrote first 5 raw props -> {raw_dir}/bp_props_{sport}_{date}.json")
 
 
 if __name__ == "__main__":
