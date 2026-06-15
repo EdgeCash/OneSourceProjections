@@ -138,3 +138,20 @@ def test_clv_open_close_runs():
     assert c["moneyline"]["bets"] > 50
     assert c["moneyline"]["avg_clv"] is not None
     assert 0 <= c["moneyline"]["clv_positive_rate"] <= 1
+
+
+def test_detail_per_game_grading_consistency():
+    """run_game_backtest(detail=True) emits per-game rows whose ML grade and
+    fields are self-consistent (the data behind the replay UI)."""
+    res = backtest.run_game_backtest("NFL", seasons=[2023], draws=200, detail=True)
+    games = res["games"]
+    assert len(games) > 100
+    for g in games:
+        assert {"date", "home", "away", "home_score", "away_score",
+                "home_win_prob", "ml_fav", "ml_hit"} <= set(g)
+        winner = (g["home"] if g["home_score"] > g["away_score"]
+                  else g["away"] if g["away_score"] > g["home_score"] else None)
+        if winner is not None:                       # NFL ties are rare
+            assert g["ml_hit"] == (g["ml_fav"] == winner)
+        assert g["ml_fav"] in (g["home"], g["away"])
+        assert 0.0 <= g["home_win_prob"] <= 1.0
