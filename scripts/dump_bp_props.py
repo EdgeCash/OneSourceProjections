@@ -65,9 +65,13 @@ def _fetch(sport, date, market_ids=None):
         "sport": sport, "date": date, "location": "ALL",
         "limit": 500, "page": 1,
         "include_selections": "true", "include_markets": "false",
-        "include_correlated_picks": "true", "correlated_picks_limit": 6,
         "ev_threshold": "false",
     }
+    # Only NFL/NBA support SGP correlations; requesting them elsewhere replaces
+    # the props list with a warning string (mirror the client's gating).
+    if sport.upper() in bp.CORRELATED_PICK_SPORTS:
+        params["include_correlated_picks"] = "true"
+        params["correlated_picks_limit"] = 6
     if market_ids:
         params["market_id"] = ":".join(str(m) for m in market_ids)
     data = bp._get("props", params)
