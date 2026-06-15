@@ -374,7 +374,49 @@ def prob_over_for_row(row: dict, line: float) -> float | None:
 
 _PROP_EDGE_COLS = ("line", "odds", "book_id", "model_over_prob", "ev", "kelly",
                    "bp_projection", "bp_ev", "bp_probability",
-                   "bp_recommended_side", "bp_bet_rating")
+                   "bp_recommended_side", "bp_bet_rating",
+                   "pp_line", "pp_over_odds", "pp_under_odds", "pp_model_over_prob",
+                   "ud_line", "ud_over_odds", "ud_under_odds", "ud_model_over_prob")
+
+
+# DFS operators we surface their own pick'em line for (prefix -> bettingpros id).
+_DFS_BOOKS = {"pp": bettingpros.PRIZEPICKS_BOOK_ID, "ud": bettingpros.UNDERDOG_BOOK_ID}
+
+
+def _attach_dfs_lines(props: pd.DataFrame, market_rows: list[dict]) -> pd.DataFrame:
+    """Attach PrizePicks/Underdog pick'em lines (and our model prob *at that
+    line*) from the per-book /offers rows. The DFS line frequently differs from
+    the consensus, and our edge is the model probability of clearing the softer
+    DFS number — not the book's de-vigged price."""
+    dfs_rows = bettingpros.dfs_offer_lines(market_rows)
+    if not dfs_rows:
+        return props
+    dfs = pd.DataFrame(dfs_rows)
+    dfs["norm_player"] = dfs["participant"].map(normalize)
+    if "norm_player" not in props.columns:
+        props = props.assign(norm_player=props["player"].map(normalize))
+    for prefix, book_id in _DFS_BOOKS.items():
+        sub = dfs[dfs["book_id"] == book_id]
+        if sub.empty:
+            continue
+        sub = sub.drop_duplicates(["norm_player", "market"])
+        ren = sub.rename(columns={
+            "over_line": f"{prefix}_line",
+            "over_odds": f"{prefix}_over_odds",
+            "under_odds": f"{prefix}_under_odds",
+        })[["norm_player", "market", f"{prefix}_line",
+            f"{prefix}_over_odds", f"{prefix}_under_odds"]]
+        props = props.merge(ren, on=["norm_player", "market"], how="left")
+
+        def _prob(row, _p=prefix):
+            line = row.get(f"{_p}_line")
+            if line is None or pd.isna(line):
+                return None
+            p = prob_over_for_row(row, float(line))
+            return round(p, 4) if p is not None else None
+
+        props[f"{prefix}_model_over_prob"] = props.apply(_prob, axis=1)
+    return props
 
 
 def _ensure_cols(df: pd.DataFrame, cols=_PROP_EDGE_COLS) -> pd.DataFrame:
@@ -450,6 +492,7 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
 
     merged = pd.concat([merged, merged.apply(compute, axis=1)], axis=1)
     merged = _attach_bp_consensus_keyed(merged, date)
+    merged = _attach_dfs_lines(merged, market_rows)
     return _ensure_cols(merged.drop(columns=["norm_player"], errors="ignore"))
 
 
