@@ -82,6 +82,29 @@ def markets(sport: str = "MLB") -> list[dict]:
     return data.get("markets", [])
 
 
+def books(sport: str = "MLB") -> list[dict]:
+    """All sportsbooks BettingPros tracks for a sport — the source of truth for
+    book IDs (incl. DFS operators like PrizePicks/Underdog when offered)."""
+    data = cached_json(
+        f"bp:books:{sport}",
+        24 * 60 * 60,
+        lambda: _get("books", {"sport": sport}, premium=False),
+    )
+    return data.get("books", [])
+
+
+def book_lookup(sport: str = "MLB") -> dict[int, str]:
+    """book_id -> name, resolved live and cached."""
+    out = {}
+    for b in books(sport):
+        bid = b.get("id") or b.get("book_id")
+        if bid is None:
+            continue
+        out[int(bid)] = (b.get("name") or b.get("book_name")
+                         or b.get("display_name") or "")
+    return out
+
+
 def market_lookup(sport: str) -> dict[int, dict]:
     """id -> {name, slug, category} for a sport, resolved live and cached."""
     out = {}
