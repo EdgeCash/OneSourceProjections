@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 285,
+  "event_id": 98884,
+  "participant": {
+   "id": "4603",
+   "name": "Zack Wheeler",
+   "link": "/mlb/props/zack-wheeler/",
+   "player": {
+    "short_name": "Z. Wheeler",
+    "first_name": "Zack",
+    "last_name": "Wheeler",
+    "image": "https://images.fantasypros.com/images/players/mlb/4603/headshot/210x210.webp",
+    "slug": "zack-wheeler",
+    "position": "SP",
+    "team": "PHI",
+    "popularity": 114,
+    "jersey_number": 45
+   }
+  },
+  "over": {
+   "line": 6.5,
+   "odds": 124,
+   "book": 36,
+   "consensus_line": 6.5,
+   "consensus_odds": 108,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 6.5,
+     "cost": -120,
+     "book_id": 13,
+     "created": "2026-06-15 02:37:54"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "4adbec9a736e50fed179059925598b74",
+    "picks": {
+     "expert": 0,
+     "quick": 1,
+     "custom": 0,
+     "sync": 2,
+     "combined": 3,
+     "system": 37
+    }
+   },
+   "probability": 0.45608479106094,
+   "expected_value": -0.03310024295080716,
+   "bet_rating": 2
+  },
+  "under": {
+   "line": 10.5,
+   "odds": -110,
+   "book": 60,
+   "consensus_line": 6.5,
+   "consensus_odds": -139,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 6.5,
+     "cost": -109,
+     "book_id": 13,
+     "created": "2026-06-15 02:37:54"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "fc9001aad6ee190b5f6960383eac040c",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 27
+    }
+   },
+   "probability": 0.54391520893906,
+   "expected_value": 0.03838358070184178,
+   "bet_rating": 3
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 6.39,
+   "probability": 0.54391520893906,
+   "expected_value": 0.03838358070184178,
+   "bet_rating": 3,
+   "diff": -4.11
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Gusto (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 14,
+    "value": 0.2,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/zack-wheeler/strikeouts/",
+   "analyzer": "/mlb/props/zack-wheeler/strikeouts/",
+   "affiliate": "https://novig.com/events/019ec923-1839-71d2-b356-3b7cc78a27df/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 3,
+    "under": 7,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 6,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 19,
+    "under": 5,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 99373,
+  "participant": {
+   "id": "46923",
+   "name": "Troy Melton",
+   "link": "/mlb/props/troy-melton/",
+   "player": {
+    "short_name": "T. Melton",
+    "first_name": "Troy",
+    "last_name": "Melton",
+    "image": "https://images.fantasypros.com/images/players/mlb/46923/headshot/210x210.webp",
+    "slug": "troy-melton",
+    "position": "SP,RP",
+    "team": "DET",
+    "popularity": 596,
+    "jersey_number": 52
+   }
+  },
+  "over": {
+   "line": 15.5,
+   "odds": 110,
+   "book": 60,
+   "consensus_line": 15.5,
+   "consensus_odds": -111,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 15.5,
+     "cost": -123,
+     "book_id": 12,
+     "created": "2026-06-14 22:52:11"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "dbe8212d29ea87da7b2b5a05f6d24509",
+    "picks": {
+     "expert": 1,
+     "quick": 0,
+     "custom": 0,
+     "sync": 3,
+     "combined": 4,
+     "system": 2
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 15.5,
+   "odds": -113,
+   "book": 60,
+   "consensus_line": 15.5,
+   "consensus_odds": -121,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 15.5,
+     "cost": -108,
+     "book_id": 12,
+     "created": "2026-06-14 22:52:11"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "ed1b688862b702305703a5c223b70136",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 17.97,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 2.47
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Teng (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 14,
+    "value": 0.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/troy-melton/outs-recorded/",
+   "analyzer": "/mlb/props/troy-melton/outs-recorded/",
+   "affiliate": "https://novig.com/events/019ec853-e80a-70f2-91f0-f434ba513a10/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 5,
+    "push": 0
+   },
+   "last_15": {
+    "over": 4,
+    "under": 5,
+    "push": 0
+   },
+   "last_20": {
+    "over": 4,
+    "under": 5,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 1,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ }
+]
