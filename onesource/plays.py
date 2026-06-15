@@ -271,6 +271,103 @@ def mark_notified(keys) -> None:
     NOTIFIED.write_text(json.dumps(sorted(load_notified() | set(keys))))
 
 
+# ---------------------------------------------------------------------------
+# One-tap confirm: each pushed play carries Played/Skip buttons. The button
+# POSTs "played <id>" / "skip <id>" to the confirm topic; the job polls it and
+# applies the decision. Only confirmed-Played plays count toward the record.
+# ---------------------------------------------------------------------------
+
+PENDING = config.REPO_ROOT / "data" / "track" / "pending_plays.json"
+CONFIRM = config.REPO_ROOT / "data" / "track" / "confirmations.json"
+
+
+def _load_json(path, default):
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return default
+
+
+def play_id(date: str, keys) -> str:
+    """Stable short id for a play (a card or a game bet), from its leg keys."""
+    import hashlib
+    h = hashlib.sha1((date + "|" + "|".join(sorted(keys))).encode()).hexdigest()
+    return h[:8]
+
+
+def register_pending(kind: str, date: str, keys) -> str:
+    """Record a pushed play so a later Played/Skip tap can be resolved to its
+    keys. Returns the play id to embed in the notification buttons."""
+    keys = sorted(set(keys))
+    pid = play_id(date, keys)
+    pending = _load_json(PENDING, {})
+    pending[pid] = {"kind": kind, "date": date, "keys": keys,
+                    "pushed_at": _now()}
+    PENDING.parent.mkdir(parents=True, exist_ok=True)
+    PENDING.write_text(json.dumps(pending, default=str))
+    return pid
+
+
+def confirmations() -> dict:
+    c = _load_json(CONFIRM, {})
+    return {"played": set(c.get("played", [])), "skipped": set(c.get("skipped", []))}
+
+
+def confirmed_played() -> set:
+    return confirmations()["played"]
+
+
+def confirmed_skipped() -> set:
+    return confirmations()["skipped"]
+
+
+def apply_confirmations(messages: list[str]) -> dict:
+    """Parse Played/Skip button taps ('played <id>' / 'skip <id>'), resolve each
+    id to its keys via the pending store, and record the decision. Marks the
+    matching DFS legs played. Idempotent. Returns {'played': n, 'skipped': n}."""
+    pending = _load_json(PENDING, {})
+    c = confirmations()
+    played, skipped = c["played"], c["skipped"]
+    n_p = n_s = 0
+    for body in messages or []:
+        parts = str(body).strip().split()
+        if len(parts) < 2 or parts[0] not in ("played", "skip"):
+            continue
+        info = pending.get(parts[1])
+        if not info:
+            continue
+        keys = set(info.get("keys", []))
+        if parts[0] == "played":
+            new = keys - played
+            played |= keys
+            skipped -= keys
+            n_p += len(new)
+        else:
+            new = keys - skipped
+            skipped |= keys
+            played -= keys
+            n_s += len(new)
+    if n_p or n_s:
+        CONFIRM.parent.mkdir(parents=True, exist_ok=True)
+        CONFIRM.write_text(json.dumps({"played": sorted(played),
+                                       "skipped": sorted(skipped)}))
+        # reflect played status onto the DFS legs themselves
+        rows = load_plays()
+        changed = False
+        for p in rows:
+            want = _leg_key(p["date"], p) in played
+            if bool(p.get("played")) != want:
+                p["played"] = want
+                changed = True
+        if changed:
+            _write(rows)
+    if n_p or n_s:
+        log.info("applied confirmations: +%d played, +%d skipped", n_p, n_s)
+    return {"played": n_p, "skipped": n_s}
+
+
 def _win_rate(rows: list[dict]) -> float | None:
     graded = [p for p in rows if p.get("graded_at") and p.get("push") is not True]
     if not graded:

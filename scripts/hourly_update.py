@@ -41,7 +41,18 @@ ET = ZoneInfo("America/New_York")
 APP_URL = "https://onesourceprojections.streamlit.app"
 
 
-def _notify_dfs_card(date: str, card: dict) -> None:
+def _confirm_actions(pid: str) -> str | None:
+    """ntfy action buttons that POST a Played/Skip tap to the confirm topic.
+    Plain-ASCII labels only (the Actions header isn't unicode-safe)."""
+    ctopic = notify.confirm_topic()
+    if not ctopic:
+        return None
+    url = notify.topic_url(ctopic)
+    return (f"http, Played, {url}, method=POST, body=played {pid}, clear=true; "
+            f"http, Skip, {url}, method=POST, body=skip {pid}, clear=true")
+
+
+def _notify_dfs_card(date: str, card: dict, pid: str) -> None:
     """Push a +EV PrizePicks/Underdog card to put in before lines move."""
     if not notify.configured():
         return
@@ -57,11 +68,12 @@ def _notify_dfs_card(date: str, card: dict) -> None:
             + (f" (each leg needs {be:.0%})" if be is not None else "")
             + f" — {date}")
     notify.send(legs_txt, title=head, tags=["dart", "moneybag"],
-                priority="high", click=f"{APP_URL}/?section=DFS")
+                priority="high", click=f"{APP_URL}/?section=DFS",
+                actions=_confirm_actions(pid))
     log.info("pushed DFS card (%s legs) for %s", card["size"], date)
 
 
-def _notify_game_plays(date: str, smashes: list[dict]) -> None:
+def _notify_game_plays(date: str, smashes: list[dict], pid: str) -> None:
     """Push smash-level moneyline/total plays (EV >= SMASH_EDGE)."""
     if not notify.configured():
         return
@@ -72,7 +84,8 @@ def _notify_game_plays(date: str, smashes: list[dict]) -> None:
                      f"({c['ev'] * 100:+.0f}% EV){flag}")
     head = f"💥 {len(smashes)} smash game play{'s' if len(smashes) != 1 else ''} — {date}"
     notify.send("\n".join(lines), title=head, tags=["boom"],
-                priority="high", click=f"{APP_URL}/?section=PLAYS")
+                priority="high", click=f"{APP_URL}/?section=PLAYS",
+                actions=_confirm_actions(pid))
     log.info("pushed %d game smashes for %s", len(smashes), date)
 
 
@@ -115,9 +128,20 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
-    # 2b) log first-qualify DFS legs, then push notifications ONLY for plays
-    #     worth making: a +EV PrizePicks/Underdog card, or a smash game bet.
-    #     Dedup against already-pushed keys so the same play never re-pings.
+    # 2b) apply any Played/Skip taps from prior runs, then log first-qualify
+    #     DFS legs and push notifications ONLY for plays worth making: a +EV
+    #     PrizePicks/Underdog card, or a smash game bet. Each push carries
+    #     one-tap confirm buttons; only confirmed-Played plays count.
+    try:
+        ctopic = notify.confirm_topic()
+        if ctopic:
+            applied = plays.apply_confirmations(notify.poll(ctopic, since="12h"))
+            if applied["played"] or applied["skipped"]:
+                log.info("confirmations: +%d played, +%d skipped",
+                         applied["played"], applied["skipped"])
+    except Exception as e:
+        log.error("confirmation poll failed: %s", e)
+
     notified = plays.load_notified()
     pushed_keys: set = set()
     for d in upcoming:
@@ -128,15 +152,17 @@ def main():
             if card:
                 keys = {plays._leg_key(d, leg) for leg in card["legs"]}
                 if keys - notified:                     # has a leg not yet pushed
-                    _notify_dfs_card(d, card)
-                    plays.mark_played(d, card)          # = what we actually play
+                    pid = plays.register_pending("dfs", d, keys)
+                    _notify_dfs_card(d, card, pid)
                     pushed_keys |= keys
 
             smashes = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
                        if c["key"] not in notified]
             if smashes:
-                _notify_game_plays(d, smashes)
-                pushed_keys |= {c["key"] for c in smashes}
+                gkeys = {c["key"] for c in smashes}
+                pid = plays.register_pending("game", d, gkeys)
+                _notify_game_plays(d, smashes, pid)
+                pushed_keys |= gkeys
         except Exception as e:
             log.error("play notify %s failed: %s", d, e)
     if pushed_keys:
