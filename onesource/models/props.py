@@ -90,9 +90,20 @@ def batter_hits(
     return {"n": expected_ab, "p": p, "mean": expected_ab * p}
 
 
-def prob_over_hits(expected_ab: float, p: float, line: float) -> float:
+# Per-game hits are overdispersed relative to a fixed-n binomial: actual at-bats
+# vary game to game (walks, pinch-hits, early exits) and BABIP swings, so a plain
+# binomial understates low-hit games and over-projects P(over). A beta-binomial
+# with this concentration adds that variance; tuned on the 2024-25 calibration
+# (batter_hits gap +0.026 -> ~0).
+HITS_CONCENTRATION = 11.0
+
+
+def prob_over_hits(expected_ab: float, p: float, line: float,
+                   concentration: float = HITS_CONCENTRATION) -> float:
     n = max(1, round(expected_ab))
-    return float(1 - stats.binom.cdf(int(line), n, p))
+    a = concentration * p
+    b = concentration * (1 - p)
+    return float(1 - stats.betabinom.cdf(int(line), n, a, b))
 
 
 def batter_total_bases(
