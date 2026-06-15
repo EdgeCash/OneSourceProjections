@@ -42,6 +42,9 @@ THE_ODDS_API_KEY = lambda: secret("THE_ODDS_API_KEY")  # noqa: E731
 NTFY_TOPIC = lambda: secret("NTFY_TOPIC")  # noqa: E731
 NTFY_SERVER = lambda: secret("NTFY_SERVER", "https://ntfy.sh")  # noqa: E731
 NTFY_TOKEN = lambda: secret("NTFY_TOKEN")  # noqa: E731
+# Topic the Played/Skip buttons POST to and the job polls; defaults to
+# "<NTFY_TOPIC>-confirm" when unset (no extra secret needed).
+NTFY_CONFIRM_TOPIC = lambda: secret("NTFY_CONFIRM_TOPIC")  # noqa: E731
 
 # The Odds API (multi-book lines). Credit-frugal defaults: us region, the
 # three cheap featured markets, cached ~hourly, and a hard credit floor below

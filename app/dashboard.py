@@ -874,26 +874,39 @@ def render_performance():
         dc[3].metric("Line came to us", f"{beat:.0%}" if beat is not None else "—",
                      help="Share of played legs whose DFS line moved in our favor "
                           "after we logged it — the fastest read we're early/right.")
-        st.caption("Cards are pushed (ntfy) and tracked only when they're +EV; "
-                   "legs commit on first qualify so you bet before the line moves. "
-                   "Card ROI is derived from these leg probabilities.")
+        st.caption("Pushed via ntfy only when a card is +EV; tap **Played** on "
+                   "the alert to count it (Skip ignores it). Legs commit on first "
+                   "qualify so you bet before the line moves.")
 
     # Smash game plays: the strong (EV >= SMASH_EDGE) moneyline/total bets.
     smashes = [r for r in ledger if "pnl" in r
                and (r.get("ev") or 0) >= config.SMASH_EDGE]
+    played_keys = plays.confirmed_played()
+
+    def _gkey(r):
+        return (f"game|{r['date']}|{r['sport']}|{r['game']}|"
+                f"{r['market']}|{r.get('side', '')}")
+
     if smashes:
-        st.subheader(f"Smash game plays (EV ≥ {config.SMASH_EDGE:.0%})")
-        sp = st.columns(4)
-        wins = sum(1 for r in smashes if r.get("won"))
-        units = sum(r["pnl"] for r in smashes)
-        sclv = [r["clv"] for r in smashes if r.get("clv") is not None]
-        sp[0].metric("Smash bets", len(smashes))
-        sp[1].metric("Win rate", f"{wins / len(smashes):.0%}")
-        sp[2].metric("Units", f"{units:+.2f}")
-        sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
-                     if sclv else "—")
-        st.caption("The high-EV bets flagged worth playing — tracked separately "
-                   "so the smash tier's edge is measured on its own.")
+        # once any plays are confirmed, report the played set; until then, the
+        # flagged set (so the panel isn't empty before the first confirm).
+        shown = ([r for r in smashes if _gkey(r) in played_keys]
+                 if played_keys else smashes)
+        label = "played" if played_keys else "flagged"
+        if shown:
+            st.subheader(f"Smash game plays (EV ≥ {config.SMASH_EDGE:.0%})")
+            sp = st.columns(4)
+            wins = sum(1 for r in shown if r.get("won"))
+            units = sum(r["pnl"] for r in shown)
+            sclv = [r["clv"] for r in shown if r.get("clv") is not None]
+            sp[0].metric(f"Smash bets ({label})", len(shown))
+            sp[1].metric("Win rate", f"{wins / len(shown):.0%}")
+            sp[2].metric("Units", f"{units:+.2f}")
+            sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
+                         if sclv else "—")
+            st.caption("High-EV bets pushed worth playing. Tap **Played** on the "
+                       "alert to count one; the smash tier's edge is then measured "
+                       "on what you actually bet.")
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:

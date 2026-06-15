@@ -43,3 +43,41 @@ def test_send_swallows_errors(monkeypatch):
         raise RuntimeError("network down")
     monkeypatch.setattr(notify.requests, "post", _boom)
     assert notify.send("x") is False  # never raises
+
+
+def test_send_includes_actions_header(monkeypatch):
+    monkeypatch.setattr(notify.config, "NTFY_TOPIC", lambda: "t")
+    monkeypatch.setattr(notify.config, "NTFY_TOKEN", lambda: None)
+    cap = {}
+
+    class _R:
+        def raise_for_status(self): pass
+
+    monkeypatch.setattr(notify.requests, "post",
+                        lambda url, data=None, headers=None, timeout=None: cap.update(headers=headers) or _R())
+    notify.send("body", actions="http, Played, https://x/y, method=POST")
+    assert cap["headers"]["Actions"].startswith("http, Played")
+
+
+def test_confirm_topic_default_suffix(monkeypatch):
+    monkeypatch.setattr(notify.config, "NTFY_TOPIC", lambda: "mytopic")
+    monkeypatch.setattr(notify.config, "NTFY_CONFIRM_TOPIC", lambda: None)
+    assert notify.confirm_topic() == "mytopic-confirm"
+    monkeypatch.setattr(notify.config, "NTFY_CONFIRM_TOPIC", lambda: "custom")
+    assert notify.confirm_topic() == "custom"
+
+
+def test_poll_parses_message_bodies(monkeypatch):
+    monkeypatch.setattr(notify.config, "NTFY_SERVER", lambda: "https://ntfy.sh")
+    monkeypatch.setattr(notify.config, "NTFY_TOKEN", lambda: None)
+
+    class _R:
+        text = ('{"event":"open"}\n'
+                '{"event":"message","message":"played abc123"}\n'
+                '{"event":"message","message":"skip def456"}\n')
+        def raise_for_status(self): pass
+
+    monkeypatch.setattr(notify.requests, "get",
+                        lambda *a, **k: _R())
+    bodies = notify.poll("topic-confirm")
+    assert bodies == ["played abc123", "skip def456"]

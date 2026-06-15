@@ -144,3 +144,41 @@ def test_notified_store_roundtrip(tmp_path, monkeypatch):
     plays.mark_notified({"a", "b"})
     plays.mark_notified({"b", "c"})
     assert plays.load_notified() == {"a", "b", "c"}
+
+
+def test_confirm_flow_played_and_skip(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    monkeypatch.setattr(plays, "PENDING", tmp_path / "pending.json")
+    monkeypatch.setattr(plays, "CONFIRM", tmp_path / "confirm.json")
+    plays.log_qualifying("2026-06-15", _two_leg_blob())
+    card = plays.playable_card("2026-06-15")
+    keys = {plays._leg_key("2026-06-15", l) for l in card["legs"]}
+    pid = plays.register_pending("dfs", "2026-06-15", keys)
+
+    # nothing played yet
+    assert plays.summary()["played_logged"] == 0
+    # tap Played -> legs flagged played
+    res = plays.apply_confirmations([f"played {pid}"])
+    assert res["played"] == 2
+    assert plays.confirmed_played() == keys
+    assert plays.summary()["played_logged"] == 2
+    # re-applying the same tap is idempotent
+    assert plays.apply_confirmations([f"played {pid}"])["played"] == 0
+    # switching to Skip clears the played flags
+    plays.apply_confirmations([f"skip {pid}"])
+    assert plays.summary()["played_logged"] == 0
+    assert plays.confirmed_skipped() == keys
+
+
+def test_apply_confirmations_ignores_unknown(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "PENDING", tmp_path / "pending.json")
+    monkeypatch.setattr(plays, "CONFIRM", tmp_path / "confirm.json")
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    res = plays.apply_confirmations(["played nope", "garbage", "skip"])
+    assert res == {"played": 0, "skipped": 0}
+
+
+def test_play_id_stable(tmp_path, monkeypatch):
+    a = plays.play_id("2026-06-15", {"k1", "k2"})
+    b = plays.play_id("2026-06-15", {"k2", "k1"})  # order-independent
+    assert a == b and len(a) == 8
