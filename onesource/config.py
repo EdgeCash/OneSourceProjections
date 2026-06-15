@@ -36,6 +36,13 @@ BP_USER_KEY = lambda: secret("BP_USER_KEY")  # noqa: E731
 APP_PASSWORD = lambda: secret("APP_PASSWORD")  # noqa: E731
 THE_ODDS_API_KEY = lambda: secret("THE_ODDS_API_KEY")  # noqa: E731
 
+# ntfy.sh push notifications (new first-qualify DFS cards). Set NTFY_TOPIC to a
+# long, private topic name and subscribe to it in the ntfy iOS app. NTFY_SERVER
+# and NTFY_TOKEN are optional (self-hosted / access-token-protected topics).
+NTFY_TOPIC = lambda: secret("NTFY_TOPIC")  # noqa: E731
+NTFY_SERVER = lambda: secret("NTFY_SERVER", "https://ntfy.sh")  # noqa: E731
+NTFY_TOKEN = lambda: secret("NTFY_TOKEN")  # noqa: E731
+
 # The Odds API (multi-book lines). Credit-frugal defaults: us region, the
 # three cheap featured markets, cached ~hourly, and a hard credit floor below
 # which we stop calling so the monthly balance can never drain to zero.
@@ -82,6 +89,11 @@ FP_BLEND_WEIGHT = 0.5
 # Betting thresholds.
 MIN_EDGE = 0.02  # only surface bets with >= 2% EV edge
 KELLY_FRACTION = 0.25  # quarter Kelly
+
+# DFS first-qualify logging: a prop leg is logged (and notified) the first hour
+# its model edge over the priced number clears this bar. Higher than MIN_EDGE
+# because DFS multipliers carry a steep house edge — a leg needs real room.
+DFS_MIN_EDGE = 0.04
 
 # Market-blend / price-sanity knobs. The raw model finds far too many fat
 # edges (a sign of over-confidence + stale price inputs, not alpha), so before

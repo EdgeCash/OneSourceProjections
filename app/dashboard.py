@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import ai, config, dfs, edge, playerlogs, results, teamstats  # noqa: E402
+from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
 st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
@@ -854,6 +854,29 @@ def render_performance():
         cl[2].metric("Bets w/ close", clv_bets)
         st.caption("CLV is measured against our own captured BettingPros "
                    "closing line; it sharpens as more books are added.")
+
+    # DFS (PrizePicks/Underdog) first-qualify leg track record.
+    dfs_perf = plays.summary()
+    if dfs_perf.get("legs_logged"):
+        st.subheader("DFS legs (PrizePicks / Underdog)")
+        dc = st.columns(4)
+        dc[0].metric("Legs logged", dfs_perf["legs_logged"],
+                     help="Distinct prop legs logged the first hour they cleared "
+                          f"the {config.DFS_MIN_EDGE:.0%} edge bar on a real "
+                          "PrizePicks/Underdog line.")
+        dc[1].metric("Legs graded", dfs_perf["legs_graded"])
+        wr = dfs_perf["leg_win_rate"]
+        be = dfs.per_leg_breakeven(2)
+        dc[2].metric("Leg win rate", f"{wr:.0%}" if wr is not None else "—",
+                     help=f"Share of graded legs that hit. A 2-pick needs each "
+                          f"leg above ~{be:.0%} to break even.")
+        beat = dfs_perf["line_clv_beat_rate"]
+        dc[3].metric("Line came to us", f"{beat:.0%}" if beat is not None else "—",
+                     help="Share of legs whose DFS line moved in our favor after "
+                          "we logged it — the fastest read that we're early/right.")
+        st.caption("Legs are committed on first qualify (being early is the edge) "
+                   "and graded hit/miss from box scores. Card ROI is derived from "
+                   "these leg probabilities; legs converge far faster than cards.")
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:

@@ -39,6 +39,9 @@ jobs:
           BP_USER: ${{ secrets.BP_USER }}
           BP_USER_KEY: ${{ secrets.BP_USER_KEY }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
         run: python scripts/hourly_update.py ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
 
       - name: Commit data
