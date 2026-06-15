@@ -10,15 +10,15 @@
   "utc",
   "widget_label"
  ],
- "props_container_type": "dict",
- "n_items": 1,
+ "props_container_type": "list",
+ "n_items": 200,
  "item_types": {
-  "str": 1
+  "dict": 200
  },
  "retry_with_market_ids": {
-  "n": 1,
+  "n": 200,
   "types": {
-   "str": 1
+   "dict": 200
   },
   "market_ids": [
    180,
@@ -27,7 +27,19 @@
    293
   ]
  },
- "first_prop_keys": null,
+ "first_prop_keys": [
+  "event_id",
+  "extra",
+  "links",
+  "market_id",
+  "over",
+  "participant",
+  "performance",
+  "projection",
+  "scoring",
+  "sport",
+  "under"
+ ],
  "response_shape": {
   "_parameters": {
    "bp_partner_id": null,
@@ -40,14 +52,171 @@
    "page": 1,
    "limit": 200,
    "total_pages": 10,
-   "total_items": 1972,
+   "total_items": 1973,
    "...": "+3 more keys"
   },
   "label": "MLB props for June 15th, 2026",
   "widget_label": "Best MLB Player Props (2026-06-15)",
   "...": "+3 more keys"
  },
- "first_item_full": "Unsupported sports found for SGP correlations. Supported sports are NFL and NBA.",
+ "first_item_full": {
+  "sport": "MLB",
+  "market_id": 285,
+  "event_id": 98884,
+  "participant": {
+   "id": "4603",
+   "name": "Zack Wheeler",
+   "link": "/mlb/props/zack-wheeler/",
+   "player": {
+    "short_name": "Z. Wheeler",
+    "first_name": "Zack",
+    "last_name": "Wheeler",
+    "image": "https://images.fantasypros.com/images/players/mlb/4603/headshot/210x210.webp",
+    "slug": "zack-wheeler",
+    "position": "SP",
+    "team": "PHI",
+    "popularity": 114,
+    "jersey_number": 45
+   }
+  },
+  "over": {
+   "line": 6.5,
+   "odds": 124,
+   "book": 36,
+   "consensus_line": 6.5,
+   "consensus_odds": 110,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 6.5,
+     "cost": -120,
+     "book_id": 13,
+     "created": "2026-06-15 02:37:54"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "4adbec9a736e50fed179059925598b74",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 2,
+     "combined": 2,
+     "system": 37
+    }
+   },
+   "probability": 0.45608479106094,
+   "expected_value": -0.03310024295080716,
+   "bet_rating": 2
+  },
+  "under": {
+   "line": 10.5,
+   "odds": -110,
+   "book": 60,
+   "consensus_line": 6.5,
+   "consensus_odds": -139,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 6.5,
+     "cost": -109,
+     "book_id": 13,
+     "created": "2026-06-15 02:37:54"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "fc9001aad6ee190b5f6960383eac040c",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 28
+    }
+   },
+   "probability": 0.54391520893906,
+   "expected_value": 0.03838358070184178,
+   "bet_rating": 3
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 6.39,
+   "probability": 0.54391520893906,
+   "expected_value": 0.03838358070184178,
+   "bet_rating": 3,
+   "diff": -4.11
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Gusto (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 14,
+    "value": 0.2,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/zack-wheeler/strikeouts/",
+   "analyzer": "/mlb/props/zack-wheeler/strikeouts/",
+   "affiliate": "https://novig.com/events/019ec923-1839-71d2-b356-3b7cc78a27df/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 3,
+    "under": 7,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 6,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 19,
+    "under": 5,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ },
  "books": [],
  "dfs_sample": []
 }
