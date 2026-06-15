@@ -41,28 +41,39 @@ ET = ZoneInfo("America/New_York")
 APP_URL = "https://onesourceprojections.streamlit.app"
 
 
-def _notify_new_card(date: str, new_legs: list[dict]) -> None:
-    """Push an ntfy notification summarizing the new first-qualify legs and the
-    best card they form. No-op when ntfy isn't configured."""
+def _notify_dfs_card(date: str, card: dict) -> None:
+    """Push a +EV PrizePicks/Underdog card to put in before lines move."""
     if not notify.configured():
         return
+    ev = max([x for x in (card.get("power_ev"), card.get("flex_ev"))
+              if x is not None], default=None)
+    be = card.get("breakeven")
     legs_txt = "\n".join(
         f"- {l['player']} {l['side']} {l['line']:g} {l['market']} "
-        f"@ {l.get('line_source', 'DFS')} ({(l.get('edge') or 0) * 100:+.0f}% edge)"
-        for l in new_legs[:8])
-    card = plays.todays_card(date)
-    head = f"{len(new_legs)} new DFS leg{'s' if len(new_legs) != 1 else ''} ({date})"
-    if card:
-        be = card.get("breakeven")
-        ev = max([x for x in (card.get("power_ev"), card.get("flex_ev"))
-                  if x is not None], default=None)
-        head += (f" · best {card['size']}-pick"
-                 + (f" {ev:+.0%} EV" if ev is not None else "")
-                 + (f", legs need {be:.0%}" if be is not None else ""))
-    notify.send(legs_txt or "New qualifying legs available.",
-                title=head, tags=["dart", "moneybag"], priority="default",
-                click=f"{APP_URL}/?section=DFS")
-    log.info("pushed ntfy for %d new legs on %s", len(new_legs), date)
+        f"@ {l.get('line_source', 'DFS')} ({(l.get('edge') or 0) * 100:+.0f}%)"
+        for l in card["legs"])
+    head = (f"🎯 Play {card['size']}-pick"
+            + (f" · {ev:+.0%} EV" if ev is not None else "")
+            + (f" (each leg needs {be:.0%})" if be is not None else "")
+            + f" — {date}")
+    notify.send(legs_txt, title=head, tags=["dart", "moneybag"],
+                priority="high", click=f"{APP_URL}/?section=DFS")
+    log.info("pushed DFS card (%s legs) for %s", card["size"], date)
+
+
+def _notify_game_plays(date: str, smashes: list[dict]) -> None:
+    """Push smash-level moneyline/total plays (EV >= SMASH_EDGE)."""
+    if not notify.configured():
+        return
+    lines = []
+    for c in smashes[:8]:
+        flag = " ⚠️verify" if c.get("verify") else ""
+        lines.append(f"- {c['sport']} {c['game']}: {c['pick']} {c['market']} "
+                     f"({c['ev'] * 100:+.0f}% EV){flag}")
+    head = f"💥 {len(smashes)} smash game play{'s' if len(smashes) != 1 else ''} — {date}"
+    notify.send("\n".join(lines), title=head, tags=["boom"],
+                priority="high", click=f"{APP_URL}/?section=PLAYS")
+    log.info("pushed %d game smashes for %s", len(smashes), date)
 
 
 def main():
@@ -104,16 +115,32 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
-    # 2b) log newly-qualifying DFS legs (first-qualify) and push a notification
-    #     when a fresh card appears. Logging is idempotent: a leg is recorded
-    #     once, then only its closing line is refreshed on later runs.
+    # 2b) log first-qualify DFS legs, then push notifications ONLY for plays
+    #     worth making: a +EV PrizePicks/Underdog card, or a smash game bet.
+    #     Dedup against already-pushed keys so the same play never re-pings.
+    notified = plays.load_notified()
+    pushed_keys: set = set()
     for d in upcoming:
         try:
-            new_legs = plays.log_qualifying(d, slates.get(d, {}))
-            if new_legs:
-                _notify_new_card(d, new_legs)
+            plays.log_qualifying(d, slates.get(d, {}))  # track every candidate
+
+            card = plays.playable_card(d)               # best +EV slip
+            if card:
+                keys = {plays._leg_key(d, leg) for leg in card["legs"]}
+                if keys - notified:                     # has a leg not yet pushed
+                    _notify_dfs_card(d, card)
+                    plays.mark_played(d, card)          # = what we actually play
+                    pushed_keys |= keys
+
+            smashes = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
+                       if c["key"] not in notified]
+            if smashes:
+                _notify_game_plays(d, smashes)
+                pushed_keys |= {c["key"] for c in smashes}
         except Exception as e:
-            log.error("DFS play logging %s failed: %s", d, e)
+            log.error("play notify %s failed: %s", d, e)
+    if pushed_keys:
+        plays.mark_notified(pushed_keys)
 
     # 3) grade finished games and ingest box scores. Grading sweeps a short
     #    window (idempotent) so missed runs or late-posting finals still get

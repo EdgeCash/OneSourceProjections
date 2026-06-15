@@ -84,3 +84,63 @@ def test_todays_card_builds_from_logged_legs(tmp_path, monkeypatch):
     plays.log_qualifying("2026-06-15", blob, min_edge=0.04)
     card = plays.todays_card("2026-06-15", min_edge=0.04)
     assert card is not None and card["size"] == 2
+
+
+def _two_leg_blob():
+    return {"MLB": {"props": [
+        {"player": f"P{i}", "team": f"T{i}", "market": "ks", "line": 5.5,
+         "model_over_prob": 0.4, "pp_line": 4.5, "pp_model_over_prob": 0.66,
+         "pp_over_odds": -119, "pp_under_odds": -119} for i in range(2)]}}
+
+
+def test_playable_card_requires_positive_ev(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    # single leg -> no 2+ pick slip -> no playable card
+    plays.log_qualifying("2026-06-15", _blob())
+    assert plays.playable_card("2026-06-15") is None
+    # two strong legs -> a +EV 2-pick
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs2.jsonl")
+    plays.log_qualifying("2026-06-15", _two_leg_blob())
+    card = plays.playable_card("2026-06-15")
+    assert card is not None and card["size"] == 2
+    ev = max(x for x in (card["power_ev"], card["flex_ev"]) if x is not None)
+    assert ev > 0
+
+
+def test_mark_played_flags_card_legs(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    plays.log_qualifying("2026-06-15", _two_leg_blob())
+    card = plays.playable_card("2026-06-15")
+    assert plays.mark_played("2026-06-15", card) == 2
+    s = plays.summary()
+    assert s["played_logged"] == 2 and s["legs_logged"] == 2
+    # idempotent: already-played legs aren't re-flagged
+    assert plays.mark_played("2026-06-15", card) == 0
+
+
+def test_game_play_candidates_filters_by_edge(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays.config, "SMASH_EDGE", 0.07)
+    monkeypatch.setattr(plays.config, "SMASH_EDGE_SANITY", 0.15)
+    blob = {"MLB": {"games": [{
+        "home_team": "NYY", "away_team": "BOS",
+        "home_ml": -150, "home_ml_ev": 0.09,      # smash
+        "away_ml": 130, "away_ml_ev": -0.05,       # negative -> out
+        "total_line": 8.5,
+        "over_odds": -110, "over_ev": 0.02,        # below bar -> out
+        "under_odds": -110, "under_ev": 0.20,      # smash + verify
+    }]}}
+    cands = plays.game_play_candidates("2026-06-15", blob)
+    kinds = {(c["market"], c["side"]) for c in cands}
+    assert kinds == {("moneyline", "home"), ("total", "under")}
+    ml = next(c for c in cands if c["market"] == "moneyline")
+    assert ml["smash"] is True and ml["verify"] is False
+    un = next(c for c in cands if c["side"] == "under")
+    assert un["verify"] is True  # 20% EV -> too good, flag to verify
+
+
+def test_notified_store_roundtrip(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "NOTIFIED", tmp_path / "notified.json")
+    assert plays.load_notified() == set()
+    plays.mark_notified({"a", "b"})
+    plays.mark_notified({"b", "c"})
+    assert plays.load_notified() == {"a", "b", "c"}

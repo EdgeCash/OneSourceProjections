@@ -855,28 +855,45 @@ def render_performance():
         st.caption("CLV is measured against our own captured BettingPros "
                    "closing line; it sharpens as more books are added.")
 
-    # DFS (PrizePicks/Underdog) first-qualify leg track record.
+    # DFS (PrizePicks/Underdog) played-card track record.
     dfs_perf = plays.summary()
     if dfs_perf.get("legs_logged"):
-        st.subheader("DFS legs (PrizePicks / Underdog)")
+        st.subheader("DFS plays (PrizePicks / Underdog)")
         dc = st.columns(4)
-        dc[0].metric("Legs logged", dfs_perf["legs_logged"],
-                     help="Distinct prop legs logged the first hour they cleared "
-                          f"the {config.DFS_MIN_EDGE:.0%} edge bar on a real "
-                          "PrizePicks/Underdog line.")
-        dc[1].metric("Legs graded", dfs_perf["legs_graded"])
-        wr = dfs_perf["leg_win_rate"]
+        dc[0].metric("Legs played", dfs_perf["played_logged"],
+                     help="Legs in a notified +EV card — what you actually put in. "
+                          f"({dfs_perf['legs_logged']} total cleared the "
+                          f"{config.DFS_MIN_EDGE:.0%} edge bar and are tracked.)")
+        dc[1].metric("Played graded", dfs_perf["played_graded"])
+        wr = dfs_perf["played_win_rate"]
         be = dfs.per_leg_breakeven(2)
-        dc[2].metric("Leg win rate", f"{wr:.0%}" if wr is not None else "—",
-                     help=f"Share of graded legs that hit. A 2-pick needs each "
+        dc[2].metric("Played win rate", f"{wr:.0%}" if wr is not None else "—",
+                     help="Share of played legs that hit. A 2-pick needs each "
                           f"leg above ~{be:.0%} to break even.")
         beat = dfs_perf["line_clv_beat_rate"]
         dc[3].metric("Line came to us", f"{beat:.0%}" if beat is not None else "—",
-                     help="Share of legs whose DFS line moved in our favor after "
-                          "we logged it — the fastest read that we're early/right.")
-        st.caption("Legs are committed on first qualify (being early is the edge) "
-                   "and graded hit/miss from box scores. Card ROI is derived from "
-                   "these leg probabilities; legs converge far faster than cards.")
+                     help="Share of played legs whose DFS line moved in our favor "
+                          "after we logged it — the fastest read we're early/right.")
+        st.caption("Cards are pushed (ntfy) and tracked only when they're +EV; "
+                   "legs commit on first qualify so you bet before the line moves. "
+                   "Card ROI is derived from these leg probabilities.")
+
+    # Smash game plays: the strong (EV >= SMASH_EDGE) moneyline/total bets.
+    smashes = [r for r in ledger if "pnl" in r
+               and (r.get("ev") or 0) >= config.SMASH_EDGE]
+    if smashes:
+        st.subheader(f"Smash game plays (EV ≥ {config.SMASH_EDGE:.0%})")
+        sp = st.columns(4)
+        wins = sum(1 for r in smashes if r.get("won"))
+        units = sum(r["pnl"] for r in smashes)
+        sclv = [r["clv"] for r in smashes if r.get("clv") is not None]
+        sp[0].metric("Smash bets", len(smashes))
+        sp[1].metric("Win rate", f"{wins / len(smashes):.0%}")
+        sp[2].metric("Units", f"{units:+.2f}")
+        sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
+                     if sclv else "—")
+        st.caption("The high-EV bets flagged worth playing — tracked separately "
+                   "so the smash tier's edge is measured on its own.")
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:
