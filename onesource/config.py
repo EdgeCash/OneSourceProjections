@@ -95,6 +95,16 @@ KELLY_FRACTION = 0.25  # quarter Kelly
 # because DFS multipliers carry a steep house edge — a leg needs real room.
 DFS_MIN_EDGE = 0.04
 
+# "Smash" game play: notify-worthy model EV on a moneyline/total. Game markets
+# are efficient, so this sits well above MIN_EDGE — 7%+ EV is a size-up spot.
+# Edges above SMASH_EDGE_SANITY usually signal a stale line / missing injury
+# rather than real value, so those are flagged "verify" rather than smashed.
+SMASH_EDGE = 0.07
+SMASH_EDGE_SANITY = 0.15
+
+# A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
+DFS_SMASH_EDGE = 0.08
+
 # Market-blend / price-sanity knobs. The raw model finds far too many fat
 # edges (a sign of over-confidence + stale price inputs, not alpha), so before
 # computing EV we (1) reject incoherent two-way prices and (2) shrink the
