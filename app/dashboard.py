@@ -749,39 +749,51 @@ def render_dfs():
     if cands.empty:
         st.info("No props with model probabilities yet for this slate.")
         return
-    st.caption("Picks ranked by our model's confidence on the better side "
-               f"(capped at {dfs.PROB_CAP:.0%} — the model runs hot in the "
-               "tails). Slips assume PrizePicks multipliers; Underdog is "
-               "nearly identical. Legs treated as independent.")
-    slips = dfs.best_slips(cands)
-    if slips:
+    st.caption("**Edge = our model probability − the de-vigged book price.** Only "
+               "legs where we beat the market are eligible (no edge → PrizePicks "
+               "prices it the same → no value). Probabilities capped at "
+               f"{dfs.PROB_CAP:.0%}; PrizePicks multipliers (Underdog ≈ same); "
+               "legs treated as independent — avoid stacking the same game.")
+    slips = dfs.best_slips(cands, min_edge=min_edge)
+    if not slips:
+        st.warning(f"No legs clear a {min_edge:.0%} edge over the book on this "
+                   "slate — that usually means a pass. Lower **Min edge (EV)** in "
+                   "the sidebar to inspect thinner spots.")
+    else:
         cols = st.columns(len(slips))
         for i, s_ in enumerate(slips):
             with cols[i]:
                 pe, fe = s_["power_ev"], s_["flex_ev"]
                 best = max([x for x in (pe, fe) if x is not None], default=None)
-                color = "normal" if best is None else ("off" if best < 0 else "normal")
                 st.metric(f"{s_['size']}-pick", f"{best:+.0%} EV" if best is not None else "—",
                           help=f"Power {pe:+.0%}" + (f" · Flex {fe:+.0%}" if fe is not None else "")
                           if pe is not None else None)
         top = slips[-1]
         st.markdown(f"##### Suggested {top['size']}-leg card "
-                    f"(hit-all {top['joint']:.1%})")
+                    f"(hit-all {top['joint']:.1%}; each leg must clear "
+                    f"{top['breakeven']:.0%} to break even)")
         for l in top["legs"]:
             st.markdown(f"- **{l['player']}** ({l['sport']}, {l['team']}) — "
                         f"**{l['side']} {l['line']:g} "
                         f"{ui.short_market(str(l['market']))}** · "
-                        f"model {l['raw_prob']:.0%} (capped {l['prob']:.0%})")
+                        f"model {l['raw_prob']:.0%} vs book {l['book_prob']:.0%} "
+                        f"(**{l['edge']:+.0%}** edge)")
         if all(s_["power_ev"] is not None and s_["power_ev"] < 0 for s_ in slips):
-            st.warning("No positive-EV slip today at capped probabilities — "
-                       "DFS multipliers price in a big house edge; pass is "
-                       "a fine play.")
-    st.markdown("##### Candidate pool")
-    view = cands.head(25).rename(columns={
+            st.warning("Even with edge, no positive-EV power slip today — the "
+                       "multipliers' house edge swamps it. Flex or pass.")
+    st.markdown("##### Candidate pool (by edge)")
+    pool = cands[cands["edge"].notna()].head(25).copy()
+    pool["market"] = pool["market"].map(lambda m: ui.short_market(str(m)))
+    pool["raw_prob"] = pool["raw_prob"].map(lambda v: f"{v:.0%}")
+    pool["book_prob"] = pool["book_prob"].map(lambda v: f"{v:.0%}")
+    pool["edge"] = pool["edge"].map(lambda v: f"{v:+.1%}")
+    pool = pool.rename(columns={
         "player": "Player", "sport": "Sport", "team": "Team",
         "market": "Market", "line": "Line", "side": "Side",
-        "prob": "P (capped)", "raw_prob": "P (model)"})
-    st.dataframe(view, width="stretch", hide_index=True)
+        "raw_prob": "P (model)", "book_prob": "P (book)", "edge": "Edge"})
+    st.dataframe(pool[["Player", "Sport", "Team", "Market", "Line", "Side",
+                       "P (model)", "P (book)", "Edge"]],
+                 width="stretch", hide_index=True)
 
 
 def render_performance():
