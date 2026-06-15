@@ -376,6 +376,57 @@ def _num_or_none(v):
         return None
 
 
+# DFS operators carried by BettingPros' props feed. Matched by book name
+# (case-insensitive) so we don't depend on guessing book_ids; pass explicit
+# ids to dfs_prop_lines() once confirmed against a live response.
+DFS_BOOK_NAMES = {"prizepicks", "underdog", "dabble", "sleeper", "betr"}
+
+
+def prop_book_lines(raw_props: list[dict]) -> list[dict]:
+    """One row per prop / book / side with that book's own line + odds —
+    including DFS operators (PrizePicks, Underdog, …) when BettingPros returns
+    them. Reads the same selections[].books[].lines[] nesting flatten_props
+    already iterates, but keeps the book identity instead of collapsing to the
+    best price."""
+    rows = []
+    for p in raw_props or []:
+        event_id = _dig(p, "event_id", "event.id")
+        market_id = _dig(p, "market_id", "market.id")
+        name = _dig(p, "participant.name", "participant.player.name",
+                    "player.name", "participant", "name")
+        name = name if isinstance(name, str) else None
+        for sel in p.get("selections") or []:
+            label = str(sel.get("selection") or sel.get("label") or "").lower()
+            side = "over" if "over" in label else "under" if "under" in label else None
+            if not side:
+                continue
+            for book in sel.get("books") or []:
+                bname = (book.get("name") or "")
+                for line in book.get("lines") or []:
+                    if not line.get("active", True):
+                        continue
+                    rows.append({
+                        "event_id": event_id, "market_id": market_id,
+                        "participant": name, "side": side,
+                        "book_id": book.get("id"),
+                        "book_name": bname.lower() or None,
+                        "line": _num_or_none(line.get("line")),
+                        "odds": _num_or_none(line.get("cost", line.get("odds"))),
+                    })
+    return rows
+
+
+def dfs_prop_lines(raw_props: list[dict],
+                   book_ids: set[int] | None = None) -> list[dict]:
+    """The PrizePicks/Underdog (and similar) per-prop lines, filtered from the
+    per-book rows by book name or explicit book_ids."""
+    out = []
+    for r in prop_book_lines(raw_props):
+        if (book_ids and r["book_id"] in book_ids) or (r["book_name"] in DFS_BOOK_NAMES):
+            out.append(r)
+    return out
+
+
 def _correlated_picks(p: dict) -> list[dict]:
     """Flatten BettingPros' correlated-pick suggestions (from
     include_correlated_picks=true) into ``[{player, market, side, line, odds,
