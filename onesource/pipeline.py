@@ -666,7 +666,7 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
     except Exception as e:
         log.warning("%s results unavailable: %s", sport_key, e)
         results = []
-    ratings = generic.team_ratings(results, sport.league_ppg)
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
 
     # Elo: maintain ratings over a longer history (covers prior + current
     # season for cross-season carryover), then blend its win prob in.

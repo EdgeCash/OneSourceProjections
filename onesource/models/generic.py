@@ -33,24 +33,36 @@ class TeamRating:
     allowed: float
 
 
-def team_ratings(results: list[dict], league_ppg: float) -> dict[str, TeamRating]:
-    """results: [{home_team, away_team, home_score, away_score}, ...]"""
+def team_ratings(results: list[dict], league_ppg: float,
+                 opponent_adjust: bool = False) -> dict[str, TeamRating]:
+    """results: [{home_team, away_team, home_score, away_score}, ...].
+
+    When opponent_adjust is set, the off/def rates get a one-pass
+    strength-of-schedule correction: facing weak defenses discounts your
+    offense, facing strong offenses credits your defense."""
     raw: dict[str, list[tuple[float, float]]] = {}
+    opps: dict[str, list[str]] = {}
     for g in results:
         raw.setdefault(g["home_team"], []).append((g["home_score"], g["away_score"]))
         raw.setdefault(g["away_team"], []).append((g["away_score"], g["home_score"]))
-    out = {}
+        opps.setdefault(g["home_team"], []).append(g["away_team"])
+        opps.setdefault(g["away_team"], []).append(g["home_team"])
+
+    base = {}
     for team, games in raw.items():
         n = len(games)
-        scored = sum(s for s, _ in games) / n
-        allowed = sum(a for _, a in games) / n
-        # shrink harder when the sample is thin
         w = RATING_SHRINK * min(1.0, n / 10)
-        out[team] = TeamRating(
-            games=n,
-            scored=w * scored + (1 - w) * league_ppg,
-            allowed=w * allowed + (1 - w) * league_ppg,
-        )
+        base[team] = (w * (sum(s for s, _ in games) / n) + (1 - w) * league_ppg,
+                      w * (sum(a for _, a in games) / n) + (1 - w) * league_ppg, n)
+
+    out = {}
+    for team, (scored, allowed, n) in base.items():
+        if opponent_adjust:
+            faced = [base[o] for o in opps[team] if o in base]
+            if faced:
+                scored += league_ppg - sum(o[1] for o in faced) / len(faced)
+                allowed += league_ppg - sum(o[0] for o in faced) / len(faced)
+        out[team] = TeamRating(games=n, scored=scored, allowed=allowed)
     return out
 
 

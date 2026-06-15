@@ -45,6 +45,9 @@ class Sport:
     # away_rest, each capped at 14). 0 = off. Tuned on the game backtest;
     # only set for normal-model sports where it's been measured.
     rest_coeff: float = 0.0
+    # opponent-adjust (strength-of-schedule) the off/def ratings. Enabled per
+    # sport once the backtest shows it helps.
+    opponent_adjust: bool = False
 
 
 SPORTS: dict[str, Sport] = {
@@ -72,6 +75,8 @@ SPORTS: dict[str, Sport] = {
         elo_blend=0.60, elo_k=20.0, elo_home_edge=65.0, elo_regress=0.25,
         # rest-days edge (back-to-backs): +cal & +CLV on the 2022-24 backtest.
         rest_coeff=0.5,
+        # strength-of-schedule helps NBA on the 2022-24 backtest (logloss/CLV/ROI).
+        opponent_adjust=True,
     ),
     "NFL": Sport(
         key="NFL", espn_path="football/nfl", model="normal",
@@ -103,6 +108,8 @@ SPORTS: dict[str, Sport] = {
         score_method="multiplicative",
         # Low-event sport -> small k (single results carry little signal).
         elo_blend=0.50, elo_k=6.0, elo_home_edge=50.0, elo_regress=0.30,
+        # strength-of-schedule helps NHL on the 2022-24 backtest (logloss/CLV/ROI).
+        opponent_adjust=True,
     ),
 }
 

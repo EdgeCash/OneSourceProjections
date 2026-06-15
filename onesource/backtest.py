@@ -268,27 +268,43 @@ class _Form:
     window: int
     scored: dict = field(default_factory=lambda: defaultdict(deque))
     allowed: dict = field(default_factory=lambda: defaultdict(deque))
+    opp: dict = field(default_factory=lambda: defaultdict(deque))
 
-    def rating(self, team: str, league_ppg: float) -> generic.TeamRating | None:
+    def _raw(self, team: str, league_ppg: float):
         s, a = self.scored[team], self.allowed[team]
         n = len(s)
         if n == 0:
             return None
         w = generic.RATING_SHRINK * min(1.0, n / 10)
-        return generic.TeamRating(
-            games=n,
-            scored=w * (sum(s) / n) + (1 - w) * league_ppg,
-            allowed=w * (sum(a) / n) + (1 - w) * league_ppg,
-        )
+        return (w * (sum(s) / n) + (1 - w) * league_ppg,
+                w * (sum(a) / n) + (1 - w) * league_ppg, n)
+
+    def rating(self, team: str, league_ppg: float,
+               opponent_adjust: bool = False) -> generic.TeamRating | None:
+        raw = self._raw(team, league_ppg)
+        if raw is None:
+            return None
+        off, deff, n = raw
+        if opponent_adjust and self.opp[team]:
+            opp_raws = [self._raw(o, league_ppg) for o in self.opp[team]]
+            opp_raws = [r for r in opp_raws if r]
+            if opp_raws:
+                # faced weak defenses (high opp 'allowed') -> discount our offense;
+                # faced strong offenses (high opp 'scored') -> credit our defense.
+                off += league_ppg - sum(r[1] for r in opp_raws) / len(opp_raws)
+                deff += league_ppg - sum(r[0] for r in opp_raws) / len(opp_raws)
+        return generic.TeamRating(games=n, scored=off, allowed=deff)
 
     def update(self, g: dict):
-        for team, sc, al in ((g["home"], g["home_score"], g["away_score"]),
-                             (g["away"], g["away_score"], g["home_score"])):
+        for team, sc, al, op in ((g["home"], g["home_score"], g["away_score"], g["away"]),
+                                 (g["away"], g["away_score"], g["home_score"], g["home"])):
             self.scored[team].append(sc)
             self.allowed[team].append(al)
+            self.opp[team].append(op)
             if len(self.scored[team]) > self.window:
                 self.scored[team].popleft()
                 self.allowed[team].popleft()
+                self.opp[team].popleft()
 
 
 def _project(sport_key: str, sport, h: generic.TeamRating | None,
@@ -452,10 +468,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
                       use_park: bool = False, shrink: float = 0.0,
-                      rest_coeff: float | None = None) -> dict:
+                      rest_coeff: float | None = None,
+                      opponent_adjust: bool | None = None) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
+    if opponent_adjust is None:
+        opponent_adjust = sport.opponent_adjust
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
              else _wnba_games(seasons) if sport_key == "WNBA"
              else _generic_games(sport_key, seasons))
@@ -486,8 +505,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     n_with_starter = 0
 
     for g in games:
-        h = form.rating(g["home"], sport.league_ppg)
-        a = form.rating(g["away"], sport.league_ppg)
+        h = form.rating(g["home"], sport.league_ppg, opponent_adjust)
+        a = form.rating(g["away"], sport.league_ppg, opponent_adjust)
         if h and a and h.games >= min_games and a.games >= min_games:
             pk = g.get("game_pk")
             # home faces the away starter/bullpen and vice-versa
