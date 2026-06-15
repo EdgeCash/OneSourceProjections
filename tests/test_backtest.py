@@ -155,3 +155,19 @@ def test_detail_per_game_grading_consistency():
             assert g["ml_hit"] == (g["ml_fav"] == winner)
         assert g["ml_fav"] in (g["home"], g["away"])
         assert 0.0 <= g["home_win_prob"] <= 1.0
+
+
+def test_prop_calibration_summary_artifact():
+    """The committed summary the Prop-calibration UI reads stays well-formed
+    and reflects the post-fix calibration (all gaps small)."""
+    import json
+    from onesource import config
+    path = config.REPO_ROOT / "data" / "history" / "calibration" / "props_calibration_summary.json"
+    cal = json.loads(path.read_text())
+    assert "MLB" in cal and "batter_hits" in cal["MLB"]
+    for sport, markets in cal.items():
+        for mkt, c in markets.items():
+            if not c.get("n"):
+                continue
+            assert {"projection_mae", "calibration_gap", "calibration"} <= set(c)
+            assert abs(c["calibration_gap"]) < 0.05      # all markets well-behaved

@@ -1594,8 +1594,86 @@ def _replay_card_html(g: dict) -> str:
         "</div>")
 
 
+def _slate_record(games: list[dict]) -> str:
+    """Model's leans graded across a slate: W-L (+units) per market. ML priced
+    at the favorite's best closing number; ATS/Total at -110."""
+    def dec(a):
+        return 1 + (100 / abs(a) if a < 0 else a / 100)
+    parts = []
+    # moneyline
+    w = l = 0
+    u = 0.0
+    priced = True
+    for g in games:
+        if g.get("ml_hit") is None:
+            continue
+        w, l = (w + 1, l) if g["ml_hit"] else (w, l + 1)
+        price = g.get("home_ml") if g["ml_fav"] == g["home"] else g.get("away_ml")
+        if price is None:
+            priced = False
+        else:
+            u += (dec(price) - 1) if g["ml_hit"] else -1
+    if w + l:
+        parts.append(f"ML {w}–{l}" + (f" ({u:+.1f}u)" if priced else ""))
+    # ATS + total at -110
+    for label, key in (("ATS", "ats_hit"), ("Total", "tot_hit")):
+        w = l = 0
+        u = 0.0
+        for g in games:
+            h = g.get(key)
+            if h is None:
+                continue
+            if h:
+                w += 1
+                u += 100 / 110
+            else:
+                l += 1
+                u -= 1
+        if w + l:
+            parts.append(f"{label} {w}–{l} ({u:+.1f}u)")
+    return " · ".join(parts)
+
+
 def render_backtest():
     st.markdown("<div class='osp-title'>🧪 Model backtest</div>", unsafe_allow_html=True)
+    tab_g, tab_p = st.tabs(["🎮 Game model", "🎯 Prop calibration"])
+    with tab_g:
+        _render_game_model()
+    with tab_p:
+        _render_prop_calibration()
+
+
+def _render_prop_calibration():
+    st.caption("Is our P(over) accurate? **Gap** = mean predicted P(over) − the "
+               "actual over-rate; |gap| under ~1% is well calibrated. Graded vs "
+               "model-derived lines (we don't have historical PrizePicks lines).")
+    path = config.REPO_ROOT / "data" / "history" / "calibration" / "props_calibration_summary.json"
+    if not path.exists():
+        st.info("Prop calibration summary not generated yet.")
+        return
+    cal = json.loads(path.read_text())
+    for sport, markets in cal.items():
+        rows = [{"Market": ui.short_market(m), "n": c.get("n"),
+                 "MAE": c.get("projection_mae"),
+                 "Pred over": c.get("mean_pred_over"),
+                 "Actual over": c.get("empirical_over"),
+                 "Gap": c.get("calibration_gap")}
+                for m, c in markets.items() if c.get("n")]
+        if not rows:
+            continue
+        st.markdown(f"**{sport}**")
+        df = pd.DataFrame(rows)
+        sty = df.style.map(
+            lambda v: ("color:#00e676;" if isinstance(v, (int, float)) and abs(v) < 0.01
+                       else "color:#ffa657;" if isinstance(v, (int, float)) and abs(v) < 0.025
+                       else "color:#ff6b6b;" if isinstance(v, (int, float)) else ""),
+            subset=["Gap"]).format(
+            {"MAE": "{:.3f}", "Pred over": "{:.3f}", "Actual over": "{:.3f}",
+             "Gap": "{:+.4f}"}, na_rep="—")
+        st.dataframe(sty, hide_index=True, width="stretch")
+
+
+def _render_game_model():
     st.caption("Walk-forward: each game projected from only prior data, then "
                "graded against the result and the **closing line** (CLV / ROI). "
                "Historical evaluation of the model — not live picks.")
@@ -1667,10 +1745,15 @@ def render_backtest():
             (x["season"] or 0, x["week"] or 0, x["date"]) for x in slates[L]),
             reverse=True)
         pick = st.selectbox("Slate", order, key=f"bt_slate_{sport}")
+        slate_games = sorted(slates[pick], key=lambda x: (x["date"], x["home"]))
+        rec = _slate_record(slate_games)
+        if rec:
+            st.markdown(f"**Model leans this slate:** {rec}")
         st.caption("Each card: the model's pre-game lean vs the closing line and the "
-                   "final result. ✓ = the model's side cashed at the close.")
+                   "final result. ✓ = the model's side cashed at the close. "
+                   "Units: ML at the favorite's best price, ATS/Total at -110.")
         cols = st.columns(2)
-        for i, g in enumerate(sorted(slates[pick], key=lambda x: (x["date"], x["home"]))):
+        for i, g in enumerate(slate_games):
             cols[i % 2].markdown(_replay_card_html(g), unsafe_allow_html=True)
 
 
