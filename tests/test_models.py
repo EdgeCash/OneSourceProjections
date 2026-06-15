@@ -39,6 +39,22 @@ def test_batter_models_sane():
     p = props.prob_over_hits(h["n"], h["p"], 0.5)  # P(1+ hits)
     assert 0.65 < p < 0.85
 
+
+def test_hits_overdispersion_fix():
+    """The beta-binomial fix works through zero-inflation on the common 0.5
+    line (most batters average <1 hit): adding zero-hit games lowers P(>=1),
+    which removed the +2.6pt over-bias. Guard that mechanism + monotonicity."""
+    from scipy import stats
+    n, p = 5, 0.20                     # mean 1.0; line 0.5 -> P(>=1 hit)
+    bb = props.prob_over_hits(n, p, 0.5)
+    binom = float(1 - stats.binom.cdf(0, n, p))
+    assert 0.0 < bb < binom < 1.0      # overdispersion -> more zeros -> lower P(over)
+    # less overdispersion (higher concentration) -> back toward the binomial
+    assert bb < props.prob_over_hits(n, p, 0.5, concentration=200) <= binom
+    assert (props.prob_over_hits(n, p, 0.5)
+            > props.prob_over_hits(n, p, 1.5)
+            > props.prob_over_hits(n, p, 2.5))            # monotonic in line
+
     tb = props.batter_total_bases(4.2, slg=0.500, xslg=0.520)
     assert 1.9 < tb["mean"] < 2.4
 
