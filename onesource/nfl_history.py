@@ -317,6 +317,7 @@ def games_from_nflverse(records: list[dict]) -> list[dict]:
             "completed": True,
             "neutral_site": str(_num(r.get("location"))) == "Neutral",
             "is_ot": _num(r.get("overtime")) in (1, 1.0),
+            "home_qb": _num(r.get("home_qb_id")), "away_qb": _num(r.get("away_qb_id")),
             "spread_home": (-float(sl)) if sl is not None else None,
             "over_under": _num(r.get("total_line")),
             "home_ml": _num(r.get("home_moneyline")),
