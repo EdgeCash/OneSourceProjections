@@ -1,0 +1,53 @@
+{
+ "sport": "MLB",
+ "date": "2026-06-15",
+ "top_level_keys": [
+  "_pagination",
+  "_parameters",
+  "label",
+  "props",
+  "ts",
+  "utc",
+  "widget_label"
+ ],
+ "props_container_type": "dict",
+ "n_items": 1,
+ "item_types": {
+  "str": 1
+ },
+ "retry_with_market_ids": {
+  "n": 1,
+  "types": {
+   "str": 1
+  },
+  "market_ids": [
+   180,
+   181,
+   182,
+   293
+  ]
+ },
+ "first_prop_keys": null,
+ "response_shape": {
+  "_parameters": {
+   "bp_partner_id": null,
+   "limit": 200,
+   "page": "1",
+   "sport": "MLB",
+   "...": "+53 more keys"
+  },
+  "_pagination": {
+   "page": 1,
+   "limit": 200,
+   "total_pages": 10,
+   "total_items": 1972,
+   "...": "+3 more keys"
+  },
+  "label": "MLB props for June 15th, 2026",
+  "widget_label": "Best MLB Player Props (2026-06-15)",
+  "...": "+3 more keys"
+ },
+ "first_item_full": "Unsupported sports found for SGP correlations. Supported sports are NFL and NBA.",
+ "books": [],
+ "dfs_sample": []
+}
