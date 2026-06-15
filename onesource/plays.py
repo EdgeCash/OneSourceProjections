@@ -398,6 +398,29 @@ def summary() -> dict:
     }
 
 
+def played_accuracy() -> tuple[float | None, int]:
+    """Win rate across everything you confirmed Played — DFS legs and game bets
+    combined (pushes/ties excluded). Returns (accuracy, n_decided). The personal
+    'how often my plays hit' number for the daily recap."""
+    wins = n = 0
+    for p in load_plays():
+        if p.get("played") and p.get("graded_at") and p.get("push") is not True:
+            n += 1
+            wins += 1 if p.get("won") else 0
+    played = confirmed_played()
+    if played:
+        from . import results
+        for r in results.load_ledger():
+            if "pnl" not in r:
+                continue
+            key = (f"game|{r['date']}|{r['sport']}|{r['game']}|"
+                   f"{r['market']}|{r.get('side', '')}")
+            if key in played:
+                n += 1
+                wins += 1 if r.get("won") else 0
+    return (round(wins / n, 4) if n else None, n)
+
+
 def _f(v):
     try:
         return None if v is None else float(v)

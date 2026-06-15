@@ -204,6 +204,21 @@ def load_ledger() -> list[dict]:
     return [json.loads(x) for x in LEDGER.read_text().splitlines() if x.strip()]
 
 
+def model_accuracy() -> tuple[float | None, int]:
+    """Directional accuracy: share of graded games where the model's favored
+    side actually won. Returns (accuracy, n_games). The plain-English 'how
+    often is the model right' number for the daily recap."""
+    games = [r for r in load_ledger()
+             if r.get("market") == "model_winprob"
+             and r.get("pred_home_wp") is not None
+             and r.get("home_won") is not None]
+    if not games:
+        return None, 0
+    correct = sum(1 for r in games
+                  if (float(r["pred_home_wp"]) >= 0.5) == (r["home_won"] == 1))
+    return round(correct / len(games), 4), len(games)
+
+
 def performance() -> dict:
     """Summarize the ledger: betting record/ROI and model Brier by sport."""
     rows = load_ledger()

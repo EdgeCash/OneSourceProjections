@@ -27,7 +27,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import (notify, pipeline, playerlogs, plays,  # noqa: E402
+from onesource import (config, notify, pipeline, playerlogs, plays,  # noqa: E402
                        results, snapshots)
 from onesource.config import OUTPUT_DIR  # noqa: E402
 from onesource.sports import active_sports, default_slate_date  # noqa: E402
@@ -39,6 +39,30 @@ ET = ZoneInfo("America/New_York")
 
 
 APP_URL = "https://onesourceprojections.streamlit.app"
+RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
+
+
+def _maybe_daily_recap(today_iso: str, hour_et: int) -> None:
+    """Once per day, at/after RECAP_HOUR_ET, push two numbers: overall model
+    accuracy and personal played accuracy. Deduped by date so it fires once."""
+    if not notify.configured() or hour_et < config.RECAP_HOUR_ET:
+        return
+    try:
+        state = json.loads(RECAP_STATE.read_text()) if RECAP_STATE.exists() else {}
+    except Exception:
+        state = {}
+    if state.get("last") == today_iso:
+        return
+    macc, mn = results.model_accuracy()
+    pacc, pn = plays.played_accuracy()
+    m = f"{macc:.0%} ({mn} games)" if macc is not None else "— (no games yet)"
+    p = f"{pacc:.0%} ({pn} plays)" if pacc is not None else "— (no plays yet)"
+    notify.send(f"Model accuracy: {m}\nYour played accuracy: {p}",
+                title=f"📊 Daily recap — {today_iso}", tags=["bar_chart"],
+                click=f"{APP_URL}/?section=PERFORMANCE")
+    RECAP_STATE.parent.mkdir(parents=True, exist_ok=True)
+    RECAP_STATE.write_text(json.dumps({"last": today_iso}))
+    log.info("pushed daily recap (model %s, played %s)", m, p)
 
 
 def _confirm_actions(pid: str) -> str | None:
@@ -186,6 +210,12 @@ def main():
             except Exception as e:
                 log.error("box-score ingest %s %s failed: %s", sport, d, e)
     log.info("graded %d new rows, ingested %d player logs", graded, ingested)
+
+    # 3b) daily recap push (once/day): overall model accuracy + played accuracy.
+    try:
+        _maybe_daily_recap(today.isoformat(), datetime.now(ET).hour)
+    except Exception as e:
+        log.error("daily recap failed: %s", e)
 
     # 4) write the combined site data file
     perf = results.performance()

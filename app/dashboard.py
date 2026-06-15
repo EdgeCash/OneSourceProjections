@@ -823,6 +823,17 @@ def render_performance():
         st.info("No graded results yet — performance accrues as projected "
                 "games finish and the hourly job grades them.")
         return
+    # The two daily-recap numbers up top: model accuracy and played accuracy.
+    macc, mn = results.model_accuracy()
+    pacc, pn = plays.played_accuracy()
+    a = st.columns(2)
+    a[0].metric("Model accuracy", f"{macc:.0%}" if macc is not None else "—",
+                help=f"How often the model's favored side won ({mn} graded games). "
+                     "The plain-English accuracy number.")
+    a[1].metric("Your played accuracy", f"{pacc:.0%}" if pacc is not None else "—",
+                help=f"Win rate on plays you tapped Played ({pn} decided) — DFS "
+                     "legs and game bets combined.")
+
     c = st.columns(5)
     c[0].metric("Graded games", overall.get("graded_games", 0))
     c[1].metric("Model Brier", overall.get("model_brier") or "—",
