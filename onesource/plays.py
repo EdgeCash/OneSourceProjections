@@ -398,20 +398,24 @@ def summary() -> dict:
     }
 
 
-def played_accuracy() -> tuple[float | None, int]:
+def played_accuracy(dates=None) -> tuple[float | None, int]:
     """Win rate across everything you confirmed Played — DFS legs and game bets
-    combined (pushes/ties excluded). Returns (accuracy, n_decided). The personal
-    'how often my plays hit' number for the daily recap."""
+    combined (pushes/ties excluded). Returns (accuracy, n_decided). Pass
+    ``dates`` (a date string or set) to restrict to specific slate dates, e.g.
+    yesterday for the daily recap; omit for the cumulative number."""
+    if isinstance(dates, str):
+        dates = {dates}
     wins = n = 0
     for p in load_plays():
-        if p.get("played") and p.get("graded_at") and p.get("push") is not True:
+        if (p.get("played") and p.get("graded_at") and p.get("push") is not True
+                and (dates is None or p.get("date") in dates)):
             n += 1
             wins += 1 if p.get("won") else 0
     played = confirmed_played()
     if played:
         from . import results
         for r in results.load_ledger():
-            if "pnl" not in r:
+            if "pnl" not in r or (dates is not None and r.get("date") not in dates):
                 continue
             key = (f"game|{r['date']}|{r['sport']}|{r['game']}|"
                    f"{r['market']}|{r.get('side', '')}")
@@ -419,6 +423,33 @@ def played_accuracy() -> tuple[float | None, int]:
                 n += 1
                 wins += 1 if r.get("won") else 0
     return (round(wins / n, 4) if n else None, n)
+
+
+DAILY = config.REPO_ROOT / "data" / "track" / "daily_record.jsonl"
+
+
+def record_daily(date: str, model: tuple, played: tuple) -> dict:
+    """Upsert one day's recap line (model + played accuracy) into the daily
+    record log, keyed by date. Returns the stored row."""
+    rows = load_daily_record()
+    by_date = {r["date"]: r for r in rows}
+    by_date[date] = {
+        "date": date,
+        "model_acc": model[0], "model_n": model[1],
+        "played_acc": played[0], "played_n": played[1],
+        "recorded_at": _now(),
+    }
+    DAILY.parent.mkdir(parents=True, exist_ok=True)
+    with DAILY.open("w") as f:
+        for d in sorted(by_date):
+            f.write(json.dumps(by_date[d], default=str) + "\n")
+    return by_date[date]
+
+
+def load_daily_record() -> list[dict]:
+    if not DAILY.exists():
+        return []
+    return [json.loads(x) for x in DAILY.read_text().splitlines() if x.strip()]
 
 
 def _f(v):

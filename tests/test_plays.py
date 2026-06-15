@@ -218,3 +218,30 @@ def test_model_accuracy_directional():
     with m.patch.object(results, "load_ledger", lambda: rows):
         acc, n = results.model_accuracy()
     assert n == 3 and acc == round(2 / 3, 4)
+
+
+def test_played_accuracy_date_filter(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    monkeypatch.setattr(plays, "CONFIRM", tmp_path / "confirm.json")
+    rows = [
+        {"date": "2026-06-14", "sport": "MLB", "player": "A", "market": "ks",
+         "side": "Over", "played": True, "graded_at": "x", "push": False, "won": True},
+        {"date": "2026-06-13", "sport": "MLB", "player": "B", "market": "ks",
+         "side": "Over", "played": True, "graded_at": "x", "push": False, "won": False},
+    ]
+    monkeypatch.setattr(plays, "load_plays", lambda: rows)
+    monkeypatch.setattr(plays, "confirmed_played", lambda: set())
+    assert plays.played_accuracy("2026-06-14") == (1.0, 1)   # only that day
+    assert plays.played_accuracy("2026-06-13") == (0.0, 1)
+    assert plays.played_accuracy() == (0.5, 2)               # cumulative
+
+
+def test_record_daily_upserts_by_date(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "DAILY", tmp_path / "daily.jsonl")
+    plays.record_daily("2026-06-14", (0.6, 10), (0.55, 4))
+    plays.record_daily("2026-06-13", (0.5, 8), (None, 0))
+    plays.record_daily("2026-06-14", (0.7, 12), (0.50, 6))  # overwrite same date
+    rows = plays.load_daily_record()
+    assert len(rows) == 2  # not 3 — upsert by date
+    row14 = next(r for r in rows if r["date"] == "2026-06-14")
+    assert row14["model_acc"] == 0.7 and row14["played_n"] == 6

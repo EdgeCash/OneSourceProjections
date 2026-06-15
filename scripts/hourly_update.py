@@ -42,9 +42,10 @@ APP_URL = "https://onesourceprojections.streamlit.app"
 RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
 
 
-def _maybe_daily_recap(today_iso: str, hour_et: int) -> None:
-    """Once per day, at/after RECAP_HOUR_ET, push two numbers: overall model
-    accuracy and personal played accuracy. Deduped by date so it fires once."""
+def _maybe_daily_recap(today_iso: str, yesterday_iso: str, hour_et: int) -> None:
+    """Once per day, at/after RECAP_HOUR_ET, push YESTERDAY's two numbers — model
+    accuracy and personal played accuracy — and append them to the daily record.
+    Deduped by date so it fires once."""
     if not notify.configured() or hour_et < config.RECAP_HOUR_ET:
         return
     try:
@@ -53,16 +54,18 @@ def _maybe_daily_recap(today_iso: str, hour_et: int) -> None:
         state = {}
     if state.get("last") == today_iso:
         return
-    macc, mn = results.model_accuracy()
-    pacc, pn = plays.played_accuracy()
-    m = f"{macc:.0%} ({mn} games)" if macc is not None else "— (no games yet)"
-    p = f"{pacc:.0%} ({pn} plays)" if pacc is not None else "— (no plays yet)"
+    model = results.model_accuracy(yesterday_iso)
+    played = plays.played_accuracy(yesterday_iso)
+    plays.record_daily(yesterday_iso, model, played)
+    m = f"{model[0]:.0%} ({model[1]} games)" if model[0] is not None else "— (no games)"
+    p = f"{played[0]:.0%} ({played[1]} plays)" if played[0] is not None else "— (no plays)"
     notify.send(f"Model accuracy: {m}\nYour played accuracy: {p}",
-                title=f"📊 Daily recap — {today_iso}", tags=["bar_chart"],
+                title=f"📊 {yesterday_iso} recap", tags=["bar_chart"],
                 click=f"{APP_URL}/?section=PERFORMANCE")
     RECAP_STATE.parent.mkdir(parents=True, exist_ok=True)
     RECAP_STATE.write_text(json.dumps({"last": today_iso}))
-    log.info("pushed daily recap (model %s, played %s)", m, p)
+    log.info("pushed daily recap for %s (model %s, played %s)",
+             yesterday_iso, m, p)
 
 
 def _confirm_actions(pid: str) -> str | None:
@@ -211,9 +214,11 @@ def main():
                 log.error("box-score ingest %s %s failed: %s", sport, d, e)
     log.info("graded %d new rows, ingested %d player logs", graded, ingested)
 
-    # 3b) daily recap push (once/day): overall model accuracy + played accuracy.
+    # 3b) daily recap push (once/day): YESTERDAY's model + played accuracy,
+    #     logged to the daily record so the day-by-day history accrues.
     try:
-        _maybe_daily_recap(today.isoformat(), datetime.now(ET).hour)
+        _maybe_daily_recap(today.isoformat(), yesterday.isoformat(),
+                           datetime.now(ET).hour)
     except Exception as e:
         log.error("daily recap failed: %s", e)
 

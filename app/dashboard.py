@@ -834,6 +834,23 @@ def render_performance():
                 help=f"Win rate on plays you tapped Played ({pn} decided) — DFS "
                      "legs and game bets combined.")
 
+    # Day-by-day record (one row per day, from the recap log).
+    drec = plays.load_daily_record()
+    if drec:
+        with st.expander("Daily record", expanded=False):
+            def _pct(v):
+                return f"{v:.0%}" if isinstance(v, (int, float)) else "—"
+            dd = pd.DataFrame(sorted(drec, key=lambda r: r["date"], reverse=True))
+            dd["Model"] = [f"{_pct(v)} ({int(n)})" for v, n in
+                           zip(dd["model_acc"], dd["model_n"].fillna(0))]
+            dd["Played"] = [f"{_pct(v)} ({int(n)})" for v, n in
+                            zip(dd["played_acc"], dd["played_n"].fillna(0))]
+            dd = dd.rename(columns={"date": "Date"})
+            st.dataframe(dd[["Date", "Model", "Played"]].head(30),
+                         width="stretch", hide_index=True)
+            st.caption("Each row is that day's model accuracy and your played "
+                       "accuracy (sample size in parentheses).")
+
     c = st.columns(5)
     c[0].metric("Graded games", overall.get("graded_games", 0))
     c[1].metric("Model Brier", overall.get("model_brier") or "—",

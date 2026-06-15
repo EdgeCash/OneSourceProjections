@@ -204,14 +204,18 @@ def load_ledger() -> list[dict]:
     return [json.loads(x) for x in LEDGER.read_text().splitlines() if x.strip()]
 
 
-def model_accuracy() -> tuple[float | None, int]:
+def model_accuracy(dates=None) -> tuple[float | None, int]:
     """Directional accuracy: share of graded games where the model's favored
-    side actually won. Returns (accuracy, n_games). The plain-English 'how
-    often is the model right' number for the daily recap."""
+    side actually won. Returns (accuracy, n_games). Pass ``dates`` (a date
+    string or set of them) to restrict to specific slate dates — e.g. just
+    yesterday for the daily recap; omit for the cumulative number."""
+    if isinstance(dates, str):
+        dates = {dates}
     games = [r for r in load_ledger()
              if r.get("market") == "model_winprob"
              and r.get("pred_home_wp") is not None
-             and r.get("home_won") is not None]
+             and r.get("home_won") is not None
+             and (dates is None or r.get("date") in dates)]
     if not games:
         return None, 0
     correct = sum(1 for r in games
