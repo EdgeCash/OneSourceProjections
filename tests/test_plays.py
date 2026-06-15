@@ -1,0 +1,86 @@
+"""First-qualify DFS play logging, closing-line refresh, and grading."""
+
+import onesource.plays as plays
+
+
+def _blob(pp_line=5.5, pp_prob=0.63):
+    return {"MLB": {"props": [
+        # qualifies: PrizePicks line priced, big edge
+        {"player": "Zack Wheeler", "team": "PHI", "market": "strikeouts",
+         "line": 6.5, "model_over_prob": 0.40,
+         "pp_line": pp_line, "pp_model_over_prob": pp_prob,
+         "pp_over_odds": -119, "pp_under_odds": -119},
+        # below the edge bar -> not logged
+        {"player": "Aaron Nola", "team": "PHI", "market": "strikeouts",
+         "line": 5.5, "model_over_prob": 0.52,
+         "pp_line": 5.5, "pp_model_over_prob": 0.52,
+         "pp_over_odds": -119, "pp_under_odds": -119},
+        # consensus-only (no DFS line) -> not logged
+        {"player": "Bryce Harper", "team": "PHI", "market": "total_bases",
+         "line": 1.5, "model_over_prob": 0.80,
+         "over_odds": -110, "under_odds": -110},
+    ]}}
+
+
+def test_log_qualifying_first_qualify_only(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    new = plays.log_qualifying("2026-06-15", _blob())
+    assert len(new) == 1
+    leg = new[0]
+    assert leg["player"] == "Zack Wheeler" and leg["side"] == "Over"
+    assert leg["line"] == 5.5 and leg["line_source"] == "PrizePicks"
+    assert leg["edge"] > 0.04 and leg["graded_at"] is None
+    # idempotent: same slate -> nothing new logged
+    assert plays.log_qualifying("2026-06-15", _blob()) == []
+    assert len(plays.load_plays()) == 1
+
+
+def test_closing_line_refresh_and_clv(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    plays.log_qualifying("2026-06-15", _blob(pp_line=5.5))
+    # line later moves to 5.0 (softer for the Over) -> no new row, close updated
+    new = plays.log_qualifying("2026-06-15", _blob(pp_line=5.0))
+    assert new == []
+    p = plays.load_plays()[0]
+    assert p["close_line"] == 5.0
+    assert plays.line_clv(p) == 0.5  # Over: 5.5 -> 5.0 moved our way
+
+
+def test_grade_plays_marks_hit_and_push(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    plays.log_qualifying("2026-06-15", _blob())
+
+    import onesource.playerlogs as pl
+    monkeypatch.setattr(pl, "actual_value", lambda *a, **k: 7.0)  # over 5.5 -> win
+    n = plays.grade_plays("2026-06-15", days=4)
+    assert n == 1
+    p = plays.load_plays()[0]
+    assert p["won"] is True and p["push"] is False and p["actual"] == 7.0
+    # already graded -> not regraded
+    assert plays.grade_plays("2026-06-15", days=4) == 0
+
+    s = plays.summary()
+    assert s["legs_graded"] == 1 and s["leg_win_rate"] == 1.0
+
+
+def test_grade_push_when_actual_equals_line(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    plays.log_qualifying("2026-06-15", _blob())
+    import onesource.playerlogs as pl
+    monkeypatch.setattr(pl, "actual_value", lambda *a, **k: 5.5)  # exact line
+    plays.grade_plays("2026-06-15", days=4)
+    p = plays.load_plays()[0]
+    assert p["push"] is True and p["won"] is None
+    assert plays.summary()["leg_win_rate"] is None  # push excluded
+
+
+def test_todays_card_builds_from_logged_legs(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    # two qualifying legs on different teams -> a 2-pick card
+    blob = {"MLB": {"props": [
+        {"player": f"P{i}", "team": f"T{i}", "market": "ks", "line": 5.5,
+         "model_over_prob": 0.4, "pp_line": 4.5, "pp_model_over_prob": 0.66,
+         "pp_over_odds": -119, "pp_under_odds": -119} for i in range(2)]}}
+    plays.log_qualifying("2026-06-15", blob, min_edge=0.04)
+    card = plays.todays_card("2026-06-15", min_edge=0.04)
+    assert card is not None and card["size"] == 2

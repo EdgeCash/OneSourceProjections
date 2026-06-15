@@ -192,6 +192,28 @@ def recent_series(sport: str, player: str, market: str, n: int = 12,
             for d, v, o in zip(g["date"], g[stat], g["opp"])]
 
 
+def actual_value(sport: str, player: str, market: str, date: str) -> float | None:
+    """The player's realized stat for a prop market on a given date, from the
+    ingested box-score logs — used to grade logged prop plays. None if the box
+    score hasn't been ingested yet or the market has no stat mapping."""
+    info = market_to_stat(market)
+    if info is None:
+        return None
+    stat, _role = info
+    df = _logs(sport, (int(str(date)[:4]),))
+    if df.empty or stat not in df.columns:
+        return None
+    g = df[df["norm"] == normalize(player)].copy()
+    if g.empty:
+        return None
+    g["_d"] = pd.to_datetime(g["date"], errors="coerce").dt.normalize()
+    g = g[g["_d"] == pd.to_datetime(date).normalize()]
+    if g.empty:
+        return None
+    v = g.iloc[0][stat]
+    return float(v) if pd.notna(v) else None
+
+
 def _ingested_pks(sport: str) -> set:
     path = FORWARD_DIR / f"{sport.lower()}.jsonl"
     pks = set()

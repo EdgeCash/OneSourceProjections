@@ -27,7 +27,8 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import pipeline, playerlogs, results, snapshots  # noqa: E402
+from onesource import (notify, pipeline, playerlogs, plays,  # noqa: E402
+                       results, snapshots)
 from onesource.config import OUTPUT_DIR  # noqa: E402
 from onesource.sports import active_sports, default_slate_date  # noqa: E402
 
@@ -35,6 +36,33 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(messag
 log = logging.getLogger("hourly")
 
 ET = ZoneInfo("America/New_York")
+
+
+APP_URL = "https://onesourceprojections.streamlit.app"
+
+
+def _notify_new_card(date: str, new_legs: list[dict]) -> None:
+    """Push an ntfy notification summarizing the new first-qualify legs and the
+    best card they form. No-op when ntfy isn't configured."""
+    if not notify.configured():
+        return
+    legs_txt = "\n".join(
+        f"- {l['player']} {l['side']} {l['line']:g} {l['market']} "
+        f"@ {l.get('line_source', 'DFS')} ({(l.get('edge') or 0) * 100:+.0f}% edge)"
+        for l in new_legs[:8])
+    card = plays.todays_card(date)
+    head = f"{len(new_legs)} new DFS leg{'s' if len(new_legs) != 1 else ''} ({date})"
+    if card:
+        be = card.get("breakeven")
+        ev = max([x for x in (card.get("power_ev"), card.get("flex_ev"))
+                  if x is not None], default=None)
+        head += (f" · best {card['size']}-pick"
+                 + (f" {ev:+.0%} EV" if ev is not None else "")
+                 + (f", legs need {be:.0%}" if be is not None else ""))
+    notify.send(legs_txt or "New qualifying legs available.",
+                title=head, tags=["dart", "moneybag"], priority="default",
+                click=f"{APP_URL}/?section=DFS")
+    log.info("pushed ntfy for %d new legs on %s", len(new_legs), date)
 
 
 def main():
@@ -76,10 +104,27 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
+    # 2b) log newly-qualifying DFS legs (first-qualify) and push a notification
+    #     when a fresh card appears. Logging is idempotent: a leg is recorded
+    #     once, then only its closing line is refreshed on later runs.
+    for d in upcoming:
+        try:
+            new_legs = plays.log_qualifying(d, slates.get(d, {}))
+            if new_legs:
+                _notify_new_card(d, new_legs)
+        except Exception as e:
+            log.error("DFS play logging %s failed: %s", d, e)
+
     # 3) grade finished games and ingest box scores. Grading sweeps a short
     #    window (idempotent) so missed runs or late-posting finals still get
     #    picked up; box-score ingest stays on yesterday+today (heavier).
     graded = results.grade_recent(today.isoformat(), days=4)
+    try:
+        graded_legs = plays.grade_plays(today.isoformat(), days=4)
+        if graded_legs:
+            log.info("graded %d DFS legs", graded_legs)
+    except Exception as e:
+        log.error("DFS leg grading failed: %s", e)
     ingested = 0
     for d in (yesterday.isoformat(), today.isoformat()):
         for sport in active_sports(d):
