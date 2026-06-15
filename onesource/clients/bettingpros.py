@@ -390,6 +390,8 @@ def prop_book_lines(raw_props: list[dict]) -> list[dict]:
     best price."""
     rows = []
     for p in raw_props or []:
+        if not isinstance(p, dict):
+            continue
         event_id = _dig(p, "event_id", "event.id")
         market_id = _dig(p, "market_id", "market.id")
         name = _dig(p, "participant.name", "participant.player.name",
