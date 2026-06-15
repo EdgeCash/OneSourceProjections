@@ -19,8 +19,10 @@ Limitations worth knowing when reading the output:
 from __future__ import annotations
 
 import math
+import statistics
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
@@ -214,6 +216,11 @@ def _prewarm_elo(elo: Elo, sport_key: str, first_season: int, lookback: int = 8)
                    int(g["date"][:4]))
 
 
+def _rest_days(team: str, gd, last_seen: dict, cap: int = 14) -> int:
+    prev = last_seen.get(team)
+    return cap if prev is None else min((gd - prev).days, cap)
+
+
 def _generic_games(sport_key: str, seasons: list[int]) -> list[dict]:
     """Completed games for any sport with a committed backfill (NBA, NFL,
     NCAAF, NHL), keyed by full team name for the non-WNBA join."""
@@ -336,86 +343,82 @@ def _poisson_cover(lam_h, lam_a, spread, draws):
 # Closing-line consensus
 # ---------------------------------------------------------------------------
 
+def _devig_market(books: dict, a_side: str, b_side: str):
+    """books: {book: {side: (american, line)}}. De-vig each two-sided book,
+    average the fair prob for a_side, take the median a_side line and the best
+    (max) American price per side. Returns (fair_a, line, best_a, best_b) or
+    None when no book has both sides."""
+    fairs, lines, a_ams, b_ams = [], [], [], []
+    for sides in books.values():
+        if a_side in sides and b_side in sides:
+            pa = odds.implied_prob(sides[a_side][0])
+            pb = odds.implied_prob(sides[b_side][0])
+            fa, _ = odds.devig_two_way(pa, pb)
+            fairs.append(fa)
+            ln = sides[a_side][1]
+            if ln is not None and not (isinstance(ln, float) and math.isnan(ln)):
+                lines.append(ln)
+        if a_side in sides:
+            a_ams.append(sides[a_side][0])
+        if b_side in sides:
+            b_ams.append(sides[b_side][0])
+    if not fairs:
+        return None
+    return (sum(fairs) / len(fairs),
+            statistics.median(lines) if lines else None,
+            float(max(a_ams)), float(max(b_ams)))
+
+
+@lru_cache(maxsize=8)
 def closing_consensus(sport: str) -> dict[tuple, dict]:
     """Keyed by the sport's _join_key -> consensus closing market data:
-    de-vigged fair probs + best available prices per side."""
+    de-vigged fair probs + best available prices per side. Pre-groups rows by
+    event once and processes in pure Python (pandas-per-event was ~80s on the
+    7.5k-game NBA store); cached per sport for repeated backtests/sweeps."""
     cl = history.closing_lines(sport)
     if cl.empty:
         return {}
-    cl = cl.copy()
     # drop malformed prices: real American odds are always |odds| >= 100
-    # (some legacy NBA/NHL rows carry junk like 5.85, which would poison the
-    # de-vig and crash american->decimal).
-    am = pd.to_numeric(cl["american_odds"], errors="coerce")
-    cl = cl[am.abs() >= 100]
+    # (some legacy NBA/NHL rows carry junk like 5.85, which crashes the de-vig).
+    cl = cl.assign(american_odds=pd.to_numeric(cl["american_odds"], errors="coerce"))
+    cl = cl[cl["american_odds"].abs() >= 100]
     if cl.empty:
         return {}
-    cl["date"] = cl["scheduled_start"].str[:10]  # UTC date; ±1d in lookup
-    # latest capture per book/market/side
-    cl = cl.sort_values("captured_at").groupby(
-        ["event_id", "book", "market", "side"], as_index=False).last()
+    cl = cl.assign(date=cl["scheduled_start"].astype(str).str[:10])  # UTC date; ±1d
+    cl = cl.sort_values("captured_at").drop_duplicates(
+        ["event_id", "book", "market", "side"], keep="last")
+
+    cols = ["event_id", "book", "market", "side", "american_odds", "line",
+            "date", "home_team", "away_team"]
+    ev_rows: dict = defaultdict(list)
+    for r in cl[cols].itertuples(index=False, name=None):
+        ev_rows[r[0]].append(r)
 
     out: dict[tuple, list] = defaultdict(list)
-    for event_id, ev in cl.groupby("event_id"):
-        first = ev.iloc[0]
-        key = _team_key(sport, first["home_team"], first["away_team"])
-        rec = {"date": first["date"], "home": first["home_team"],
-               "away": first["away_team"], "moneyline": None, "total": None,
-               "spread": None}
+    for rows in ev_rows.values():
+        date, home, away = rows[0][6], rows[0][7], rows[0][8]
+        rec = {"date": date, "home": home, "away": away,
+               "moneyline": None, "total": None, "spread": None}
+        markets: dict = defaultdict(lambda: defaultdict(dict))
+        for (_e, book, market, side, am_, line, _d, _h, _a) in rows:
+            markets[market][book][side] = (am_, line)
 
-        ml = ev[ev["market"] == "moneyline"]
-        home_fairs, away_fairs = [], []
-        for _, bk in ml.groupby("book"):
-            h = bk[bk["side"] == "home"]; a = bk[bk["side"] == "away"]
-            if len(h) and len(a):
-                ph = odds.implied_prob(h.iloc[0]["american_odds"])
-                pa = odds.implied_prob(a.iloc[0]["american_odds"])
-                fh, _ = odds.devig_two_way(ph, pa)
-                home_fairs.append(fh); away_fairs.append(1 - fh)
-        if home_fairs:
-            rec["moneyline"] = {
-                "home_fair": float(np.mean(home_fairs)),
-                "away_fair": float(np.mean(away_fairs)),
-                "home_best": float(ml[ml["side"] == "home"]["american_odds"].max()),
-                "away_best": float(ml[ml["side"] == "away"]["american_odds"].max()),
-            }
-
-        tot = ev[ev["market"] == "total"]
-        over_fairs, lines = [], []
-        for _, bk in tot.groupby("book"):
-            o = bk[bk["side"] == "over"]; u = bk[bk["side"] == "under"]
-            if len(o) and len(u):
-                po = odds.implied_prob(o.iloc[0]["american_odds"])
-                pu = odds.implied_prob(u.iloc[0]["american_odds"])
-                fo, _ = odds.devig_two_way(po, pu)
-                over_fairs.append(fo)
-                lines.append(o.iloc[0]["line"])
-        if over_fairs:
-            rec["total"] = {
-                "line": float(np.median([l for l in lines if pd.notna(l)])),
-                "over_fair": float(np.mean(over_fairs)),
-                "over_best": float(tot[tot["side"] == "over"]["american_odds"].max()),
-                "under_best": float(tot[tot["side"] == "under"]["american_odds"].max()),
-            }
-
-        sp = ev[ev["market"] == "spread"]
-        cover_fairs, slines = [], []
-        for _, bk in sp.groupby("book"):
-            h = bk[bk["side"] == "home"]; a = bk[bk["side"] == "away"]
-            if len(h) and len(a):
-                ph = odds.implied_prob(h.iloc[0]["american_odds"])
-                pa = odds.implied_prob(a.iloc[0]["american_odds"])
-                fh, _ = odds.devig_two_way(ph, pa)
-                cover_fairs.append(fh)
-                slines.append(h.iloc[0]["line"])
-        if cover_fairs:
-            rec["spread"] = {
-                "line": float(np.median([l for l in slines if pd.notna(l)])),
-                "home_fair": float(np.mean(cover_fairs)),
-                "home_best": float(sp[sp["side"] == "home"]["american_odds"].max()),
-                "away_best": float(sp[sp["side"] == "away"]["american_odds"].max()),
-            }
-        out[key].append((rec["date"], rec))
+        ml = _devig_market(markets.get("moneyline", {}), "home", "away")
+        if ml:
+            fa, _ln, hb, ab = ml
+            rec["moneyline"] = {"home_fair": fa, "away_fair": 1 - fa,
+                                "home_best": hb, "away_best": ab}
+        tt = _devig_market(markets.get("total", {}), "over", "under")
+        if tt:
+            fo, ln, ob, ub = tt
+            rec["total"] = {"line": ln, "over_fair": fo,
+                            "over_best": ob, "under_best": ub}
+        sp = _devig_market(markets.get("spread", {}), "home", "away")
+        if sp:
+            fh, ln, hb, ab = sp
+            rec["spread"] = {"line": ln, "home_fair": fh,
+                             "home_best": hb, "away_best": ab}
+        out[_team_key(sport, home, away)].append((date, rec))
     return dict(out)
 
 
@@ -448,14 +451,17 @@ class BetLog:
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
-                      use_park: bool = False, shrink: float = 0.0) -> dict:
+                      use_park: bool = False, shrink: float = 0.0,
+                      rest_coeff: float | None = None) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
+    rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
              else _wnba_games(seasons) if sport_key == "WNBA"
              else _generic_games(sport_key, seasons))
     window = 30 if sport_key == "MLB" else 15
     form = _Form(window)
+    last_seen: dict = {}                  # team -> last game date, for rest days
     consensus = closing_consensus(sport_key)
     is_mlb = sport_key == "MLB"
     fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
@@ -502,6 +508,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             if elo is not None:
                 ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
                 hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
+            if rest_coeff and sport.sigma_margin > 0:
+                from datetime import date as _D
+                gd = _D.fromisoformat(g["date"])
+                rest_diff = (_rest_days(g["home"], gd, last_seen)
+                             - _rest_days(g["away"], gd, last_seen))
+                hwp = generic.shift_win_prob(hwp, rest_coeff * rest_diff,
+                                             sport.sigma_margin)
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
@@ -558,6 +571,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                         if odds.expected_value(1 - p_cover, s["away_best"]) >= min_edge:
                             spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]))
         form.update(g)
+        from datetime import date as _D
+        last_seen[g["home"]] = last_seen[g["away"]] = _D.fromisoformat(g["date"])
         if elo is not None:
             elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
                        int(g["date"][:4]))
