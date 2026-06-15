@@ -1,65 +1,154 @@
 {
  "sport": "MLB",
  "date": "2026-06-15",
- "top_level_keys": [
-  "_pagination",
-  "_parameters",
-  "label",
-  "props",
-  "ts",
-  "utc",
-  "widget_label"
+ "book_directory": {
+  "2": "Pinnacle",
+  "10": "FanDuel",
+  "12": "DraftKings",
+  "13": "Caesars",
+  "14": "Fanatics",
+  "15": "SugarHouse",
+  "18": "BetRivers",
+  "19": "BetMGM",
+  "24": "bet365",
+  "26": "Tipico",
+  "27": "PartyCasino",
+  "32": "Borgata",
+  "33": "theScore Bet",
+  "35": "BetSafe",
+  "36": "Underdog",
+  "37": "PrizePicks",
+  "38": "ProphetX",
+  "39": "Fliff",
+  "40": "Bet99",
+  "41": "TonyBet",
+  "42": "High 5 Casino",
+  "43": "BetFred",
+  "44": "ThriveFantasy",
+  "45": "Betr",
+  "46": "Betano",
+  "48": "Bet99 Ontario",
+  "49": "Hard Rock",
+  "50": "BetMGM Casino",
+  "51": "Proline",
+  "52": "OLG",
+  "53": "Dabble",
+  "54": "Playsqor",
+  "55": "Underdog Sportsbook",
+  "56": "Wildz Sports",
+  "57": "Thrillzz",
+  "58": "Jackpota",
+  "60": "Novig",
+  "61": "Iso Fantasy",
+  "62": "BetMGM Poker",
+  "63": "Sleeper",
+  "64": "Kutt",
+  "65": "BetOpenly",
+  "66": "Spree",
+  "67": "Bally Bet",
+  "68": "Kalshi",
+  "69": "FanDuel Picks",
+  "70": "DraftKings Pick6",
+  "71": "PointsBet",
+  "72": "Crypto.com",
+  "73": "Polymarket",
+  "74": "DraftKings Predictions",
+  "75": "Polymarket US",
+  "76": "Underdog Predict",
+  "77": "Bet105",
+  "78": "Plus500",
+  "79": "Acebet",
+  "80": "ClubWPT Gold"
+ },
+ "dfs_books_in_directory": {
+  "37": "PrizePicks",
+  "36": "Underdog",
+  "45": "Betr",
+  "63": "Sleeper",
+  "53": "Dabble"
+ },
+ "props_n_items": 200,
+ "books_seen_on_props": [
+  {
+   "book_id": 12,
+   "name": "DraftKings",
+   "appearances": 225,
+   "is_dfs": false
+  },
+  {
+   "book_id": 19,
+   "name": "BetMGM",
+   "appearances": 129,
+   "is_dfs": false
+  },
+  {
+   "book_id": 60,
+   "name": "Novig",
+   "appearances": 96,
+   "is_dfs": false
+  },
+  {
+   "book_id": 10,
+   "name": "FanDuel",
+   "appearances": 87,
+   "is_dfs": false
+  },
+  {
+   "book_id": 13,
+   "name": "Caesars",
+   "appearances": 70,
+   "is_dfs": false
+  },
+  {
+   "book_id": 14,
+   "name": "Fanatics",
+   "appearances": 44,
+   "is_dfs": false
+  },
+  {
+   "book_id": 36,
+   "name": "Underdog",
+   "appearances": 42,
+   "is_dfs": true
+  },
+  {
+   "book_id": 33,
+   "name": "theScore Bet",
+   "appearances": 37,
+   "is_dfs": false
+  },
+  {
+   "book_id": 68,
+   "name": "Kalshi",
+   "appearances": 32,
+   "is_dfs": false
+  },
+  {
+   "book_id": 49,
+   "name": "Hard Rock",
+   "appearances": 25,
+   "is_dfs": false
+  },
+  {
+   "book_id": 15,
+   "name": "SugarHouse",
+   "appearances": 5,
+   "is_dfs": false
+  },
+  {
+   "book_id": 45,
+   "name": "Betr",
+   "appearances": 5,
+   "is_dfs": true
+  },
+  {
+   "book_id": 37,
+   "name": "PrizePicks",
+   "appearances": 3,
+   "is_dfs": true
+  }
  ],
- "props_container_type": "list",
- "n_items": 200,
- "item_types": {
-  "dict": 200
- },
- "retry_with_market_ids": {
-  "n": 200,
-  "types": {
-   "dict": 200
-  },
-  "market_ids": [
-   180,
-   181,
-   182,
-   293
-  ]
- },
- "first_prop_keys": [
-  "event_id",
-  "extra",
-  "links",
-  "market_id",
-  "over",
-  "participant",
-  "performance",
-  "projection",
-  "scoring",
-  "sport",
-  "under"
- ],
- "response_shape": {
-  "_parameters": {
-   "bp_partner_id": null,
-   "limit": 200,
-   "page": "1",
-   "sport": "MLB",
-   "...": "+53 more keys"
-  },
-  "_pagination": {
-   "page": 1,
-   "limit": 200,
-   "total_pages": 10,
-   "total_items": 1973,
-   "...": "+3 more keys"
-  },
-  "label": "MLB props for June 15th, 2026",
-  "widget_label": "Best MLB Player Props (2026-06-15)",
-  "...": "+3 more keys"
- },
- "first_item_full": {
+ "props_first_item_shape": {
   "sport": "MLB",
   "market_id": 285,
   "event_id": 98884,
@@ -72,151 +161,125 @@
     "first_name": "Zack",
     "last_name": "Wheeler",
     "image": "https://images.fantasypros.com/images/players/mlb/4603/headshot/210x210.webp",
-    "slug": "zack-wheeler",
-    "position": "SP",
-    "team": "PHI",
-    "popularity": 114,
-    "jersey_number": 45
+    "...": "+5 more keys"
    }
   },
-  "over": {
-   "line": 6.5,
-   "odds": 124,
-   "book": 36,
-   "consensus_line": 6.5,
-   "consensus_odds": 110,
-   "selection": {
-    "participant": null,
-    "selection": "over",
-    "active": true,
-    "opening_line": {
-     "line": 6.5,
-     "cost": -120,
-     "book_id": 13,
-     "created": "2026-06-15 02:37:54"
-    },
-    "label": "Over",
-    "short_label": "Over",
-    "id": "4adbec9a736e50fed179059925598b74",
-    "picks": {
-     "expert": 0,
-     "quick": 0,
-     "custom": 0,
-     "sync": 2,
-     "combined": 2,
-     "system": 37
-    }
-   },
-   "probability": 0.45608479106094,
-   "expected_value": -0.03310024295080716,
-   "bet_rating": 2
-  },
-  "under": {
-   "line": 10.5,
-   "odds": -110,
-   "book": 60,
-   "consensus_line": 6.5,
-   "consensus_odds": -139,
-   "selection": {
-    "participant": null,
-    "selection": "under",
-    "active": true,
-    "opening_line": {
-     "line": 6.5,
-     "cost": -109,
-     "book_id": 13,
-     "created": "2026-06-15 02:37:54"
-    },
-    "label": "Under",
-    "short_label": "Under",
-    "id": "fc9001aad6ee190b5f6960383eac040c",
-    "picks": {
-     "expert": 0,
-     "quick": 0,
-     "custom": 0,
-     "sync": 0,
-     "combined": 0,
-     "system": 28
-    }
-   },
-   "probability": 0.54391520893906,
-   "expected_value": 0.03838358070184178,
-   "bet_rating": 3
-  },
-  "projection": {
-   "recommended_side": "under",
-   "value": 6.39,
-   "probability": 0.54391520893906,
-   "expected_value": 0.03838358070184178,
-   "bet_rating": 3,
-   "diff": -4.11
-  },
-  "extra": {
-   "lineup_set": false,
-   "opposing_pitcher": "Gusto (Probable)",
-   "in_lineup": true,
-   "opposition_rank": {
-    "rank": 14,
-    "value": 0.2,
-    "tied": false
-   }
-  },
-  "scoring": {
-   "is_scored": false,
-   "is_push": false,
-   "push_reason": null,
-   "actual": 0
-  },
-  "links": {
-   "odds": "mlb/odds/player-props/zack-wheeler/strikeouts/",
-   "analyzer": "/mlb/props/zack-wheeler/strikeouts/",
-   "affiliate": "https://novig.com/events/019ec923-1839-71d2-b356-3b7cc78a27df/bettingpros/?referralCode=BETTINGPROS"
-  },
-  "performance": {
-   "last_1": {
-    "over": 0,
-    "under": 1,
-    "push": 0
-   },
-   "last_5": {
-    "over": 2,
-    "under": 3,
-    "push": 0
-   },
-   "last_10": {
-    "over": 3,
-    "under": 7,
-    "push": 0
-   },
-   "last_15": {
-    "over": 7,
-    "under": 8,
-    "push": 0
-   },
-   "last_20": {
-    "over": 12,
-    "under": 8,
-    "push": 0
-   },
-   "season": {
-    "over": 3,
-    "under": 6,
-    "push": 0
-   },
-   "prior_season": {
-    "over": 19,
-    "under": 5,
-    "push": 0
-   },
-   "h2h": {
-    "over": 0,
-    "under": 0,
-    "push": 0
-   },
-   "streak": 1,
-   "streak_type": "under"
+  "...": "+7 more keys"
+ },
+ "offers": {
+  "market_id": 285,
+  "n_offers": 6,
+  "n_flat_rows": 193,
+  "first_offer_shape": {
+   "id": "237b113e3d2c966191613e1a454d644e",
+   "market_id": 285,
+   "event_id": 98884,
+   "player_id": 4603,
+   "...": "+6 more keys"
   }
  },
- "books": [],
- "dfs_sample": []
+ "books_seen_on_offers": [
+  {
+   "book_id": 0,
+   "name": "?",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 12,
+   "name": "DraftKings",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 10,
+   "name": "FanDuel",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 13,
+   "name": "Caesars",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 19,
+   "name": "BetMGM",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 49,
+   "name": "Hard Rock",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 14,
+   "name": "Fanatics",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 36,
+   "name": "Underdog",
+   "lines": 12,
+   "is_dfs": true
+  },
+  {
+   "book_id": 37,
+   "name": "PrizePicks",
+   "lines": 12,
+   "is_dfs": true
+  },
+  {
+   "book_id": 60,
+   "name": "Novig",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 68,
+   "name": "Kalshi",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 39,
+   "name": "Fliff",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 45,
+   "name": "Betr",
+   "lines": 12,
+   "is_dfs": true
+  },
+  {
+   "book_id": 15,
+   "name": "SugarHouse",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 18,
+   "name": "BetRivers",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 27,
+   "name": "PartyCasino",
+   "lines": 12,
+   "is_dfs": false
+  },
+  {
+   "book_id": 38,
+   "name": "ProphetX",
+   "lines": 1,
+   "is_dfs": false
+  }
+ ]
 }
