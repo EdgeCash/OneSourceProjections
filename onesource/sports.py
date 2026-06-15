@@ -48,6 +48,12 @@ class Sport:
     # opponent-adjust (strength-of-schedule) the off/def ratings. Enabled per
     # sport once the backtest shows it helps.
     opponent_adjust: bool = False
+    # weight on the starting-QB value deviation (team points) -> margin points,
+    # to capture backups starting (injury). MEASURED on the 2018-24 NFL backtest:
+    # a backward-looking team-points proxy nudges calibration but *hurts* CLV
+    # (the market prices QB news sharply), so left at 0 pending a real-time
+    # QB/depth-chart signal that can actually beat the close. Capability kept.
+    qb_coeff: float = 0.0
 
 
 SPORTS: dict[str, Sport] = {

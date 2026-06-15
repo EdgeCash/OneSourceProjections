@@ -237,6 +237,7 @@ def _generic_games(sport_key: str, seasons: list[int]) -> list[dict]:
             "date": str(r["date"])[:10], "home": r["home_team"], "away": r["away_team"],
             "home_score": r["home_score"], "away_score": r["away_score"],
             "game_pk": r.get("game_id"),
+            "home_qb": r.get("home_qb"), "away_qb": r.get("away_qb"),
         })
     rows.sort(key=lambda r: r["date"])
     return rows
@@ -469,10 +470,12 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       use_starters: bool = False, use_bullpen: bool = False,
                       use_park: bool = False, shrink: float = 0.0,
                       rest_coeff: float | None = None,
-                      opponent_adjust: bool | None = None) -> dict:
+                      opponent_adjust: bool | None = None,
+                      qb_coeff: float | None = None) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
+    qb_coeff = sport.qb_coeff if qb_coeff is None else qb_coeff
     if opponent_adjust is None:
         opponent_adjust = sport.opponent_adjust
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
@@ -481,6 +484,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     window = 30 if sport_key == "MLB" else 15
     form = _Form(window)
     last_seen: dict = {}                  # team -> last game date, for rest days
+    qb_value: dict = {}                   # qb id -> EMA of team points started
+    qb_base: dict = {}                    # team -> EMA of its starters' qb_value
     consensus = closing_consensus(sport_key)
     is_mlb = sport_key == "MLB"
     fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
@@ -533,6 +538,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 rest_diff = (_rest_days(g["home"], gd, last_seen)
                              - _rest_days(g["away"], gd, last_seen))
                 hwp = generic.shift_win_prob(hwp, rest_coeff * rest_diff,
+                                             sport.sigma_margin)
+            if (qb_coeff and sport.sigma_margin > 0
+                    and g.get("home_qb") and g.get("away_qb")):
+                lg = sport.league_ppg
+                h_dev = (qb_value.get(g["home_qb"], lg) - qb_base.get(g["home"], lg))
+                a_dev = (qb_value.get(g["away_qb"], lg) - qb_base.get(g["away"], lg))
+                hwp = generic.shift_win_prob(hwp, qb_coeff * (h_dev - a_dev),
                                              sport.sigma_margin)
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
@@ -592,6 +604,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
         form.update(g)
         from datetime import date as _D
         last_seen[g["home"]] = last_seen[g["away"]] = _D.fromisoformat(g["date"])
+        lg = sport.league_ppg
+        for qb, team, pts in ((g.get("home_qb"), g["home"], g["home_score"]),
+                              (g.get("away_qb"), g["away"], g["away_score"])):
+            if not qb:
+                continue
+            qb_value[qb] = 0.8 * qb_value.get(qb, lg) + 0.2 * pts
+            qb_base[team] = 0.85 * qb_base.get(team, lg) + 0.15 * qb_value[qb]
         if elo is not None:
             elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
                        int(g["date"][:4]))
