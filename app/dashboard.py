@@ -187,10 +187,11 @@ NAV_GROUPS = {
     "🎯 Bets": ["PLAYS", "EDGES", "EXPERTS", "DFS"],
     "📡 Live": ["SCORES"],
     "🧰 Tools": ["TOOLS"],
-    "📈 Performance": ["PERFORMANCE"],
+    "📈 Performance": ["PERFORMANCE", "BACKTEST"],
 }
 _PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
-                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer"}
+                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer",
+                "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
@@ -1531,6 +1532,82 @@ if _clicked:
     player_dialog(_clicked, _gk, _sp)
 
 
+def _backfill_seasons(sport: str) -> list[int]:
+    base = config.REPO_ROOT / "data" / "history" / "backfill" / sport.lower()
+    if not base.exists():
+        return []
+    return sorted(int(p.name) for p in base.iterdir()
+                  if p.is_dir() and p.name.isdigit() and (p / "games.json.gz").exists())
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def _run_backtest(sport: str, seasons: tuple) -> dict:
+    from onesource import backtest
+    return backtest.run_game_backtest(sport, list(seasons), draws=800)
+
+
+def render_backtest():
+    st.markdown("<div class='osp-title'>🧪 Model backtest</div>", unsafe_allow_html=True)
+    st.caption("Walk-forward: each game projected from only prior data, then "
+               "graded against the result and the **closing line** (CLV / ROI). "
+               "Historical evaluation of the model — not live picks.")
+    sports = [s for s in ("NFL", "NBA", "NHL") if _backfill_seasons(s)]
+    if not sports:
+        st.info("No backtest data is committed yet.")
+        return
+    c1, c2 = st.columns([1, 3])
+    sport = c1.selectbox("Sport", sports, key="bt_sport")
+    seasons_all = _backfill_seasons(sport)
+    default = seasons_all[-4:] if len(seasons_all) >= 4 else seasons_all
+    seasons = c2.multiselect("Seasons", seasons_all, default=default,
+                             key=f"bt_seasons_{sport}")
+    if not seasons:
+        st.info("Pick at least one season.")
+        return
+    with st.spinner(f"Backtesting {sport} over {len(seasons)} season(s)…"):
+        res = _run_backtest(sport, tuple(sorted(seasons)))
+    if not res.get("n_games_graded"):
+        st.warning("No games graded for that selection.")
+        return
+
+    ml, tot, cl = res["moneyline"], res["total"], res["closing_line"]
+    m = st.columns(5)
+    m[0].metric("Games graded", f"{res['n_games_graded']:,}")
+    m[1].metric("Brier", ml["brier"])
+    m[2].metric("Log loss", ml["log_loss"])
+    m[3].metric("Favorite hit",
+                f"{ml['favorite_hit_rate'] * 100:.1f}%" if ml["favorite_hit_rate"] else "—")
+    m[4].metric("Total MAE", tot["mae"])
+
+    st.markdown("##### Closing-line value & ROI")
+    rows = []
+    for label, key in (("Moneyline", "moneyline_bets"), ("Spread", "spread_bets"),
+                       ("Total", "total_bets")):
+        b = cl.get(key) or {}
+        rows.append({"Market": label, "Bets": b.get("bets"),
+                     "Win %": round(b["win_rate"] * 100, 1) if b.get("win_rate") else None,
+                     "ROI %": b.get("roi_pct"), "Units": b.get("units")})
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    clv, sclv = cl.get("avg_clv_vs_fair"), cl.get("avg_spread_clv_vs_fair")
+    bits = [f"moneyline {clv:+.4f}"] if clv is not None else []
+    if sclv is not None:
+        bits.append(f"spread {sclv:+.4f}")
+    st.caption(f"Avg CLV vs the de-vigged close — {', '.join(bits)} · matched "
+               f"{cl.get('games_matched', 0):,} games. Positive = beating the close; "
+               "negative ROI means the model trails the market (expected on efficient "
+               "sides/totals).")
+
+    cal = res.get("calibration") or []
+    if cal:
+        st.markdown("##### Win-probability calibration")
+        cdf = pd.DataFrame(cal)
+        chart = cdf.set_index("predicted")[["empirical"]].copy()
+        chart["ideal"] = chart.index
+        st.line_chart(chart)
+        st.caption("Empirical home-win rate vs predicted, by 10% bin — the closer "
+                   "**empirical** tracks **ideal** (the diagonal), the better calibrated.")
+
+
 # ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
@@ -1553,3 +1630,5 @@ elif section == "TOOLS":
     render_tools()
 elif section == "PERFORMANCE":
     render_performance()
+elif section == "BACKTEST":
+    render_backtest()
