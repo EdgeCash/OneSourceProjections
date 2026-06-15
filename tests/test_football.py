@@ -212,6 +212,26 @@ def test_nfl_player_hit_rates_from_backdata():
     assert td and 0.0 <= td["season"] <= 1.0  # scrim TDs computed from backfill
 
 
+def test_team_ratings_opponent_adjustment():
+    from onesource.models.generic import team_ratings
+    # A and B post identical raw offense (30 twice), but A's opponent W is a
+    # weak defense (allows 50 elsewhere) while B's opponent S is stingy (allows 3).
+    results = [
+        {"home_team": "A", "away_team": "W", "home_score": 30, "away_score": 0},
+        {"home_team": "A", "away_team": "W", "home_score": 30, "away_score": 0},
+        {"home_team": "B", "away_team": "S", "home_score": 30, "away_score": 0},
+        {"home_team": "B", "away_team": "S", "home_score": 30, "away_score": 0},
+        {"home_team": "W", "away_team": "X", "home_score": 0, "away_score": 50},
+        {"home_team": "W", "away_team": "X", "home_score": 0, "away_score": 50},
+        {"home_team": "S", "away_team": "Y", "home_score": 0, "away_score": 3},
+        {"home_team": "S", "away_team": "Y", "home_score": 0, "away_score": 3},
+    ]
+    raw = team_ratings(results, 22.0, opponent_adjust=False)
+    adj = team_ratings(results, 22.0, opponent_adjust=True)
+    assert abs(raw["A"].scored - raw["B"].scored) < 1e-9   # equal raw offense
+    assert adj["A"].scored < adj["B"].scored               # SoS separates them
+
+
 def test_shift_win_prob_rest_adjustment():
     from onesource.models.generic import shift_win_prob
     assert shift_win_prob(0.5, 0.0, 13.5) == 0.5         # no delta -> no-op
