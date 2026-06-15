@@ -1,0 +1,62 @@
+[
+ {
+  "id": 195,
+  "sport_id": 4,
+  "sport": "NHL",
+  "category": "game-odds",
+  "slug": "puck-line",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 01:00:34",
+  "sort": 145,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": true,
+   "player_id": -1,
+   "team_id": 1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Puck Line",
+   "short_label": "Puck Line",
+   "meta_title": "NHL Puck Line Odds {MM/DD/YY} | Best Hockey Point Spreads",
+   "meta_description": "View {MM/DD/YY} NHL Puck Line {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "NHL Puck Line {ODDS_TYPE} - {MM/DD/YY} ({DISPLAY_SEASON} Season)",
+   "page_subtitle": "Puck Lines",
+   "app_top_label": "{pick_team_name_line_odds_fit}",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ },
+ {
+  "id": 194,
+  "sport_id": 4,
+  "sport": "NHL",
+  "category": "game-odds",
+  "slug": "total",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 01:00:32",
+  "sort": 146,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": true,
+   "player_id": -1,
+   "team_id": -1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Total Goals",
+   "short_label": "Total Goals",
+   "meta_title": "NHL Total Goals Odds {MM/DD/YY} | Best Hockey Totals Lines",
+   "meta_description": "View {MM/DD/YY} NHL Total Goals {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "NHL Total Goals {ODDS_TYPE} - {MM/DD/YY} ({DISPLAY_SEASON} Season)",
+   "page_subtitle": "Total Goals",
+   "app_top_label": "{o_u_short}{line} {scoring_type_label} ({odds})",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ }
+]

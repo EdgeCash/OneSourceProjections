@@ -1,0 +1,274 @@
+[
+ {
+  "id": 100249,
+  "sr_id": "f5a2320d-481c-47fc-a222-80a20ad7d794",
+  "sport": "MLB",
+  "scheduled": "2026-06-16 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PHI",
+  "visitor": "MIA",
+  "link": "/mlb/matchups/miami-marlins-vs-philadelphia-phillies/?date=2026-06-16",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6889",
+    "name": "Jesus Luzardo",
+    "link": "/mlb/props/jesus-luzardo/",
+    "player": {
+     "short_name": "J. Luzardo",
+     "first_name": "Jesus",
+     "last_name": "Luzardo",
+     "image": "https://images.fantasypros.com/images/players/mlb/6889/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "jesus-luzardo",
+     "jersey_number": 44
+    }
+   },
+   "visitor_probable": {
+    "id": "39151",
+    "name": "Tyler Phillips",
+    "link": "/mlb/props/tyler-phillips/",
+    "player": {
+     "short_name": "T. Phillips",
+     "first_name": "Tyler",
+     "last_name": "Phillips",
+     "image": "https://images.fantasypros.com/images/players/mlb/39151/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "slug": "tyler-phillips",
+     "jersey_number": 30
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PHI",
+   "season": "2025",
+   "split": "A",
+   "r": "1.017",
+   "1b": "0.955",
+   "2b": "0.929",
+   "3b": "1.009",
+   "hr": "1.131",
+   "name": "Citizens Bank Park"
+  },
+  "venue": {
+   "name": "Citizens Bank Park",
+   "address": "One Citizens Bank Way",
+   "city": "Philadelphia",
+   "state": "PA",
+   "country": "USA",
+   "zip": "19148",
+   "surface": "grass",
+   "capacity": 42901,
+   "stadium_type": "outdoor",
+   "id": "b4186004-b6d0-42e7-8dc1-82ef0d946ecc"
+  },
+  "participants": [
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 38,
+      "L": 33,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 36,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 77,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 252,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1010,
+   "forecast_humidity": 0.36
+  },
+  "broadcasts": [
+   {
+    "network": "NBCS-PH",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99229,
+  "sr_id": "8c69dd1a-e229-4f26-85c5-e6899593a7ce",
+  "sport": "MLB",
+  "scheduled": "2026-06-16 22:45:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BOS",
+  "visitor": "TOR",
+  "link": "/mlb/matchups/boston-red-sox-vs-toronto-blue-jays/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7354435",
+    "name": "Payton Tolle",
+    "link": "/mlb/props/payton-tolle/",
+    "player": {
+     "short_name": "P. Tolle",
+     "first_name": "Payton",
+     "last_name": "Tolle",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354435/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "slug": "payton-tolle",
+     "jersey_number": 70
+    }
+   },
+   "visitor_probable": {
+    "id": "6848",
+    "name": "Dylan Cease",
+    "link": "/mlb/props/dylan-cease/",
+    "player": {
+     "short_name": "D. Cease",
+     "first_name": "Dylan",
+     "last_name": "Cease",
+     "image": "https://images.fantasypros.com/images/players/mlb/6848/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "dylan-cease",
+     "jersey_number": 84
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BOS",
+   "season": "2025",
+   "split": "A",
+   "r": "1.093",
+   "1b": "1.087",
+   "2b": "1.168",
+   "3b": "1.504",
+   "hr": "0.956",
+   "name": "Fenway Park"
+  },
+  "venue": {
+   "name": "Fenway Park",
+   "address": "4 Yawkey Way",
+   "city": "Boston",
+   "state": "MA",
+   "country": "USA",
+   "zip": "02215",
+   "surface": "grass",
+   "capacity": 37755,
+   "stadium_type": "outdoor",
+   "id": "b27b0dc5-c2c5-401d-b8b9-a6a2dbc225e5"
+  },
+  "participants": [
+   {
+    "id": "BOS",
+    "name": "Red Sox",
+    "link": "/mlb/teams/boston-red-sox/",
+    "team": {
+     "city": "Boston",
+     "abbreviation": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 29,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "boston-red-sox",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 34,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 76,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 254,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1008,
+   "forecast_humidity": 0.36
+  },
+  "broadcasts": [
+   {
+    "network": "NESN",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nesn-us.png"
+   }
+  ]
+ }
+]
