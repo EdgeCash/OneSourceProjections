@@ -238,6 +238,7 @@ def _generic_games(sport_key: str, seasons: list[int]) -> list[dict]:
             "home_score": r["home_score"], "away_score": r["away_score"],
             "game_pk": r.get("game_id"),
             "home_qb": r.get("home_qb"), "away_qb": r.get("away_qb"),
+            "season": r.get("season"), "week": r.get("week"),
         })
     rows.sort(key=lambda r: r["date"])
     return rows
@@ -471,7 +472,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       use_park: bool = False, shrink: float = 0.0,
                       rest_coeff: float | None = None,
                       opponent_adjust: bool | None = None,
-                      qb_coeff: float | None = None) -> dict:
+                      qb_coeff: float | None = None,
+                      detail: bool = False) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
     rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
@@ -506,6 +508,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     # betting accumulators
     ml_bets, total_bets, spread_bets = BetLog(), BetLog(), BetLog()
     clv_deltas, spread_clv = [], []
+    detail_rows: list = []
     n_matched = 0
     n_with_starter = 0
 
@@ -601,6 +604,32 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                             spread_bets.add(home_cover, odds.american_to_decimal(s["home_best"]))
                         if odds.expected_value(1 - p_cover, s["away_best"]) >= min_edge:
                             spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]))
+            if detail:
+                sp_ = (rec or {}).get("spread") or {}
+                to_ = (rec or {}).get("total") or {}
+                mo_ = (rec or {}).get("moneyline") or {}
+                d = {"date": g["date"], "season": g.get("season"), "week": g.get("week"),
+                     "home": g["home"], "away": g["away"],
+                     "home_score": g["home_score"], "away_score": g["away_score"],
+                     "home_win_prob": round(hwp, 4), "proj_total": round(tmean, 2),
+                     "close_spread": sp_.get("line"), "close_total": to_.get("line"),
+                     "home_ml": mo_.get("home_best"), "away_ml": mo_.get("away_best"),
+                     "ml_fav": g["home"] if hwp >= 0.5 else g["away"],
+                     "ml_hit": (home_won == 1) == (hwp >= 0.5),
+                     "clv": (round(hwp - mo_["home_fair"], 4)
+                             if mo_.get("home_fair") is not None else None)}
+                if sp_.get("line") is not None:
+                    pc = cover_fn(sp_["line"])
+                    margin = g["home_score"] - g["away_score"]
+                    d["ats_pick"] = g["home"] if pc >= 0.5 else g["away"]
+                    d["ats_hit"] = (None if (margin + sp_["line"]) == 0
+                                    else ((margin + sp_["line"] > 0) == (pc >= 0.5)))
+                if to_.get("line") is not None:
+                    po = prob_over(to_["line"])
+                    d["tot_pick"] = "Over" if po >= 0.5 else "Under"
+                    d["tot_hit"] = (None if actual_total == to_["line"]
+                                    else ((actual_total > to_["line"]) == (po >= 0.5)))
+                detail_rows.append(d)
         form.update(g)
         from datetime import date as _D
         last_seen[g["home"]] = last_seen[g["away"]] = _D.fromisoformat(g["date"])
@@ -640,6 +669,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             "total_bets": total_bets.summary(),
             "spread_bets": spread_bets.summary(),
         },
+        "games": detail_rows,
     }
 
 

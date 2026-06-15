@@ -1543,7 +1543,43 @@ def _backfill_seasons(sport: str) -> list[int]:
 @st.cache_data(ttl=3600, show_spinner=False)
 def _run_backtest(sport: str, seasons: tuple) -> dict:
     from onesource import backtest
-    return backtest.run_game_backtest(sport, list(seasons), draws=800)
+    return backtest.run_game_backtest(sport, list(seasons), draws=800, detail=True)
+
+
+def _replay_card_html(g: dict) -> str:
+    def mark(hit):
+        if hit is None:
+            return "<span style='color:#8b949e;'>— push</span>"
+        return ("<span style='color:#00e676;font-weight:700;'>✓</span>" if hit
+                else "<span style='color:#ff6b6b;font-weight:700;'>✗</span>")
+    hm, aw = g["home"], g["away"]
+    hwp = g["home_win_prob"]
+    fav_pct = max(hwp, 1 - hwp) * 100
+    close = []
+    if g.get("close_spread") is not None:
+        close.append(f"{hm.split()[-1]} {g['close_spread']:+g}")
+    if g.get("close_total") is not None:
+        close.append(f"O/U {g['close_total']:g}")
+    if g.get("home_ml") is not None and g.get("away_ml") is not None:
+        close.append(f"ML {g['away_ml']:+g}/{g['home_ml']:+g}")
+    res = [f"ML {mark(g['ml_hit'])} {g['ml_fav'].split()[-1]}"]
+    if "ats_hit" in g:
+        res.append(f"ATS {mark(g['ats_hit'])} {g['ats_pick'].split()[-1]}")
+    if "tot_hit" in g:
+        res.append(f"Tot {mark(g['tot_hit'])} {g['tot_pick']}")
+    clv = g.get("clv")
+    clv_s = (f" · CLV <b style='color:{'#00e676' if clv >= 0 else '#ff6b6b'};'>"
+             f"{clv:+.1%}</b>") if clv is not None else ""
+    return (
+        "<div style='background:#121826;border:1px solid #1e2636;border-radius:12px;"
+        "padding:12px 14px;margin-bottom:10px;'>"
+        f"<div style='font-weight:700;'>{aw} <span style='color:#8b949e;'>@</span> {hm}"
+        f"<span style='float:right;'>{g['away_score']}–{g['home_score']}</span></div>"
+        f"<div style='color:#22d3ee;font-size:0.8rem;margin-top:4px;'>Model: "
+        f"{g['ml_fav'].split()[-1]} {fav_pct:.0f}% · proj total {g['proj_total']:.0f}</div>"
+        f"<div style='color:#8b949e;font-size:0.8rem;'>Close: {' · '.join(close) or '—'}</div>"
+        f"<div style='font-size:0.85rem;margin-top:6px;'>{' &nbsp; '.join(res)}{clv_s}</div>"
+        "</div>")
 
 
 def render_backtest():
@@ -1606,6 +1642,24 @@ def render_backtest():
         st.line_chart(chart)
         st.caption("Empirical home-win rate vs predicted, by 10% bin — the closer "
                    "**empirical** tracks **ideal** (the diagonal), the better calibrated.")
+
+    games = res.get("games") or []
+    if games:
+        st.markdown("##### 📼 Game-by-game replay")
+        def _label(g):
+            return f"{g['season']} · Week {g['week']}" if g.get("week") else g["date"]
+        slates: dict = {}
+        for g in games:
+            slates.setdefault(_label(g), []).append(g)
+        order = sorted(slates, key=lambda L: max(
+            (x["season"] or 0, x["week"] or 0, x["date"]) for x in slates[L]),
+            reverse=True)
+        pick = st.selectbox("Slate", order, key=f"bt_slate_{sport}")
+        st.caption("Each card: the model's pre-game lean vs the closing line and the "
+                   "final result. ✓ = the model's side cashed at the close.")
+        cols = st.columns(2)
+        for i, g in enumerate(sorted(slates[pick], key=lambda x: (x["date"], x["home"]))):
+            cols[i % 2].markdown(_replay_card_html(g), unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
