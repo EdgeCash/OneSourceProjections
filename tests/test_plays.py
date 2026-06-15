@@ -182,3 +182,39 @@ def test_play_id_stable(tmp_path, monkeypatch):
     a = plays.play_id("2026-06-15", {"k1", "k2"})
     b = plays.play_id("2026-06-15", {"k2", "k1"})  # order-independent
     assert a == b and len(a) == 8
+
+
+def test_played_accuracy_combines_dfs_and_games(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
+    monkeypatch.setattr(plays, "CONFIRM", tmp_path / "confirm.json")
+    # one played+graded DFS leg (win) and one played-but-ungraded (excluded)
+    rows = [
+        {"date": "2026-06-15", "sport": "MLB", "player": "A", "market": "ks",
+         "side": "Over", "played": True, "graded_at": "x", "push": False, "won": True},
+        {"date": "2026-06-15", "sport": "MLB", "player": "B", "market": "ks",
+         "side": "Over", "played": True, "graded_at": None, "push": None, "won": None},
+    ]
+    monkeypatch.setattr(plays, "load_plays", lambda: rows)
+    # one confirmed-played game bet (loss)
+    plays.CONFIRM.write_text('{"played": ["game|2026-06-15|MLB|BOS @ NYY|moneyline|home"], "skipped": []}')
+    import onesource.results as results
+    monkeypatch.setattr(results, "load_ledger", lambda: [
+        {"date": "2026-06-15", "sport": "MLB", "game": "BOS @ NYY",
+         "market": "moneyline", "side": "home", "pnl": -1.0, "won": False},
+    ])
+    acc, n = plays.played_accuracy()
+    assert n == 2 and acc == 0.5  # 1 DFS win + 1 game loss
+
+
+def test_model_accuracy_directional():
+    import onesource.results as results
+    rows = [
+        {"market": "model_winprob", "pred_home_wp": 0.7, "home_won": 1},  # right
+        {"market": "model_winprob", "pred_home_wp": 0.3, "home_won": 0},  # right
+        {"market": "model_winprob", "pred_home_wp": 0.6, "home_won": 0},  # wrong
+        {"market": "moneyline", "pnl": 1.0, "won": True},                 # ignored
+    ]
+    import unittest.mock as m
+    with m.patch.object(results, "load_ledger", lambda: rows):
+        acc, n = results.model_accuracy()
+    assert n == 3 and acc == round(2 / 3, 4)

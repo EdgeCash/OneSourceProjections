@@ -108,6 +108,10 @@ SMASH_EDGE_SANITY = 0.15
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
 
+# Daily recap push: fired once per day on the first hourly run at/after this ET
+# hour, with two numbers — overall model accuracy and personal played accuracy.
+RECAP_HOUR_ET = 10
+
 # Market-blend / price-sanity knobs. The raw model finds far too many fat
 # edges (a sign of over-confidence + stale price inputs, not alpha), so before
 # computing EV we (1) reject incoherent two-way prices and (2) shrink the
