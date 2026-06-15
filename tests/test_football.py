@@ -212,6 +212,20 @@ def test_nfl_player_hit_rates_from_backdata():
     assert td and 0.0 <= td["season"] <= 1.0  # scrim TDs computed from backfill
 
 
+def test_shift_win_prob_rest_adjustment():
+    from onesource.models.generic import shift_win_prob
+    assert shift_win_prob(0.5, 0.0, 13.5) == 0.5         # no delta -> no-op
+    assert shift_win_prob(0.7, 5.0, 0.0) == 0.7          # no sigma (Poisson) -> no-op
+    assert shift_win_prob(0.5, 3.0, 13.5) > 0.5          # home gains points
+    assert shift_win_prob(0.5, -3.0, 13.5) < 0.5
+    # symmetric around 0.5
+    up = shift_win_prob(0.5, 3.0, 13.5) - 0.5
+    dn = 0.5 - shift_win_prob(0.5, -3.0, 13.5)
+    assert abs(up - dn) < 1e-9
+    # bounded in (0,1)
+    assert 0.0 < shift_win_prob(0.95, 20.0, 13.5) < 1.0
+
+
 def test_ncaaf_matchup_builds_despite_sparse_backdata():
     # NCAAF backfill is results-only and partial — cards still build (points
     # rows populate; yardage stays empty until player logs are imported).

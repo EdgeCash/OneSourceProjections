@@ -99,6 +99,17 @@ class GenericGameProjection:
         return _poisson_cover(self.home_exp, self.away_exp, spread)
 
 
+def shift_win_prob(p: float, delta_pts: float, sigma: float) -> float:
+    """Nudge a home win prob by a points adjustment (e.g. a rest-days edge):
+    invert p -> implied margin mean through sigma, add delta, re-evaluate.
+    No-op when delta is 0 or the sport has no margin sigma (Poisson models)."""
+    if not delta_pts or sigma <= 0:
+        return p
+    p = min(max(p, 1e-6), 1 - 1e-6)
+    mu = sigma * stats.norm.ppf(p)
+    return float(stats.norm.cdf((mu + delta_pts) / sigma))
+
+
 def project_game(
     sport: Sport,
     home: TeamRating | None,

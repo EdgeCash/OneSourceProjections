@@ -684,6 +684,22 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
             log.warning("%s Elo history unavailable: %s", sport_key, e)
             elo = None
 
+    # rest days: each team's last completed game before the slate, for the
+    # rest-edge adjustment (back-to-backs / byes). Built from the same results.
+    last_played: dict[str, str] = {}
+    for r in results:
+        d = str(r["date"])[:10]
+        for t in (r["home_team"], r["away_team"]):
+            if d > last_played.get(t, ""):
+                last_played[t] = d
+
+    def _rest(team: str) -> int:
+        from datetime import date as _D
+        prev = last_played.get(team)
+        if not prev:
+            return 14
+        return min((_D.fromisoformat(date) - _D.fromisoformat(prev)).days, 14)
+
     rows = []
     for g in slate:
         proj = generic.project_game(
@@ -693,7 +709,12 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
         if elo is not None:
             season = int(str(g.get("date") or date)[:4])
             ewp = elo.home_win_prob(g["home_team"], g["away_team"], season)
-            hwp = round((1 - sport.elo_blend) * hwp + sport.elo_blend * ewp, 4)
+            hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
+        if sport.rest_coeff and sport.sigma_margin > 0:
+            rest_diff = _rest(g["home_team"]) - _rest(g["away_team"])
+            hwp = generic.shift_win_prob(hwp, sport.rest_coeff * rest_diff,
+                                         sport.sigma_margin)
+        hwp = round(hwp, 4)
         rows.append(
             {
                 "game_id": g["game_id"],

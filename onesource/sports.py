@@ -41,6 +41,10 @@ class Sport:
     #   "multiplicative" -> league × (off/league) × (oppDef/league)  (log5-for-
     #                       points: strong O vs weak D scores above either mean)
     score_method: str = "additive"
+    # points of home-margin edge per rest-day differential (home_rest -
+    # away_rest, each capped at 14). 0 = off. Tuned on the game backtest;
+    # only set for normal-model sports where it's been measured.
+    rest_coeff: float = 0.0
 
 
 SPORTS: dict[str, Sport] = {
@@ -66,6 +70,8 @@ SPORTS: dict[str, Sport] = {
         # first weeks aren't coin flips). Mirrors WNBA's strong basketball
         # result; validate/tune via Performance -> Model vs market once games run.
         elo_blend=0.60, elo_k=20.0, elo_home_edge=65.0, elo_regress=0.25,
+        # rest-days edge (back-to-backs): +cal & +CLV on the 2022-24 backtest.
+        rest_coeff=0.5,
     ),
     "NFL": Sport(
         key="NFL", espn_path="football/nfl", model="normal",
@@ -78,6 +84,8 @@ SPORTS: dict[str, Sport] = {
         fp_projections="weekly", score_method="multiplicative",
         # Few games/season -> larger k and a heavier between-season regression.
         elo_blend=0.60, elo_k=20.0, elo_home_edge=48.0, elo_regress=0.33,
+        # rest edge (bye weeks / short weeks): +cal & +CLV on the 2021-24 backtest.
+        rest_coeff=0.5,
     ),
     "NCAAF": Sport(
         key="NCAAF", espn_path="football/college-football", model="normal",
