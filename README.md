@@ -247,9 +247,25 @@ fair vs naive-independent prices, the "lift", and — with the book's quoted SGP
 price — the EV and ¼-Kelly stake. Surfaced in **Tools → Parlay & Correlation**:
 positive correlation lifts the true joint probability above the independent
 product, so a book SGP priced near the independent number is +EV. The
-BettingPros `/props` call also pulls `include_correlated_picks` (no extra
-request, so the 5k/day budget is untouched) — its correlated-leg suggestions
+BettingPros `/props` call also pulls `include_correlated_picks` for the sports
+that support it (NFL and NBA only — requesting it elsewhere makes the API
+replace the entire props list with a warning) — its correlated-leg suggestions
 show on each prop's deep-dive card to seed an SGP.
+
+### DFS pick'em lines (PrizePicks / Underdog)
+
+BettingPros carries the DFS operators' own pick'em lines — confirmed book ids
+**PrizePicks `37`, Underdog `36`** (also Betr `45`, Sleeper `63`, Dabble `53`;
+see `bettingpros.DFS_BOOK_IDS` and the `data/history/raw/bp_books_*.json`
+snapshots). The consensus `/props` board only shows the single best-priced book
+per side, so the per-operator line lives in the `/offers` per-book breakdown
+(`selections[].books[].lines[]`). `bettingpros.dfs_offer_lines()` pivots those
+into one row per player+market+operator, and `pipeline._attach_dfs_lines()`
+joins each prop to its PrizePicks/Underdog line plus our model probability *at
+that line*. The **DFS Optimizer** prices every leg off the operator's own line
+when present (the number you actually bet) — the gap between a softer DFS line
+and the consensus is the edge — and falls back to the sportsbook consensus
+otherwise.
 
 ## AI analyst (built-in "send to AI")
 

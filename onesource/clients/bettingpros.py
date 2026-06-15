@@ -409,9 +409,58 @@ def _num_or_none(v):
 
 
 # DFS operators carried by BettingPros' props feed. Matched by book name
-# (case-insensitive) so we don't depend on guessing book_ids; pass explicit
-# ids to dfs_prop_lines() once confirmed against a live response.
+# (case-insensitive) so we don't depend on guessing book_ids.
 DFS_BOOK_NAMES = {"prizepicks", "underdog", "dabble", "sleeper", "betr"}
+
+# Confirmed book ids from the live /books directory (see
+# data/history/raw/bp_books_*.json). The pick'em line lives in the per-book
+# /offers breakdown, not the consensus /props board.
+DFS_BOOK_IDS = {
+    37: "prizepicks",
+    36: "underdog",
+    45: "betr",
+    63: "sleeper",
+    53: "dabble",
+}
+PRIZEPICKS_BOOK_ID = 37
+UNDERDOG_BOOK_ID = 36
+
+
+def dfs_offer_lines(offer_rows: list[dict],
+                    book_ids: dict[int, str] | None = None) -> list[dict]:
+    """Pivot flattened /offers rows (from ``flatten_offers``) into one row per
+    player+market+DFS-book with that book's own over/under line + odds. The DFS
+    pick'em line often differs from the consensus, and that gap is the edge.
+
+    Offer rows carry ``book_id`` but no name, so the DFS books are identified by
+    id (``DFS_BOOK_IDS`` by default) and tagged with their operator name.
+    """
+    ids = book_ids or DFS_BOOK_IDS
+    grouped: dict[tuple, dict] = {}
+    for r in offer_rows or []:
+        bid = r.get("book_id")
+        if bid not in ids:
+            continue
+        if not r.get("active", True):
+            continue
+        line, oddv = r.get("line"), r.get("odds")
+        if line is None or oddv is None:
+            continue
+        key = (r.get("event_id"), r.get("market_id"),
+               r.get("participant"), bid)
+        rec = grouped.setdefault(key, {
+            "event_id": r.get("event_id"), "market_id": r.get("market_id"),
+            "market": r.get("market"), "participant": r.get("participant"),
+            "book_id": bid, "book_name": ids[bid],
+            "over_line": None, "over_odds": None,
+            "under_line": None, "under_odds": None,
+        })
+        side = str(r.get("selection") or "").lower()
+        if "over" in side:
+            rec["over_line"], rec["over_odds"] = _num_or_none(line), _num_or_none(oddv)
+        elif "under" in side:
+            rec["under_line"], rec["under_odds"] = _num_or_none(line), _num_or_none(oddv)
+    return list(grouped.values())
 
 
 def prop_book_lines(raw_props: list[dict]) -> list[dict]:

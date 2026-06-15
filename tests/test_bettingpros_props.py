@@ -55,3 +55,44 @@ def test_inactive_lines_dropped():
             {"id": 24, "name": "PrizePicks",
              "lines": [{"line": 1.5, "cost": -119, "active": False}]}]}]}]
     assert bp.prop_book_lines(raw) == []
+
+
+# /offers per-book rows (flatten_offers shape) carrying DFS books by id.
+OFFER_ROWS = [
+    {"event_id": 1, "market_id": 285, "market": "strikeouts",
+     "participant": "Zack Wheeler", "selection": "over",
+     "book_id": 37, "line": 5.5, "odds": -119, "active": True},
+    {"event_id": 1, "market_id": 285, "market": "strikeouts",
+     "participant": "Zack Wheeler", "selection": "under",
+     "book_id": 37, "line": 5.5, "odds": -119, "active": True},
+    {"event_id": 1, "market_id": 285, "market": "strikeouts",
+     "participant": "Zack Wheeler", "selection": "over",
+     "book_id": 36, "line": 6.0, "odds": -110, "active": True},
+    {"event_id": 1, "market_id": 285, "market": "strikeouts",
+     "participant": "Zack Wheeler", "selection": "over",
+     "book_id": 12, "line": 6.5, "odds": 124, "active": True},   # DraftKings, ignored
+]
+
+
+def test_dfs_offer_lines_pivots_pp_and_ud():
+    rows = bp.dfs_offer_lines(OFFER_ROWS)
+    # PrizePicks (37) over+under collapse to one record; Underdog (36) one more
+    assert len(rows) == 2
+    pp = next(r for r in rows if r["book_id"] == bp.PRIZEPICKS_BOOK_ID)
+    assert pp["book_name"] == "prizepicks"
+    assert pp["over_line"] == 5.5 and pp["over_odds"] == -119
+    assert pp["under_line"] == 5.5 and pp["under_odds"] == -119
+    ud = next(r for r in rows if r["book_id"] == bp.UNDERDOG_BOOK_ID)
+    assert ud["over_line"] == 6.0 and ud["under_line"] is None  # only over quoted
+    # DraftKings (12) excluded entirely
+    assert all(r["book_id"] in bp.DFS_BOOK_IDS for r in rows)
+
+
+def test_dfs_offer_lines_skips_inactive_and_missing():
+    rows = bp.dfs_offer_lines([
+        {"event_id": 1, "market_id": 2, "participant": "X", "selection": "over",
+         "book_id": 37, "line": 1.5, "odds": -119, "active": False},
+        {"event_id": 1, "market_id": 2, "participant": "Y", "selection": "over",
+         "book_id": 37, "line": None, "odds": -119, "active": True},
+    ])
+    assert rows == []

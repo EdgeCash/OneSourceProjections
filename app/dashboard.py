@@ -745,15 +745,28 @@ def render_plays():
 def render_dfs():
     topbar("DFS Optimizer", with_search=False)
     date_sel = pick_date()
-    cands = dfs.candidates(slates.get(date_sel, {}))
+    day = slates.get(date_sel, {})
+    dfs_only = st.toggle(
+        "PrizePicks / Underdog lines only", value=False,
+        help="Price every leg off the operator's own pick'em line (when "
+             "BettingPros carries it) and hide props that only have a "
+             "sportsbook consensus number.")
+    cands = dfs.candidates(day, dfs_only=dfs_only)
     if cands.empty:
-        st.info("No props with model probabilities yet for this slate.")
+        st.info("No props with a PrizePicks/Underdog line yet for this slate."
+                if dfs_only else
+                "No props with model probabilities yet for this slate.")
         return
-    st.caption("**Edge = our model probability − the de-vigged book price.** Only "
-               "legs where we beat the market are eligible (no edge → PrizePicks "
-               "prices it the same → no value). Probabilities capped at "
-               f"{dfs.PROB_CAP:.0%}; PrizePicks multipliers (Underdog ≈ same); "
-               "legs treated as independent — avoid stacking the same game.")
+    n_dfs = int((cands.get("line_source", pd.Series(dtype=str))
+                 .isin(["PrizePicks", "Underdog"])).sum()) \
+        if "line_source" in cands.columns else 0
+    st.caption("**Edge = our model probability − the de-vigged price.** When an "
+               "operator's own pick'em line is available it's priced off *that* "
+               "line (the number you actually bet); otherwise the sportsbook "
+               "consensus. Only legs where we beat the price are eligible. "
+               f"Probabilities capped at {dfs.PROB_CAP:.0%}; PrizePicks "
+               "multipliers (Underdog ≈ same); legs treated as independent. "
+               f"({n_dfs} legs on a live PrizePicks/Underdog line.)")
     slips = dfs.best_slips(cands, min_edge=min_edge)
     if not slips:
         st.warning(f"No legs clear a {min_edge:.0%} edge over the book on this "
@@ -773,9 +786,11 @@ def render_dfs():
                     f"(hit-all {top['joint']:.1%}; each leg must clear "
                     f"{top['breakeven']:.0%} to break even)")
         for l in top["legs"]:
+            src = l.get("line_source")
+            at = f" @ {src}" if src and src != "consensus" else ""
             st.markdown(f"- **{l['player']}** ({l['sport']}, {l['team']}) — "
                         f"**{l['side']} {l['line']:g} "
-                        f"{ui.short_market(str(l['market']))}** · "
+                        f"{ui.short_market(str(l['market']))}**{at} · "
                         f"model {l['raw_prob']:.0%} vs book {l['book_prob']:.0%} "
                         f"(**{l['edge']:+.0%}** edge)")
         if all(s_["power_ev"] is not None and s_["power_ev"] < 0 for s_ in slips):
@@ -783,6 +798,8 @@ def render_dfs():
                        "multipliers' house edge swamps it. Flex or pass.")
     st.markdown("##### Candidate pool (by edge)")
     pool = cands[cands["edge"].notna()].head(25).copy()
+    if "line_source" not in pool.columns:
+        pool["line_source"] = "consensus"
     pool["market"] = pool["market"].map(lambda m: ui.short_market(str(m)))
     pool["raw_prob"] = pool["raw_prob"].map(lambda v: f"{v:.0%}")
     pool["book_prob"] = pool["book_prob"].map(lambda v: f"{v:.0%}")
@@ -790,9 +807,10 @@ def render_dfs():
     pool = pool.rename(columns={
         "player": "Player", "sport": "Sport", "team": "Team",
         "market": "Market", "line": "Line", "side": "Side",
-        "raw_prob": "P (model)", "book_prob": "P (book)", "edge": "Edge"})
+        "raw_prob": "P (model)", "book_prob": "P (book)", "edge": "Edge",
+        "line_source": "Book"})
     st.dataframe(pool[["Player", "Sport", "Team", "Market", "Line", "Side",
-                       "P (model)", "P (book)", "Edge"]],
+                       "Book", "P (model)", "P (book)", "Edge"]],
                  width="stretch", hide_index=True)
 
 
