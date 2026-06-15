@@ -28,6 +28,10 @@ _TTL = 10 * 60  # lines move; keep this short
 _MIN_INTERVAL = 0.26  # ~4 req/sec, under the 5 RPS cap
 _last_request = 0.0
 
+# Sports for which BettingPros serves SGP correlated-pick suggestions. Asking
+# for them on any other sport corrupts the /props response (see props()).
+CORRELATED_PICK_SPORTS = {"NFL", "NBA"}
+
 
 class BettingProsError(RuntimeError):
     pass
@@ -203,10 +207,15 @@ def props(
         "page": 1,
         "include_selections": "true",
         "include_markets": "false",
-        "include_correlated_picks": "true",  # BP's own SGP correlation suggestions
-        "correlated_picks_limit": 6,
         "ev_threshold": "false",  # we want the full board, not just BP's edges
     }
+    # BettingPros only supports SGP correlations for NFL and NBA. Asking for them
+    # on any other sport makes the API replace the ENTIRE props list with a
+    # warning string ("Unsupported sports found for SGP correlations..."), which
+    # silently empties the board — so only request them where they're supported.
+    if sport.upper() in CORRELATED_PICK_SPORTS:
+        params["include_correlated_picks"] = "true"
+        params["correlated_picks_limit"] = 6
     if market_ids:
         params["market_id"] = ":".join(str(m) for m in market_ids)
     key = f"bp:props:{sport}:{date}:{params.get('market_id', 'all')}:{location}"
