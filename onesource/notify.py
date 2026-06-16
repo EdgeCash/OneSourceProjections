@@ -69,7 +69,12 @@ def send(message: str, *, title: str | None = None, priority: str | None = None,
         resp = requests.post(url, data=message.encode("utf-8"),
                              headers=headers, timeout=timeout)
         resp.raise_for_status()
+        log.info("ntfy push ok: HTTP %s", getattr(resp, "status_code", "?"))
         return True
+    except requests.HTTPError as e:
+        body = getattr(getattr(e, "response", None), "text", "") or ""
+        log.warning("ntfy push failed: %s — %s", e, body[:300])
+        return False
     except Exception as e:
         log.warning("ntfy push failed: %s", e)
         return False
