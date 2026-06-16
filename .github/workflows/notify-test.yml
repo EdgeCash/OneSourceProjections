@@ -1,0 +1,36 @@
+name: Test notification
+
+# Manually verify ntfy push delivery to your phone. Trigger from the GitHub
+# mobile app / web: Actions -> "Test notification" -> Run workflow. Watch your
+# ntfy app for the "Test notification" push, and check the run log for the
+# exact HTTP result.
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Optional custom message"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install requests
+
+      - name: Send test push
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+        run: python scripts/notify_test.py "${{ inputs.message }}"

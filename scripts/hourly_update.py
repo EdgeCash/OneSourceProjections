@@ -56,12 +56,15 @@ def _maybe_daily_recap(today_iso: str, yesterday_iso: str, hour_et: int) -> None
         return
     model = results.model_accuracy(yesterday_iso)
     played = plays.played_accuracy(yesterday_iso)
-    plays.record_daily(yesterday_iso, model, played)
+    plays.record_daily(yesterday_iso, model, played)  # log regardless of push
     m = f"{model[0]:.0%} ({model[1]} games)" if model[0] is not None else "— (no games)"
     p = f"{played[0]:.0%} ({played[1]} plays)" if played[0] is not None else "— (no plays)"
-    notify.send(f"Model accuracy: {m}\nYour played accuracy: {p}",
-                title=f"📊 {yesterday_iso} recap", tags=["bar_chart"],
-                click=f"{APP_URL}/?section=PERFORMANCE")
+    ok = notify.send(f"Model accuracy: {m}\nYour played accuracy: {p}",
+                     title=f"📊 {yesterday_iso} recap", tags=["bar_chart"],
+                     click=f"{APP_URL}/?section=PERFORMANCE")
+    if not ok:
+        log.warning("daily recap push failed — will retry next run")
+        return  # don't mark done; retry on the next hourly run
     RECAP_STATE.parent.mkdir(parents=True, exist_ok=True)
     RECAP_STATE.write_text(json.dumps({"last": today_iso}))
     log.info("pushed daily recap for %s (model %s, played %s)",
