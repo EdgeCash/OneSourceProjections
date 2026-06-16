@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 396,
+  "event_id": 2582,
+  "participant": {
+   "id": "71",
+   "name": "Aliyah Boston",
+   "link": "/wnba/props/aliyah-boston/",
+   "player": {
+    "short_name": "A. Boston",
+    "first_name": "Aliyah",
+    "last_name": "Boston",
+    "image": "https://images.fantasypros.com/images/players/wnba/71/headshot/210x210.webp",
+    "slug": "aliyah-boston",
+    "position": "F",
+    "team": "IND",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 29.5,
+   "odds": 120,
+   "book": 12,
+   "consensus_line": 28.5,
+   "consensus_odds": 120,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 28.5,
+     "cost": -108,
+     "book_id": 12,
+     "created": "2026-06-15 00:08:14"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "7b6362ac442caf8c4ecdce614454e845"
+   },
+   "probability": 0.31478026098372003,
+   "expected_value": -0.41149777294347994,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 28.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 28.5,
+   "consensus_odds": -130,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 27.5,
+     "cost": -122,
+     "book_id": 63,
+     "created": "2026-06-14 17:33:03"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "cda5903b8840ca25046e3f937abd1b51"
+   },
+   "probability": 0.68521973901628,
+   "expected_value": 0.2810629903347843,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 24.52,
+   "probability": 0.68521973901628,
+   "expected_value": 0.2810629903347843,
+   "bet_rating": 5,
+   "diff": -3.98
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 14,
+    "value": 111.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/aliyah-boston/points-assists-rebounds/",
+   "analyzer": "/wnba/props/aliyah-boston/points-assists-rebounds/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 5,
+    "under": 7,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 23,
+    "under": 30,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "over"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 395,
+  "event_id": 2582,
+  "participant": {
+   "id": "71",
+   "name": "Aliyah Boston",
+   "link": "/wnba/props/aliyah-boston/",
+   "player": {
+    "short_name": "A. Boston",
+    "first_name": "Aliyah",
+    "last_name": "Boston",
+    "image": "https://images.fantasypros.com/images/players/wnba/71/headshot/210x210.webp",
+    "slug": "aliyah-boston",
+    "position": "F",
+    "team": "IND",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 25.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 25.5,
+   "consensus_odds": -129,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 24.5,
+     "cost": -130,
+     "book_id": 12,
+     "created": "2026-06-15 00:03:05"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "ab243375f720f92e2edf54a4b031ae21"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 25.5,
+   "odds": -105,
+   "book": 33,
+   "consensus_line": 25.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 24.5,
+     "cost": -118,
+     "book_id": 37,
+     "created": "2026-06-14 17:39:59"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "c9b4095812f8c91e111bf951a1db3ece"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 21.84,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -3.66
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 14,
+    "value": 89.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/aliyah-boston/points-rebounds/",
+   "analyzer": "/wnba/props/aliyah-boston/points-rebounds/",
+   "affiliate": "https://thescore.bet/sport/basketball/organization/united-states/competition/wnba/event/aedffbcb-95c8-44e6-b415-dd0bc0e0ee4d"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 5,
+    "under": 7,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 19,
+    "under": 34,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ }
+]
