@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98349,
+  "sr_id": "2dcb5a59-4775-4e9f-abce-56788c971e95",
+  "sport": "MLB",
+  "scheduled": "2026-06-17 16:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CIN",
+  "visitor": "NYM",
+  "link": "/mlb/matchups/cincinnati-reds-vs-new-york-mets/?date=2026-06-17",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6953",
+    "name": "Nick Lodolo",
+    "link": "/mlb/props/nick-lodolo/",
+    "player": {
+     "short_name": "N. Lodolo",
+     "first_name": "Nick",
+     "last_name": "Lodolo",
+     "image": "https://images.fantasypros.com/images/players/mlb/6953/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "nick-lodolo",
+     "jersey_number": 40
+    }
+   },
+   "visitor_probable": {
+    "id": "47159",
+    "name": "Nolan McLean",
+    "link": "/mlb/props/nolan-mclean/",
+    "player": {
+     "short_name": "N. McLean",
+     "first_name": "Nolan",
+     "last_name": "McLean",
+     "image": "https://images.fantasypros.com/images/players/mlb/47159/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYM",
+     "conference": "NL",
+     "division": "East",
+     "slug": "nolan-mclean",
+     "jersey_number": 26
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CIN",
+   "season": "2025",
+   "split": "A",
+   "r": "1.093",
+   "1b": "1.027",
+   "2b": "1.000",
+   "3b": "0.655",
+   "hr": "1.384",
+   "name": "Great American Ball Park"
+  },
+  "venue": {
+   "name": "Great American Ball Park",
+   "address": "100 Joe Nuxhall Way",
+   "city": "Cincinnati",
+   "state": "OH",
+   "country": "USA",
+   "zip": "45202",
+   "surface": "grass",
+   "capacity": 43891,
+   "stadium_type": "outdoor",
+   "id": "f102d8fb-de67-4b86-9053-8b55f578d45c"
+  },
+  "participants": [
+   {
+    "id": "CIN",
+    "name": "Reds",
+    "link": "/mlb/teams/cincinnati-reds/",
+    "team": {
+     "city": "Cincinnati",
+     "abbreviation": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 34,
+      "L": 37,
+      "T": 0
+     },
+     "slug": "cincinnati-reds",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "NYM",
+    "name": "Mets",
+    "link": "/mlb/teams/new-york-mets/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYM",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 32,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "new-york-mets",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 75,
+   "forecast_wind_speed": 14,
+   "forecast_wind_direction": "SW",
+   "forecast_wind_degree": 217,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1007,
+   "forecast_humidity": 0.63
+  },
+  "broadcasts": [
+   {
+    "network": "CINR",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98022,
+  "sr_id": "0a5f14e1-f5e1-4153-8386-746b363405bf",
+  "sport": "MLB",
+  "scheduled": "2026-06-17 17:05:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PHI",
+  "visitor": "MIA",
+  "link": "/mlb/matchups/miami-marlins-vs-philadelphia-phillies/?date=2026-06-17",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "44680",
+    "name": "Andrew Painter",
+    "link": "/mlb/props/andrew-painter/",
+    "player": {
+     "short_name": "A. Painter",
+     "first_name": "Andrew",
+     "last_name": "Painter",
+     "image": "https://images.fantasypros.com/images/players/mlb/44680/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "andrew-painter",
+     "jersey_number": 24
+    }
+   },
+   "visitor_probable": {
+    "id": "7109",
+    "name": "Sandy Alcantara",
+    "link": "/mlb/props/sandy-alcantara/",
+    "player": {
+     "short_name": "S. Alcantara",
+     "first_name": "Sandy",
+     "last_name": "Alcantara",
+     "image": "https://images.fantasypros.com/images/players/mlb/7109/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "slug": "sandy-alcantara",
+     "jersey_number": 22
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PHI",
+   "season": "2025",
+   "split": "A",
+   "r": "1.017",
+   "1b": "0.955",
+   "2b": "0.929",
+   "3b": "1.009",
+   "hr": "1.131",
+   "name": "Citizens Bank Park"
+  },
+  "venue": {
+   "name": "Citizens Bank Park",
+   "address": "One Citizens Bank Way",
+   "city": "Philadelphia",
+   "state": "PA",
+   "country": "USA",
+   "zip": "19148",
+   "surface": "grass",
+   "capacity": 42901,
+   "stadium_type": "outdoor",
+   "id": "b4186004-b6d0-42e7-8dc1-82ef0d946ecc"
+  },
+  "participants": [
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 39,
+      "L": 33,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 36,
+      "L": 37,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 79,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "SSW",
+   "forecast_wind_degree": 194,
+   "forecast_rain_chance": 6,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1009,
+   "forecast_humidity": 0.55
+  },
+  "broadcasts": [
+   {
+    "network": "NBC 10",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

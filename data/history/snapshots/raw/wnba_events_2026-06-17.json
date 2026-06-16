@@ -1,0 +1,122 @@
+[
+ {
+  "id": 2583,
+  "sr_id": "e868e8d0-b07e-42fb-8e66-86da9ed6f1d5",
+  "sport": "WNBA",
+  "scheduled": "2026-06-17 23:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CON",
+  "visitor": "WAS",
+  "link": "/wnba/matchups/connecticut-sun-vs-washington-mystics/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Mohegan Sun Arena",
+   "city": "Uncasville",
+   "state": "CT",
+   "country": "USA",
+   "zip": "06382",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CON",
+    "name": "Sun",
+    "link": "/wnba/teams/connecticut-sun/",
+    "team": {
+     "city": "Connecticut",
+     "abbreviation": "CON",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 2,
+      "L": 13,
+      "T": 0
+     },
+     "slug": "connecticut-sun"
+    }
+   },
+   {
+    "id": "WAS",
+    "name": "Mystics",
+    "link": "/wnba/teams/washington-mystics/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WAS",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 5,
+      "L": 7,
+      "T": 0
+     },
+     "slug": "washington-mystics"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2584,
+  "sr_id": "70ea3900-71df-481a-906e-c1d6a5b80ccc",
+  "sport": "WNBA",
+  "scheduled": "2026-06-18 00:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CHI",
+  "visitor": "NYL",
+  "link": "/wnba/matchups/chicago-sky-vs-new-york-liberty/",
+  "series_summary": null,
+  "popularity": 1,
+  "venue": {
+   "name": "Wintrust Arena",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60616",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CHI",
+    "name": "Sky",
+    "link": "/wnba/teams/chicago-sky/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHI",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 4,
+      "L": 9,
+      "T": 0
+     },
+     "slug": "chicago-sky"
+    }
+   },
+   {
+    "id": "NYL",
+    "name": "Liberty",
+    "link": "/wnba/teams/new-york-liberty/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYL",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 10,
+      "L": 4,
+      "T": 0
+     },
+     "slug": "new-york-liberty"
+    }
+   }
+  ],
+  "broadcasts": []
+ }
+]
