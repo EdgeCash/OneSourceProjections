@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 396,
+  "event_id": 2586,
+  "participant": {
+   "id": "570",
+   "name": "Dominique Malonga",
+   "link": "/wnba/props/dominique-malonga/",
+   "player": {
+    "short_name": "D. Malonga",
+    "first_name": "Dominique",
+    "last_name": "Malonga",
+    "image": "https://images.fantasypros.com/images/players/wnba/570/headshot/210x210.webp",
+    "slug": "dominique-malonga",
+    "position": "C",
+    "team": "SEA",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 24.5,
+   "odds": 121,
+   "book": 12,
+   "consensus_line": 22.5,
+   "consensus_odds": 121,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 22.5,
+     "cost": -110,
+     "book_id": 13,
+     "created": "2026-06-16 14:08:23"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "dbac6f5b4edf03b741adbf60a4b1a35b"
+   },
+   "probability": 0.051428393723560006,
+   "expected_value": -0.907428891297592,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 22.5,
+   "odds": 125,
+   "book": 60,
+   "consensus_line": 22.5,
+   "consensus_odds": 100,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 22.5,
+     "cost": -121,
+     "book_id": 13,
+     "created": "2026-06-16 14:08:23"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "8210a982a969edccfeda1d814e377e4d"
+   },
+   "probability": 0.94857160627644,
+   "expected_value": 1.13428611412199,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 9.82,
+   "probability": 0.94857160627644,
+   "expected_value": 1.13428611412199,
+   "bet_rating": 5,
+   "diff": -12.68
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 13,
+    "value": 110.1,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/dominique-malonga/points-assists-rebounds/",
+   "analyzer": "/wnba/props/dominique-malonga/points-assists-rebounds/",
+   "affiliate": "https://novig.com/events/019ecf08-1c0c-7143-9f04-ac8686ac55ba/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 6,
+    "under": 9,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 4,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 7,
+    "under": 38,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 395,
+  "event_id": 2586,
+  "participant": {
+   "id": "570",
+   "name": "Dominique Malonga",
+   "link": "/wnba/props/dominique-malonga/",
+   "player": {
+    "short_name": "D. Malonga",
+    "first_name": "Dominique",
+    "last_name": "Malonga",
+    "image": "https://images.fantasypros.com/images/players/wnba/570/headshot/210x210.webp",
+    "slug": "dominique-malonga",
+    "position": "C",
+    "team": "SEA",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 21.5,
+   "odds": -114,
+   "book": 13,
+   "consensus_line": 21.5,
+   "consensus_odds": -117,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 20.5,
+     "cost": -127,
+     "book_id": 13,
+     "created": "2026-06-16 14:08:24"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "4d66739cd70e22a7b26fc76d50adde3f"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 21.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 21.5,
+   "consensus_odds": -117,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 20.5,
+     "cost": -106,
+     "book_id": 13,
+     "created": "2026-06-16 14:08:24"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "cb8548222dcd2007f2df3efe7750ec9d"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 9.43,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -12.07
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 12,
+    "value": 88,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/dominique-malonga/points-rebounds/",
+   "analyzer": "/wnba/props/dominique-malonga/points-rebounds/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 5,
+    "under": 5,
+    "push": 0
+   },
+   "last_15": {
+    "over": 5,
+    "under": 10,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 4,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 7,
+    "under": 38,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ }
+]

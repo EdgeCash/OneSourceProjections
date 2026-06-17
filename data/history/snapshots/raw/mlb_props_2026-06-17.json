@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 99932,
+  "participant": {
+   "id": "45814",
+   "name": "Steven Cruz",
+   "link": "/mlb/props/steven-cruz/",
+   "player": {
+    "short_name": "S. Cruz",
+    "first_name": "Steven",
+    "last_name": "Cruz",
+    "image": "https://images.fantasypros.com/images/players/mlb/45814/headshot/210x210.webp",
+    "slug": "steven-cruz",
+    "position": "RP",
+    "team": "KC",
+    "popularity": 928,
+    "jersey_number": 64
+   }
+  },
+  "over": {
+   "line": 3.5,
+   "odds": 130,
+   "book": 49,
+   "consensus_line": 3.5,
+   "consensus_odds": 130,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 3.5,
+     "cost": 130,
+     "book_id": 49,
+     "created": "2026-06-17 01:54:30"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "afa12628ffcd560f8d7f5c877034629b",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": 0.02023902709380998,
+   "expected_value": -0.9534502376842371,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 3.5,
+   "odds": -185,
+   "book": 49,
+   "consensus_line": 3.5,
+   "consensus_odds": -185,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 3.5,
+     "cost": -185,
+     "book_id": 49,
+     "created": "2026-06-17 01:54:30"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "29a3d039f0d78cb75e5ccf7a97f0a7f1",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": 0.97976097290619,
+   "expected_value": 0.5093614988014279,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 1.02,
+   "probability": 0.97976097290619,
+   "expected_value": 0.5093614988014279,
+   "bet_rating": 5,
+   "diff": -2.48
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Littell (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 21,
+    "value": 0.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/steven-cruz/outs-recorded/",
+   "analyzer": "/mlb/props/steven-cruz/outs-recorded/",
+   "affiliate": "https://app.hardrock.bet/?deep_link_value=betslip%2F398524018069733682"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "last_10": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "last_15": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "last_20": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "season": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 0,
+   "streak_type": null
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 98278,
+  "participant": {
+   "id": "5674",
+   "name": "Carlos Rodon",
+   "link": "/mlb/props/carlos-rodon/",
+   "player": {
+    "short_name": "C. Rodon",
+    "first_name": "Carlos",
+    "last_name": "Rodon",
+    "image": "https://images.fantasypros.com/images/players/mlb/5674/headshot/210x210.webp",
+    "slug": "carlos-rodon",
+    "position": "SP",
+    "team": "NYY",
+    "popularity": 169,
+    "jersey_number": 55
+   }
+  },
+  "over": {
+   "line": 17.5,
+   "odds": -128,
+   "book": 63,
+   "consensus_line": 17.5,
+   "consensus_odds": -128,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -115,
+     "book_id": 36,
+     "created": "2026-06-17 03:00:36"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "dfc3f1cfbd8879fbec288453cdec655a",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 2
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 17.5,
+   "odds": -110,
+   "book": 14,
+   "consensus_line": 17.5,
+   "consensus_odds": -128,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -115,
+     "book_id": 36,
+     "created": "2026-06-17 03:00:37"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "a881971b3c56413935a5c689bd5f855b",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 15.18,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -2.32
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Kay (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 22,
+    "value": 0.7,
+    "tied": true
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/carlos-rodon/outs-recorded/",
+   "analyzer": "/mlb/props/carlos-rodon/outs-recorded/",
+   "affiliate": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224708534%22%2C%22marketId%22%3A%22621326672_405_4708534%22%2C%22selectionId%22%3A%221534532901%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 10,
+    "under": 5,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 22,
+    "under": 13,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 3,
+   "streak_type": "over"
+  }
+ }
+]
