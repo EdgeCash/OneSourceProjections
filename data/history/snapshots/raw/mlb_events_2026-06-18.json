@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99315,
+  "sr_id": "96319dc5-19d3-4c6a-b74c-d379e2817e0d",
+  "sport": "MLB",
+  "scheduled": "2026-06-18 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BOS",
+  "visitor": "TOR",
+  "link": "/mlb/matchups/boston-red-sox-vs-toronto-blue-jays/?date=2026-06-18",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "4755",
+    "name": "Sonny Gray",
+    "link": "/mlb/props/sonny-gray/",
+    "player": {
+     "short_name": "S. Gray",
+     "first_name": "Sonny",
+     "last_name": "Gray",
+     "image": "https://images.fantasypros.com/images/players/mlb/4755/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "slug": "sonny-gray",
+     "jersey_number": 54
+    }
+   },
+   "visitor_probable": {
+    "id": "7354369",
+    "name": "Trey Yesavage",
+    "link": "/mlb/props/trey-yesavage/",
+    "player": {
+     "short_name": "T. Yesavage",
+     "first_name": "Trey",
+     "last_name": "Yesavage",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354369/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "trey-yesavage",
+     "jersey_number": 39
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BOS",
+   "season": "2025",
+   "split": "A",
+   "r": "1.093",
+   "1b": "1.087",
+   "2b": "1.168",
+   "3b": "1.504",
+   "hr": "0.956",
+   "name": "Fenway Park"
+  },
+  "venue": {
+   "name": "Fenway Park",
+   "address": "4 Yawkey Way",
+   "city": "Boston",
+   "state": "MA",
+   "country": "USA",
+   "zip": "02215",
+   "surface": "grass",
+   "capacity": 37755,
+   "stadium_type": "outdoor",
+   "id": "b27b0dc5-c2c5-401d-b8b9-a6a2dbc225e5"
+  },
+  "participants": [
+   {
+    "id": "BOS",
+    "name": "Red Sox",
+    "link": "/mlb/teams/boston-red-sox/",
+    "team": {
+     "city": "Boston",
+     "abbreviation": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 29,
+      "L": 41,
+      "T": 0
+     },
+     "slug": "boston-red-sox",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 35,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 74,
+   "forecast_wind_speed": 26,
+   "forecast_wind_direction": "S",
+   "forecast_wind_degree": 176,
+   "forecast_rain_chance": 13,
+   "forecast_icon": "Windy",
+   "forecast_pressure": 1004,
+   "forecast_humidity": 0.7
+  },
+  "broadcasts": [
+   {
+    "network": "SNET",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 100293,
+  "sr_id": "f9b22a7d-8298-4f10-a162-a62b04ae03f9",
+  "sport": "MLB",
+  "scheduled": "2026-06-18 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIL",
+  "visitor": "CLE",
+  "link": "/mlb/matchups/cleveland-guardians-vs-milwaukee-brewers/?date=2026-06-18",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43986",
+    "name": "Shane Drohan",
+    "link": "/mlb/props/shane-drohan/",
+    "player": {
+     "short_name": "S. Drohan",
+     "first_name": "Shane",
+     "last_name": "Drohan",
+     "image": "https://images.fantasypros.com/images/players/mlb/43986/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "shane-drohan",
+     "jersey_number": 55
+    }
+   },
+   "visitor_probable": {
+    "id": "46317",
+    "name": "Parker Messick",
+    "link": "/mlb/props/parker-messick/",
+    "player": {
+     "short_name": "P. Messick",
+     "first_name": "Parker",
+     "last_name": "Messick",
+     "image": "https://images.fantasypros.com/images/players/mlb/46317/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "parker-messick",
+     "jersey_number": 77
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.976",
+   "1b": "0.897",
+   "2b": "0.935",
+   "3b": "0.969",
+   "hr": "1.139",
+   "name": "American Family Field"
+  },
+  "venue": {
+   "name": "American Family Field",
+   "address": "One Brewers Way",
+   "city": "Milwaukee",
+   "state": "WI",
+   "country": "USA",
+   "zip": "53214",
+   "surface": "grass",
+   "capacity": 41700,
+   "stadium_type": "retractable",
+   "id": "3d13c8a7-283f-482b-ade1-441e25b6465d"
+  },
+  "participants": [
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 26,
+      "T": 0
+     },
+     "slug": "milwaukee-brewers",
+     "stadium_deg_offset": "135"
+    }
+   },
+   {
+    "id": "CLE",
+    "name": "Guardians",
+    "link": "/mlb/teams/cleveland-guardians/",
+    "team": {
+     "city": "Cleveland",
+     "abbreviation": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 39,
+      "L": 34,
+      "T": 0
+     },
+     "slug": "cleveland-guardians",
+     "stadium_deg_offset": "0"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 67,
+   "forecast_wind_speed": 20,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 303,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1006,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "BREW",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
