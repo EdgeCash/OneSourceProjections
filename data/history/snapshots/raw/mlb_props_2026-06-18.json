@@ -1,0 +1,301 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 99073,
+  "participant": {
+   "id": "43972",
+   "name": "Tristan Gray",
+   "link": "/mlb/props/tristan-gray/",
+   "player": {
+    "short_name": "T. Gray",
+    "first_name": "Tristan",
+    "last_name": "Gray",
+    "image": "https://images.fantasypros.com/images/players/mlb/43972/headshot/210x210.webp",
+    "slug": "tristan-gray",
+    "position": "2B,3B,SS",
+    "team": "MIN",
+    "popularity": 1461,
+    "jersey_number": 4
+   }
+  },
+  "over": {
+   "line": 0.5,
+   "odds": -176,
+   "book": 36,
+   "consensus_line": 0.5,
+   "consensus_odds": -180,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 0.5,
+     "cost": -180,
+     "book_id": 14,
+     "created": "2026-06-17 22:14:59"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "d763cf66b68dd584575e5adcf3ae1371"
+   },
+   "probability": 0.79607438826579,
+   "expected_value": 0.24838938159862528,
+   "bet_rating": 5
+  },
+  "under": {
+   "line": 0.5,
+   "odds": 129,
+   "book": 36,
+   "consensus_line": 0.5,
+   "consensus_odds": 125,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 0.5,
+     "cost": 125,
+     "book_id": 14,
+     "created": "2026-06-17 22:14:59"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "c60035ade9484c24ff5914bed7420234"
+   },
+   "probability": 0.20392561173420998,
+   "expected_value": -0.5330103491286591,
+   "bet_rating": 1
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 1.59,
+   "probability": 0.79607438826579,
+   "expected_value": 0.24838938159862528,
+   "bet_rating": 5,
+   "diff": 1.09
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Leiter (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 7,
+    "value": 0.4,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/tristan-gray/runs-hits-rbis/",
+   "analyzer": "/mlb/props/tristan-gray/runs-hits-rbis/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 8,
+    "under": 7,
+    "push": 0
+   },
+   "last_20": {
+    "over": 10,
+    "under": 10,
+    "push": 0
+   },
+   "season": {
+    "over": 25,
+    "under": 21,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 18,
+    "under": 12,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 3,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 408,
+  "event_id": 99073,
+  "participant": {
+   "id": "43712",
+   "name": "Jack Leiter",
+   "link": "/mlb/props/jack-leiter/",
+   "player": {
+    "short_name": "J. Leiter",
+    "first_name": "Jack",
+    "last_name": "Leiter",
+    "image": "https://images.fantasypros.com/images/players/mlb/43712/headshot/210x210.webp",
+    "slug": "jack-leiter",
+    "position": "SP",
+    "team": "TEX",
+    "popularity": 218,
+    "jersey_number": 22
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": -167,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -167,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -167,
+     "book_id": 36,
+     "created": "2026-06-17 22:18:56"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "ff5e3d7273a722940b84782b05e5e493",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 1.5,
+   "odds": 136,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": 136,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": 136,
+     "book_id": 36,
+     "created": "2026-06-17 22:18:56"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "669dde6065902ea0e50e8ebd17d56fac",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 2.48,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 0.98
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Ryan (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 16,
+    "value": 0.1,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/jack-leiter/walks-allowed/",
+   "analyzer": "/mlb/props/jack-leiter/walks-allowed/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 5,
+    "under": 0,
+    "push": 0
+   },
+   "last_10": {
+    "over": 8,
+    "under": 2,
+    "push": 0
+   },
+   "last_15": {
+    "over": 10,
+    "under": 5,
+    "push": 0
+   },
+   "last_20": {
+    "over": 13,
+    "under": 7,
+    "push": 0
+   },
+   "season": {
+    "over": 10,
+    "under": 4,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 21,
+    "under": 8,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 7,
+   "streak_type": "over"
+  }
+ }
+]
