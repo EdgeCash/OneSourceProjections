@@ -1,0 +1,128 @@
+[
+ {
+  "id": 2590,
+  "sr_id": "0cd78d24-0ee7-42e8-91bf-ecc9865d4808",
+  "sport": "WNBA",
+  "scheduled": "2026-06-19 23:30:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CON",
+  "visitor": "TOR",
+  "link": "/wnba/matchups/connecticut-sun-vs-toronto-tempo/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Mohegan Sun Arena",
+   "city": "Uncasville",
+   "state": "CT",
+   "country": "USA",
+   "zip": "06382",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CON",
+    "name": "Sun",
+    "link": "/wnba/teams/connecticut-sun/",
+    "team": {
+     "city": "Connecticut",
+     "abbreviation": "CON",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 2,
+      "L": 14,
+      "T": 0
+     },
+     "slug": "connecticut-sun"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Tempo",
+    "link": "/wnba/teams/toronto-tempo/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 7,
+      "L": 8,
+      "T": 0
+     },
+     "slug": "toronto-tempo"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2591,
+  "sr_id": "a779afc0-379d-4422-b973-cf5b13954264",
+  "sport": "WNBA",
+  "scheduled": "2026-06-19 23:30:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "NYL",
+  "visitor": "WAS",
+  "link": "/wnba/matchups/new-york-liberty-vs-washington-mystics/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Barclays Center",
+   "city": "Brooklyn",
+   "state": "NY",
+   "country": "USA",
+   "zip": "11217",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "NYL",
+    "name": "Liberty",
+    "link": "/wnba/teams/new-york-liberty/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYL",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 11,
+      "L": 4,
+      "T": 0
+     },
+     "slug": "new-york-liberty"
+    }
+   },
+   {
+    "id": "WAS",
+    "name": "Mystics",
+    "link": "/wnba/teams/washington-mystics/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WAS",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 6,
+      "L": 7,
+      "T": 0
+     },
+     "slug": "washington-mystics"
+    }
+   }
+  ],
+  "broadcasts": [
+   {
+    "network": "ION",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

@@ -1,0 +1,274 @@
+[
+ {
+  "id": 100006,
+  "sr_id": "dcdcda7f-4732-44ec-b15a-27ffaaf9beb9",
+  "sport": "MLB",
+  "scheduled": "2026-06-19 18:20:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CHC",
+  "visitor": "TOR",
+  "link": "/mlb/matchups/chicago-cubs-vs-toronto-blue-jays/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "8573",
+    "name": "Ben Brown",
+    "link": "/mlb/props/benjamin-brown/",
+    "player": {
+     "short_name": "B. Brown",
+     "first_name": "Ben",
+     "last_name": "Brown",
+     "image": "https://images.fantasypros.com/images/players/mlb/8573/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "benjamin-brown",
+     "jersey_number": 32
+    }
+   },
+   "visitor_probable": {
+    "id": "4671",
+    "name": "Kevin Gausman",
+    "link": "/mlb/props/kevin-gausman/",
+    "player": {
+     "short_name": "K. Gausman",
+     "first_name": "Kevin",
+     "last_name": "Gausman",
+     "image": "https://images.fantasypros.com/images/players/mlb/4671/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "kevin-gausman",
+     "jersey_number": 34
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CHC",
+   "season": "2025",
+   "split": "A",
+   "r": "0.898",
+   "1b": "0.994",
+   "2b": "0.876",
+   "3b": "1.210",
+   "hr": "0.883",
+   "name": "Wrigley Field"
+  },
+  "venue": {
+   "name": "Wrigley Field",
+   "address": "1060 West Addison Street",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60613",
+   "surface": "grass",
+   "capacity": 41363,
+   "stadium_type": "outdoor",
+   "id": "53f8eb0d-a361-4a7a-930b-2f8735ea0698"
+  },
+  "participants": [
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 39,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 36,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 72,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 314,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.47
+  },
+  "broadcasts": [
+   {
+    "network": "SNET",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99478,
+  "sr_id": "a8ae8532-2be2-4b78-b328-bdbb8b71c776",
+  "sport": "MLB",
+  "scheduled": "2026-06-19 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DET",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/chicago-white-sox-vs-detroit-tigers/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43633",
+    "name": "Tarik Skubal",
+    "link": "/mlb/props/tarik-skubal/",
+    "player": {
+     "short_name": "T. Skubal",
+     "first_name": "Tarik",
+     "last_name": "Skubal",
+     "image": "https://images.fantasypros.com/images/players/mlb/43633/headshot/210x210.webp",
+     "position": "SP",
+     "team": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "tarik-skubal",
+     "jersey_number": 29
+    }
+   },
+   "visitor_probable": {
+    "id": "6029",
+    "name": "Erick Fedde",
+    "link": "/mlb/props/erick-fedde/",
+    "player": {
+     "short_name": "E. Fedde",
+     "first_name": "Erick",
+     "last_name": "Fedde",
+     "image": "https://images.fantasypros.com/images/players/mlb/6029/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "erick-fedde",
+     "jersey_number": 47
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "DET",
+   "season": "2025",
+   "split": "A",
+   "r": "1.039",
+   "1b": "1.025",
+   "2b": "0.993",
+   "3b": "1.274",
+   "hr": "0.928",
+   "name": "Comerica Park"
+  },
+  "venue": {
+   "name": "Comerica Park",
+   "address": "2100 Woodward Avenue",
+   "city": "Detroit",
+   "state": "MI",
+   "country": "USA",
+   "zip": "48226",
+   "surface": "grass",
+   "capacity": 41083,
+   "stadium_type": "outdoor",
+   "id": "ef9a5eef-06c6-4963-ac70-7fd02c8c8d42"
+  },
+  "participants": [
+   {
+    "id": "DET",
+    "name": "Tigers",
+    "link": "/mlb/teams/detroit-tigers/",
+    "team": {
+     "city": "Detroit",
+     "abbreviation": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 30,
+      "L": 44,
+      "T": 0
+     },
+     "slug": "detroit-tigers",
+     "stadium_deg_offset": "150"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 38,
+      "L": 34,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 74,
+   "forecast_wind_speed": 20,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 297,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1011,
+   "forecast_humidity": 0.42
+  },
+  "broadcasts": [
+   {
+    "network": "CHSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
