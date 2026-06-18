@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 98249,
+  "participant": {
+   "id": "44720",
+   "name": "James Wood",
+   "link": "/mlb/props/james-wood/",
+   "player": {
+    "short_name": "J. Wood",
+    "first_name": "James",
+    "last_name": "Wood",
+    "image": "https://images.fantasypros.com/images/players/mlb/44720/headshot/210x210.webp",
+    "slug": "james-wood",
+    "position": "LF,RF,DH",
+    "team": "WSH",
+    "popularity": 34,
+    "jersey_number": 29
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -118,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -115,
+     "book_id": 14,
+     "created": "2026-06-18 18:55:29"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "2df835c4317da07791c2e194d69118e3",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 66
+    }
+   },
+   "probability": 0.78699989621147,
+   "expected_value": 0.47134763204753094,
+   "bet_rating": 5
+  },
+  "under": {
+   "line": 1.5,
+   "odds": -115,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -118,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -125,
+     "book_id": 14,
+     "created": "2026-06-18 18:55:29"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "3fcabc768589365eec6e0fae084d78f6",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 59
+    }
+   },
+   "probability": 0.21300010378852996,
+   "expected_value": -0.6017824146562266,
+   "bet_rating": 1
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 2.91,
+   "probability": 0.78699989621147,
+   "expected_value": 0.47134763204753094,
+   "bet_rating": 5,
+   "diff": 1.41
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Jax (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 14,
+    "value": 0.4,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/james-wood/runs-hits-rbis/",
+   "analyzer": "/mlb/props/james-wood/runs-hits-rbis/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 4,
+    "under": 1,
+    "push": 0
+   },
+   "last_10": {
+    "over": 8,
+    "under": 2,
+    "push": 0
+   },
+   "last_15": {
+    "over": 11,
+    "under": 4,
+    "push": 0
+   },
+   "last_20": {
+    "over": 14,
+    "under": 6,
+    "push": 0
+   },
+   "season": {
+    "over": 44,
+    "under": 31,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 75,
+    "under": 82,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 98249,
+  "participant": {
+   "id": "19879",
+   "name": "CJ Abrams",
+   "link": "/mlb/props/cj-abrams/",
+   "player": {
+    "short_name": "CJ Abrams",
+    "first_name": "CJ",
+    "last_name": "Abrams",
+    "image": "https://images.fantasypros.com/images/players/mlb/19879/headshot/210x210.webp",
+    "slug": "cj-abrams",
+    "position": "SS",
+    "team": "WSH",
+    "popularity": 58,
+    "jersey_number": 5
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": 105,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": 105,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": 100,
+     "book_id": 14,
+     "created": "2026-06-18 18:55:29"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "8e3949a8d50eb9de14eaf820fb3b50c7",
+    "picks": {
+     "expert": 0,
+     "quick": 1,
+     "custom": 0,
+     "sync": 0,
+     "combined": 1,
+     "system": 66
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 1.5,
+   "odds": -143,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -143,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -140,
+     "book_id": 14,
+     "created": "2026-06-18 18:55:29"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "49b173e3d2265b71d3edb27b9d02b629",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 59
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 2.79,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 1.29
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Jax (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 14,
+    "value": 0.4,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/cj-abrams/runs-hits-rbis/",
+   "analyzer": "/mlb/props/cj-abrams/runs-hits-rbis/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 9,
+    "under": 6,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 42,
+    "under": 31,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 84,
+    "under": 60,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "over"
+  }
+ }
+]
