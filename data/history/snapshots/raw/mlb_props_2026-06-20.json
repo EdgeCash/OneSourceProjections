@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 293,
+  "event_id": 99676,
+  "participant": {
+   "id": "5686",
+   "name": "Kyle Schwarber",
+   "link": "/mlb/props/kyle-schwarber/",
+   "player": {
+    "short_name": "K. Schwarber",
+    "first_name": "Kyle",
+    "last_name": "Schwarber",
+    "image": "https://images.fantasypros.com/images/players/mlb/5686/headshot/210x210.webp",
+    "slug": "kyle-schwarber",
+    "position": "LF,DH",
+    "team": "PHI",
+    "popularity": 18,
+    "jersey_number": 12
+   }
+  },
+  "over": {
+   "line": 1.5,
+   "odds": 120,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": 120,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": 120,
+     "book_id": 36,
+     "created": "2026-06-19 20:12:59"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "a0481094e4b43e7131c7123fad3dde2c",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 217
+    }
+   },
+   "probability": 0.53370261236721,
+   "expected_value": 0.1741457472078619,
+   "bet_rating": 4
+  },
+  "under": {
+   "line": 1.5,
+   "odds": -164,
+   "book": 36,
+   "consensus_line": 1.5,
+   "consensus_odds": -164,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 1.5,
+     "cost": -164,
+     "book_id": 36,
+     "created": "2026-06-19 20:12:59"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "6d7b3d872603cff5ad0e97f4b96a15df",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 153
+    }
+   },
+   "probability": 0.46629738763279005,
+   "expected_value": -0.24937493698136237,
+   "bet_rating": 1
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 2.43,
+   "probability": 0.53370261236721,
+   "expected_value": 0.1741457472078619,
+   "bet_rating": 4,
+   "diff": 0.93
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Peralta (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 5,
+    "value": 12.5,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/kyle-schwarber/total-bases/",
+   "analyzer": "/mlb/props/kyle-schwarber/total-bases/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 3,
+    "under": 7,
+    "push": 0
+   },
+   "last_15": {
+    "over": 5,
+    "under": 10,
+    "push": 0
+   },
+   "last_20": {
+    "over": 7,
+    "under": 13,
+    "push": 0
+   },
+   "season": {
+    "over": 33,
+    "under": 39,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 74,
+    "under": 92,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 403,
+  "event_id": 99676,
+  "participant": {
+   "id": "48019",
+   "name": "A.J. Ewing",
+   "link": "/mlb/props/aj-ewing/",
+   "player": {
+    "short_name": "A.J. Ewing",
+    "first_name": "A.J.",
+    "last_name": "Ewing",
+    "image": "https://images.fantasypros.com/images/players/mlb/48019/headshot/210x210.webp",
+    "slug": "aj-ewing",
+    "position": "2B,CF",
+    "team": "NYM",
+    "popularity": null,
+    "jersey_number": 9
+   }
+  },
+  "over": {
+   "line": 0.5,
+   "odds": -165,
+   "book": 14,
+   "consensus_line": 0.5,
+   "consensus_odds": -167,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 0.5,
+     "cost": -167,
+     "book_id": 36,
+     "created": "2026-06-19 20:13:04"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "fc2cc7bd1c5c2a6a8c3110fa1edfdc97",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 61
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 0.5,
+   "odds": 122,
+   "book": 36,
+   "consensus_line": 0.5,
+   "consensus_odds": 115,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 0.5,
+     "cost": 122,
+     "book_id": 36,
+     "created": "2026-06-19 20:13:04"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "78ba4a99f8258766b0056fe3de12b028",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 28
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "over",
+   "value": 1.34,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": 0.84
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Sanchez (Probable)",
+   "in_lineup": false,
+   "opposition_rank": {
+    "rank": 21,
+    "value": 0.5,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/aj-ewing/runs-hits-rbis/",
+   "analyzer": "/mlb/props/aj-ewing/runs-hits-rbis/",
+   "affiliate": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224733884%22%2C%22marketId%22%3A%22623912855_403_4733884%22%2C%22selectionId%22%3A%221540696137%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 6,
+    "under": 4,
+    "push": 0
+   },
+   "last_15": {
+    "over": 11,
+    "under": 4,
+    "push": 0
+   },
+   "last_20": {
+    "over": 13,
+    "under": 7,
+    "push": 0
+   },
+   "season": {
+    "over": 24,
+    "under": 11,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "over"
+  }
+ }
+]
