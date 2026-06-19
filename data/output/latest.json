@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T07:22:04.813401-04:00",
+ "generated_at": "2026-06-19T10:57:59.318679-04:00",
  "primary_date": "2026-06-19",
  "dates": [
   "2026-06-19",
@@ -12,8 +12,8 @@
      {
       "weather": {
        "temp_f": 75,
-       "wind_mph": 6,
-       "wind_dir": "NW",
+       "wind_mph": 8,
+       "wind_dir": "WNW",
        "precip_pct": 0
       },
       "lineups": {
@@ -31,7 +31,7 @@
       "away_pitcher": "Kevin Gausman",
       "home_pitcher": "Ben Brown",
       "away_pitcher_id": 592332,
-      "home_pitcher_id": 676962.0,
+      "home_pitcher_id": 676962,
       "home_exp_runs": 3.53,
       "away_exp_runs": 3.628,
       "proj_total": 7.158,
@@ -53,14 +53,14 @@
       "home_ml_ev": -0.0422,
       "away_ml_ev": 0.0477,
       "total_line": 7.5,
-      "over_odds": 117.0,
-      "under_odds": 107.0,
+      "over_odds": 122.0,
+      "under_odds": 104.0,
       "model_over_prob": 0.4482,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 186.0,
-      "rl_away_odds": 178.0,
+      "rl_away_odds": 180.0,
       "model_home_rl": 0.2839,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -87,7 +87,7 @@
       "away_pitcher": "Erick Fedde",
       "home_pitcher": "Tarik Skubal",
       "away_pitcher_id": 607200,
-      "home_pitcher_id": 669373.0,
+      "home_pitcher_id": 669373,
       "home_exp_runs": 5.058,
       "away_exp_runs": 4.5,
       "proj_total": 9.558,
@@ -104,28 +104,28 @@
        "-1.5": 0.3985,
        "1.5": 0.7353
       },
-      "home_ml": -210.0,
-      "away_ml": 208.0,
-      "home_ml_ev": -0.0741,
-      "away_ml_ev": 0.1482,
+      "home_ml": -186.0,
+      "away_ml": 186.0,
+      "home_ml_ev": -0.0553,
+      "away_ml_ev": 0.1029,
       "total_line": 8.0,
-      "over_odds": 105.0,
-      "under_odds": 111.0,
+      "over_odds": 100.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.6586,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 104.0,
-      "rl_away_odds": -104.0,
+      "rl_home_odds": 111.0,
+      "rl_away_odds": -108.0,
       "model_home_rl": 0.3985,
-      "rl_home_ev": -0.0935,
-      "rl_away_ev": 0.0899
+      "rl_home_ev": -0.0761,
+      "rl_away_ev": 0.0827
      },
      {
       "weather": {
        "temp_f": 82,
-       "wind_mph": 13,
-       "wind_dir": "WNW",
+       "wind_mph": 12,
+       "wind_dir": "W",
        "precip_pct": 0
       },
       "lineups": {
@@ -143,7 +143,7 @@
       "away_pitcher": "Rhett Lowder",
       "home_pitcher": "Cam Schlittler",
       "away_pitcher_id": 695076,
-      "home_pitcher_id": 693645.0,
+      "home_pitcher_id": 693645,
       "home_exp_runs": 5.348,
       "away_exp_runs": 3.554,
       "proj_total": 8.901,
@@ -160,29 +160,29 @@
        "-1.5": 0.5542,
        "1.5": 0.8625
       },
-      "home_ml": -245.0,
+      "home_ml": -250.0,
       "away_ml": 245.0,
-      "home_ml_ev": 0.0216,
-      "away_ml_ev": -0.0529,
+      "home_ml_ev": 0.0165,
+      "away_ml_ev": -0.0549,
       "total_line": 8.5,
       "over_odds": -108.0,
-      "under_odds": 104.0,
+      "under_odds": 107.0,
       "model_over_prob": 0.5714,
-      "over_ev": 0.0455,
-      "under_ev": -0.0674,
+      "over_ev": 0.049,
+      "under_ev": -0.0575,
       "rl_home_line": -2.0,
-      "rl_home_odds": 106.0,
-      "rl_away_odds": 117.0,
+      "rl_home_odds": 111.0,
+      "rl_away_odds": 115.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 86,
+       "temp_f": 85,
        "wind_mph": 12,
-       "wind_dir": "WSW",
-       "precip_pct": 8
+       "wind_dir": "W",
+       "precip_pct": 11
       },
       "lineups": {
        "home": [],
@@ -199,7 +199,7 @@
       "away_pitcher": "Cade Cavalli",
       "home_pitcher": "Griffin Jax",
       "away_pitcher_id": 676917,
-      "home_pitcher_id": 643377.0,
+      "home_pitcher_id": 643377,
       "home_exp_runs": 4.269,
       "away_exp_runs": 5.284,
       "proj_total": 9.553,
@@ -216,18 +216,18 @@
        "-1.5": 0.21555,
        "1.5": 0.55245
       },
-      "home_ml": -117.0,
+      "home_ml": -115.0,
       "away_ml": 117.0,
-      "home_ml_ev": -0.1618,
-      "away_ml_ev": 0.1893,
-      "total_line": 8.5,
-      "over_odds": 117.0,
-      "under_odds": 105.0,
+      "home_ml_ev": -0.1569,
+      "away_ml_ev": 0.1915,
+      "total_line": 8.0,
+      "over_odds": 108.0,
+      "under_odds": 106.0,
       "model_over_prob": 0.6601,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 176.0,
+      "rl_home_odds": 186.0,
       "rl_away_odds": 178.0,
       "model_home_rl": 0.2155,
       "rl_home_ev": NaN,
@@ -245,6 +245,7 @@
        "away": []
       },
       "player_ids": {
+       "lake bachar": 669199,
        "landen roupp": 694738
       },
       "game_pk": 823853,
@@ -252,48 +253,48 @@
       "away_team": "San Francisco Giants",
       "home_team": "Miami Marlins",
       "away_pitcher": "Landen Roupp",
-      "home_pitcher": NaN,
+      "home_pitcher": "Lake Bachar",
       "away_pitcher_id": 694738,
-      "home_pitcher_id": NaN,
+      "home_pitcher_id": 669199,
       "home_exp_runs": 4.176,
-      "away_exp_runs": 5.19,
-      "proj_total": 9.366,
-      "home_win_prob": 0.3631,
-      "away_win_prob": 0.6369,
+      "away_exp_runs": 5.052,
+      "proj_total": 9.228,
+      "home_win_prob": 0.3793,
+      "away_win_prob": 0.6207,
       "over_probs": {
-       "7.5": 0.72905,
-       "8.0": 0.63205,
-       "8.5": 0.63205,
-       "9.0": 0.47955,
-       "9.5": 0.47955
+       "7.5": 0.71795,
+       "8.0": 0.61845,
+       "8.5": 0.61845,
+       "9.0": 0.46035,
+       "9.5": 0.46035
       },
       "home_rl_cover": {
-       "-1.5": 0.2135,
-       "1.5": 0.55095
+       "-1.5": 0.22405,
+       "1.5": 0.56915
       },
-      "home_ml": -122.0,
-      "away_ml": 117.0,
-      "home_ml_ev": -0.1748,
-      "away_ml_ev": 0.1859,
+      "home_ml": -108.0,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.1347,
+      "away_ml_ev": 0.1455,
       "total_line": 8.5,
-      "over_odds": 100.0,
-      "under_odds": 108.0,
-      "model_over_prob": 0.6321,
-      "over_ev": 0.1419,
-      "under_ev": -0.1075,
+      "over_odds": 113.0,
+      "under_odds": 101.0,
+      "model_over_prob": 0.6185,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 163.0,
-      "rl_away_odds": 180.0,
-      "model_home_rl": 0.2135,
+      "rl_home_odds": 178.0,
+      "rl_away_odds": 186.0,
+      "model_home_rl": 0.224,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 84,
-       "wind_mph": 8,
-       "wind_dir": "NW",
-       "precip_pct": 2
+       "wind_mph": 6,
+       "wind_dir": "WNW",
+       "precip_pct": 3
       },
       "lineups": {
        "home": [],
@@ -310,7 +311,7 @@
       "away_pitcher": "Jacob Misiorowski",
       "home_pitcher": "Mart\u00edn P\u00e9rez",
       "away_pitcher_id": 694819,
-      "home_pitcher_id": 527048.0,
+      "home_pitcher_id": 527048,
       "home_exp_runs": 3.226,
       "away_exp_runs": 4.949,
       "proj_total": 8.175,
@@ -327,29 +328,29 @@
        "-1.5": 0.13115,
        "1.5": 0.4551
       },
-      "home_ml": 167.0,
-      "away_ml": -170.0,
-      "home_ml_ev": -0.1558,
-      "away_ml_ev": 0.0861,
-      "total_line": 7.5,
-      "over_odds": -104.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.588,
-      "over_ev": 0.0767,
-      "under_ev": -0.0798,
+      "home_ml": 156.0,
+      "away_ml": -155.0,
+      "home_ml_ev": -0.1672,
+      "away_ml_ev": 0.11,
+      "total_line": 8.0,
+      "over_odds": 118.0,
+      "under_odds": -104.0,
+      "model_over_prob": 0.4753,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": 1.5,
-      "rl_home_odds": 100.0,
-      "rl_away_odds": 100.0,
+      "rl_home_odds": -113.0,
+      "rl_away_odds": 111.0,
       "model_home_rl": 0.4551,
-      "rl_home_ev": -0.0449,
-      "rl_away_ev": 0.0449
+      "rl_home_ev": -0.0733,
+      "rl_away_ev": 0.0727
      },
      {
       "weather": {
        "temp_f": 79,
-       "wind_mph": 8,
+       "wind_mph": 7,
        "wind_dir": "E",
-       "precip_pct": 12
+       "precip_pct": 11
       },
       "lineups": {
        "home": [],
@@ -366,7 +367,7 @@
       "away_pitcher": "Randy V\u00e1squez",
       "home_pitcher": "Jacob deGrom",
       "away_pitcher_id": 681190,
-      "home_pitcher_id": 594798.0,
+      "home_pitcher_id": 594798,
       "home_exp_runs": 4.242,
       "away_exp_runs": 3.676,
       "proj_total": 7.918,
@@ -384,12 +385,12 @@
        "1.5": 0.7593
       },
       "home_ml": -144.0,
-      "away_ml": 144.0,
-      "home_ml_ev": -0.0074,
-      "away_ml_ev": 0.0107,
+      "away_ml": 146.0,
+      "home_ml_ev": -0.0058,
+      "away_ml_ev": 0.0165,
       "total_line": 7.5,
       "over_odds": 117.0,
-      "under_odds": 108.0,
+      "under_odds": 105.0,
       "model_over_prob": 0.5564,
       "over_ev": NaN,
       "under_ev": NaN,
@@ -402,10 +403,10 @@
      },
      {
       "weather": {
-       "temp_f": 79,
-       "wind_mph": 12,
-       "wind_dir": "NE",
-       "precip_pct": 16
+       "temp_f": 86,
+       "wind_mph": 7,
+       "wind_dir": "SSE",
+       "precip_pct": 14
       },
       "lineups": {
        "home": [],
@@ -422,7 +423,7 @@
       "away_pitcher": "Tanner Bibee",
       "home_pitcher": "Tatsuya Imai",
       "away_pitcher_id": 676440,
-      "home_pitcher_id": 837227.0,
+      "home_pitcher_id": 837227,
       "home_exp_runs": 4.726,
       "away_exp_runs": 4.499,
       "proj_total": 9.225,
@@ -440,29 +441,24 @@
        "1.5": 0.7101
       },
       "home_ml": -113.0,
-      "away_ml": 113.0,
-      "home_ml_ev": 0.0017,
-      "away_ml_ev": -0.0019,
+      "away_ml": 115.0,
+      "home_ml_ev": 0.0039,
+      "away_ml_ev": 0.005,
       "total_line": 8.5,
-      "over_odds": 106.0,
+      "over_odds": 104.0,
       "under_odds": -104.0,
       "model_over_prob": 0.621,
-      "over_ev": 0.142,
-      "under_ev": -0.1258,
+      "over_ev": 0.1334,
+      "under_ev": -0.1282,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
-      "rl_away_odds": 174.0,
+      "rl_away_odds": 178.0,
       "model_home_rl": 0.3473,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 87,
-       "wind_mph": 6,
-       "wind_dir": "SSW",
-       "precip_pct": 3
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -478,7 +474,7 @@
       "away_pitcher": "Michael McGreevy",
       "home_pitcher": "Seth Lugo",
       "away_pitcher_id": 700241,
-      "home_pitcher_id": 607625.0,
+      "home_pitcher_id": 607625,
       "home_exp_runs": 4.634,
       "away_exp_runs": 4.582,
       "proj_total": 9.216,
@@ -496,18 +492,18 @@
        "1.5": 0.68975
       },
       "home_ml": 113.0,
-      "away_ml": -113.0,
-      "home_ml_ev": 0.0418,
-      "away_ml_ev": -0.037,
+      "away_ml": -111.0,
+      "home_ml_ev": 0.044,
+      "away_ml_ev": -0.0308,
       "total_line": 9.5,
-      "over_odds": 117.0,
-      "under_odds": 102.0,
+      "over_odds": 120.0,
+      "under_odds": 126.0,
       "model_over_prob": 0.4599,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 108.0,
-      "rl_away_odds": 138.0,
+      "rl_away_odds": 144.0,
       "model_home_rl": 0.331,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -529,7 +525,7 @@
       "away_pitcher": "Bubba Chandler",
       "home_pitcher": "Kyle Freeland",
       "away_pitcher_id": 696149,
-      "home_pitcher_id": 607536.0,
+      "home_pitcher_id": 607536,
       "home_exp_runs": 5.753,
       "away_exp_runs": 6.474,
       "proj_total": 12.227,
@@ -546,22 +542,22 @@
        "-1.5": 0.27605,
        "1.5": 0.572
       },
-      "home_ml": 124.0,
+      "home_ml": 127.0,
       "away_ml": -127.0,
-      "home_ml_ev": -0.0389,
-      "away_ml_ev": 0.0205,
-      "total_line": 11.5,
-      "over_odds": 100.0,
+      "home_ml_ev": -0.0298,
+      "away_ml_ev": 0.0234,
+      "total_line": 12.0,
+      "over_odds": 116.0,
       "under_odds": 100.0,
-      "model_over_prob": 0.5641,
-      "over_ev": 0.0641,
-      "under_ev": -0.0641,
-      "rl_home_line": 1.5,
-      "rl_home_odds": -117.0,
-      "rl_away_odds": 116.0,
-      "model_home_rl": 0.572,
-      "rl_home_ev": 0.0294,
-      "rl_away_ev": -0.0388
+      "model_over_prob": 0.45,
+      "over_ev": NaN,
+      "under_ev": NaN,
+      "rl_home_line": 1.0,
+      "rl_home_odds": 104.0,
+      "rl_away_odds": 117.0,
+      "model_home_rl": NaN,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": null,
@@ -580,7 +576,7 @@
       "away_pitcher": "Jos\u00e9 Soriano",
       "home_pitcher": "Jeffrey Springs",
       "away_pitcher_id": 667755,
-      "home_pitcher_id": 605488.0,
+      "home_pitcher_id": 605488,
       "home_exp_runs": 4.846,
       "away_exp_runs": 5.151,
       "proj_total": 9.997,
@@ -615,7 +611,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 104,
+       "wind_mph": 13,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -631,7 +632,7 @@
       "away_pitcher": "Connor Prielipp",
       "home_pitcher": "Michael Soroka",
       "away_pitcher_id": 687570,
-      "home_pitcher_id": 647336.0,
+      "home_pitcher_id": 647336,
       "home_exp_runs": 4.325,
       "away_exp_runs": 4.074,
       "proj_total": 8.399,
@@ -666,7 +667,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 65,
+       "wind_mph": 8,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -682,7 +688,7 @@
       "away_pitcher": "Trey Gibson",
       "home_pitcher": "Roki Sasaki",
       "away_pitcher_id": 694346,
-      "home_pitcher_id": 808963.0,
+      "home_pitcher_id": 808963,
       "home_exp_runs": 6.011,
       "away_exp_runs": 4.917,
       "proj_total": 10.928,
@@ -717,7 +723,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 7,
+       "wind_dir": "NNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -733,7 +744,7 @@
       "away_pitcher": "Ranger Suarez",
       "home_pitcher": "Bryce Miller",
       "away_pitcher_id": 624133,
-      "home_pitcher_id": 682243.0,
+      "home_pitcher_id": 682243,
       "home_exp_runs": 3.714,
       "away_exp_runs": 3.335,
       "proj_total": 7.049,
@@ -751,12 +762,12 @@
        "1.5": 0.7537
       },
       "home_ml": NaN,
-      "away_ml": 208.0,
+      "away_ml": 186.0,
       "home_ml_ev": NaN,
-      "away_ml_ev": 0.3383,
+      "away_ml_ev": 0.2427,
       "total_line": 8.0,
-      "over_odds": 105.0,
-      "under_odds": 111.0,
+      "over_odds": 100.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.3252,
       "over_ev": NaN,
       "under_ev": NaN,
@@ -1037,6 +1048,43 @@
       "projection": 4.99,
       "dist": "poisson",
       "param": 4.992314214736229,
+      "line": NaN,
+      "odds": NaN,
+      "book_id": NaN,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_line": NaN,
+      "bp_projection": NaN,
+      "bp_ev": NaN,
+      "bp_probability": NaN,
+      "bp_recommended_side": NaN,
+      "bp_bet_rating": NaN,
+      "over_odds": NaN,
+      "under_odds": NaN,
+      "ud_line": NaN,
+      "ud_over_odds": NaN,
+      "ud_under_odds": NaN,
+      "ud_model_over_prob": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 823853,
+      "market": "pitcher_strikeouts",
+      "player": "Lake Bachar",
+      "team": "Miami Marlins",
+      "opponent": "San Francisco Giants",
+      "projection": 3.7,
+      "dist": "poisson",
+      "param": 3.6965762716428414,
       "line": NaN,
       "odds": NaN,
       "book_id": NaN,
@@ -1771,94 +1819,94 @@
     ],
     "news": [
      {
-      "title": "Parker Messick K's 9 in Efficient Six for Win",
+      "title": "Colson Montgomery goes yard in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:19:18"
+      "when": "2026-06-19 14:05:49"
      },
      {
-      "title": "Ryan Kreidler cashes in with a two-run blast in Texas",
+      "title": "Andrew Benintendi blasts grand slam in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:16:56"
+      "when": "2026-06-19 14:02:33"
      },
      {
-      "title": "Trevor Larnach clubs three-hit homer, drives in three",
+      "title": "Sean Burke cruises on mound in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:15:31"
+      "when": "2026-06-19 13:39:37"
      },
      {
-      "title": "Luke Keaschall stays pesky in 9-3 win",
+      "title": "Ryan McMahon homers in loss to White Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:13:54"
+      "when": "2026-06-19 13:31:47"
      },
      {
-      "title": "Brooks Lee cashes in with a three-run blast",
+      "title": "Juan Soto launches pair of homers",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:10:57"
+      "when": "2026-06-19 13:30:49"
      },
      {
-      "title": "Joe Ryan coasts past Rangers for win",
+      "title": "Devin Williams records 11th save",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:08:39"
+      "when": "2026-06-19 13:29:48"
      },
      {
-      "title": "Kyle Isbel (foot) begins swinging",
+      "title": "Sean Manaea takes no-decision against Phillies",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:05:33"
+      "when": "2026-06-19 13:28:52"
      },
      {
-      "title": "Carlos Estevez (shoulder) to throw bullpen session Sunday",
+      "title": "Ryan Weathers sharp in no-decision",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:02:46"
+      "when": "2026-06-19 13:28:07"
      },
      {
-      "title": "Kris Bubic (elbow, shoulder) throws bullpen session Thursday",
+      "title": "Marcus Semien drives in two with triple Thursday",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:00:46"
+      "when": "2026-06-19 13:27:31"
      },
      {
-      "title": "Nick Mears (shoulder) suffers setback",
+      "title": "Bryson Stott steals a base, scores a run Thursday night ",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:58:08"
+      "when": "2026-06-19 13:25:22"
      },
      {
-      "title": "Munetaka Murakami (hamstring) participating in baseball activities",
+      "title": "Jack Leiter takes third straight loss",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:55:16"
+      "when": "2026-06-19 13:25:12"
      },
      {
-      "title": "Trevor Story (hernia) 'progressing pretty nicely'",
+      "title": "Wyatt Langford launches homer in loss to Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:50:26"
+      "when": "2026-06-19 13:24:21"
      },
      {
-      "title": "Julio Rodriguez (hamstring) does agility drills, takes BP Thursday",
+      "title": "Shea Langeliers goes deep in win over Angels",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:45:19"
+      "when": "2026-06-19 13:24:01"
      },
      {
-      "title": "Andres Munoz earns save Thursday ",
+      "title": "Ezequiel Duran homers in loss to Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:07:12"
+      "when": "2026-06-19 13:23:26"
      },
      {
-      "title": "Bryan Woo tosses seven scoreless innings Thursday ",
+      "title": "Justin Foscue homers off bench Thursday",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:05:38"
+      "when": "2026-06-19 13:22:19"
      }
     ],
     "injuries": [
@@ -3276,20 +3324,20 @@
       "proj_total": 176.53,
       "home_win_prob": 0.3371,
       "away_win_prob": 0.6629,
-      "home_ml": 104,
-      "away_ml": -104,
-      "home_ml_ev": -0.1562,
-      "away_ml_ev": 0.1502,
-      "total_line": 165.5,
-      "over_odds": -105.0,
-      "model_over_prob": 0.7689,
-      "over_ev": 0.5012,
-      "spread_home_line": -1.5,
-      "spread_home_odds": 100.0,
-      "spread_away_odds": 104.0,
-      "model_home_cover": 0.3325,
-      "spread_home_ev": -0.1626,
-      "spread_away_ev": 0.1858
+      "home_ml": 114,
+      "away_ml": -113,
+      "home_ml_ev": -0.1382,
+      "away_ml_ev": 0.1259,
+      "total_line": 168.5,
+      "over_odds": -102.0,
+      "model_over_prob": 0.7038,
+      "over_ev": 0.3938,
+      "spread_home_line": 1.5,
+      "spread_home_odds": 108.0,
+      "spread_away_odds": -101.0,
+      "model_home_cover": 0.4317,
+      "spread_home_ev": -0.0426,
+      "spread_away_ev": 0.0741
      },
      {
       "game_id": "401857004",
@@ -3301,17 +3349,17 @@
       "proj_total": 171.57,
       "home_win_prob": 0.8178,
       "away_win_prob": 0.1822,
-      "home_ml": -650,
-      "away_ml": 700,
-      "home_ml_ev": -0.024,
-      "away_ml_ev": 0.233,
+      "home_ml": -669,
+      "away_ml": 669,
+      "home_ml_ev": -0.03,
+      "away_ml_ev": 0.2006,
       "total_line": 168.5,
       "over_odds": 100.0,
       "model_over_prob": 0.5811,
       "over_ev": 0.1622,
       "spread_home_line": -13.5,
       "spread_home_odds": 108.0,
-      "spread_away_odds": 106.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.3719,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
@@ -3326,20 +3374,20 @@
       "proj_total": 169.09,
       "home_win_prob": 0.4088,
       "away_win_prob": 0.5912,
-      "home_ml": 138,
+      "home_ml": 133,
       "away_ml": -135,
-      "home_ml_ev": -0.0108,
-      "away_ml_ev": 0.0173,
+      "home_ml_ev": -0.0256,
+      "away_ml_ev": 0.0127,
       "total_line": 164.5,
-      "over_odds": -102.0,
+      "over_odds": -104.0,
       "model_over_prob": 0.6202,
-      "over_ev": 0.2282,
+      "over_ev": 0.2165,
       "spread_home_line": 2.5,
-      "spread_home_odds": -101.0,
+      "spread_home_odds": -102.0,
       "spread_away_odds": 108.0,
       "model_home_cover": 0.5274,
-      "spread_home_ev": 0.0333,
-      "spread_away_ev": 0.0
+      "spread_home_ev": 0.0295,
+      "spread_away_ev": -0.0012
      }
     ],
     "props": [],
@@ -6361,12 +6409,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 81,
-       "wind_mph": 16,
-       "wind_dir": "WNW",
-       "precip_pct": 1
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -6400,9 +6443,9 @@
        "1.5": 0.84255
       },
       "home_ml": -178.0,
-      "away_ml": 178.0,
-      "home_ml_ev": 0.065,
-      "away_ml_ev": -0.1157,
+      "away_ml": 170.0,
+      "home_ml_ev": 0.0597,
+      "away_ml_ev": -0.132,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6417,12 +6460,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 75,
-       "wind_mph": 11,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -6455,10 +6493,10 @@
        "-1.5": 0.25565,
        "1.5": 0.63135
       },
-      "home_ml": -104.0,
+      "home_ml": -108.0,
       "away_ml": 108.0,
-      "home_ml_ev": -0.0726,
-      "away_ml_ev": 0.0966,
+      "home_ml_ev": -0.0851,
+      "away_ml_ev": 0.0919,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6474,10 +6512,10 @@
      },
      {
       "weather": {
-       "temp_f": 89,
-       "wind_mph": 6,
-       "wind_dir": "SE",
-       "precip_pct": 8
+       "temp_f": 91,
+       "wind_mph": 7,
+       "wind_dir": "SSE",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -6511,10 +6549,10 @@
        "-1.5": 0.31035,
        "1.5": 0.6947
       },
-      "home_ml": -133.0,
+      "home_ml": -127.0,
       "away_ml": 127.0,
-      "home_ml_ev": -0.0638,
-      "away_ml_ev": 0.0569,
+      "home_ml_ev": -0.0492,
+      "away_ml_ev": 0.0625,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6530,10 +6568,10 @@
      },
      {
       "weather": {
-       "temp_f": 90,
-       "wind_mph": 9,
+       "temp_f": 89,
+       "wind_mph": 12,
        "wind_dir": "WSW",
-       "precip_pct": 8
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -6567,9 +6605,9 @@
        "1.5": 0.63915
       },
       "home_ml": -150.0,
-      "away_ml": 150.0,
-      "home_ml_ev": -0.1081,
-      "away_ml_ev": 0.1621,
+      "away_ml": 144.0,
+      "home_ml_ev": -0.113,
+      "away_ml_ev": 0.1414,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6585,10 +6623,10 @@
      },
      {
       "weather": {
-       "temp_f": 89,
-       "wind_mph": 11,
-       "wind_dir": "SSE",
-       "precip_pct": 15
+       "temp_f": 80,
+       "wind_mph": 9,
+       "wind_dir": "WSW",
+       "precip_pct": 18
       },
       "lineups": {
        "home": [],
@@ -6622,10 +6660,10 @@
        "-1.5": 0.31945,
        "1.5": 0.6732
       },
-      "home_ml": -133.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0647,
-      "away_ml_ev": 0.086,
+      "home_ml": -138.0,
+      "away_ml": 144.0,
+      "home_ml_ev": -0.0662,
+      "away_ml_ev": 0.1189,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6642,9 +6680,9 @@
      {
       "weather": {
        "temp_f": 86,
-       "wind_mph": 4,
+       "wind_mph": 3,
        "wind_dir": "WNW",
-       "precip_pct": 2
+       "precip_pct": 6
       },
       "lineups": {
        "home": [],
@@ -6678,10 +6716,10 @@
        "-1.5": 0.21065,
        "1.5": 0.5812
       },
-      "home_ml": -111.0,
+      "home_ml": -108.0,
       "away_ml": 104.0,
-      "home_ml_ev": -0.1502,
-      "away_ml_ev": 0.128,
+      "home_ml_ev": -0.1421,
+      "away_ml_ev": 0.1313,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6697,10 +6735,10 @@
      },
      {
       "weather": {
-       "temp_f": 87,
-       "wind_mph": 9,
+       "temp_f": 85,
+       "wind_mph": 8,
        "wind_dir": "SSE",
-       "precip_pct": 28
+       "precip_pct": 22
       },
       "lineups": {
        "home": [],
@@ -6734,10 +6772,10 @@
        "-1.5": 0.38335,
        "1.5": 0.7449
       },
-      "home_ml": -117.0,
+      "home_ml": -122.0,
       "away_ml": 122.0,
-      "home_ml_ev": 0.0377,
-      "away_ml_ev": -0.0221,
+      "home_ml_ev": 0.0224,
+      "away_ml_ev": -0.0274,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6753,10 +6791,10 @@
      },
      {
       "weather": {
-       "temp_f": 81,
-       "wind_mph": 12,
-       "wind_dir": "W",
-       "precip_pct": 0
+       "temp_f": 79,
+       "wind_mph": 10,
+       "wind_dir": "WSW",
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -6791,9 +6829,9 @@
        "1.5": 0.74355
       },
       "home_ml": -156.0,
-      "away_ml": 147.0,
-      "home_ml_ev": -0.0465,
-      "away_ml_ev": 0.0349,
+      "away_ml": 150.0,
+      "home_ml_ev": -0.0442,
+      "away_ml_ev": 0.0439,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6809,10 +6847,10 @@
      },
      {
       "weather": {
-       "temp_f": 93,
-       "wind_mph": 11,
-       "wind_dir": "WNW",
-       "precip_pct": 12
+       "temp_f": 92,
+       "wind_mph": 10,
+       "wind_dir": "W",
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -6847,9 +6885,9 @@
        "1.5": 0.50215
       },
       "home_ml": 170.0,
-      "away_ml": -163.0,
-      "home_ml_ev": -0.0413,
-      "away_ml_ev": 0.0406,
+      "away_ml": -170.0,
+      "home_ml_ev": -0.0463,
+      "away_ml_ev": 0.0272,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -6865,8 +6903,8 @@
      },
      {
       "weather": {
-       "temp_f": 74,
-       "wind_mph": 11,
+       "temp_f": 76,
+       "wind_mph": 12,
        "wind_dir": "SW",
        "precip_pct": 0
       },
@@ -6919,7 +6957,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 65,
+       "wind_mph": 9,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -6970,7 +7013,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 76,
+       "wind_mph": 4,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -7021,7 +7069,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 99,
+       "wind_mph": 9,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -7926,94 +7979,94 @@
     ],
     "news": [
      {
-      "title": "Parker Messick K's 9 in Efficient Six for Win",
+      "title": "Colson Montgomery goes yard in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:19:18"
+      "when": "2026-06-19 14:05:49"
      },
      {
-      "title": "Ryan Kreidler cashes in with a two-run blast in Texas",
+      "title": "Andrew Benintendi blasts grand slam in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:16:56"
+      "when": "2026-06-19 14:02:33"
      },
      {
-      "title": "Trevor Larnach clubs three-hit homer, drives in three",
+      "title": "Sean Burke cruises on mound in win over Yankees",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:15:31"
+      "when": "2026-06-19 13:39:37"
      },
      {
-      "title": "Luke Keaschall stays pesky in 9-3 win",
+      "title": "Ryan McMahon homers in loss to White Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:13:54"
+      "when": "2026-06-19 13:31:47"
      },
      {
-      "title": "Brooks Lee cashes in with a three-run blast",
+      "title": "Juan Soto launches pair of homers",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:10:57"
+      "when": "2026-06-19 13:30:49"
      },
      {
-      "title": "Joe Ryan coasts past Rangers for win",
+      "title": "Devin Williams records 11th save",
       "body": "",
       "player": "",
-      "when": "2026-06-19 11:08:39"
+      "when": "2026-06-19 13:29:48"
      },
      {
-      "title": "Kyle Isbel (foot) begins swinging",
+      "title": "Sean Manaea takes no-decision against Phillies",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:05:33"
+      "when": "2026-06-19 13:28:52"
      },
      {
-      "title": "Carlos Estevez (shoulder) to throw bullpen session Sunday",
+      "title": "Ryan Weathers sharp in no-decision",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:02:46"
+      "when": "2026-06-19 13:28:07"
      },
      {
-      "title": "Kris Bubic (elbow, shoulder) throws bullpen session Thursday",
+      "title": "Marcus Semien drives in two with triple Thursday",
       "body": "",
       "player": "",
-      "when": "2026-06-19 07:00:46"
+      "when": "2026-06-19 13:27:31"
      },
      {
-      "title": "Nick Mears (shoulder) suffers setback",
+      "title": "Bryson Stott steals a base, scores a run Thursday night ",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:58:08"
+      "when": "2026-06-19 13:25:22"
      },
      {
-      "title": "Munetaka Murakami (hamstring) participating in baseball activities",
+      "title": "Jack Leiter takes third straight loss",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:55:16"
+      "when": "2026-06-19 13:25:12"
      },
      {
-      "title": "Trevor Story (hernia) 'progressing pretty nicely'",
+      "title": "Wyatt Langford launches homer in loss to Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:50:26"
+      "when": "2026-06-19 13:24:21"
      },
      {
-      "title": "Julio Rodriguez (hamstring) does agility drills, takes BP Thursday",
+      "title": "Shea Langeliers goes deep in win over Angels",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:45:19"
+      "when": "2026-06-19 13:24:01"
      },
      {
-      "title": "Andres Munoz earns save Thursday ",
+      "title": "Ezequiel Duran homers in loss to Twins",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:07:12"
+      "when": "2026-06-19 13:23:26"
      },
      {
-      "title": "Bryan Woo tosses seven scoreless innings Thursday ",
+      "title": "Justin Foscue homers off bench Thursday",
       "body": "",
       "player": "",
-      "when": "2026-06-19 06:05:38"
+      "when": "2026-06-19 13:22:19"
      }
     ],
     "injuries": [
@@ -9431,20 +9484,20 @@
       "proj_total": 179.2,
       "home_win_prob": 0.6541,
       "away_win_prob": 0.3459,
-      "home_ml": -163,
-      "away_ml": 164,
-      "home_ml_ev": 0.0284,
-      "away_ml_ev": -0.0427,
+      "home_ml": -167,
+      "away_ml": 165,
+      "home_ml_ev": 0.0215,
+      "away_ml_ev": -0.0431,
       "total_line": 175.5,
-      "over_odds": 113.0,
+      "over_odds": 108.0,
       "model_over_prob": 0.5974,
-      "over_ev": 0.2725,
+      "over_ev": 0.2426,
       "spread_home_line": -4.5,
-      "spread_home_odds": -110.0,
-      "spread_away_odds": 108.0,
+      "spread_home_odds": -108.0,
+      "spread_away_odds": 117.0,
       "model_home_cover": 0.491,
-      "spread_home_ev": -0.0336,
-      "spread_away_ev": 0.0271
+      "spread_home_ev": -0.017,
+      "spread_away_ev": 0.0625
      },
      {
       "game_id": "401857007",
@@ -9456,20 +9509,20 @@
       "proj_total": 164.9,
       "home_win_prob": 0.6818,
       "away_win_prob": 0.3182,
-      "home_ml": -245,
-      "away_ml": 270,
-      "home_ml_ev": -0.01,
-      "away_ml_ev": 0.0987,
+      "home_ml": -270,
+      "away_ml": 260,
+      "home_ml_ev": -0.0366,
+      "away_ml_ev": 0.069,
       "total_line": 162.5,
-      "over_odds": -108.0,
+      "over_odds": 100.0,
       "model_over_prob": 0.5636,
-      "over_ev": 0.0854,
+      "over_ev": 0.1271,
       "spread_home_line": -7.5,
       "spread_home_odds": -108.0,
-      "spread_away_odds": 100.0,
+      "spread_away_odds": 108.0,
       "model_home_cover": 0.3709,
-      "spread_home_ev": -0.1523,
-      "spread_away_ev": 0.1197
+      "spread_home_ev": -0.1429,
+      "spread_away_ev": 0.1543
      },
      {
       "game_id": "401857008",
@@ -9489,12 +9542,12 @@
       "over_odds": -104.0,
       "model_over_prob": 0.5433,
       "over_ev": 0.0656,
-      "spread_home_line": -10.5,
-      "spread_home_odds": 100.0,
-      "spread_away_odds": 108.0,
-      "model_home_cover": 0.4578,
-      "spread_home_ev": -0.0324,
-      "spread_away_ev": 0.0737
+      "spread_home_line": -8.5,
+      "spread_home_odds": -110.0,
+      "spread_away_odds": 117.0,
+      "model_home_cover": 0.527,
+      "spread_home_ev": 0.0109,
+      "spread_away_ev": 0.021
      }
     ],
     "props": [],
@@ -12515,5 +12568,5 @@
    }
   }
  },
- "odds_api_credits": 25333
+ "odds_api_credits": 25323
 }
