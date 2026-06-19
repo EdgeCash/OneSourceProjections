@@ -187,3 +187,4 @@
 {"date": "2026-06-18", "sport": "WNBA", "game": "Atlanta Dream @ Indiana Fever", "market": "model_winprob", "side": "", "pred_home_wp": 0.5484, "home_won": 0, "market_home_wp": null, "brier": 0.3007, "proj_total": 175.79, "actual_total": 209.0}
 {"date": "2026-06-18", "sport": "WNBA", "game": "Atlanta Dream @ Indiana Fever", "market": "moneyline", "side": "home", "line": null, "price": 108, "ev": 0.0703, "won": false, "pnl": -1.0, "clv": null}
 {"date": "2026-06-18", "sport": "WNBA", "game": "Atlanta Dream @ Indiana Fever", "market": "total", "side": "over", "line": 175.5, "price": 108.0, "ev": 0.056, "won": true, "pnl": 1.08, "clv": 0.04}
+{"date": "2026-06-19", "sport": "MLB", "game": "Toronto Blue Jays @ Chicago Cubs", "market": "model_winprob", "side": "", "pred_home_wp": 0.5267, "home_won": 1, "market_home_wp": 0.5327, "brier": 0.224, "proj_total": 7.362, "actual_total": 18}
