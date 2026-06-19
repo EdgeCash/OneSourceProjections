@@ -176,3 +176,4 @@
 {"date": "2026-06-18", "sport": "MLB", "game": "Cleveland Guardians @ Milwaukee Brewers", "market": "total", "side": "over", "line": 7.5, "price": 108.0, "ev": 0.1365, "won": false, "pnl": -1.0, "clv": 0.0148}
 {"date": "2026-06-18", "sport": "MLB", "game": "Minnesota Twins @ Texas Rangers", "market": "model_winprob", "side": "", "pred_home_wp": 0.3905, "home_won": 0, "market_home_wp": 0.1124, "brier": 0.1525, "proj_total": 8.673, "actual_total": 12}
 {"date": "2026-06-18", "sport": "MLB", "game": "Minnesota Twins @ Texas Rangers", "market": "moneyline", "side": "away", "line": null, "price": -112.0, "ev": 0.078, "won": true, "pnl": 0.8929, "clv": 0.6801}
+{"date": "2026-06-18", "sport": "MLB", "game": "Baltimore Orioles @ Seattle Mariners", "market": "model_winprob", "side": "", "pred_home_wp": 0.5656, "home_won": 1, "market_home_wp": 0.4846, "brier": 0.1887, "proj_total": 7.898, "actual_total": 3}
