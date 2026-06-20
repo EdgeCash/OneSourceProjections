@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 395,
+  "event_id": 2595,
+  "participant": {
+   "id": "82",
+   "name": "Azura Stevens",
+   "link": "/wnba/props/azura-stevens/",
+   "player": {
+    "short_name": "A. Stevens",
+    "first_name": "Azura",
+    "last_name": "Stevens",
+    "image": "https://images.fantasypros.com/images/players/wnba/82/headshot/210x210.webp",
+    "slug": "azura-stevens",
+    "position": "C",
+    "team": "CHI",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 17.5,
+   "odds": -105,
+   "book": 33,
+   "consensus_line": 16.5,
+   "consensus_odds": -125,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -112,
+     "book_id": 12,
+     "created": "2026-06-19 11:51:17"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "d66ebf948e546038486465d554092d86"
+   },
+   "probability": 0.06345403554772999,
+   "expected_value": -0.8836676014958283,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 16.5,
+   "odds": -112,
+   "book": 13,
+   "consensus_line": 16.5,
+   "consensus_odds": -112,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -117,
+     "book_id": 13,
+     "created": "2026-06-19 17:54:56"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "d2b6cd8e3e5d91c22534db482584b3dc"
+   },
+   "probability": 0.93654596445227,
+   "expected_value": 0.7727477184275111,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 9.78,
+   "probability": 0.93654596445227,
+   "expected_value": 0.7727477184275111,
+   "bet_rating": 5,
+   "diff": -6.72
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 5,
+    "value": 82.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/azura-stevens/points-rebounds/",
+   "analyzer": "/wnba/props/azura-stevens/points-rebounds/",
+   "affiliate": "https://sportsbook.caesars.com/us/nj/bet/betslip?selectionIds=c8f2c171-aff4-3d75-a272-3b0d4a782b91"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 6,
+    "under": 9,
+    "push": 0
+   },
+   "last_20": {
+    "over": 8,
+    "under": 12,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 6,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 31,
+    "under": 13,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 396,
+  "event_id": 2594,
+  "participant": {
+   "id": "570",
+   "name": "Dominique Malonga",
+   "link": "/wnba/props/dominique-malonga/",
+   "player": {
+    "short_name": "D. Malonga",
+    "first_name": "Dominique",
+    "last_name": "Malonga",
+    "image": "https://images.fantasypros.com/images/players/wnba/570/headshot/210x210.webp",
+    "slug": "dominique-malonga",
+    "position": "C",
+    "team": "SEA",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 25.5,
+   "odds": -115,
+   "book": 14,
+   "consensus_line": 25.5,
+   "consensus_odds": -121,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 25.5,
+     "cost": -107,
+     "book_id": 12,
+     "created": "2026-06-19 14:24:26"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "a8397d7ea5289d5f2b5bc76c67e148b1"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 25.5,
+   "odds": 104,
+   "book": 60,
+   "consensus_line": 25.5,
+   "consensus_odds": -110,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 24.5,
+     "cost": -105,
+     "book_id": 13,
+     "created": "2026-06-19 17:55:14"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "cd04ecfd82705100a2b08753af837ce7"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 19.84,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -5.66
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 10,
+    "value": 107.3,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/dominique-malonga/points-assists-rebounds/",
+   "analyzer": "/wnba/props/dominique-malonga/points-assists-rebounds/",
+   "affiliate": "https://novig.com/events/019eddec-2d37-7ee1-bc7c-9d001bf704ee/bettingpros/?referralCode=BETTINGPROS"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 3,
+    "under": 7,
+    "push": 0
+   },
+   "last_15": {
+    "over": 3,
+    "under": 12,
+    "push": 0
+   },
+   "last_20": {
+    "over": 5,
+    "under": 15,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 5,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 5,
+    "under": 40,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "over"
+  }
+ }
+]
