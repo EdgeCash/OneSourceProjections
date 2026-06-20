@@ -216,3 +216,5 @@
 {"date": "2026-06-19", "sport": "WNBA", "game": "Washington Mystics @ New York Liberty", "market": "total", "side": "over", "line": 168.5, "price": 101.0, "ev": 0.168, "won": true, "pnl": 1.01, "clv": 0.0163}
 {"date": "2026-06-19", "sport": "WNBA", "game": "Minnesota Lynx @ Golden State Valkyries", "market": "model_winprob", "side": "", "pred_home_wp": 0.4088, "home_won": 0, "market_home_wp": 0.427, "brier": 0.1671, "proj_total": 169.09, "actual_total": 156.0}
 {"date": "2026-06-19", "sport": "WNBA", "game": "Minnesota Lynx @ Golden State Valkyries", "market": "total", "side": "over", "line": 166.5, "price": 108.0, "ev": 0.1826, "won": false, "pnl": -1.0, "clv": 0.0375}
+{"date": "2026-06-19", "sport": "MLB", "game": "Los Angeles Angels @ Athletics", "market": "model_winprob", "side": "", "pred_home_wp": 0.4582, "home_won": 1, "market_home_wp": 0.5985, "brier": 0.2935, "proj_total": 9.997, "actual_total": 23}
+{"date": "2026-06-19", "sport": "MLB", "game": "Baltimore Orioles @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.6388, "home_won": 1, "market_home_wp": 0.6769, "brier": 0.1305, "proj_total": 10.928, "actual_total": 11}
