@@ -213,15 +213,18 @@ def mark_played(date: str, card: dict) -> int:
 
 # ---------------------------------------------------------------------------
 # Game (moneyline / total) plays — extracted from the slate for notification.
-# The results ledger grades every EV>=MIN_EDGE bet; this surfaces the strong
-# ("smash") ones to push at first qualify so they're bet before the line moves.
+# The results ledger grades every EV>=MIN_EDGE bet; this surfaces the CLV-
+# validated "sharp" band (moderate EV) to push at first qualify, and tags the
+# high-EV ones "verify" (their CLV says the line is probably stale, not soft).
 # ---------------------------------------------------------------------------
 
 def game_play_candidates(date: str, day_blob: dict,
                          min_edge: float | None = None) -> list[dict]:
-    """Moneyline/total bets in ``day_blob`` whose model EV clears ``min_edge``
-    (default SMASH_EDGE). One dict per qualifying side with a dedup key."""
-    min_edge = config.SMASH_EDGE if min_edge is None else min_edge
+    """Moneyline/total bets in ``day_blob`` with model EV >= ``min_edge``
+    (default SHARP_EV_MIN). Each carries a ``tier`` — 'sharp' (in the validated
+    band, push-worthy), 'stale' (EV too high, likely a stale line -> verify), or
+    'watch' (between) — and a dedup key."""
+    min_edge = config.SHARP_EV_MIN if min_edge is None else min_edge
     out = []
     for sport, blob in (day_blob or {}).items():
         for g in blob.get("games", []) or []:
@@ -242,12 +245,21 @@ def game_play_candidates(date: str, day_blob: dict,
     return out
 
 
+def _tier(ev: float) -> str:
+    if ev >= config.STALE_EV:
+        return "stale"          # EV too high -> line likely stale, verify
+    if ev <= config.SHARP_EV_MAX:
+        return "sharp"          # the CLV-validated sweet spot -> push
+    return "watch"              # between SHARP_EV_MAX and STALE_EV
+
+
 def _game_play(date, sport, game, market, side, pick, price, ev, line=None) -> dict:
+    tier = _tier(float(ev))
     return {"key": f"game|{date}|{sport}|{game}|{market}|{side}",
             "date": date, "sport": sport, "game": game, "market": market,
             "side": side, "pick": pick, "price": price, "ev": round(float(ev), 4),
-            "line": line, "smash": float(ev) >= config.SMASH_EDGE,
-            "verify": float(ev) > config.SMASH_EDGE_SANITY}
+            "line": line, "tier": tier,
+            "sharp": tier == "sharp", "verify": tier == "stale"}
 
 
 # ---------------------------------------------------------------------------

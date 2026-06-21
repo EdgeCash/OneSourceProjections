@@ -906,35 +906,37 @@ def render_performance():
                    "the alert to count it (Skip ignores it). Legs commit on first "
                    "qualify so you bet before the line moves.")
 
-    # Smash game plays: the strong (EV >= SMASH_EDGE) moneyline/total bets.
-    smashes = [r for r in ledger if "pnl" in r
-               and (r.get("ev") or 0) >= config.SMASH_EDGE]
+    # Sharp game plays: the CLV-validated EV band (the bets we actually push).
+    sharp = [r for r in ledger if "pnl" in r
+             and config.SHARP_EV_MIN <= (r.get("ev") or 0) <= config.SHARP_EV_MAX]
     played_keys = plays.confirmed_played()
 
     def _gkey(r):
         return (f"game|{r['date']}|{r['sport']}|{r['game']}|"
                 f"{r['market']}|{r.get('side', '')}")
 
-    if smashes:
+    if sharp:
         # once any plays are confirmed, report the played set; until then, the
         # flagged set (so the panel isn't empty before the first confirm).
-        shown = ([r for r in smashes if _gkey(r) in played_keys]
-                 if played_keys else smashes)
+        shown = ([r for r in sharp if _gkey(r) in played_keys]
+                 if played_keys else sharp)
         label = "played" if played_keys else "flagged"
         if shown:
-            st.subheader(f"Smash game plays (EV ≥ {config.SMASH_EDGE:.0%})")
+            st.subheader(f"Sharp game plays (EV {config.SHARP_EV_MIN:.0%}"
+                         f"–{config.SHARP_EV_MAX:.0%})")
             sp = st.columns(4)
             wins = sum(1 for r in shown if r.get("won"))
             units = sum(r["pnl"] for r in shown)
             sclv = [r["clv"] for r in shown if r.get("clv") is not None]
-            sp[0].metric(f"Smash bets ({label})", len(shown))
+            sp[0].metric(f"Sharp bets ({label})", len(shown))
             sp[1].metric("Win rate", f"{wins / len(shown):.0%}")
             sp[2].metric("Units", f"{units:+.2f}")
             sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
                          if sclv else "—")
-            st.caption("High-EV bets pushed worth playing. Tap **Played** on the "
-                       "alert to count one; the smash tier's edge is then measured "
-                       "on what you actually bet.")
+            st.caption("The CLV-validated EV band — moderate edges that "
+                       "historically beat the close. Tap **Played** on the alert "
+                       "to count one; very high-EV spots are flagged 'verify', "
+                       "not pushed (their CLV says the line is likely stale).")
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:

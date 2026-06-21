@@ -200,16 +200,26 @@ def _offers_attempts(sport, market_id, event_ids, location, season) -> dict:
         order.remove(_OFFERS_STYLE["idx"])
         order.insert(0, _OFFERS_STYLE["idx"])
     last_err: Exception | None = None
+    last_data: dict | None = None
     for i in order:
         try:
             data = _get("offers", {**base, **variants[i]})
-            _OFFERS_STYLE["idx"] = i
-            return data
         except _rq.HTTPError as e:
             if e.response is not None and e.response.status_code == 400:
                 last_err = e
                 continue
             raise
+        # A 200 with zero offers is not success — a different param style may
+        # return rows (e.g. game-market style returns empty for prop markets).
+        # Only lock in / return a style that actually produced offers; keep the
+        # first empty response as a fallback if every variant comes back empty.
+        if data.get("offers"):
+            _OFFERS_STYLE["idx"] = i
+            return data
+        if last_data is None:
+            last_data = data
+    if last_data is not None:
+        return last_data  # genuinely no offers for this market right now
     raise BettingProsError(f"offers 400 on all param variants: {last_err}")
 
 

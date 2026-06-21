@@ -390,6 +390,8 @@ def _attach_dfs_lines(props: pd.DataFrame, market_rows: list[dict]) -> pd.DataFr
     DFS number — not the book's de-vigged price."""
     dfs_rows = bettingpros.dfs_offer_lines(market_rows)
     if not dfs_rows:
+        log.info("DFS lines: no PrizePicks/Underdog rows in %d offer rows",
+                 len(market_rows))
         return props
     dfs = pd.DataFrame(dfs_rows)
     dfs["norm_player"] = dfs["participant"].map(normalize)
@@ -397,6 +399,7 @@ def _attach_dfs_lines(props: pd.DataFrame, market_rows: list[dict]) -> pd.DataFr
         props = props.assign(norm_player=props["player"].map(normalize))
     for prefix, book_id in _DFS_BOOKS.items():
         sub = dfs[dfs["book_id"] == book_id]
+        log.info("DFS lines: %s (book %s) -> %d offers", prefix, book_id, len(sub))
         if sub.empty:
             continue
         sub = sub.drop_duplicates(["norm_player", "market"])
@@ -450,13 +453,17 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
         try:
             offers = bettingpros.offers("MLB", mid, event_ids,
                                         season=_season(date))
-            for r in bettingpros.flatten_offers(offers):
+            flat = bettingpros.flatten_offers(offers)
+            for r in flat:
                 r["market"] = market
                 market_rows.append(r)
+            log.info("offers %s (id=%s): %d rows", market, mid, len(flat))
         except Exception as e:
             log.warning("offers for %s unavailable: %s", market, e)
 
     if not market_rows:
+        log.warning("no prop offers returned for any market — falling back to "
+                    "BettingPros board (no per-book DFS lines available)")
         return _ensure_cols(_attach_bp_consensus_keyed(props.copy(), date))
 
     lines = pd.DataFrame(market_rows)

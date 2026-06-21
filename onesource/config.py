@@ -98,12 +98,14 @@ KELLY_FRACTION = 0.25  # quarter Kelly
 # because DFS multipliers carry a steep house edge — a leg needs real room.
 DFS_MIN_EDGE = 0.04
 
-# "Smash" game play: notify-worthy model EV on a moneyline/total. Game markets
-# are efficient, so this sits well above MIN_EDGE — 7%+ EV is a size-up spot.
-# Edges above SMASH_EDGE_SANITY usually signal a stale line / missing injury
-# rather than real value, so those are flagged "verify" rather than smashed.
-SMASH_EDGE = 0.07
-SMASH_EDGE_SANITY = 0.15
+# "Sharp" game play: the notify-worthy EV band. Forward-test CLV shows the
+# model's REAL edge sits in MODERATE EV (2-6%: +9 to +32% avg CLV, ~75% beat
+# the close), while very high model EV on these efficient markets means a stale
+# line / missing info, not value (6-10%: negative CLV, losing). So we notify the
+# sharp band and FLAG, not chase, the high-EV ones. Revisit as the sample grows.
+SHARP_EV_MIN = 0.03   # notify at/above this EV...
+SHARP_EV_MAX = 0.06   # ...and at/below this (the validated sweet spot)
+STALE_EV = 0.08       # at/above this, likely a stale line -> "verify", no push
 
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
