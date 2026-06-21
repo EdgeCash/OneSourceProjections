@@ -1,0 +1,799 @@
+{
+ "sport": "MLB",
+ "date": "2026-06-21",
+ "book_directory": {
+  "2": "Pinnacle",
+  "10": "FanDuel",
+  "12": "DraftKings",
+  "13": "Caesars",
+  "14": "Fanatics",
+  "15": "SugarHouse",
+  "18": "BetRivers",
+  "19": "BetMGM",
+  "24": "bet365",
+  "26": "Tipico",
+  "27": "PartyCasino",
+  "32": "Borgata",
+  "33": "theScore Bet",
+  "35": "BetSafe",
+  "36": "Underdog",
+  "37": "PrizePicks",
+  "38": "ProphetX",
+  "39": "Fliff",
+  "40": "Bet99",
+  "41": "TonyBet",
+  "42": "High 5 Casino",
+  "43": "BetFred",
+  "44": "ThriveFantasy",
+  "45": "Betr",
+  "46": "Betano",
+  "48": "Bet99 Ontario",
+  "49": "Hard Rock",
+  "50": "BetMGM Casino",
+  "51": "Proline",
+  "52": "OLG",
+  "53": "Dabble",
+  "54": "Playsqor",
+  "55": "Underdog Sportsbook",
+  "56": "Wildz Sports",
+  "57": "Thrillzz",
+  "58": "Jackpota",
+  "60": "Novig",
+  "61": "Iso Fantasy",
+  "62": "BetMGM Poker",
+  "63": "Sleeper",
+  "64": "Kutt",
+  "65": "BetOpenly",
+  "66": "Spree",
+  "67": "Bally Bet",
+  "68": "Kalshi",
+  "69": "FanDuel Picks",
+  "70": "DraftKings Pick6",
+  "71": "PointsBet",
+  "72": "Crypto.com",
+  "73": "Polymarket",
+  "74": "DraftKings Predictions",
+  "75": "Polymarket US",
+  "76": "Underdog Predict",
+  "77": "Bet105",
+  "78": "Plus500",
+  "79": "Acebet",
+  "80": "ClubWPT Gold"
+ },
+ "dfs_books_in_directory": {
+  "37": "PrizePicks",
+  "36": "Underdog",
+  "45": "Betr",
+  "63": "Sleeper",
+  "53": "Dabble"
+ },
+ "props_n_items": 200,
+ "books_seen_on_props": [
+  {
+   "book_id": 12,
+   "name": "DraftKings",
+   "appearances": 218,
+   "is_dfs": false
+  },
+  {
+   "book_id": 19,
+   "name": "BetMGM",
+   "appearances": 137,
+   "is_dfs": false
+  },
+  {
+   "book_id": 68,
+   "name": "Kalshi",
+   "appearances": 127,
+   "is_dfs": false
+  },
+  {
+   "book_id": 13,
+   "name": "Caesars",
+   "appearances": 71,
+   "is_dfs": false
+  },
+  {
+   "book_id": 60,
+   "name": "Novig",
+   "appearances": 58,
+   "is_dfs": false
+  },
+  {
+   "book_id": 10,
+   "name": "FanDuel",
+   "appearances": 46,
+   "is_dfs": false
+  },
+  {
+   "book_id": 14,
+   "name": "Fanatics",
+   "appearances": 34,
+   "is_dfs": false
+  },
+  {
+   "book_id": 49,
+   "name": "Hard Rock",
+   "appearances": 29,
+   "is_dfs": false
+  },
+  {
+   "book_id": 36,
+   "name": "Underdog",
+   "appearances": 27,
+   "is_dfs": true
+  },
+  {
+   "book_id": 33,
+   "name": "theScore Bet",
+   "appearances": 24,
+   "is_dfs": false
+  },
+  {
+   "book_id": 38,
+   "name": "ProphetX",
+   "appearances": 18,
+   "is_dfs": false
+  },
+  {
+   "book_id": 15,
+   "name": "SugarHouse",
+   "appearances": 4,
+   "is_dfs": false
+  },
+  {
+   "book_id": 37,
+   "name": "PrizePicks",
+   "appearances": 3,
+   "is_dfs": true
+  },
+  {
+   "book_id": 45,
+   "name": "Betr",
+   "appearances": 3,
+   "is_dfs": true
+  },
+  {
+   "book_id": 63,
+   "name": "Sleeper",
+   "appearances": 1,
+   "is_dfs": true
+  }
+ ],
+ "props_first_item_shape": {
+  "sport": "MLB",
+  "market_id": 404,
+  "event_id": 98246,
+  "participant": {
+   "id": "6501",
+   "name": "Wandy Peralta",
+   "link": "/mlb/props/wandy-peralta/",
+   "player": {
+    "short_name": "W. Peralta",
+    "first_name": "Wandy",
+    "last_name": "Peralta",
+    "image": "https://images.fantasypros.com/images/players/mlb/6501/headshot/210x210.webp",
+    "...": "+5 more keys"
+   }
+  },
+  "...": "+7 more keys"
+ },
+ "offers": {
+  "market_id": 404,
+  "n_offers": 3,
+  "n_flat_rows": 48,
+  "first_offer_shape": {
+   "id": "3044c91637a82a1e929f8ff863027067",
+   "market_id": 404,
+   "event_id": 98246,
+   "player_id": 4423,
+   "...": "+6 more keys"
+  }
+ },
+ "books_seen_on_offers": [
+  {
+   "book_id": 0,
+   "name": "?",
+   "lines": 6,
+   "is_dfs": false
+  },
+  {
+   "book_id": 49,
+   "name": "Hard Rock",
+   "lines": 6,
+   "is_dfs": false
+  },
+  {
+   "book_id": 14,
+   "name": "Fanatics",
+   "lines": 6,
+   "is_dfs": false
+  },
+  {
+   "book_id": 36,
+   "name": "Underdog",
+   "lines": 6,
+   "is_dfs": true
+  },
+  {
+   "book_id": 63,
+   "name": "Sleeper",
+   "lines": 6,
+   "is_dfs": true
+  },
+  {
+   "book_id": 38,
+   "name": "ProphetX",
+   "lines": 4,
+   "is_dfs": false
+  },
+  {
+   "book_id": 12,
+   "name": "DraftKings",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 13,
+   "name": "Caesars",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 19,
+   "name": "BetMGM",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 33,
+   "name": "theScore Bet",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 60,
+   "name": "Novig",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 27,
+   "name": "PartyCasino",
+   "lines": 2,
+   "is_dfs": false
+  },
+  {
+   "book_id": 37,
+   "name": "PrizePicks",
+   "lines": 2,
+   "is_dfs": true
+  }
+ ],
+ "dfs_coverage": {
+  "n_markets_scanned": 10,
+  "total_board_props": 200,
+  "coverage_by_book": [
+   {
+    "book_id": 0,
+    "name": "?",
+    "props_covered": 20,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 12,
+    "name": "DraftKings",
+    "props_covered": 20,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 13,
+    "name": "Caesars",
+    "props_covered": 20,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 36,
+    "name": "Underdog",
+    "props_covered": 20,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 60,
+    "name": "Novig",
+    "props_covered": 18,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 49,
+    "name": "Hard Rock",
+    "props_covered": 16,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "singles",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 14,
+    "name": "Fanatics",
+    "props_covered": 16,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 63,
+    "name": "Sleeper",
+    "props_covered": 16,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "total-bases"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 33,
+    "name": "theScore Bet",
+    "props_covered": 15,
+    "markets_covered": [
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 38,
+    "name": "ProphetX",
+    "props_covered": 15,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "runs",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 19,
+    "name": "BetMGM",
+    "props_covered": 14,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 39,
+    "name": "Fliff",
+    "props_covered": 14,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "runs",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 27,
+    "name": "PartyCasino",
+    "props_covered": 14,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 37,
+    "name": "PrizePicks",
+    "props_covered": 12,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits-allowed",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 68,
+    "name": "Kalshi",
+    "props_covered": 8,
+    "markets_covered": [
+     "hits",
+     "runs-hits-rbis",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 45,
+    "name": "Betr",
+    "props_covered": 8,
+    "markets_covered": [
+     "outs-recorded",
+     "runs",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 10,
+    "name": "FanDuel",
+    "props_covered": 5,
+    "markets_covered": [
+     "hits",
+     "runs",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   },
+   {
+    "book_id": 18,
+    "name": "BetRivers",
+    "props_covered": 5,
+    "markets_covered": [
+     "hits",
+     "outs-recorded",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 15,
+    "name": "SugarHouse",
+    "props_covered": 5,
+    "markets_covered": [
+     "hits",
+     "outs-recorded",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": false
+   }
+  ],
+  "pickem_coverage": [
+   {
+    "book_id": 36,
+    "name": "Underdog",
+    "props_covered": 20,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts",
+     "total-bases",
+     "walks-allowed"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 63,
+    "name": "Sleeper",
+    "props_covered": 16,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits",
+     "hits-allowed",
+     "outs-recorded",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "total-bases"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 37,
+    "name": "PrizePicks",
+    "props_covered": 12,
+    "markets_covered": [
+     "earned-runs-allowed",
+     "hits-allowed",
+     "runs",
+     "runs-hits-rbis",
+     "singles",
+     "strikeouts"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 45,
+    "name": "Betr",
+    "props_covered": 8,
+    "markets_covered": [
+     "outs-recorded",
+     "runs",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": true
+   },
+   {
+    "book_id": 18,
+    "name": "BetRivers",
+    "props_covered": 5,
+    "markets_covered": [
+     "hits",
+     "outs-recorded",
+     "strikeouts",
+     "total-bases"
+    ],
+    "is_pickem": true
+   }
+  ],
+  "per_market": {
+   "total-bases": {
+    "0": 2,
+    "10": 1,
+    "12": 2,
+    "19": 2,
+    "13": 2,
+    "49": 2,
+    "33": 2,
+    "14": 2,
+    "38": 2,
+    "36": 2,
+    "60": 2,
+    "68": 2,
+    "45": 2,
+    "39": 2,
+    "63": 2,
+    "18": 1,
+    "15": 1,
+    "27": 2
+   },
+   "runs-hits-rbis": {
+    "0": 2,
+    "14": 2,
+    "37": 2,
+    "36": 2,
+    "63": 2,
+    "12": 2,
+    "13": 2,
+    "33": 2,
+    "60": 2,
+    "68": 2
+   },
+   "hits": {
+    "0": 2,
+    "10": 1,
+    "12": 2,
+    "13": 2,
+    "19": 2,
+    "49": 2,
+    "33": 1,
+    "14": 2,
+    "60": 2,
+    "38": 2,
+    "36": 2,
+    "68": 2,
+    "63": 2,
+    "39": 2,
+    "18": 1,
+    "15": 1,
+    "27": 2
+   },
+   "outs-recorded": {
+    "0": 2,
+    "12": 2,
+    "19": 2,
+    "13": 2,
+    "49": 2,
+    "33": 2,
+    "14": 2,
+    "36": 2,
+    "60": 2,
+    "45": 2,
+    "63": 2,
+    "27": 2,
+    "15": 1,
+    "18": 1
+   },
+   "singles": {
+    "0": 2,
+    "12": 2,
+    "13": 2,
+    "49": 2,
+    "14": 2,
+    "38": 2,
+    "36": 2,
+    "63": 2,
+    "39": 2,
+    "37": 2,
+    "33": 2
+   },
+   "strikeouts": {
+    "0": 2,
+    "12": 2,
+    "13": 2,
+    "49": 2,
+    "36": 2,
+    "38": 2,
+    "60": 2,
+    "39": 2,
+    "10": 2,
+    "19": 2,
+    "14": 2,
+    "37": 2,
+    "68": 2,
+    "45": 2,
+    "18": 2,
+    "15": 2,
+    "27": 2
+   },
+   "runs": {
+    "0": 2,
+    "10": 1,
+    "13": 2,
+    "19": 2,
+    "49": 2,
+    "33": 2,
+    "36": 2,
+    "38": 2,
+    "45": 2,
+    "63": 2,
+    "39": 2,
+    "27": 2,
+    "12": 2,
+    "37": 2,
+    "60": 2
+   },
+   "walks-allowed": {
+    "0": 2,
+    "12": 2,
+    "13": 2,
+    "36": 2,
+    "60": 2,
+    "39": 2,
+    "38": 1,
+    "33": 2
+   },
+   "earned-runs-allowed": {
+    "0": 2,
+    "12": 2,
+    "13": 2,
+    "19": 2,
+    "49": 2,
+    "14": 2,
+    "36": 2,
+    "60": 2,
+    "38": 2,
+    "39": 2,
+    "63": 2,
+    "27": 2,
+    "37": 2
+   },
+   "hits-allowed": {
+    "0": 2,
+    "12": 2,
+    "13": 2,
+    "19": 2,
+    "49": 2,
+    "33": 2,
+    "14": 2,
+    "36": 2,
+    "38": 2,
+    "60": 2,
+    "63": 2,
+    "27": 2,
+    "37": 2
+   }
+  }
+ }
+}
