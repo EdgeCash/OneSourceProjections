@@ -1,0 +1,122 @@
+[
+ {
+  "id": 2599,
+  "sr_id": "e59918ba-0147-426b-a6c3-355c2a272fb2",
+  "sport": "WNBA",
+  "scheduled": "2026-06-22 23:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CON",
+  "visitor": "CHI",
+  "link": "/wnba/matchups/chicago-sky-vs-connecticut-sun/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Mohegan Sun Arena",
+   "city": "Uncasville",
+   "state": "CT",
+   "country": "USA",
+   "zip": "06382",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CON",
+    "name": "Sun",
+    "link": "/wnba/teams/connecticut-sun/",
+    "team": {
+     "city": "Connecticut",
+     "abbreviation": "CON",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 2,
+      "L": 15,
+      "T": 0
+     },
+     "slug": "connecticut-sun"
+    }
+   },
+   {
+    "id": "CHI",
+    "name": "Sky",
+    "link": "/wnba/teams/chicago-sky/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHI",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 4,
+      "L": 11,
+      "T": 0
+     },
+     "slug": "chicago-sky"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2600,
+  "sr_id": "4601e3c4-6a4b-4292-92ff-452e5d955615",
+  "sport": "WNBA",
+  "scheduled": "2026-06-22 23:30:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "ATL",
+  "visitor": "TOR",
+  "link": "/wnba/matchups/atlanta-dream-vs-toronto-tempo/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "State Farm Arena",
+   "city": "Atlanta",
+   "state": "GA",
+   "country": "USA",
+   "zip": "30303",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "ATL",
+    "name": "Dream",
+    "link": "/wnba/teams/atlanta-dream/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 11,
+      "L": 4,
+      "T": 0
+     },
+     "slug": "atlanta-dream"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Tempo",
+    "link": "/wnba/teams/toronto-tempo/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 8,
+      "L": 8,
+      "T": 0
+     },
+     "slug": "toronto-tempo"
+    }
+   }
+  ],
+  "broadcasts": []
+ }
+]

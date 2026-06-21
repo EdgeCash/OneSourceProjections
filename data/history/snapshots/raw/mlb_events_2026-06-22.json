@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98820,
+  "sr_id": "5ee3c5b6-fe19-4c98-9550-ba74bed6d40d",
+  "sport": "MLB",
+  "scheduled": "2026-06-22 22:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DET",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/detroit-tigers-vs-new-york-yankees/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7627",
+    "name": "Framber Valdez",
+    "link": "/mlb/props/framber-valdez/",
+    "player": {
+     "short_name": "F. Valdez",
+     "first_name": "Framber",
+     "last_name": "Valdez",
+     "image": "https://images.fantasypros.com/images/players/mlb/7627/headshot/210x210.webp",
+     "position": "SP",
+     "team": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "framber-valdez",
+     "jersey_number": 59
+    }
+   },
+   "visitor_probable": {
+    "id": "4656",
+    "name": "Gerrit Cole",
+    "link": "/mlb/props/gerrit-cole/",
+    "player": {
+     "short_name": "G. Cole",
+     "first_name": "Gerrit",
+     "last_name": "Cole",
+     "image": "https://images.fantasypros.com/images/players/mlb/4656/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "gerrit-cole",
+     "jersey_number": 45
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "DET",
+   "season": "2025",
+   "split": "A",
+   "r": "1.039",
+   "1b": "1.025",
+   "2b": "0.993",
+   "3b": "1.274",
+   "hr": "0.928",
+   "name": "Comerica Park"
+  },
+  "venue": {
+   "name": "Comerica Park",
+   "address": "2100 Woodward Avenue",
+   "city": "Detroit",
+   "state": "MI",
+   "country": "USA",
+   "zip": "48226",
+   "surface": "grass",
+   "capacity": 41083,
+   "stadium_type": "outdoor",
+   "id": "ef9a5eef-06c6-4963-ac70-7fd02c8c8d42"
+  },
+  "participants": [
+   {
+    "id": "DET",
+    "name": "Tigers",
+    "link": "/mlb/teams/detroit-tigers/",
+    "team": {
+     "city": "Detroit",
+     "abbreviation": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 32,
+      "L": 44,
+      "T": 0
+     },
+     "slug": "detroit-tigers",
+     "stadium_deg_offset": "150"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 46,
+      "L": 29,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 74,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "NNE",
+   "forecast_wind_degree": 32,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.48
+  },
+  "broadcasts": [
+   {
+    "network": "DSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99382,
+  "sr_id": "9e1e482a-fdd3-4870-9c2c-cf533d06dc7c",
+  "sport": "MLB",
+  "scheduled": "2026-06-22 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIA",
+  "visitor": "TEX",
+  "link": "/mlb/matchups/miami-marlins-vs-texas-rangers/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "39151",
+    "name": "Tyler Phillips",
+    "link": "/mlb/props/tyler-phillips/",
+    "player": {
+     "short_name": "T. Phillips",
+     "first_name": "Tyler",
+     "last_name": "Phillips",
+     "image": "https://images.fantasypros.com/images/players/mlb/39151/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "slug": "tyler-phillips",
+     "jersey_number": 30
+    }
+   },
+   "visitor_probable": {
+    "id": "6919",
+    "name": "Kumar Rocker",
+    "link": "/mlb/props/kumar-rocker/",
+    "player": {
+     "short_name": "K. Rocker",
+     "first_name": "Kumar",
+     "last_name": "Rocker",
+     "image": "https://images.fantasypros.com/images/players/mlb/6919/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "slug": "kumar-rocker",
+     "jersey_number": 80
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIA",
+   "season": "2025",
+   "split": "A",
+   "r": "1.131",
+   "1b": "1.081",
+   "2b": "1.137",
+   "3b": "1.145",
+   "hr": "1.006",
+   "name": "loanDepot park"
+  },
+  "venue": {
+   "name": "loanDepot park",
+   "address": "501 Marlins Way",
+   "city": "Miami",
+   "state": "FL",
+   "country": "USA",
+   "zip": "33125",
+   "surface": "turf",
+   "capacity": 37446,
+   "stadium_type": "retractable",
+   "id": "d5a66fb3-ff26-4f36-910c-3df5cedb36b3"
+  },
+  "participants": [
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 39,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   },
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 36,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "texas-rangers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 88,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "SE",
+   "forecast_wind_degree": 137,
+   "forecast_rain_chance": 36,
+   "forecast_icon": "Thunderstorms",
+   "forecast_pressure": 1019,
+   "forecast_humidity": 0.68
+  },
+  "broadcasts": [
+   {
+    "network": "MIAM",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
