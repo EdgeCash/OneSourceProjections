@@ -286,16 +286,22 @@ def flatten_offers(raw_offers: list[dict]) -> list[dict]:
         market_id = offer.get("market_id")
         player_id = offer.get("player_id") or _dig(offer, "participant.id",
                                                    "participant.player.id")
-        # Player props nest the player at the OFFER level (participant/player),
-        # game offers at the selection level — try both so the name is never lost.
+        # Player props nest the player at the OFFER level (participant/player);
+        # the SELECTION only carries the side ("Over"/"Under"). Game offers carry
+        # the team at the selection level. So for player props (offer has a
+        # player_id) the name must come from the offer level (or be backfilled
+        # from player_id later) — never from the selection's side label.
         offer_name = _dig(offer, "participant.name", "participant.player.name",
                           "player.name", "player.full_name")
         for selection in offer.get("selections", []):
-            name = _dig(
-                selection,
-                "participant.name", "participant.player.name",
-                "player.name", "label", "participant",
-            ) or offer_name
+            if player_id is not None:
+                name = offer_name      # player prop — never the "Over"/"Under" label
+            else:
+                name = _dig(
+                    selection,
+                    "participant.name", "participant.player.name",
+                    "player.name", "label", "participant",
+                ) or offer_name
             for book in selection.get("books", []):
                 for line in book.get("lines", []):
                     rows.append(
