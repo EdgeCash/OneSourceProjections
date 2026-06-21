@@ -65,6 +65,79 @@ def _is_dfs(name):
     return (name or "").strip().lower() in DFS
 
 
+# Broader pick'em / DFS-style operators to test for coverage (superset of the
+# ones we currently wire) — matched loosely on the book name.
+PICKEM_HINTS = ("prizepicks", "underdog", "sleeper", "dabble", "betr",
+                "pick6", "picks", "fantasy", "thrive", "iso", "playsqor",
+                "chalkboard", "parlayplay", "boom")
+
+
+def _is_pickem(name):
+    n = (name or "").strip().lower()
+    return any(h in n for h in PICKEM_HINTS)
+
+
+def _coverage(sport, date, dicts, book_map):
+    """Across EVERY market on today's board, fetch /offers and count how many
+    distinct player props each book quotes — so we can see which pick'em
+    operators (and which markets) give the most consistent DFS coverage."""
+    # market_id -> {name, event_ids}
+    markets = {}
+    for p in dicts:
+        mid = p.get("market_id")
+        if mid is None:
+            continue
+        mid = int(mid)
+        m = markets.setdefault(mid, {"events": set(), "props": 0})
+        m["props"] += 1
+        if p.get("event_id") is not None:
+            m["events"].add(p.get("event_id"))
+    try:
+        lookup = bp.market_lookup(sport)
+    except Exception:
+        lookup = {}
+
+    by_book = collections.Counter()             # book_id -> distinct props
+    by_book_markets = collections.defaultdict(set)
+    per_market = {}                             # market -> {book_id: n_props}
+    for mid, m in sorted(markets.items(), key=lambda kv: -kv[1]["props"])[:40]:
+        name = (lookup.get(mid, {}).get("name")
+                or lookup.get(mid, {}).get("slug") or f"market {mid}")
+        try:
+            raw = bp.offers(sport, mid, list(m["events"])[:25] or None)
+        except Exception:
+            continue
+        seen = collections.defaultdict(set)     # book_id -> {participant}
+        for r in bp.flatten_offers(raw):
+            if r.get("line") is None or not r.get("active", True):
+                continue
+            bid = r.get("book_id")
+            if bid is None:
+                continue
+            seen[int(bid)].add(r.get("participant"))
+        per_market[name] = {bid: len(ps) for bid, ps in seen.items()}
+        for bid, ps in seen.items():
+            by_book[bid] += len(ps)
+            by_book_markets[bid].add(name)
+
+    coverage_by_book = []
+    for bid, nprops in by_book.most_common():
+        nm = book_map.get(bid, "?")
+        coverage_by_book.append({
+            "book_id": bid, "name": nm,
+            "props_covered": nprops,
+            "markets_covered": sorted(by_book_markets[bid]),
+            "is_pickem": _is_pickem(nm),
+        })
+    return {
+        "n_markets_scanned": len(per_market),
+        "total_board_props": len(dicts),
+        "coverage_by_book": coverage_by_book,
+        "pickem_coverage": [c for c in coverage_by_book if c["is_pickem"]],
+        "per_market": per_market,
+    }
+
+
 def fetch_props(sport, date):
     params = {
         "sport": sport, "date": date, "location": "ALL",
@@ -149,6 +222,21 @@ def main() -> None:
             print(f"    {str(r['book_id']):>4} | {r['name']:<18} | {r['lines']}"
                   f"{'   <-- DFS' if r['is_dfs'] else ''}")
 
+    # 4. DFS coverage across ALL markets -------------------------------------
+    coverage = _coverage(sport, date, dicts, book_map)
+    print(f"\nDFS COVERAGE ({coverage['n_markets_scanned']} markets, "
+          f"{coverage['total_board_props']} board props):")
+    print("  pick'em operators by props covered:")
+    for c in coverage["coverage_by_book"]:
+        if not c["is_pickem"]:
+            continue
+        print(f"    {c['book_id']:>4} | {c['name']:<22} | {c['props_covered']:>4} props "
+              f"| {len(c['markets_covered'])} markets")
+    print("  top books overall:")
+    for c in coverage["coverage_by_book"][:8]:
+        tag = " <-- pickem" if c["is_pickem"] else ""
+        print(f"    {c['book_id']:>4} | {c['name']:<22} | {c['props_covered']:>4} props{tag}")
+
     summary = {
         "sport": sport, "date": date,
         "book_directory": {str(k): v for k, v in sorted(book_map.items())},
@@ -158,6 +246,7 @@ def main() -> None:
         "props_first_item_shape": _shape(dicts[0]) if dicts else None,
         "offers": offers_sample,
         "books_seen_on_offers": offers_books,
+        "dfs_coverage": coverage,
     }
     raw_dir = config.REPO_ROOT / "data" / "history" / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
