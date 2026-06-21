@@ -254,3 +254,5 @@
 {"date": "2026-06-21", "sport": "MLB", "game": "Cleveland Guardians @ Houston Astros", "market": "moneyline", "side": "home", "line": null, "price": -122.0, "ev": 0.0349, "won": true, "pnl": 0.8197, "clv": 0.0567}
 {"date": "2026-06-21", "sport": "MLB", "game": "Cincinnati Reds @ New York Yankees", "market": "model_winprob", "side": "", "pred_home_wp": 0.6341, "home_won": 0, "market_home_wp": 0.0591, "brier": 0.4021, "proj_total": 9.149, "actual_total": 5}
 {"date": "2026-06-21", "sport": "MLB", "game": "Cincinnati Reds @ New York Yankees", "market": "moneyline", "side": "home", "line": null, "price": -104.0, "ev": 0.1219, "won": false, "pnl": -1.0, "clv": -0.8841}
+{"date": "2026-06-21", "sport": "MLB", "game": "San Diego Padres @ Texas Rangers", "market": "model_winprob", "side": "", "pred_home_wp": 0.524, "home_won": 1, "market_home_wp": null, "brier": 0.2266, "proj_total": 8.117, "actual_total": 7}
+{"date": "2026-06-21", "sport": "MLB", "game": "San Diego Padres @ Texas Rangers", "market": "moneyline", "side": "away", "line": null, "price": 150.0, "ev": 0.095, "won": false, "pnl": -1.0, "clv": null}
