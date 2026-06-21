@@ -26,6 +26,10 @@ FORWARD_DIR = REPO_ROOT / "data" / "history" / "playerlogs"
 MARKET_STAT = {
     # MLB (nested 'stats' dict)
     "pitcher_strikeouts": ("strikeOuts", "P"),
+    "pitcher_outs": ("outs", "P"),
+    "pitcher_hits_allowed": ("hitsAllowed", "P"),
+    "pitcher_earned_runs": ("earnedRuns", "P"),
+    "pitcher_walks": ("baseOnBalls", "P"),
     "batter_hits": ("hits", "B"),
     "batter_total_bases": ("totalBases", "B"),
     "batter_home_runs": ("homeRuns", "B"),

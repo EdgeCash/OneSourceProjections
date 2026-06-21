@@ -74,3 +74,30 @@ def test_name_normalization():
     assert normalize("Ronald Acuna Jr.") == "ronald acuna"
     assert normalize("Michael Harris II") == "michael harris"
     assert normalize("J.D. Martinez") == "jd martinez"
+
+
+def test_pitcher_markets_means_and_blend():
+    from onesource.models import props as pm
+    # outs = innings*3; FP projection blends in
+    assert pm.pitcher_outs(5.0)["mean"] == 15.0
+    blended = pm.pitcher_outs(5.0, fp_projected_outs=18.0)["mean"]
+    assert 15.0 < blended < 18.0  # 50/50 blend lands between
+    # own per-inning rate beats league when provided
+    hi = pm.pitcher_hits_allowed(6.0, h_per_inning=1.2)["mean"]
+    lo = pm.pitcher_hits_allowed(6.0, h_per_inning=0.6)["mean"]
+    assert hi > lo
+    # dispersions: earned runs spikiest (smallest size), outs least dispersed
+    assert (pm.pitcher_earned_runs(5.0)["dispersion"]
+            < pm.pitcher_walks(5.0)["dispersion"]
+            < pm.pitcher_outs(5.0)["dispersion"])
+
+
+def test_prob_over_for_row_uses_row_dispersion():
+    from onesource import pipeline
+    base = {"dist": "negbinom", "param": 16.0}
+    # a high-dispersion (tight) outs line vs the default total-bases dispersion
+    tight = pipeline.prob_over_for_row({**base, "dispersion": 40.0}, 16.5)
+    loose = pipeline.prob_over_for_row({**base, "dispersion": 1.1}, 16.5)
+    assert tight != loose
+    # missing dispersion (batter rows) falls back without error
+    assert pipeline.prob_over_for_row(base, 16.5) is not None

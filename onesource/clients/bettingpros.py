@@ -560,6 +560,12 @@ _PROP_KEYWORDS = {
         "batter_hits": (("hits",), ("team", "allowed", "runs", "rbis", "alt")),
         "batter_total_bases": (("total bases",), ("team", "alt")),
         "batter_home_runs": (("home run", "homerun"), ("team", "first", "alt")),
+        # Additional DFS-quoted pitcher markets (board slugs: outs-recorded,
+        # hits-allowed, earned-runs-allowed, walks-allowed).
+        "pitcher_outs": (("outs",), ("team", "alt")),
+        "pitcher_hits_allowed": (("hits allowed",), ("team", "alt")),
+        "pitcher_earned_runs": (("earned run",), ("team", "alt")),
+        "pitcher_walks": (("walks allowed", "walks",), ("team", "alt", "intentional")),
     },
     "WNBA": {
         "Points": (("points",), ("team", "rebounds", "assists", "alt", "quarter", "half")),
