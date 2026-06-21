@@ -131,3 +131,22 @@ def test_prop_offer_lines_driven_by_board(monkeypatch):
     # the DFS extractor then finds PrizePicks in those rows
     dfs = bp.dfs_offer_lines(rows)
     assert any(r["book_name"] == "prizepicks" and r["over_line"] == 5.5 for r in dfs)
+
+
+def test_prop_offer_lines_backfills_name_from_player_id(monkeypatch):
+    # Board carries participant id+name; offers carry ONLY player_id (the real
+    # prop /offers shape) -> prop_offer_lines must restore the name so the join
+    # to model props works.
+    board_raw = [{"event_id": 11, "market_id": 285,
+                  "participant": {"id": 4603, "name": "Zack Wheeler"},
+                  "selections": []}]
+    monkeypatch.setattr(bp, "props", lambda s, d, **k: board_raw)
+    monkeypatch.setattr(bp, "market_lookup",
+                        lambda s: {285: {"name": "Strikeouts", "slug": "strikeouts"}})
+    monkeypatch.setattr(bp, "_offers", lambda sport, mid, evs: [
+        {"event_id": 11, "market_id": mid, "player_id": 4603,  # name absent
+         "selections": [{"selection": "over", "books": [
+             {"id": 37, "name": "PrizePicks",
+              "lines": [{"line": 5.5, "cost": -119, "active": True}]}]}]}])
+    rows = bp.prop_offer_lines("MLB", "2026-06-21")
+    assert rows and all(r["participant"] == "Zack Wheeler" for r in rows)
