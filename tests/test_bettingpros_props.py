@@ -96,3 +96,38 @@ def test_dfs_offer_lines_skips_inactive_and_missing():
          "book_id": 37, "line": None, "odds": -119, "active": True},
     ])
     assert rows == []
+
+
+def test_match_market_name_maps_by_keyword():
+    assert bp._match_market_name("MLB", "Strikeouts") == "pitcher_strikeouts"
+    assert bp._match_market_name("MLB", "Total Bases") == "batter_total_bases"
+    assert bp._match_market_name("MLB", "Team Total Runs") is None  # blocked
+
+
+def test_prop_offer_lines_driven_by_board(monkeypatch):
+    # props board: market_id 285 (the real id) for two players, with event ids
+    board_raw = [
+        {"event_id": 11, "market_id": 285, "participant": {"name": "Zack Wheeler"},
+         "selections": []},
+        {"event_id": 12, "market_id": 285, "participant": {"name": "Tarik Skubal"},
+         "selections": []},
+    ]
+    monkeypatch.setattr(bp, "props", lambda s, d, **k: board_raw)
+    monkeypatch.setattr(bp, "market_lookup",
+                        lambda s: {285: {"name": "Strikeouts", "slug": "strikeouts"}})
+    captured = {}
+    def fake_offers(sport, mid, evs):
+        captured["mid"] = mid
+        captured["evs"] = sorted(evs)
+        return [{"event_id": 11, "market_id": mid, "selections": [
+            {"selection": "over", "books": [
+                {"id": 37, "name": "PrizePicks",
+                 "lines": [{"line": 5.5, "cost": -119, "active": True}]}]}]}]
+    monkeypatch.setattr(bp, "_offers", fake_offers)
+
+    rows = bp.prop_offer_lines("MLB", "2026-06-21")
+    assert captured["mid"] == 285 and captured["evs"] == [11, 12]
+    assert rows and all(r["market"] == "pitcher_strikeouts" for r in rows)
+    # the DFS extractor then finds PrizePicks in those rows
+    dfs = bp.dfs_offer_lines(rows)
+    assert any(r["book_name"] == "prizepicks" and r["over_line"] == 5.5 for r in dfs)

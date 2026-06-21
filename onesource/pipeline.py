@@ -435,31 +435,17 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
     """Join model projections to BettingPros prop offers and compute EV."""
     if props.empty:
         return props
+    # Drive /offers off the market_ids + event_ids that actually appear on
+    # today's props board — the ids resolved from /markets don't line up with
+    # the offers feed, which left every prop-offers call empty (no DFS lines).
     try:
-        events = bettingpros.events("MLB", date)
-        event_ids = [e.get("id") for e in events if e.get("id")]
+        market_rows = bettingpros.prop_offer_lines("MLB", date)
+        from collections import Counter
+        log.info("prop offers: %d rows across markets %s", len(market_rows),
+                 dict(Counter(r.get("market") for r in market_rows)))
     except Exception as e:
-        log.warning("BettingPros events unavailable: %s", e)
-        return _ensure_cols(props.copy())
-
-    try:
-        live_ids = bettingpros.prop_market_ids("MLB")
-    except Exception as e:
-        log.warning("prop market resolution failed: %s", e)
-        live_ids = {}
-
-    market_rows = []
-    for market, mid in live_ids.items():
-        try:
-            offers = bettingpros.offers("MLB", mid, event_ids,
-                                        season=_season(date))
-            flat = bettingpros.flatten_offers(offers)
-            for r in flat:
-                r["market"] = market
-                market_rows.append(r)
-            log.info("offers %s (id=%s): %d rows", market, mid, len(flat))
-        except Exception as e:
-            log.warning("offers for %s unavailable: %s", market, e)
+        log.warning("prop offers unavailable: %s", e)
+        market_rows = []
 
     if not market_rows:
         log.warning("no prop offers returned for any market — falling back to "
