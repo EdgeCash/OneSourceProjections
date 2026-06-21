@@ -150,3 +150,20 @@ def test_prop_offer_lines_backfills_name_from_player_id(monkeypatch):
               "lines": [{"line": 5.5, "cost": -119, "active": True}]}]}]}])
     rows = bp.prop_offer_lines("MLB", "2026-06-21")
     assert rows and all(r["participant"] == "Zack Wheeler" for r in rows)
+
+
+def test_flatten_offers_prop_name_not_side_label():
+    # Player props: offer carries player_id, selection only the side label.
+    # The participant must NOT become "Over"/"Under".
+    raw = [{"event_id": 1, "market_id": 285, "player_id": 4423,
+            "selections": [{"selection": "over", "label": "Over", "books": [
+                {"id": 37, "name": "PrizePicks",
+                 "lines": [{"line": 5.5, "cost": -119, "active": True}]}]}]}]
+    rows = bp.flatten_offers(raw)
+    assert rows[0]["participant"] is None      # not "Over"
+    assert rows[0]["player_id"] == 4423
+    # game offers (no player_id) still take the team from the selection label
+    g = [{"event_id": 1, "market_id": 10, "selections": [
+        {"label": "Yankees", "books": [
+            {"id": 12, "lines": [{"line": -1.5, "cost": -110, "active": True}]}]}]}]
+    assert bp.flatten_offers(g)[0]["participant"] == "Yankees"
