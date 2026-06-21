@@ -284,19 +284,41 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
         fp_stats = fp.get(normalize(name), {})
         fp_k_today = _lookup_float(fp_stats, "K", "SO", "strikeouts")
 
+        common = {
+            "game_pk": g["game_pk"],
+            "player": name,
+            "team": g[f"{side}_team"],
+            "opponent": g[f"{opp_side}_team"],
+        }
         model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k, fp_k_today)
-        rows.append(
-            {
-                "game_pk": g["game_pk"],
-                "market": "pitcher_strikeouts",
-                "player": name,
-                "team": g[f"{side}_team"],
-                "opponent": g[f"{opp_side}_team"],
-                "projection": round(model["mean"], 2),
-                "dist": "poisson",
-                "param": model["lambda"],
-            }
-        )
+        rows.append({**common, "market": "pitcher_strikeouts",
+                     "projection": round(model["mean"], 2),
+                     "dist": "poisson", "param": model["lambda"]})
+
+        # Additional DFS-quoted pitcher markets (outs, hits/ER/walks allowed),
+        # derived from expected innings + the pitcher's own per-inning rates
+        # (when present on the stat row) blended with FP's daily projection.
+        h9 = _lookup_float(stats_row, "H/9", "H9", "Hper9")
+        er9 = _lookup_float(stats_row, "ERA")
+        bb9 = _lookup_float(stats_row, "BB/9", "BB9")
+        outs = prop_model.pitcher_outs(
+            exp_innings, _lookup_float(fp_stats, "OUTS", "Outs"))
+        hits_a = prop_model.pitcher_hits_allowed(
+            exp_innings, h9 / 9 if h9 else None,
+            _lookup_float(fp_stats, "H", "HA"))
+        er = prop_model.pitcher_earned_runs(
+            exp_innings, er9 / 9 if er9 else None,
+            _lookup_float(fp_stats, "ER"))
+        walks = prop_model.pitcher_walks(
+            exp_innings, bb9 / 9 if bb9 else None,
+            _lookup_float(fp_stats, "BB"))
+        for market, m in (("pitcher_outs", outs),
+                          ("pitcher_hits_allowed", hits_a),
+                          ("pitcher_earned_runs", er),
+                          ("pitcher_walks", walks)):
+            rows.append({**common, "market": market,
+                         "projection": round(m["mean"], 2), "dist": "negbinom",
+                         "param": m["mean"], "dispersion": m["dispersion"]})
     return rows
 
 
@@ -364,7 +386,10 @@ def prob_over_for_row(row: dict, line: float) -> float | None:
     if row["dist"] == "poisson":
         return prop_model.prob_over_count(row["param"], line)
     if row["dist"] == "negbinom":
-        return prop_model.prob_over_neg_binom(row["param"], line)
+        disp = row.get("dispersion")
+        if disp is None or pd.isna(disp):
+            disp = prop_model.TB_DISPERSION
+        return prop_model.prob_over_neg_binom(row["param"], line, float(disp))
     if row["dist"] == "binomial":
         return prop_model.prob_over_hits(row.get("n", 4), row["param"], line)
     if row["dist"] == "bernoulli":

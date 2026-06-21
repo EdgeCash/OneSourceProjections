@@ -73,6 +73,52 @@ def pitcher_strikeouts(
     return {"lambda": lam, "mean": lam}
 
 
+# Additional pitcher markets (DFS books quote all of these). Means come from
+# expected innings × a per-inning rate (own rate when available, else league),
+# blended with the FantasyPros daily projection. Dispersions are first-pass
+# priors — overdispersed counts, lowest for the spiky earned-runs line — to be
+# tightened against the prop-calibration backtest as forward data accrues.
+LEAGUE_H_PER_INNING = 0.92     # ~8.3 H/9
+LEAGUE_ER_PER_INNING = 0.45    # ~4.05 ERA
+LEAGUE_BB_PER_INNING = 0.32    # ~2.9 BB/9
+OUTS_DISPERSION = 40.0         # outs ~ mean 16, only mildly overdispersed
+HITS_ALLOWED_DISPERSION = 7.0
+ER_DISPERSION = 3.0            # earned runs are the spikiest (blowup starts)
+WALKS_DISPERSION = 4.0
+
+
+def pitcher_outs(expected_innings: float,
+                 fp_projected_outs: float | None = None) -> dict:
+    """Outs recorded = innings × 3, blended with any FP outs projection."""
+    own = expected_innings * 3.0
+    mean = blend(own, fp_projected_outs, own)
+    return {"mean": mean, "dispersion": OUTS_DISPERSION}
+
+
+def pitcher_hits_allowed(expected_innings: float,
+                         h_per_inning: float | None = None,
+                         fp_projected_h: float | None = None) -> dict:
+    own = expected_innings * (h_per_inning if h_per_inning else LEAGUE_H_PER_INNING)
+    mean = blend(own, fp_projected_h, own)
+    return {"mean": mean, "dispersion": HITS_ALLOWED_DISPERSION}
+
+
+def pitcher_earned_runs(expected_innings: float,
+                        er_per_inning: float | None = None,
+                        fp_projected_er: float | None = None) -> dict:
+    own = expected_innings * (er_per_inning if er_per_inning else LEAGUE_ER_PER_INNING)
+    mean = blend(own, fp_projected_er, own)
+    return {"mean": mean, "dispersion": ER_DISPERSION}
+
+
+def pitcher_walks(expected_innings: float,
+                  bb_per_inning: float | None = None,
+                  fp_projected_bb: float | None = None) -> dict:
+    own = expected_innings * (bb_per_inning if bb_per_inning else LEAGUE_BB_PER_INNING)
+    mean = blend(own, fp_projected_bb, own)
+    return {"mean": mean, "dispersion": WALKS_DISPERSION}
+
+
 def batter_hits(
     expected_ab: float,
     ba: float | None,
