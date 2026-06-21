@@ -591,3 +591,58 @@ def prop_market_ids(sport: str) -> dict[str, int]:
             if any(k in text for k in need) and not any(b in text for b in block):
                 out[market] = mid
     return out
+
+
+def _match_market_name(sport: str, text: str) -> str | None:
+    """Map a market's name/slug text to our prop-market name via the keywords."""
+    text = (text or "").lower().replace("-", " ")
+    for market, (need, block) in _PROP_KEYWORDS.get(sport, {}).items():
+        if any(k in text for k in need) and not any(b in text for b in block):
+            return market
+    return None
+
+
+def prop_offer_lines(sport: str, date: str) -> list[dict]:
+    """Per-book prop offer rows (incl. PrizePicks/Underdog) driven off the live
+    props board. The /markets ids resolved by ``prop_market_ids`` don't line up
+    with the ids the offers feed serves, so we read the market_ids AND event_ids
+    that actually appear on today's props and fetch /offers for those — each row
+    tagged with our market name. Returns flattened rows (see ``flatten_offers``).
+    """
+    raw = props(sport, date)
+    flat = flatten_props(raw)
+    lookup = market_lookup(sport)
+    # market_id -> (our_name, [event_ids]) from what's actually on the board
+    by_market: dict[int, dict] = {}
+    for p in flat:
+        mid = p.get("market_id")
+        if mid is None:
+            continue
+        mid = int(mid)
+        slot = by_market.setdefault(mid, {"events": set()})
+        if "name" not in slot:
+            info = lookup.get(mid, {})
+            slot["name"] = _match_market_name(
+                sport, f"{info.get('name','')} {info.get('slug','')}")
+        ev = p.get("event_id")
+        if ev is not None:
+            slot["events"].add(ev)
+    rows: list[dict] = []
+    for mid, slot in by_market.items():
+        name = slot.get("name")
+        if not name:
+            continue  # not a market we model
+        evs = list(slot["events"])[:25]
+        try:
+            offers = _offers(sport, mid, evs)
+        except Exception:
+            continue
+        for r in flatten_offers(offers):
+            r["market"] = name
+            rows.append(r)
+    return rows
+
+
+def _offers(sport, market_id, event_ids):
+    """Thin offers() wrapper kept separate so prop_offer_lines can be mocked."""
+    return offers(sport, market_id, event_ids or None)
