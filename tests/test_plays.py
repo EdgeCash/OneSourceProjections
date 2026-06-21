@@ -118,24 +118,29 @@ def test_mark_played_flags_card_legs(tmp_path, monkeypatch):
     assert plays.mark_played("2026-06-15", card) == 0
 
 
-def test_game_play_candidates_filters_by_edge(tmp_path, monkeypatch):
-    monkeypatch.setattr(plays.config, "SMASH_EDGE", 0.07)
-    monkeypatch.setattr(plays.config, "SMASH_EDGE_SANITY", 0.15)
+def test_game_play_candidates_tiers_by_ev(tmp_path, monkeypatch):
+    monkeypatch.setattr(plays.config, "SHARP_EV_MIN", 0.03)
+    monkeypatch.setattr(plays.config, "SHARP_EV_MAX", 0.06)
+    monkeypatch.setattr(plays.config, "STALE_EV", 0.08)
     blob = {"MLB": {"games": [{
         "home_team": "NYY", "away_team": "BOS",
-        "home_ml": -150, "home_ml_ev": 0.09,      # smash
+        "home_ml": -150, "home_ml_ev": 0.045,     # sharp band
         "away_ml": 130, "away_ml_ev": -0.05,       # negative -> out
         "total_line": 8.5,
-        "over_odds": -110, "over_ev": 0.02,        # below bar -> out
-        "under_odds": -110, "under_ev": 0.20,      # smash + verify
+        "over_odds": -110, "over_ev": 0.02,        # below min -> out
+        "under_odds": -110, "under_ev": 0.20,      # too high -> stale/verify
     }]}}
     cands = plays.game_play_candidates("2026-06-15", blob)
     kinds = {(c["market"], c["side"]) for c in cands}
     assert kinds == {("moneyline", "home"), ("total", "under")}
     ml = next(c for c in cands if c["market"] == "moneyline")
-    assert ml["smash"] is True and ml["verify"] is False
+    assert ml["tier"] == "sharp" and ml["sharp"] is True and ml["verify"] is False
     un = next(c for c in cands if c["side"] == "under")
-    assert un["verify"] is True  # 20% EV -> too good, flag to verify
+    assert un["tier"] == "stale" and un["verify"] is True  # 20% EV -> verify
+    # a mid-band EV (between max and stale) is 'watch' — tracked, not pushed
+    blob["MLB"]["games"][0]["home_ml_ev"] = 0.07
+    c2 = plays.game_play_candidates("2026-06-15", blob)
+    assert next(c for c in c2 if c["market"] == "moneyline")["tier"] == "watch"
 
 
 def test_notified_store_roundtrip(tmp_path, monkeypatch):

@@ -103,20 +103,17 @@ def _notify_dfs_card(date: str, card: dict, pid: str) -> None:
     log.info("pushed DFS card (%s legs) for %s", card["size"], date)
 
 
-def _notify_game_plays(date: str, smashes: list[dict], pid: str) -> None:
-    """Push smash-level moneyline/total plays (EV >= SMASH_EDGE)."""
+def _notify_game_plays(date: str, sharp: list[dict], pid: str) -> None:
+    """Push the CLV-validated 'sharp' moneyline/total plays."""
     if not notify.configured():
         return
-    lines = []
-    for c in smashes[:8]:
-        flag = " ⚠️verify" if c.get("verify") else ""
-        lines.append(f"- {c['sport']} {c['game']}: {c['pick']} {c['market']} "
-                     f"({c['ev'] * 100:+.0f}% EV){flag}")
-    head = f"💥 {len(smashes)} smash game play{'s' if len(smashes) != 1 else ''} — {date}"
-    notify.send("\n".join(lines), title=head, tags=["boom"],
+    lines = [f"- {c['sport']} {c['game']}: {c['pick']} {c['market']} "
+             f"({c['ev'] * 100:+.0f}% EV)" for c in sharp[:8]]
+    head = f"🎯 {len(sharp)} sharp game play{'s' if len(sharp) != 1 else ''} — {date}"
+    notify.send("\n".join(lines), title=head, tags=["dart"],
                 priority="high", click=f"{APP_URL}/?section=PLAYS",
                 actions=_confirm_actions(pid))
-    log.info("pushed %d game smashes for %s", len(smashes), date)
+    log.info("pushed %d sharp game plays for %s", len(sharp), date)
 
 
 def main():
@@ -160,7 +157,7 @@ def main():
 
     # 2b) apply any Played/Skip taps from prior runs, then log first-qualify
     #     DFS legs and push notifications ONLY for plays worth making: a +EV
-    #     PrizePicks/Underdog card, or a smash game bet. Each push carries
+    #     PrizePicks/Underdog card, or a sharp game bet. Each push carries
     #     one-tap confirm buttons; only confirmed-Played plays count.
     try:
         ctopic = notify.confirm_topic()
@@ -186,12 +183,14 @@ def main():
                     _notify_dfs_card(d, card, pid)
                     pushed_keys |= keys
 
-            smashes = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
-                       if c["key"] not in notified]
-            if smashes:
-                gkeys = {c["key"] for c in smashes}
+            # only push the CLV-validated "sharp" band; 'watch'/'stale' tiers
+            # are tracked in the ledger but not chased via notifications.
+            sharp = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
+                     if c.get("tier") == "sharp" and c["key"] not in notified]
+            if sharp:
+                gkeys = {c["key"] for c in sharp}
                 pid = plays.register_pending("game", d, gkeys)
-                _notify_game_plays(d, smashes, pid)
+                _notify_game_plays(d, sharp, pid)
                 pushed_keys |= gkeys
         except Exception as e:
             log.error("play notify %s failed: %s", d, e)
