@@ -281,18 +281,25 @@ def flatten_offers(raw_offers: list[dict]) -> list[dict]:
     for offer in raw_offers:
         event_id = offer.get("event_id")
         market_id = offer.get("market_id")
+        player_id = offer.get("player_id") or _dig(offer, "participant.id",
+                                                   "participant.player.id")
+        # Player props nest the player at the OFFER level (participant/player),
+        # game offers at the selection level — try both so the name is never lost.
+        offer_name = _dig(offer, "participant.name", "participant.player.name",
+                          "player.name", "player.full_name")
         for selection in offer.get("selections", []):
             name = _dig(
                 selection,
                 "participant.name", "participant.player.name",
                 "player.name", "label", "participant",
-            )
+            ) or offer_name
             for book in selection.get("books", []):
                 for line in book.get("lines", []):
                     rows.append(
                         {
                             "event_id": event_id,
                             "market_id": market_id,
+                            "player_id": player_id,
                             "participant": name if isinstance(name, str) else None,
                             "selection": selection.get("selection")
                             or selection.get("label"),
@@ -618,6 +625,14 @@ def prop_offer_lines(sport: str, date: str) -> list[dict]:
     raw = props(sport, date)
     flat = flatten_props(raw)
     lookup = market_lookup(sport)
+    # player_id -> name from the board, to backfill offer rows that carry only an
+    # id (prop /offers identify the player by id, not always by name).
+    id2name: dict[str, str] = {}
+    for p in raw:
+        pid = _dig(p, "participant.id", "participant.player.id", "player_id")
+        nm = _dig(p, "participant.name", "participant.player.name", "player.name")
+        if pid is not None and nm:
+            id2name[str(pid)] = nm
     # market_id -> (our_name, [event_ids]) from what's actually on the board
     by_market: dict[int, dict] = {}
     for p in flat:
@@ -645,6 +660,8 @@ def prop_offer_lines(sport: str, date: str) -> list[dict]:
             continue
         for r in flatten_offers(offers):
             r["market"] = name
+            if not r.get("participant") and r.get("player_id") is not None:
+                r["participant"] = id2name.get(str(r["player_id"]))
             rows.append(r)
     return rows
 
