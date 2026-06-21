@@ -16,12 +16,15 @@ us at <= 4 req/sec.
 
 from __future__ import annotations
 
+import logging
 import time
 
 import requests
 
 from .. import config
 from ..cache import cached_json
+
+log = logging.getLogger(__name__)
 
 BASE = "https://api.bettingpros.com/v3"
 _TTL = 10 * 60  # lines move; keep this short
@@ -663,6 +666,12 @@ def prop_offer_lines(sport: str, date: str) -> list[dict]:
             if not r.get("participant") and r.get("player_id") is not None:
                 r["participant"] = id2name.get(str(r["player_id"]))
             rows.append(r)
+    filled = sum(1 for r in rows if r.get("participant"))
+    with_pid = sum(1 for r in rows if r.get("player_id") is not None)
+    sample = [(r.get("player_id"), r.get("participant")) for r in rows[:3]]
+    log.info("prop_offer_lines: %d rows | %d named | %d w/ player_id | "
+             "board id2name=%d | sample=%s",
+             len(rows), filled, with_pid, len(id2name), sample)
     return rows
 
 
