@@ -1,0 +1,318 @@
+[
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 99382,
+  "participant": {
+   "id": "39151",
+   "name": "Tyler Phillips",
+   "link": "/mlb/props/tyler-phillips/",
+   "player": {
+    "short_name": "T. Phillips",
+    "first_name": "Tyler",
+    "last_name": "Phillips",
+    "image": "https://images.fantasypros.com/images/players/mlb/39151/headshot/210x210.webp",
+    "slug": "tyler-phillips",
+    "position": "SP,RP",
+    "team": "MIA",
+    "popularity": 893,
+    "jersey_number": 30
+   }
+  },
+  "over": {
+   "line": 15.5,
+   "odds": 141,
+   "book": 36,
+   "consensus_line": 15.5,
+   "consensus_odds": 128,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 15.5,
+     "cost": 139,
+     "book_id": 12,
+     "created": "2026-06-22 01:38:08"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "c1657e865f1e4ebd79e130829cc0573f",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": 0.23550902175014998,
+   "expected_value": -0.458329249974655,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 15.5,
+   "odds": -172,
+   "book": 12,
+   "consensus_line": 15.5,
+   "consensus_odds": -180,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 15.5,
+     "cost": -186,
+     "book_id": 12,
+     "created": "2026-06-22 01:38:08"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "5fd1f4d18302e044140119275748592f",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 1
+    }
+   },
+   "probability": 0.76449097824985,
+   "expected_value": 0.20896247723232098,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 12.99,
+   "probability": 0.76449097824985,
+   "expected_value": 0.20896247723232098,
+   "bet_rating": 5,
+   "diff": -2.51
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Rocker (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 12,
+    "value": 0.7,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/tyler-phillips/outs-recorded/",
+   "analyzer": "/mlb/props/tyler-phillips/outs-recorded/",
+   "affiliate": "https://sportsbook.draftkings.com/event/34304790?outcomes=0QA344993310%232189636887_13L84240Q1-1426773537Q20"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 0,
+    "under": 5,
+    "push": 0
+   },
+   "last_10": {
+    "over": 0,
+    "under": 5,
+    "push": 0
+   },
+   "last_15": {
+    "over": 0,
+    "under": 5,
+    "push": 0
+   },
+   "last_20": {
+    "over": 0,
+    "under": 5,
+    "push": 0
+   },
+   "season": {
+    "over": 0,
+    "under": 4,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 5,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "MLB",
+  "market_id": 405,
+  "event_id": 99989,
+  "participant": {
+   "id": "44176",
+   "name": "Hunter Brown",
+   "link": "/mlb/props/hunter-brown/",
+   "player": {
+    "short_name": "H. Brown",
+    "first_name": "Hunter",
+    "last_name": "Brown",
+    "image": "https://images.fantasypros.com/images/players/mlb/44176/headshot/210x210.webp",
+    "slug": "hunter-brown",
+    "position": "SP",
+    "team": "HOU",
+    "popularity": 35,
+    "jersey_number": 58
+   }
+  },
+  "over": {
+   "line": 17.5,
+   "odds": -137,
+   "book": 12,
+   "consensus_line": 17.5,
+   "consensus_odds": -137,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -144,
+     "book_id": 12,
+     "created": "2026-06-22 01:18:09"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "b03d354117fa451dedac9067d0b3c7d9",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 2
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 17.5,
+   "odds": 118,
+   "book": 36,
+   "consensus_line": 17.5,
+   "consensus_odds": 103,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": 108,
+     "book_id": 12,
+     "created": "2026-06-22 01:18:09"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "016586ea90e711f789e5b1b4321f9f64",
+    "picks": {
+     "expert": 0,
+     "quick": 0,
+     "custom": 0,
+     "sync": 0,
+     "combined": 0,
+     "system": 2
+    }
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 15.42,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -2.08
+  },
+  "extra": {
+   "lineup_set": false,
+   "opposing_pitcher": "Bieber (Probable)",
+   "in_lineup": true,
+   "opposition_rank": {
+    "rank": 6,
+    "value": 0.7,
+    "tied": true
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "mlb/odds/player-props/hunter-brown/outs-recorded/",
+   "analyzer": "/mlb/props/hunter-brown/outs-recorded/",
+   "affiliate": "https://btng.pro/68tHkO"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 7,
+    "under": 3,
+    "push": 0
+   },
+   "last_15": {
+    "over": 9,
+    "under": 6,
+    "push": 0
+   },
+   "last_20": {
+    "over": 12,
+    "under": 8,
+    "push": 0
+   },
+   "season": {
+    "over": 1,
+    "under": 2,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 22,
+    "under": 9,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 1,
+   "streak_type": "under"
+  }
+ }
+]

@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 396,
+  "event_id": 2600,
+  "participant": {
+   "id": "21",
+   "name": "Isabelle Harrison",
+   "link": "/wnba/props/isabelle-harrison/",
+   "player": {
+    "short_name": "I. Harrison",
+    "first_name": "Isabelle",
+    "last_name": "Harrison",
+    "image": "https://images.fantasypros.com/images/players/wnba/21/headshot/210x210.webp",
+    "slug": "isabelle-harrison",
+    "position": "F",
+    "team": "TOR",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 20.5,
+   "odds": -108,
+   "book": 60,
+   "consensus_line": 20.5,
+   "consensus_odds": -110,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 20.5,
+     "cost": -113,
+     "book_id": 12,
+     "created": "2026-06-22 02:55:18"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "aaed05d00acfb347dae4423a639ef58e"
+   },
+   "probability": 0.03991637028634998,
+   "expected_value": -0.9253737425081283,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 20.5,
+   "odds": -115,
+   "book": 13,
+   "consensus_line": 20.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 20.5,
+     "cost": -115,
+     "book_id": 13,
+     "created": "2026-06-22 03:00:49"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "3a479f608d1cc7cc67eacfd9e50cb11d"
+   },
+   "probability": 0.96008362971365,
+   "expected_value": 0.7949389598994326,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 9.21,
+   "probability": 0.96008362971365,
+   "expected_value": 0.7949389598994326,
+   "bet_rating": 5,
+   "diff": -11.29
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 3,
+    "value": 102.1,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/isabelle-harrison/points-assists-rebounds/",
+   "analyzer": "/wnba/props/isabelle-harrison/points-assists-rebounds/",
+   "affiliate": "https://sportsbook.caesars.com/us/nj/bet/betslip?selectionIds=0f69852d-77f0-3e8e-b2c1-f4aecfa03ce6"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 2,
+    "under": 3,
+    "push": 0
+   },
+   "last_10": {
+    "over": 3,
+    "under": 7,
+    "push": 0
+   },
+   "last_15": {
+    "over": 4,
+    "under": 11,
+    "push": 0
+   },
+   "last_20": {
+    "over": 4,
+    "under": 16,
+    "push": 0
+   },
+   "season": {
+    "over": 3,
+    "under": 3,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 1,
+    "under": 34,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 2,
+   "streak_type": "over"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 395,
+  "event_id": 2600,
+  "participant": {
+   "id": "21",
+   "name": "Isabelle Harrison",
+   "link": "/wnba/props/isabelle-harrison/",
+   "player": {
+    "short_name": "I. Harrison",
+    "first_name": "Isabelle",
+    "last_name": "Harrison",
+    "image": "https://images.fantasypros.com/images/players/wnba/21/headshot/210x210.webp",
+    "slug": "isabelle-harrison",
+    "position": "F",
+    "team": "TOR",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 19.5,
+   "odds": 124,
+   "book": 36,
+   "consensus_line": 17.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -124,
+     "book_id": 12,
+     "created": "2026-06-21 11:23:44"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "0c2c5b34d4ab7a1d4cd5f5d6905f0488"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 17.5,
+   "odds": -115,
+   "book": 14,
+   "consensus_line": 17.5,
+   "consensus_odds": -118,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 18.5,
+     "cost": -130,
+     "book_id": 14,
+     "created": "2026-06-21 03:41:42"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "21bc051b4012db2593614b01be90d904"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 8.18,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -9.32
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 4,
+    "value": 83.1,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/isabelle-harrison/points-rebounds/",
+   "analyzer": "/wnba/props/isabelle-harrison/points-rebounds/",
+   "affiliate": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224735235%22%2C%22marketId%22%3A%22625749599_395_4735235%22%2C%22selectionId%22%3A%221545037783%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk"
+  },
+  "performance": {
+   "last_1": {
+    "over": 1,
+    "under": 0,
+    "push": 0
+   },
+   "last_5": {
+    "over": 3,
+    "under": 2,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 5,
+    "under": 10,
+    "push": 0
+   },
+   "last_20": {
+    "over": 5,
+    "under": 15,
+    "push": 0
+   },
+   "season": {
+    "over": 4,
+    "under": 2,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 2,
+    "under": 33,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 3,
+   "streak_type": "over"
+  }
+ }
+]
