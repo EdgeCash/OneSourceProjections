@@ -673,11 +673,8 @@ def prop_offer_lines(sport: str, date: str) -> list[dict]:
                 r["participant"] = id2name.get(str(r["player_id"]))
             rows.append(r)
     filled = sum(1 for r in rows if r.get("participant"))
-    with_pid = sum(1 for r in rows if r.get("player_id") is not None)
-    sample = [(r.get("player_id"), r.get("participant")) for r in rows[:3]]
-    log.info("prop_offer_lines: %d rows | %d named | %d w/ player_id | "
-             "board id2name=%d | sample=%s",
-             len(rows), filled, with_pid, len(id2name), sample)
+    log.info("prop_offer_lines: %d rows, %d named (board id2name=%d)",
+             len(rows), filled, len(id2name))
     return rows
 
 
