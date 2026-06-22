@@ -1,0 +1,257 @@
+[
+ {
+  "id": 97928,
+  "sr_id": "0068301c-afbb-44a4-89f5-4b62d1203e04",
+  "sport": "MLB",
+  "scheduled": "2026-06-23 20:07:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TOR",
+  "visitor": "HOU",
+  "link": "/mlb/matchups/houston-astros-vs-toronto-blue-jays/?date=2026-06-23",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7354369",
+    "name": "Trey Yesavage",
+    "link": "/mlb/props/trey-yesavage/",
+    "player": {
+     "short_name": "T. Yesavage",
+     "first_name": "Trey",
+     "last_name": "Yesavage",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354369/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "trey-yesavage",
+     "jersey_number": 39
+    }
+   },
+   "visitor_probable": {
+    "id": "7473",
+    "name": "Peter Lambert",
+    "link": "/mlb/props/peter-lambert/",
+    "player": {
+     "short_name": "P. Lambert",
+     "first_name": "Peter",
+     "last_name": "Lambert",
+     "image": "https://images.fantasypros.com/images/players/mlb/7473/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "slug": "peter-lambert",
+     "jersey_number": 38
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TOR",
+   "season": "2025",
+   "split": "A",
+   "r": "0.975",
+   "1b": "0.944",
+   "2b": "1.042",
+   "3b": "0.687",
+   "hr": "1.011",
+   "name": "Rogers Centre"
+  },
+  "venue": {
+   "name": "Rogers Centre",
+   "address": "One Blue Jays Way",
+   "city": "Toronto",
+   "state": "ON",
+   "country": "CAN",
+   "zip": "M5V1J3",
+   "surface": "turf",
+   "capacity": 39150,
+   "stadium_type": "retractable",
+   "id": "84d72338-2173-4a90-9d25-99adc6c86f4b"
+  },
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 38,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "HOU",
+    "name": "Astros",
+    "link": "/mlb/teams/houston-astros/",
+    "team": {
+     "city": "Houston",
+     "abbreviation": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 37,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "houston-astros",
+     "stadium_deg_offset": "-15"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 75,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 317,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.43
+  },
+  "broadcasts": [
+   {
+    "network": "SCHN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98721,
+  "sr_id": "5382e418-a398-4d40-819d-79827d54cc3b",
+  "sport": "MLB",
+  "scheduled": "2026-06-23 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "SEA",
+  "link": "/mlb/matchups/pittsburgh-pirates-vs-seattle-mariners/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6477",
+    "name": "Mitch Keller",
+    "link": "/mlb/props/mitch-keller/",
+    "player": {
+     "short_name": "M. Keller",
+     "first_name": "Mitch",
+     "last_name": "Keller",
+     "image": "https://images.fantasypros.com/images/players/mlb/6477/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "mitch-keller",
+     "jersey_number": 23
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 39,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "SEA",
+    "name": "Mariners",
+    "link": "/mlb/teams/seattle-mariners/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 40,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "seattle-mariners",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 74,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "NNW",
+   "forecast_wind_degree": 334,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.45
+  },
+  "broadcasts": [
+   {
+    "network": "SEAM",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
