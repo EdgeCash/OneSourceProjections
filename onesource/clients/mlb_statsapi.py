@@ -181,7 +181,7 @@ def box_player_logs(game_pk: int) -> list[dict]:
             src = pit if is_pitcher else bat
             for k in ("hits", "totalBases", "homeRuns", "strikeOuts",
                       "battersFaced", "baseOnBalls", "hitByPitch",
-                      "atBats", "plateAppearances"):
+                      "atBats", "plateAppearances", "earnedRuns", "runs"):
                 if k in src:
                     row[k] = src[k]
             ip = pit.get("inningsPitched")
