@@ -336,7 +336,8 @@ def _adv_badge(adv: int) -> str:
 
 
 def _stat_table_html(title: str, rows: list[dict], n_teams: int,
-                     off_label: str = "OFF", def_label: str = "DEF") -> str:
+                     off_label: str = "OFF", def_label: str = "DEF",
+                     title_html: str | None = None) -> str:
     """Mirrored split table: the offense team's spread on the left, the
     opposing defense's spread mirrored on the right, advantage in the
     middle. Columns each side: Season · situational (home/away) · L10 · L5 ·
@@ -375,9 +376,11 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
             f"<td style='{norm}'>{_fmt_stat(s, r.get('def_situ'))}</td>"
             f"<td style='{muted}'>{_fmt_stat(s, r.get('def_season'))}</td></tr>"
         )
-    return (
+    head_html = title_html if title_html is not None else (
         f"<div style='font-size:0.74rem;color:var(--acc2);font-weight:700;"
-        f"text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 2px;'>{title}</div>"
+        f"text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 2px;'>{title}</div>")
+    return (
+        f"{head_html}"
         "<table style='width:100%;border-collapse:collapse;font-size:0.82rem;'>"
         f"{head}{''.join(body)}</table>"
     )
@@ -483,6 +486,69 @@ def _form_html(badge: str, team: str, form: dict, align: str,
     )
 
 
+# ---------------------------------------------------------------------------
+# Evidence-log dressing (the "Sharp Sheet" → case file). Docket theme only;
+# pure string helpers so they stay testable.
+# ---------------------------------------------------------------------------
+
+def _abbr(name: str) -> str:
+    """'New York Yankees' -> 'NYY'. A tricode for the case number."""
+    parts = [w for w in str(name).split() if w]
+    if not parts:
+        return "—"
+    if len(parts) == 1:
+        return parts[0][:3].upper()
+    return "".join(w[0] for w in parts)[:3].upper()
+
+
+def _exhibit_tag(label: str, title: str, sub: str = "") -> str:
+    """A numbered evidence label: a filled 'EXHIBIT A' chip + the section
+    title, with an optional monospace annotation."""
+    sub_html = (f"<span style='font-family:var(--mono);font-size:0.64rem;"
+                f"color:var(--muted);margin-left:8px;'>{sub}</span>" if sub else "")
+    return (
+        "<div style='display:flex;align-items:center;gap:8px;margin:14px 0 4px;'>"
+        f"<span style='font-family:var(--disp);font-weight:700;font-size:0.6rem;"
+        f"letter-spacing:1.5px;color:var(--bg);background:var(--acc2);"
+        f"padding:2px 7px;border-radius:2px;'>EXHIBIT {label}</span>"
+        f"<span style='font-family:var(--disp);font-weight:700;font-size:0.78rem;"
+        f"letter-spacing:0.5px;text-transform:uppercase;color:var(--acc2);'>{title}</span>"
+        f"{sub_html}</div>"
+    )
+
+
+def _evidence_header_strip(sport: str, g: dict) -> str:
+    """The case-file header: EVIDENCE LOG · CASE № · jurisdiction · filed ·
+    status — typewritten, ruled like a logged document."""
+    case_no = f"{sport}·{_abbr(g.get('away_team',''))}-{_abbr(g.get('home_team',''))}"
+    filed = fmt_time_et(g.get("game_time")) or "—"
+    status = lineup_status(sport, g)["label"].upper()
+    # Row 1 keeps its right side clear — the verdict stamp lands there.
+    return (
+        "<div style='border-bottom:1px dashed var(--line);padding-bottom:6px;"
+        "margin-bottom:6px;'>"
+        "<span style='font-family:var(--mono);font-size:0.66rem;letter-spacing:2px;"
+        "color:var(--acc);font-weight:700;'>⚖ EVIDENCE LOG</span></div>"
+        "<div style='display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;"
+        "font-family:var(--mono);font-size:0.62rem;color:var(--muted);"
+        "letter-spacing:0.5px;margin-bottom:8px;'>"
+        f"<span>CASE №&nbsp;{case_no}</span><span>JURISDICTION: {sport}</span>"
+        f"<span>FILED: {filed}</span><span>STATUS: {status}</span></div>"
+    )
+
+
+def _custody_footer(n_teams: int) -> str:
+    """Chain-of-custody line: who logged it, the source, and how to read it."""
+    return (
+        "<div style='border-top:1px dashed var(--line);margin-top:10px;"
+        "padding-top:6px;font-family:var(--mono);font-size:0.6rem;color:var(--faint);"
+        "letter-spacing:0.4px;line-height:1.5;'>"
+        "CHAIN OF CUSTODY · logged by THE PEOPLE · source: box-score logs · "
+        f"ranks vs {n_teams} teams · L5 = last five · ★ = offense out-ranks the "
+        "defense it faces</div>"
+    )
+
+
 def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.02) -> str:
     away, home = g.get("away_team", ""), g.get("home_team", "")
     a_badge = assets.team_badge_html(sport, away, 38)
@@ -510,26 +576,33 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
         f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}{_weather_txt(g)}</div>"
     )
 
-    # conviction dials (model): moneyline / run line-spread / total
+    docket = theme.is_docket()
+    exhibits = iter("ABCDEFGH")
+
+    # conviction dials (model): moneyline / run line-spread / total. Under the
+    # evidence-log skin they're filed as Exhibit A — "The Read".
     conv = market_convictions(g)
-    dials = (
-        "<div style='display:flex;gap:8px;margin:14px 0 6px;"
+    dials_inner = (
+        "<div style='display:flex;gap:8px;margin:6px 0;"
         "background:var(--bg2);border:1px solid var(--line);border-radius:12px;"
         "padding:10px 8px;'>"
         + "".join(_conviction_dial(label, c["side"], c["score"])
                   for label, c in conv.items())
         + "</div>"
     )
+    dials = ((_exhibit_tag(next(exhibits), "The Read", "model lean · conviction 0–10")
+              + dials_inner) if docket
+             else f"<div style='margin:14px 0 6px;'>{dials_inner}</div>")
 
-    # stat tables
+    # stat tables — each logged as its own exhibit
     off_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
     tables = ""
-    if matchup.get("away_off_vs_home_def"):
-        tables += _stat_table_html(f"{away} {off_lbl}",
-                                   matchup["away_off_vs_home_def"], n)
-    if matchup.get("home_off_vs_away_def"):
-        tables += _stat_table_html(f"{home} {off_lbl}",
-                                   matchup["home_off_vs_away_def"], n)
+    for key, team in (("away_off_vs_home_def", away), ("home_off_vs_away_def", home)):
+        if matchup.get(key):
+            tag = (_exhibit_tag(next(exhibits), f"{team} {off_lbl}",
+                                "L5 vs the matching defense") if docket else None)
+            tables += _stat_table_html(f"{team} {off_lbl}", matchup[key], n,
+                                       title_html=tag)
 
     # trends (MLB)
     trends = ""
@@ -541,18 +614,27 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
             f"<div style='font-size:0.8rem;'>{_fmt_stat(t['stat']+'%', t['away'])}"
             f" / {_fmt_stat(t['stat']+'%', t['home'])}</div></div>"
             for t in tr)
-        trends = ("<div style='font-size:0.72rem;color:var(--acc2);font-weight:700;"
-                  "text-transform:uppercase;margin:10px 0 2px;'>Trends "
-                  "(away / home)</div>"
-                  f"<div style='display:flex;gap:6px;'>{cells}</div>")
+        head = (_exhibit_tag(next(exhibits), "Trends", "away / home") if docket else
+                "<div style='font-size:0.72rem;color:var(--acc2);font-weight:700;"
+                "text-transform:uppercase;margin:10px 0 2px;'>Trends (away / home)</div>")
+        trends = head + f"<div style='display:flex;gap:6px;'>{cells}</div>"
 
     lineups = _lineups_html(g, sport)
     analysis = _analysis_html(sport, g, matchup, min_edge)
+
+    if docket:
+        body = (_evidence_header_strip(sport, g) + header + dials + tables
+                + trends + lineups + analysis + _custody_footer(n))
+        return (
+            "<div style='position:relative;background:var(--card);"
+            "border:1px solid var(--line);border-left:3px solid var(--acc);"
+            "border-radius:6px;padding:16px 18px;margin-bottom:14px;'>"
+            f"{_verdict_stamp(g, min_edge)}{body}</div>"
+        )
     return (
         "<div style='position:relative;background:var(--card);"
         "border:1px solid var(--line);border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
-        f"{_verdict_stamp(g, min_edge)}"
         f"{header}{dials}{tables}{trends}{lineups}{analysis}</div>"
     )
 

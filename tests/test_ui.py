@@ -14,6 +14,30 @@ def test_verdict_stamp(monkeypatch):
     assert ui._verdict_stamp(g, 0.02) == ""  # no stamp off-theme
 
 
+def test_abbr():
+    assert ui._abbr("New York Yankees") == "NYY"
+    assert ui._abbr("Boston Red Sox") == "BRS"
+    assert ui._abbr("Heat") == "HEA"
+    assert ui._abbr("") == "—"
+
+
+def test_evidence_log_framing(monkeypatch):
+    g = {"away_team": "New York Yankees", "home_team": "Boston Red Sox",
+         "game_time": "2026-06-23T23:10:00Z",
+         "home_win_prob": 0.5, "away_win_prob": 0.5}
+    m = {"n_teams": 30, "away_off_vs_home_def": [
+        {"stat": "R/G", "off_l5": 5.0, "off_rank": 5, "def_rank": 20, "adv": 2}]}
+    monkeypatch.setattr(theme, "is_docket", lambda: True)
+    html = ui.research_card_html("MLB", g, m, 0.02)
+    for token in ("EVIDENCE LOG", "EXHIBIT A", "EXHIBIT B", "CHAIN OF CUSTODY",
+                  "CASE №", "NYY-BRS"):
+        assert token in html, token
+    # off-theme keeps the original card (no evidence-log dressing)
+    monkeypatch.setattr(theme, "is_docket", lambda: False)
+    plain = ui.research_card_html("MLB", g, m, 0.02)
+    assert "EVIDENCE LOG" not in plain and "EXHIBIT" not in plain
+
+
 def test_fmt_american():
     assert ui.fmt_american(120) == "+120"
     assert ui.fmt_american(-110) == "-110"
