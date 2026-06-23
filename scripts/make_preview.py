@@ -88,12 +88,12 @@ def build(date: str, sport: str, game: dict, props: list[dict]) -> str:
         f"{'background:#1c2330;font-weight:700;' if s == sport else 'color:#8b949e;'}'>"
         f"{s}</div>" for s in ["MLB", "WNBA", "NBA", "NHL", "PLAYS", "PERFORMANCE"])
     return f"""<!doctype html><html><head><meta charset='utf-8'>
-<title>OneSource Projections — preview</title></head>
+<title>True Bill — preview</title></head>
 <body style='margin:0;background:#0e1117;color:#e6e9ef;font-family:-apple-system,
 Segoe UI,Roboto,sans-serif;'>
 <div style='display:flex;min-height:100vh;'>
   <div style='width:190px;background:#0b0f16;border-right:1px solid #1c2330;padding:16px 12px;'>
-    <div style='font-size:1.25rem;font-weight:800;margin-bottom:14px;'>🎯 OneSource</div>
+    <div style='font-size:1.25rem;font-weight:800;margin-bottom:14px;'>⚖️ True Bill</div>
     {nav}
   </div>
   <div style='flex:1;padding:22px 28px;max-width:1100px;'>

@@ -67,7 +67,7 @@ def build(data: dict | None) -> str:
              "section[data-testid='stSidebar']{display:none;}</style>")
     return ("<!doctype html><html><head><meta charset='utf-8'>"
             "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-            "<title>OneSource — the cold open</title>"
+            "<title>True Bill — the cold open</title>"
             # the real themed stylesheet (vars + fonts + case-file flourishes)
             f"{theme.css('docket')}{landing._LANDING_CSS}{reset}</head>"
             f"<body>{body}</body></html>")

@@ -17,7 +17,7 @@ from onesource import notify  # noqa: E402
 
 def main() -> None:
     msg = sys.argv[1] if len(sys.argv) > 1 else (
-        "Test push from OneSourceProjections. If you see this, notifications "
+        "Test push from True Bill. If you see this, notifications "
         "are wired up correctly.")
     if not notify.configured():
         print("NTFY_TOPIC is NOT set — add it as a repository secret.")

@@ -762,8 +762,7 @@ def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
     if stars:
         parts.append("## Biggest stat mismatches\n" + "\n".join(stars[:6]))
 
-    parts.append("_OneSource Projections — model estimates, not financial "
-                 "advice._")
+    parts.append("_True Bill — model estimates, not financial advice._")
     return "\n\n".join(parts)
 
 
@@ -827,8 +826,7 @@ def ai_brief_prop(sport: str, p: dict) -> str:
     if ctx:
         parts.append("## Market context\n- " + "\n- ".join(ctx))
 
-    parts.append("_OneSource Projections — model estimates, not financial "
-                 "advice._")
+    parts.append("_True Bill — model estimates, not financial advice._")
     return "\n\n".join(parts)
 
 
@@ -849,7 +847,7 @@ def ai_brief_board(board: pd.DataFrame, date: str | None = None,
             fmt_american(r.get("price")),
             f"{mp * 100:.0f}%" if pd.notna(mp) else "—",
             f"{ev * 100:+.1f}%" if pd.notna(ev) else "—"))
-    lines += ["", "_OneSource Projections — ¼-Kelly staking, model estimates, "
+    lines += ["", "_True Bill — ¼-Kelly staking, model estimates, "
               "not financial advice._"]
     return "\n".join(lines)
 

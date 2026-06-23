@@ -191,7 +191,7 @@ def _cold_open_html() -> str:
     return (
         "<div class='osp-coldopen'>"
         "<div class='osp-eyebrow'>Office of the Projections Attorney</div>"
-        "<div class='osp-logo'>One<span class='amp'>·</span>Source</div>"
+        "<div class='osp-logo'>True<span class='amp'>·</span>Bill</div>"
         "<div class='osp-est'>SPECIAL WAGERS UNIT · EST. 2026</div>"
         f"<div class='osp-narr'>{_NARRATION}</div>"
         "</div>"

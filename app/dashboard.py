@@ -1,4 +1,4 @@
-"""OneSource Projections — research dashboard.
+"""True Bill — the courtroom betting docket (research dashboard).
 
 Run locally:  streamlit run app/dashboard.py
 Data source:  data/output/latest.json (rewritten hourly by the GitHub
@@ -24,7 +24,7 @@ from app.landing import gate  # noqa: E402
 from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
-st.set_page_config(page_title="OneSource · Daily Docket", page_icon="⚖️",
+st.set_page_config(page_title="True Bill · The Daily Docket", page_icon="⚖️",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
@@ -145,7 +145,7 @@ def _page_label(p):
 
 with st.sidebar:
     _docket = theme.is_docket()
-    st.markdown(f"<div class='osp-brand'>{'⚖️' if _docket else '🎯'} OneSource</div>",
+    st.markdown(f"<div class='osp-brand'>{'⚖️' if _docket else '🎯'} True Bill</div>",
                 unsafe_allow_html=True)
     st.caption("Special Wagers Unit" if _docket else "projections & research")
     area = st.radio("Section", [aid for aid, pages in NAV if pages],
@@ -182,9 +182,9 @@ with st.sidebar:
 
 if not slates:
     st.markdown(theme.title_card("Office of the Projections Attorney",
-                                 "OneSource", "No docket filed — awaiting evidence")
+                                 "True Bill", "No docket filed — awaiting evidence")
                 if theme.is_docket() else
-                "<div class='osp-title'>🎯 OneSource Projections</div>",
+                "<div class='osp-title'>🎯 True Bill</div>",
                 unsafe_allow_html=True)
     st.info("No data yet. The hourly GitHub Action publishes "
             "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
