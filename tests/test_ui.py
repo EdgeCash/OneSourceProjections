@@ -1,6 +1,17 @@
 import pandas as pd
 
-from app import ui
+from app import theme, ui
+
+
+def test_verdict_stamp(monkeypatch):
+    g = {"home_team": "A", "away_team": "B", "home_ml": -120,
+         "home_win_prob": 0.60, "home_ml_ev": 0.08}
+    monkeypatch.setattr(theme, "is_docket", lambda: True)
+    assert "TRUE BILL" in ui._verdict_stamp(g, 0.02)  # 8% clears the loud bar
+    assert "INDICTED" in ui._verdict_stamp(dict(g, home_ml_ev=0.03), 0.02)
+    assert "DISMISSED" in ui._verdict_stamp(dict(g, home_ml_ev=-0.05), 0.02)
+    monkeypatch.setattr(theme, "is_docket", lambda: False)
+    assert ui._verdict_stamp(g, 0.02) == ""  # no stamp off-theme
 
 
 def test_fmt_american():

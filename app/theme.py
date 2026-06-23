@@ -42,12 +42,15 @@ _ORIGINAL = {
     "--faint2": "#39414d",
     "--acc": "#00e676", "--acc2": "#22d3ee",
     "--neg": "#ff4d6d", "--neg2": "#ff6b6b", "--warn": "#e3b341",
-    "--win": "#2ea043",
+    "--win": "#2ea043", "--pos": "#2ea043",
+    # text-tier variants (AA-safe on dark) for oxblood/info used as small text
+    "--neg-text": "#ff6b6b", "--info-text": "#22d3ee",
     "--muted": "#8b949e", "--muted2": "#7d8794", "--faint": "#6e7781",
     "--text": "#e6edf3", "--text2": "#c9d1d9",
     "--blur1": "#1b2230", "--blur2": "#222b3c",
-    # accent as an rgb triple for rgba() glows/gradients
+    # accents as rgb triples for rgba() glows/gradients
     "--acc-rgb": "0,230,118", "--acc2-rgb": "34,211,238", "--neg-rgb": "255,77,109",
+    "--pos-rgb": "46,160,67",
 }
 
 # The Case File. Parchment + ink, brass scales, precinct blue, stamp oxblood,
@@ -60,16 +63,20 @@ _DOCKET = {
     "--faint2": "#3b3529",
     "--acc": "#c69a3f",        # brass — scales of justice (PLAY/highlight)
     "--acc2": "#5e87b3",       # precinct blue — the logo's neon glow
-    "--neg": "#b23b3b",        # evidence-stamp oxblood (loss / under)
-    "--neg2": "#c95b5b",
+    "--neg": "#b23b3b",        # evidence-stamp oxblood — FILLS/STAMPS only
+    "--neg2": "#cf6a6a",
     "--warn": "#cf9a33",       # amber (NOTE / caution)
-    "--win": "#6f8b3a",        # olive "convicted" green
+    "--win": "#6f8b3a", "--pos": "#6f8b3a",   # olive "convicted" green
+    # text-tier variants — oxblood/info fail AA as small text on dark, so
+    # these lifted tiers carry any oxblood/info *text* (loss numbers, labels)
+    "--neg-text": "#cf6a6a", "--info-text": "#7ea3c9",
     "--muted": "#9c9279",      # aged-paper taupe
-    "--muted2": "#8a8068", "--faint": "#6e6555",
+    "--muted2": "#8a8068", "--faint": "#6e6555",   # --faint = NON-TEXT chrome only
     "--text": "#ece1cb",       # parchment white
     "--text2": "#d7ccb4",
     "--blur1": "#211d15", "--blur2": "#2b2619",
     "--acc-rgb": "198,154,63", "--acc2-rgb": "94,135,179", "--neg-rgb": "178,59,59",
+    "--pos-rgb": "111,139,58",
 }
 
 PALETTES = {"docket": _DOCKET, "original": _ORIGINAL}
@@ -158,8 +165,11 @@ def css(theme: str | None = None) -> str:
   [data-testid="stMetricLabel"] {{ opacity: 0.75; font-size: 0.72rem;
     text-transform: uppercase; letter-spacing: 0.7px; font-weight: 600;
     font-family: var(--mono); }}
-  [data-testid="stMetricValue"] {{ font-family: var(--disp); font-weight: 700;
-    font-size: 1.8rem; letter-spacing: {'0' if docket else '-1px'}; color: var(--text); }}
+  [data-testid="stMetricValue"] {{
+    font-family: {'var(--mono)' if docket else 'var(--disp)'}; font-weight: 700;
+    font-size: {'1.55rem' if docket else '1.8rem'};
+    letter-spacing: {'0' if docket else '-1px'}; color: var(--text);
+    font-variant-numeric: tabular-nums; }}
   .osp-brand {{ font-size: 1.5rem; font-weight: 700; margin: 0 0 0.1rem 0;
     text-transform: uppercase; letter-spacing: {'1.5px' if docket else '0.6px'};
     font-family: var(--disp);
@@ -210,15 +220,23 @@ def css(theme: str | None = None) -> str:
   @keyframes ospdun {{ 0%{{transform:scale(0.985);opacity:0;}}
     25%{{transform:scale(1.004);opacity:1;}} 45%{{transform:scale(0.997);}}
     70%{{transform:scale(1.002);}} 100%{{transform:scale(1);opacity:1;}} }}
-  /* Rubber evidence stamp. */
+  /* Rubber evidence stamp — slams in once, overshoots, settles at -4deg. */
   .osp-stamp {{ display:inline-block; font-family:var(--disp); font-weight:700;
     text-transform:uppercase; letter-spacing:2px; padding:4px 12px; border-radius:3px;
     border:2.5px solid currentColor; transform:rotate(-4deg); font-size:0.86rem;
-    opacity:0.92; }}
+    opacity:0.92; animation: tbslam 0.30s ease-out; }}
   .osp-stamp.indicted {{ color:var(--acc); }}
-  .osp-stamp.dismissed {{ color:var(--faint); border-style:double; }}
-  .osp-stamp.exhibit {{ color:var(--acc2); }}
-  .osp-stamp.sealed {{ color:var(--neg); }}
+  .osp-stamp.true-bill {{ color:var(--pos); }}
+  .osp-stamp.dismissed {{ color:var(--neg-text); border-style:double; }}
+  .osp-stamp.exhibit {{ color:var(--info-text); }}
+  .osp-stamp.sealed {{ color:var(--neg-text); }}
+  @keyframes tbslam {{ 0%{{transform:scale(1.6) rotate(-14deg);opacity:0;}}
+    55%{{transform:scale(.94) rotate(-2deg);opacity:1;}}
+    72%{{transform:scale(1.02) rotate(-5deg);}}
+    100%{{transform:scale(1) rotate(-4deg);opacity:.92;}} }}
+  /* The theme serves the numbers: honor reduced-motion. */
+  @media (prefers-reduced-motion: reduce) {{
+    *, .osp-tcard, .osp-stamp {{ animation: none !important; }} }}
 </style>"""
 
 
@@ -233,7 +251,7 @@ NAV_GROUP_LABELS = {
     "RESEARCH": "🗂️ Case Files",
     "BETS": "📋 The Docket",
     "LIVE": "🚨 The Blotter",
-    "TOOLS": "🔬 Forensics",
+    "TOOLS": "🔬 The Crime Lab",
     "PERF": "🏛️ The Record",
 }
 
@@ -242,7 +260,7 @@ PAGE_LABELS = {
     "PLAYS": "The Daily Docket",
     "EDGES": "The Wiretap",
     "EXPERTS": "The Jury",
-    "DFS": "Plea Deals",
+    "DFS": "The Conspiracy",
     "PERFORMANCE": "Conviction Record",
     "BACKTEST": "Cold Cases",
 }
@@ -252,9 +270,9 @@ SECTION_TITLES = {
     "HOME": "The Bench",
     "PLAYS": "The Daily Docket",
     "PERFORMANCE": "Conviction Record",
-    "DFS": "Plea Deals",
+    "DFS": "The Conspiracy",
     "SCORES": "The Blotter",
-    "TOOLS": "Forensics Lab",
+    "TOOLS": "The Crime Lab",
     "EDGES": "The Wiretap",
     "EXPERTS": "The Jury",
     "BACKTEST": "Cold Cases",
@@ -264,6 +282,44 @@ SECTION_TITLES = {
 VERDICT_LABELS = {"PLAY": "INDICTED", "PASS": "DISMISSED", "NOTE": "EXHIBIT"}
 VERDICT_PREFIX = "VERDICT"          # was "DECISION"
 CONFIDENCE_LABEL = "STRENGTH OF CASE"  # was "CONFIDENCE"
+
+# Brand canon (from the naming research). Used in copy and exports.
+BRAND = "True Bill"
+FIRM = "Office of Special Prosecutions"
+UNIT = "Special Wagers Unit"
+MOTTO = "Res ipsa loquitur — the evidence speaks for itself."
+SIGNOFF = "The evidence is in. Return your verdict."
+
+# Themed copy for the many neutral empty-states / labels, keyed by a short id.
+# Off-theme, callers pass the original string as the default, so the original
+# skin is untouched. Keep meaning; change only the framing.
+_COPY = {
+    "no_data": "The docket is sealed — no evidence on file yet. The hourly "
+               "clerk publishes the record, or hit **↻ Recall the witness**.",
+    "no_games": "No cases on the {sport} docket for {date}.",
+    "no_match": "No cases match the search.",
+    "no_plays": "No charges clear the {edge} bar on {date} yet. A quiet docket "
+                "is a disciplined docket.",
+    "no_props": "No props filed yet — batter props post once the witness list "
+                "(lineup) is confirmed, ~2–4h before first pitch.",
+    "select_prop": "Select a charge above to open the case file: recent-game "
+                   "exhibit, hit-rate splits, and the People-vs-market read.",
+    "no_perf": "No verdicts on the record yet — the Conviction Record accrues "
+               "as filed cases finish and the clerk grades them.",
+    "no_edges": "No charges over the current bar yet — lower **Min edge** in the "
+                "sidebar, or check back as the witness list firms up.",
+    "smoking_gun": "🔫 The Smoking Gun — today's loudest evidence",
+    "calendar": "🗓️ The calendar — slate at a glance",
+}
+
+
+def say(key: str, default: str, **fmt) -> str:
+    """Themed copy lookup. Off-theme returns the original `default` so the
+    plain skin is unchanged. `fmt` fills {placeholders} in the themed string."""
+    if not is_docket():
+        return default
+    s = _COPY.get(key, default)
+    return s.format(**fmt) if fmt else s
 
 
 def verdict(decision: str) -> str:

@@ -56,6 +56,10 @@ def build(data: dict | None) -> str:
         + landing._board_html(counts, rows)
         + "<div class='osp-sec'>— Due Process —</div>"
         + landing._how_html()
+        + "<div class='osp-sec'>— The Firm —</div>"
+        + landing._firm_html()
+        + f"<div class='osp-signoff'>{theme.SIGNOFF}</div>"
+        + f"<div class='osp-motto'>{theme.MOTTO}</div>"
         + enter
         + "<div class='osp-foot'>For research and entertainment only — "
         "<b>not financial advice</b>. The People's estimates carry no guarantee; "

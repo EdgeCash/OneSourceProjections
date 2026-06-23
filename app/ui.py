@@ -549,10 +549,30 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     lineups = _lineups_html(g, sport)
     analysis = _analysis_html(sport, g, matchup, min_edge)
     return (
-        "<div style='background:var(--card);border:1px solid var(--line);border-radius:14px;"
+        "<div style='position:relative;background:var(--card);"
+        "border:1px solid var(--line);border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
+        f"{_verdict_stamp(g, min_edge)}"
         f"{header}{dials}{tables}{trends}{lineups}{analysis}</div>"
     )
+
+
+def _verdict_stamp(g: dict, min_edge: float) -> str:
+    """The slammed rubber stamp in the card's top-right: the case's headline
+    verdict. TRUE BILL for a loud edge, INDICTED for a standing charge,
+    DISMISSED for a pass. Docket theme only."""
+    if not theme.is_docket():
+        return ""
+    edge = _best_edge(g)
+    best = edge[1] if edge else 0.0
+    if best >= max(0.06, min_edge * 2):
+        text, kind = "TRUE BILL", "true-bill"
+    elif best >= min_edge:
+        text, kind = "INDICTED", "indicted"
+    else:
+        text, kind = "DISMISSED", "dismissed"
+    return (f"<div style='position:absolute;top:14px;right:16px;z-index:2;'>"
+            f"{theme.stamp(text, kind)}</div>")
 
 
 def _weather_txt(g: dict) -> str:

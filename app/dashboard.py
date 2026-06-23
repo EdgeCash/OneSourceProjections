@@ -168,7 +168,8 @@ with st.sidebar:
     credits = (data or {}).get("odds_api_credits")
     if credits is not None:
         st.caption(f"📊 Odds API: {int(credits):,} credits left")
-    if st.button("↻ Refresh", width="stretch"):
+    if st.button("↻ Recall the witness" if _docket else "↻ Refresh",
+                 width="stretch"):
         refresh()
         st.rerun()
     st.divider()
@@ -186,8 +187,9 @@ if not slates:
                 if theme.is_docket() else
                 "<div class='osp-title'>🎯 True Bill</div>",
                 unsafe_allow_html=True)
-    st.info("No data yet. The hourly GitHub Action publishes "
-            "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
+    st.info(theme.say("no_data", "No data yet. The hourly GitHub Action "
+            "publishes data/output/latest.json, or click **↻ Refresh** "
+            "(needs API keys)."))
     st.stop()
 
 dates = data.get("dates") or sorted(slates.keys(), reverse=True)
@@ -291,9 +293,12 @@ def render_sport(sport: str):
         nxt = next((d for d in dates if d != date_sel
                     and (slates.get(d, {}).get(sport, {}).get("games")
                          or slates.get(d, {}).get(sport, {}).get("props"))), None)
-        msg = f"No {sport} games scheduled for {date_sel}."
+        msg = theme.say("no_games", f"No {sport} games scheduled for {date_sel}.",
+                        sport=sport, date=date_sel)
         if nxt:
-            msg += f" The **{nxt}** slate has {sport} games — switch dates above."
+            msg += (f" The **{nxt}** docket has {sport} cases — switch dates above."
+                    if theme.is_docket() else
+                    f" The **{nxt}** slate has {sport} games — switch dates above.")
         st.info(msg)
         return
 
@@ -646,12 +651,13 @@ def render_plays():
                 | board["game"].str.lower().str.contains(q))
         board = board[mask]
     if board.empty:
-        st.info(f"No bets clear the {min_edge:.1%} edge bar on {date_sel} yet.")
+        st.info(theme.say("no_plays", f"No bets clear the {min_edge:.1%} edge "
+                f"bar on {date_sel} yet.", edge=f"{min_edge:.1%}", date=date_sel))
         return
     games = board[board["type"] == "Game"]
     props = board[board["type"] == "Prop"]
     c = st.columns(4)
-    c[0].metric("Edges", len(board))
+    c[0].metric("Charges" if theme.is_docket() else "Edges", len(board))
     c[1].metric("Games", len(games))
     c[2].metric("Props", len(props))
     c[3].metric("Best EV", f"{board['ev'].max():+.1%}")
@@ -964,7 +970,8 @@ def render_performance():
     # market? The honest test of independent skill, not market-following.
     from onesource import scorecard as _sc
     sc = _sc.scorecard(ledger)
-    st.subheader("Model vs market")
+    st.subheader("The People v. The Market" if theme.is_docket()
+                 else "Model vs market")
     d, a = sc["disagree"], sc["agree"]
     if not d["n"] and not a["n"]:
         st.info("Accrues once games are graded with a captured closing line. "
@@ -1039,11 +1046,12 @@ def render_performance():
 
     by_sport = perf.get("by_sport", {})
     if by_sport:
-        st.subheader("By sport")
+        st.subheader("By jurisdiction" if theme.is_docket() else "By sport")
         st.dataframe(pd.DataFrame(by_sport).T, width="stretch")
     recent = ui.recent_bets(ledger)
     if not recent.empty:
-        st.subheader("Recent graded bets")
+        st.subheader("Recent verdicts" if theme.is_docket()
+                     else "Recent graded bets")
         st.dataframe(recent, width="stretch", hide_index=True)
     st.caption("Forward-test record at projection-time prices. Brier + "
                "calibration cover every projected game; units/ROI cover "
@@ -1336,10 +1344,11 @@ def render_home():
 
     left, right = st.columns([3, 2])
     with left:
-        st.markdown("##### 🔥 Today's top edges")
+        st.markdown("##### " + theme.say("smoking_gun", "🔥 Today's top edges"))
         if board.empty:
-            st.info("No edges over the current threshold yet — lower **Min edge** "
-                    "in the sidebar, or check back as lineups post.")
+            st.info(theme.say("no_edges", "No edges over the current threshold "
+                    "yet — lower **Min edge** in the sidebar, or check back as "
+                    "lineups post."))
         else:
             view = board.head(8).copy()
             view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
@@ -1354,7 +1363,7 @@ def render_home():
                     "Model %", min_value=0, max_value=100, format="%.0f%%")})
             st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
     with right:
-        st.markdown("##### 🗓️ Slate at a glance")
+        st.markdown("##### " + theme.say("calendar", "🗓️ Slate at a glance"))
         any_rows = False
         for sport in NAV_SPORTS:
             b = day.get(sport, {})

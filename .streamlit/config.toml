@@ -1,9 +1,12 @@
 [theme]
 base = "dark"
-primaryColor = "#00e676"
-backgroundColor = "#080b12"
-secondaryBackgroundColor = "#121826"
-textColor = "#eef2f7"
+# True Bill — the "Case File" docket palette (brass on warm near-black).
+# The in-app theme toggle re-skins via CSS variables; these set the native
+# Streamlit widget chrome to match the default (docket) brand.
+primaryColor = "#c69a3f"
+backgroundColor = "#0a0a0b"
+secondaryBackgroundColor = "#16140f"
+textColor = "#ece1cb"
 
 [browser]
 gatherUsageStats = false

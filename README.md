@@ -1,10 +1,20 @@
-# OneSource Projections
+# True Bill
+
+*Special Wagers Unit · Office of Special Prosecutions*
 
 Personal multi-sport betting model — **MLB, WNBA, NBA, NFL, NCAAF, NHL** —
 projecting games (moneyline / total / spread) and player props, with edges
 computed against BettingPros market lines and a private Streamlit dashboard.
 
-**Personal use only. Not financial advice. Bet responsibly.**
+The product is themed as a courtroom: the picks are **The Daily Docket**, the
+matchup graphics are **The Evidence**, the model is **The People**, a play's
+verdict is **INDICTED / DISMISSED**, and the track record is the **Conviction
+Record**. The full brand system — voice, palette, lexicon, marketing — lives in
+[`BRAND.md`](BRAND.md). The theme is design-and-vibe only; it never touches the
+model or the math, and a sidebar toggle ("Courtroom lighting") flips back to the
+original skin. *Res ipsa loquitur — the evidence speaks for itself.*
+
+**Personal use only. Not financial advice. Bet responsibly. 21+ · 1-800-GAMBLER.**
 
 ## How it works
 

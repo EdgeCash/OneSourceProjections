@@ -181,8 +181,20 @@ _LANDING_CSS = """
   .osp-step .h { font-weight:700; color:var(--text); margin:2px 0 3px; font-family:var(--disp);
     text-transform:uppercase; letter-spacing:0.5px; font-size:0.92rem; }
   .osp-step .b { color:var(--muted); font-size:0.8rem; line-height:1.45; }
+  .osp-firm { border:1px solid var(--line); border-radius:8px; background:var(--panel);
+    padding:18px 22px; color:var(--text2); font-size:0.92rem; line-height:1.6; }
+  .osp-firm .claim { font-family:var(--disp); font-weight:700; color:var(--acc);
+    font-size:1.25rem; letter-spacing:0.5px; text-align:center; margin:0 0 10px; }
+  .osp-firm .house { border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
+  .osp-firm .house .hh { font-family:var(--mono); font-size:0.68rem; letter-spacing:3px;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .osp-firm .house b { color:var(--text); }
   .osp-foot { text-align:center; color:var(--faint); font-size:0.74rem; margin-top:18px;
     line-height:1.6; font-family:var(--mono); }
+  .osp-signoff { text-align:center; font-family:var(--disp); color:var(--text2);
+    letter-spacing:1px; margin:18px 0 2px; font-size:0.95rem; }
+  .osp-motto { text-align:center; font-family:var(--disp); font-style:italic;
+    color:var(--acc); font-size:0.82rem; letter-spacing:0.5px; }
 </style>
 """
 
@@ -234,6 +246,30 @@ def _board_html(counts: dict, rows: list[dict]) -> str:
         "<span class='osp-board-t'>Today's Docket</span>"
         f"<span class='osp-live'><span class='dot'>●</span> IN SESSION · {sub}</span>"
         "</div>" + body + "</div>"
+    )
+
+
+def _firm_html() -> str:
+    """The origin + the honest claim + House Rules (responsible gambling woven
+    in as a virtue of the firm, not buried in a footer)."""
+    return (
+        "<div class='osp-firm'>"
+        "<p class='claim'>“We lose. It's on the record.”</p>"
+        "<p>True Bill started with one frustration: every \"expert\" sells "
+        "winners and buries losers. So we built the opposite — a docket where "
+        "every play is charged, timestamped, and entered into a public record "
+        "<i>before</i> the game starts. We can't quietly delete the bad ones. "
+        "That constraint is the whole product. We live or die on Closing Line "
+        "Value, size in units at ¼-Kelly, and we will never tell you to bet "
+        "the rent.</p>"
+        "<div class='house'>"
+        "<div class='hh'>The House Rules</div>"
+        "<p>We present evidence; we do not promise verdicts — a strong case "
+        "still loses. This is entertainment built on probabilities, not income. "
+        "You set your own limits, and we respect them. If the game stops being "
+        "a game, court is always in recess: <b>1-800-GAMBLER</b>, free and "
+        "confidential, 21+.</p>"
+        "</div></div>"
     )
 
 
@@ -294,7 +330,14 @@ def render_landing(data: dict | None) -> None:
         + _board_html(counts, rows)
         + "<div class='osp-sec'>— Due Process —</div>"
         + _how_html()
+        + "<div class='osp-sec'>— The Firm —</div>"
+        + _firm_html()
         + "</div>",
+        unsafe_allow_html=True)
+
+    st.markdown(
+        f"<div class='osp-land'><div class='osp-signoff'>{theme.SIGNOFF}</div>"
+        f"<div class='osp-motto'>{theme.MOTTO}</div></div>",
         unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns([1, 1.2, 1])
