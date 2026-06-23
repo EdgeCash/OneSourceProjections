@@ -13,8 +13,45 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import landing, theme  # noqa: E402
+from app import conviction, landing, theme  # noqa: E402
 from onesource import config  # noqa: E402
+
+
+def _trial_section(day: dict) -> str:
+    """A static stand-in for the interactive 'Put it on trial' panel: the
+    dropdown row plus one real example verdict computed off the slate."""
+    def sel(label, value):
+        return (f"<div style='flex:1;min-width:130px;'><div style='font-family:var(--mono);"
+                f"font-size:0.66rem;letter-spacing:1px;color:var(--muted);"
+                f"margin-bottom:3px;'>{label}</div><div style='border:1px solid var(--line);"
+                f"border-radius:6px;background:var(--card);padding:8px 12px;color:var(--text);"
+                f"font-size:0.88rem;'>{value} &nbsp;▾</div></div>")
+
+    sports = conviction.sports(day)
+    res, picks = None, ("MLB", "—", "Moneyline", "—")
+    for sp in sports:
+        gms = conviction.games(day, sp)
+        if gms:
+            g = gms[0]
+            ch = (conviction.charges(g) or ["Moneyline"])[0]
+            sd = conviction.sides(g, ch)
+            # favor the higher-conviction side for the showcase
+            side_id = max(sd, key=lambda s: conviction.game_verdict(g, ch, s[0])["rate"] or 0)[0]
+            res = conviction.game_verdict(g, ch, side_id)
+            picks = (sp, conviction.game_label(g), ch, dict(sd)[side_id])
+            break
+    row = ("<div style='display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px;'>"
+           + sel("Jurisdiction", picks[0]) + sel("The Case", picks[1])
+           + sel("The Charge", picks[2]) + sel("The Side", picks[3]) + "</div>"
+           "<div style='text-align:center;margin:10px 0;'><span style='font-family:var(--disp);"
+           "font-weight:700;letter-spacing:1px;background:linear-gradient(90deg,var(--acc),"
+           "var(--acc2));color:#000;padding:9px 22px;border-radius:6px;'>"
+           "⚖  RETURN THE VERDICT</span></div>")
+    out = landing._verdict_card_html(res) if res else ""
+    return ("<div class='osp-sec'>— Put Your Play On Trial —</div>"
+            "<div class='osp-trial-lede'>Assemble a play. The People return a "
+            "<b>Conviction Rate</b> — the model's read on how often it cashes — "
+            "with the evidence.</div>" + row + out)
 
 
 def build(data: dict | None) -> str:
@@ -54,6 +91,7 @@ def build(data: dict | None) -> str:
         + landing._stat_tiles_html(stats)
         + "<div class='osp-sec'>— In Session —</div>"
         + landing._board_html(counts, rows)
+        + _trial_section(day)
         + "<div class='osp-sec'>— Due Process —</div>"
         + landing._how_html()
         + "<div class='osp-sec'>— The Firm —</div>"

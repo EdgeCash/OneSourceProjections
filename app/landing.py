@@ -17,7 +17,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from app import auth, theme, ui
+from app import auth, conviction, theme, ui
 from onesource import config
 
 # Sports we advertise on the front (the "jurisdictions"), in marquee order.
@@ -181,6 +181,33 @@ _LANDING_CSS = """
   .osp-step .h { font-weight:700; color:var(--text); margin:2px 0 3px; font-family:var(--disp);
     text-transform:uppercase; letter-spacing:0.5px; font-size:0.92rem; }
   .osp-step .b { color:var(--muted); font-size:0.8rem; line-height:1.45; }
+  .osp-trial-lede { text-align:center; color:var(--muted); font-size:0.9rem;
+    max-width:620px; margin:0 auto 6px; line-height:1.5; }
+  .osp-trial-lede b { color:var(--acc); }
+  .osp-trial-out { border:1px solid var(--line); border-left:3px solid var(--acc);
+    border-radius:8px; background:var(--panel); padding:18px 22px; margin-top:10px;
+    animation: ospdun 0.7s ease-out; }
+  .osp-trial-out .cap { font-family:var(--disp); font-weight:700; font-size:1.05rem;
+    letter-spacing:0.5px; text-transform:uppercase; color:var(--text); text-align:center; }
+  .osp-trial-out .ring-wrap { text-align:center; margin:14px 0 6px; }
+  .osp-trial-out .ring { width:150px; height:150px; border-radius:50%; margin:0 auto;
+    display:flex; align-items:center; justify-content:center; }
+  .osp-trial-out .hole { width:118px; height:118px; border-radius:50%;
+    background:var(--bg); display:flex; flex-direction:column; align-items:center;
+    justify-content:center; }
+  .osp-trial-out .pct { font-family:var(--mono); font-weight:700; font-size:2.3rem;
+    line-height:1; }
+  .osp-trial-out .cr { font-family:var(--mono); font-size:0.56rem; letter-spacing:2px;
+    color:var(--muted); margin-top:4px; }
+  .osp-trial-out .band { font-family:var(--disp); font-weight:700; letter-spacing:1px;
+    text-transform:uppercase; font-size:0.9rem; margin-top:10px; }
+  .osp-trial-out .ev-h { font-family:var(--mono); font-size:0.66rem; letter-spacing:3px;
+    text-transform:uppercase; color:var(--acc); margin-top:6px; }
+  .osp-trial-out ul.ev { list-style:none; padding:0; margin:6px 0; font-family:var(--mono);
+    font-size:0.84rem; line-height:1.7; color:var(--text2); }
+  .osp-trial-out ul.ev li::before { content:'▪ '; color:var(--acc2); }
+  .osp-trial-out .disc { font-family:var(--mono); font-size:0.66rem; color:var(--faint);
+    border-top:1px dashed var(--line); margin-top:10px; padding-top:8px; line-height:1.5; }
   .osp-firm { border:1px solid var(--line); border-radius:8px; background:var(--panel);
     padding:18px 22px; color:var(--text2); font-size:0.92rem; line-height:1.6; }
   .osp-firm .claim { font-family:var(--disp); font-weight:700; color:var(--acc);
@@ -292,6 +319,107 @@ def _how_html() -> str:
     return f"<div class='osp-how'>{cells}</div>"
 
 
+def _band_color(b: str) -> str:
+    if b in ("Open-and-shut", "Strong case"):
+        return "var(--acc)"
+    if b == "Circumstantial":
+        return "var(--warn)"
+    return "var(--neg-text)"
+
+
+def _verdict_card_html(res: dict) -> str:
+    """The returned verdict: a conviction-rate ring, the band, and the
+    evidence summary — typewritten like a logged finding."""
+    rate = res.get("rate")
+    pct = max(0.0, min(100.0, rate * 100)) if isinstance(rate, (int, float)) else 0.0
+    color = _band_color(res.get("band", ""))
+    big = f"{pct:.0f}%" if res.get("ok") else "—"
+    ev = "".join(f"<li>{b}</li>" for b in res.get("evidence", [])) or \
+        "<li>The People can't price this one — try another charge.</li>"
+    return (
+        "<div class='osp-trial-out'>"
+        f"<div class='cap'>⚖ The People v. {res.get('caption', 'your play')}</div>"
+        "<div class='ring-wrap'>"
+        f"<div class='ring' style='background:conic-gradient({color} {pct}%,"
+        f"var(--line) {pct}% 100%);'><div class='hole'>"
+        f"<div class='pct' style='color:{color};'>{big}</div>"
+        "<div class='cr'>CONVICTION<br>RATE</div></div></div>"
+        f"<div class='band' style='color:{color};'>— {res.get('band','')} —</div>"
+        "</div>"
+        f"<div class='ev-h'>The Evidence</div><ul class='ev'>{ev}</ul>"
+        "<div class='disc'>Model estimate of how often this side cashes — not a "
+        "guarantee. Even an open-and-shut case can be overturned on appeal. "
+        "21+ · 1-800-GAMBLER.</div></div>"
+    )
+
+
+def render_trial(day: dict) -> None:
+    """'Put it on trial' — dropdowns → a Conviction Rate. Pure lookups over the
+    live slate; no model call, no API."""
+    st.markdown("<div class='osp-land'><div class='osp-sec'>"
+                "— Put Your Play On Trial —</div>"
+                "<div class='osp-trial-lede'>Assemble a play. The People return a "
+                "<b>Conviction Rate</b> — the model's read on how often it "
+                "cashes — with the evidence.</div></div>", unsafe_allow_html=True)
+
+    sport_opts = conviction.sports(day)
+    if not sport_opts:
+        st.info("Court is in recess — no cases on today's docket to try. "
+                "Check back once lines post.")
+        return
+
+    res = None
+    with st.container():
+        c1, c2 = st.columns(2)
+        sport = c1.selectbox("Jurisdiction", sport_opts, key="trial_sport")
+        gms = conviction.games(day, sport)
+        glabels = [conviction.game_label(g) for g in gms]
+        prps = conviction.props(day, sport)
+
+        # charge types available: the game markets + (props, when present)
+        if glabels:
+            case = c2.selectbox("The Case", glabels, key="trial_game")
+            g = gms[glabels.index(case)]
+        else:
+            g = None
+            c2.selectbox("The Case", ["— no games; props only —"], key="trial_game")
+
+        c3, c4 = st.columns(2)
+        charge_opts = (conviction.charges(g) if g else [])
+        pool = conviction.game_props(prps, g) if (g and prps) else prps
+        if pool:
+            charge_opts = charge_opts + ["Player prop"]
+        if not charge_opts:
+            st.info("No priced charges for this case yet.")
+            return
+        charge = c3.selectbox("The Charge", charge_opts, key="trial_charge")
+
+        if charge == "Player prop":
+            players = conviction.prop_players(pool)
+            player = c4.selectbox("The Accused", players, key="trial_player")
+            mkts = conviction.player_markets(pool, player)
+            c5, c6 = st.columns(2)
+            mkt = c5.selectbox("The Count", mkts, key="trial_market",
+                               format_func=ui.short_market)
+            p = conviction.prop_row(pool, player, mkt)
+            sd = conviction.prop_sides(p) if p else [("over", "Over")]
+            side = c6.selectbox("The Side", [s[1] for s in sd], key="trial_pside")
+            side_id = sd[[s[1] for s in sd].index(side)][0]
+            if p:
+                res = conviction.prop_verdict(p, side_id)
+        else:
+            sd = conviction.sides(g, charge)
+            side = c4.selectbox("The Side", [s[1] for s in sd], key="trial_side")
+            side_id = sd[[s[1] for s in sd].index(side)][0]
+            res = conviction.game_verdict(g, charge, side_id)
+
+    if st.button("⚖  Return the verdict", key="trial_submit", type="primary"):
+        st.session_state["trial_open"] = True
+    if st.session_state.get("trial_open") and res:
+        st.markdown("<div class='osp-land'>" + _verdict_card_html(res) + "</div>",
+                    unsafe_allow_html=True)
+
+
 def render_landing(data: dict | None) -> None:
     """Paint the full cold open, then expose the single CTA into the gate."""
     st.markdown(_LANDING_CSS, unsafe_allow_html=True)
@@ -328,7 +456,15 @@ def render_landing(data: dict | None) -> None:
         + _stat_tiles_html(stats)
         + "<div class='osp-sec'>— In Session —</div>"
         + _board_html(counts, rows)
-        + "<div class='osp-sec'>— Due Process —</div>"
+        + "</div>",
+        unsafe_allow_html=True)
+
+    # interactive: put your own play on trial
+    render_trial(day)
+
+    st.markdown(
+        "<div class='osp-land'>"
+        "<div class='osp-sec'>— Due Process —</div>"
         + _how_html()
         + "<div class='osp-sec'>— The Firm —</div>"
         + _firm_html()
