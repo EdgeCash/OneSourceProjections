@@ -1,0 +1,602 @@
+[
+ {
+  "id": 98548,
+  "sr_id": "429c6cc5-a6cb-40e1-a29a-688afebcde60",
+  "sport": "MLB",
+  "scheduled": "2026-06-24 16:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIA",
+  "visitor": "TEX",
+  "link": "/mlb/matchups/miami-marlins-vs-texas-rangers/?date=2026-06-24",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "visitor_probable": {
+    "id": "4850",
+    "name": "Jacob deGrom",
+    "link": "/mlb/props/jacob-degrom/",
+    "player": {
+     "short_name": "J. deGrom",
+     "first_name": "Jacob",
+     "last_name": "deGrom",
+     "image": "https://images.fantasypros.com/images/players/mlb/4850/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "slug": "jacob-degrom",
+     "jersey_number": 48
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIA",
+   "season": "2025",
+   "split": "A",
+   "r": "1.131",
+   "1b": "1.081",
+   "2b": "1.137",
+   "3b": "1.145",
+   "hr": "1.006",
+   "name": "loanDepot park"
+  },
+  "venue": {
+   "name": "loanDepot park",
+   "address": "501 Marlins Way",
+   "city": "Miami",
+   "state": "FL",
+   "country": "USA",
+   "zip": "33125",
+   "surface": "turf",
+   "capacity": 37446,
+   "stadium_type": "retractable",
+   "id": "d5a66fb3-ff26-4f36-910c-3df5cedb36b3"
+  },
+  "participants": [
+   {
+    "id": "MIA",
+    "name": "Marlins",
+    "link": "/mlb/teams/miami-marlins/",
+    "team": {
+     "city": "Miami",
+     "abbreviation": "MIA",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 40,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "miami-marlins",
+     "stadium_deg_offset": "75"
+    }
+   },
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 38,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "texas-rangers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 88,
+   "forecast_wind_speed": 6,
+   "forecast_wind_direction": "SSE",
+   "forecast_wind_degree": 158,
+   "forecast_rain_chance": 34,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1018,
+   "forecast_humidity": 0.68
+  },
+  "broadcasts": [
+   {
+    "network": "RSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 97976,
+  "sr_id": "04d205f3-1fa4-4443-9745-d3fad9a6ed35",
+  "sport": "MLB",
+  "scheduled": "2026-06-24 17:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "NYM",
+  "visitor": "CHC",
+  "link": "/mlb/matchups/chicago-cubs-vs-new-york-mets/?date=2026-06-24",
+  "series_summary": null,
+  "popularity": 101,
+  "double_header": true,
+  "pitchers": null,
+  "lineups": {
+   "home_lineup": [
+    {
+     "slot": 1,
+     "position": "RF",
+     "participant": {
+      "id": "7354378",
+      "name": "Carson Benge",
+      "link": "/mlb/props/carson-benge/",
+      "player": {
+       "short_name": "C. Benge",
+       "first_name": "Carson",
+       "last_name": "Benge",
+       "image": "https://images.fantasypros.com/images/players/mlb/7354378/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "carson-benge",
+       "jersey_number": 3
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "3B",
+     "participant": {
+      "id": "6808",
+      "name": "Bo Bichette",
+      "link": "/mlb/props/bo-bichette/",
+      "player": {
+       "short_name": "Bo Bichette",
+       "first_name": "Bo",
+       "last_name": "Bichette",
+       "image": "https://images.fantasypros.com/images/players/mlb/6808/headshot/210x210.webp",
+       "position": "3B,SS",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "bo-bichette",
+       "jersey_number": 19
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "LF",
+     "participant": {
+      "id": "6906",
+      "name": "Juan Soto",
+      "link": "/mlb/props/juan-soto/",
+      "player": {
+       "short_name": "J. Soto",
+       "first_name": "Juan",
+       "last_name": "Soto",
+       "image": "https://images.fantasypros.com/images/players/mlb/6906/headshot/210x210.webp",
+       "position": "LF,RF,DH",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "juan-soto",
+       "jersey_number": 22
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "2B",
+     "participant": {
+      "id": "4544",
+      "name": "Marcus Semien",
+      "link": "/mlb/props/marcus-semien/",
+      "player": {
+       "short_name": "M. Semien",
+       "first_name": "Marcus",
+       "last_name": "Semien",
+       "image": "https://images.fantasypros.com/images/players/mlb/4544/headshot/210x210.webp",
+       "position": "2B",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "marcus-semien",
+       "jersey_number": 10
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "1B",
+     "participant": {
+      "id": "6940",
+      "name": "Mark Vientos",
+      "link": "/mlb/props/mark-vientos/",
+      "player": {
+       "short_name": "M. Vientos",
+       "first_name": "Mark",
+       "last_name": "Vientos",
+       "image": "https://images.fantasypros.com/images/players/mlb/6940/headshot/210x210.webp",
+       "position": "1B,3B,DH",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "mark-vientos",
+       "jersey_number": 27
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "DH",
+     "participant": {
+      "id": "45579",
+      "name": "Eric Wagaman",
+      "link": "/mlb/props/eric-wagaman/",
+      "player": {
+       "short_name": "E. Wagaman",
+       "first_name": "Eric",
+       "last_name": "Wagaman",
+       "image": "https://images.fantasypros.com/images/players/mlb/45579/headshot/210x210.webp",
+       "position": "1B,LF",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "eric-wagaman",
+       "jersey_number": 39
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "C",
+     "participant": {
+      "id": "43686",
+      "name": "Francisco Alvarez",
+      "link": "/mlb/props/francisco-alvarez/",
+      "player": {
+       "short_name": "F. Alvarez",
+       "first_name": "Francisco",
+       "last_name": "Alvarez",
+       "image": "https://images.fantasypros.com/images/players/mlb/43686/headshot/210x210.webp",
+       "position": "C,DH",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "francisco-alvarez",
+       "jersey_number": 4
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "CF",
+     "participant": {
+      "id": "48019",
+      "name": "A.J. Ewing",
+      "link": "/mlb/props/aj-ewing/",
+      "player": {
+       "short_name": "A.J. Ewing",
+       "first_name": "A.J.",
+       "last_name": "Ewing",
+       "image": "https://images.fantasypros.com/images/players/mlb/48019/headshot/210x210.webp",
+       "position": "2B,CF",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "aj-ewing",
+       "jersey_number": 9
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "SS",
+     "participant": {
+      "id": "8500",
+      "name": "Zack Short",
+      "link": "/mlb/props/zachary-short/",
+      "player": {
+       "short_name": "Z. Short",
+       "first_name": "Zack",
+       "last_name": "Short",
+       "image": "https://images.fantasypros.com/images/players/mlb/8500/headshot/210x210.webp",
+       "position": "SS",
+       "team": "NYM",
+       "conference": "NL",
+       "division": "East",
+       "slug": "zachary-short",
+       "jersey_number": 40
+      }
+     }
+    }
+   ],
+   "visitor_lineup": [
+    {
+     "slot": 1,
+     "position": "CF",
+     "participant": {
+      "id": "23369",
+      "name": "Pete Crow-Armstrong",
+      "link": "/mlb/props/pete-crow-armstrong/",
+      "player": {
+       "short_name": "P. Crow-Armstrong",
+       "first_name": "Pete",
+       "last_name": "Crow-Armstrong",
+       "image": "https://images.fantasypros.com/images/players/mlb/23369/headshot/210x210.webp",
+       "position": "CF",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "pete-crow-armstrong",
+       "jersey_number": 4
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "3B",
+     "participant": {
+      "id": "5973",
+      "name": "Alex Bregman",
+      "link": "/mlb/props/alex-bregman/",
+      "player": {
+       "short_name": "A. Bregman",
+       "first_name": "Alex",
+       "last_name": "Bregman",
+       "image": "https://images.fantasypros.com/images/players/mlb/5973/headshot/210x210.webp",
+       "position": "3B,DH",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "alex-bregman",
+       "jersey_number": 3
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "1B",
+     "participant": {
+      "id": "23859",
+      "name": "Michael Busch",
+      "link": "/mlb/props/michael-busch-2b/",
+      "player": {
+       "short_name": "M. Busch",
+       "first_name": "Michael",
+       "last_name": "Busch",
+       "image": "https://images.fantasypros.com/images/players/mlb/23859/headshot/210x210.webp",
+       "position": "1B",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "michael-busch-2b",
+       "jersey_number": 29
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "DH",
+     "participant": {
+      "id": "6973",
+      "name": "Seiya Suzuki",
+      "link": "/mlb/props/seiya-suzuki/",
+      "player": {
+       "short_name": "S. Suzuki",
+       "first_name": "Seiya",
+       "last_name": "Suzuki",
+       "image": "https://images.fantasypros.com/images/players/mlb/6973/headshot/210x210.webp",
+       "position": "LF,RF,DH",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "seiya-suzuki",
+       "jersey_number": 27
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "LF",
+     "participant": {
+      "id": "6008",
+      "name": "Ian Happ",
+      "link": "/mlb/props/ian-happ/",
+      "player": {
+       "short_name": "I. Happ",
+       "first_name": "Ian",
+       "last_name": "Happ",
+       "image": "https://images.fantasypros.com/images/players/mlb/6008/headshot/210x210.webp",
+       "position": "LF",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "ian-happ",
+       "jersey_number": 8
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "RF",
+     "participant": {
+      "id": "47221",
+      "name": "Matt Shaw",
+      "link": "/mlb/props/matt-shaw/",
+      "player": {
+       "short_name": "M. Shaw",
+       "first_name": "Matt",
+       "last_name": "Shaw",
+       "image": "https://images.fantasypros.com/images/players/mlb/47221/headshot/210x210.webp",
+       "position": "2B,3B,RF,DH",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "matt-shaw",
+       "jersey_number": 6
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "2B",
+     "participant": {
+      "id": "7934",
+      "name": "Nico Hoerner",
+      "link": "/mlb/props/nico-hoerner/",
+      "player": {
+       "short_name": "N. Hoerner",
+       "first_name": "Nico",
+       "last_name": "Hoerner",
+       "image": "https://images.fantasypros.com/images/players/mlb/7934/headshot/210x210.webp",
+       "position": "2B,SS",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "nico-hoerner",
+       "jersey_number": 2
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "C",
+     "participant": {
+      "id": "6253",
+      "name": "Carson Kelly",
+      "link": "/mlb/props/carson-kelly/",
+      "player": {
+       "short_name": "C. Kelly",
+       "first_name": "Carson",
+       "last_name": "Kelly",
+       "image": "https://images.fantasypros.com/images/players/mlb/6253/headshot/210x210.webp",
+       "position": "C",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "carson-kelly",
+       "jersey_number": 15
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "SS",
+     "participant": {
+      "id": "5965",
+      "name": "Dansby Swanson",
+      "link": "/mlb/props/dansby-swanson/",
+      "player": {
+       "short_name": "D. Swanson",
+       "first_name": "Dansby",
+       "last_name": "Swanson",
+       "image": "https://images.fantasypros.com/images/players/mlb/5965/headshot/210x210.webp",
+       "position": "SS",
+       "team": "CHC",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "dansby-swanson",
+       "jersey_number": 7
+      }
+     }
+    }
+   ],
+   "home_lineup_type": "confirmed",
+   "visitor_lineup_type": "confirmed"
+  },
+  "park_factors": {
+   "team_id": "NYM",
+   "season": "2025",
+   "split": "A",
+   "r": "0.913",
+   "1b": "0.900",
+   "2b": "0.867",
+   "3b": "0.787",
+   "hr": "0.962",
+   "name": "Citi Field"
+  },
+  "venue": {
+   "name": "Citi Field",
+   "address": "41 Seaver Way",
+   "city": "Flushing, Queens",
+   "state": "NY",
+   "country": "USA",
+   "zip": "11368",
+   "surface": "grass",
+   "capacity": 42136,
+   "stadium_type": "outdoor",
+   "id": "265c7d6c-427a-4b8a-8def-392c41954bec"
+  },
+  "participants": [
+   {
+    "id": "NYM",
+    "name": "Mets",
+    "link": "/mlb/teams/new-york-mets/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYM",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 34,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "new-york-mets",
+     "stadium_deg_offset": "75"
+    }
+   },
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 40,
+      "L": 37,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 80,
+   "forecast_wind_speed": 14,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 321,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.41
+  },
+  "broadcasts": [
+   {
+    "network": "SNY",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/sny-us.png"
+   }
+  ]
+ }
+]
