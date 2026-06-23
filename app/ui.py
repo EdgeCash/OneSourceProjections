@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
-from app import assets
+from app import assets, theme
 
 ET = ZoneInfo("America/New_York")
 
@@ -222,7 +222,7 @@ def lineup_status(sport: str, g: dict) -> dict:
     return {"state": "pending", "label": "Lineups pending"}
 
 
-_STATUS_COLOR = {"confirmed": "#00e676", "partial": "#e3b341", "pending": "#6e7781"}
+_STATUS_COLOR = {"confirmed": "var(--acc)", "partial": "var(--warn)", "pending": "var(--faint)"}
 
 
 def _status_badge(sport: str, g: dict) -> str:
@@ -253,29 +253,29 @@ def game_card_html(sport: str, g: dict) -> str:
         sp_o = g.get("rl_home_odds", g.get("spread_home_odds"))
         odds_bits.append(f"{'RL' if 'rl_home_line' in g else 'Spread'} "
                          f"{sp:+g} {fmt_american(sp_o)}")
-    market_line = (f"<div style='color:#8b949e;font-size:0.76rem;margin-top:6px;'>"
+    market_line = (f"<div style='color:var(--muted);font-size:0.76rem;margin-top:6px;'>"
                    f"{' · '.join(odds_bits)}{_weather_txt(g)}</div>"
                    if (odds_bits or g.get('weather')) else "")
 
     edge = _best_edge(g)
     if edge:
-        edge_html = (f"<span style='color:#00e676;font-weight:600;'>"
+        edge_html = (f"<span style='color:var(--acc);font-weight:600;'>"
                      f"▲ {edge[0]} · +{edge[1] * 100:.1f}% EV</span>")
     else:
-        edge_html = "<span style='color:#8b949e;'>no edge ≥ threshold</span>"
+        edge_html = "<span style='color:var(--muted);'>no edge ≥ threshold</span>"
 
     gpk = g.get("game_pk")
 
     def side(badge, name, exp, wp, fav, pitcher=None):
         weight = "700" if fav else "500"
-        sp_row = (f"<div style='color:#8b949e;font-size:0.74rem;margin-top:1px;'>"
+        sp_row = (f"<div style='color:var(--muted);font-size:0.74rem;margin-top:1px;'>"
                   f"⚾ {player_link(pitcher, gpk, sport)}</div>"
                   if pitcher and pd.notna(pitcher) else "")
         return (
             f"<div style='display:flex;align-items:center;gap:10px;flex:1;'>"
             f"{badge}"
             f"<div><div style='font-weight:{weight};font-size:0.95rem;'>{name}</div>"
-            f"<div style='color:#8b949e;font-size:0.8rem;'>win {_pct(wp)}</div>"
+            f"<div style='color:var(--muted);font-size:0.8rem;'>win {_pct(wp)}</div>"
             f"{sp_row}</div>"
             f"<div style='margin-left:auto;font-size:1.5rem;font-weight:700;'>"
             f"{_num(exp)}</div></div>"
@@ -283,18 +283,18 @@ def game_card_html(sport: str, g: dict) -> str:
 
     home_fav = (h_wp or 0) >= (a_wp or 0)
     return (
-        "<div style='background:#121826;border:1px solid #1e2636;border-radius:12px;"
+        "<div style='background:var(--card);border:1px solid var(--line);border-radius:12px;"
         "padding:14px 16px;margin-bottom:12px;'>"
         f"<div style='display:flex;justify-content:space-between;align-items:center;"
         f"margin-bottom:8px;'>"
-        f"<span style='color:#8b949e;font-size:0.78rem;'>"
+        f"<span style='color:var(--muted);font-size:0.78rem;'>"
         f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</span>"
         f"{_status_badge(sport, g)}</div>"
         f"{side(a_badge, away, a_exp, a_wp, not home_fav, g.get('away_pitcher'))}"
         "<div style='height:8px;'></div>"
         f"{side(h_badge, home, h_exp, h_wp, home_fav, g.get('home_pitcher'))}"
         f"{market_line}"
-        "<div style='border-top:1px solid #1e2636;margin-top:10px;padding-top:8px;"
+        "<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;"
         f"font-size:0.85rem;'>{edge_html}</div>"
         "</div>"
     )
@@ -317,10 +317,10 @@ def _fmt_stat(label: str, v) -> str:
 
 def _rank_badge(rank, n_teams: int) -> str:
     if rank is None or pd.isna(rank):
-        return "<span style='color:#6e7781;font-size:0.72rem;'>—</span>"
+        return "<span style='color:var(--faint);font-size:0.72rem;'>—</span>"
     rank = int(rank)
     third = max(1, n_teams / 3)
-    color = "#00e676" if rank <= third else ("#f0b72f" if rank <= 2 * third else "#ff4d6d")
+    color = "var(--acc)" if rank <= third else ("var(--warn)" if rank <= 2 * third else "var(--neg)")
     return (f"<span style='color:{color};font-size:0.72rem;font-weight:600;'>"
             f"{rank}</span>")
 
@@ -329,8 +329,8 @@ def _adv_badge(adv: int) -> str:
     """Center advantage marker: filled green chevrons when the offense
     out-ranks the defense it faces, a muted dash otherwise."""
     if not adv:
-        return "<span style='color:#39414d;'>·</span>"
-    return (f"<span style='color:#0b0f18;background:#2ea043;border-radius:5px;"
+        return "<span style='color:var(--faint2);'>·</span>"
+    return (f"<span style='color:var(--bg2);background:var(--win);border-radius:5px;"
             f"padding:1px 5px;font-size:0.66rem;font-weight:800;'>"
             f"{'▲' * adv}</span>")
 
@@ -345,7 +345,7 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
     dsl = (rows[0].get("def_situ_label") if rows else None) or def_label
     th = "text-align:right;padding:3px 5px;"
     head = (
-        "<tr style='color:#7d8794;font-size:0.62rem;text-transform:uppercase;"
+        "<tr style='color:var(--muted2);font-size:0.62rem;text-transform:uppercase;"
         "letter-spacing:0.3px;'>"
         "<th style='text-align:left;padding:3px 6px;'>Stat</th>"
         f"<th style='{th}'>Szn</th><th style='{th}'>{osl}</th>"
@@ -357,11 +357,11 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
     body = []
     for r in rows:
         s = r["stat"]
-        muted = "text-align:right;padding:3px 5px;color:#7d8794;"
+        muted = "text-align:right;padding:3px 5px;color:var(--muted2);"
         strong = "text-align:right;padding:3px 5px;font-weight:700;"
         norm = "text-align:right;padding:3px 5px;"
         body.append(
-            "<tr style='border-top:1px solid #1c2330;'>"
+            "<tr style='border-top:1px solid var(--line2);'>"
             f"<td style='text-align:left;padding:3px 6px;font-weight:600;'>{s}</td>"
             f"<td style='{muted}'>{_fmt_stat(s, r.get('off_season'))}</td>"
             f"<td style='{norm}'>{_fmt_stat(s, r.get('off_situ'))}</td>"
@@ -376,7 +376,7 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
             f"<td style='{muted}'>{_fmt_stat(s, r.get('def_season'))}</td></tr>"
         )
     return (
-        f"<div style='font-size:0.74rem;color:#22d3ee;font-weight:700;"
+        f"<div style='font-size:0.74rem;color:var(--acc2);font-weight:700;"
         f"text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 2px;'>{title}</div>"
         "<table style='width:100%;border-collapse:collapse;font-size:0.82rem;'>"
         f"{head}{''.join(body)}</table>"
@@ -392,7 +392,7 @@ def _conviction(ev) -> float:
 
 
 def _conv_color(score: float) -> str:
-    return "#00e676" if score >= 6 else "#e3b341" if score >= 3 else "#ff4d6d"
+    return "var(--acc)" if score >= 6 else "var(--warn)" if score >= 3 else "var(--neg)"
 
 
 def market_convictions(g: dict) -> dict:
@@ -441,12 +441,12 @@ def _conviction_dial(label: str, side: str, score: float) -> str:
     pct = max(0.0, min(100.0, score * 10))
     return (
         "<div style='flex:1;text-align:center;padding:4px 6px;'>"
-        f"<div style='color:#8b949e;font-size:0.66rem;font-weight:700;"
+        f"<div style='color:var(--muted);font-size:0.66rem;font-weight:700;"
         f"text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;'>{label}</div>"
         f"<div style='width:62px;height:62px;border-radius:50%;margin:0 auto;"
-        f"background:conic-gradient({color} {pct}%, #1e2636 {pct}% 100%);"
+        f"background:conic-gradient({color} {pct}%, var(--line) {pct}% 100%);"
         f"display:flex;align-items:center;justify-content:center;'>"
-        f"<div style='width:48px;height:48px;border-radius:50%;background:#0b0f18;"
+        f"<div style='width:48px;height:48px;border-radius:50%;background:var(--bg2);"
         f"display:flex;align-items:center;justify-content:center;"
         f"font-size:1.15rem;font-weight:800;color:{color};'>{score:g}</div></div>"
         f"<div style='font-size:0.74rem;font-weight:600;margin-top:4px;'>{side}</div>"
@@ -462,11 +462,11 @@ def _form_html(badge: str, team: str, form: dict, align: str,
     rec = ""
     if form:
         streak = f" · {form['streak']}" if form.get("streak") else ""
-        rec = (f"<div style='color:#8b949e;font-size:0.72rem;'>"
+        rec = (f"<div style='color:var(--muted);font-size:0.72rem;'>"
                f"{form.get('w', 0)}-{form.get('l', 0)}{streak}</div>")
     chips = ""
     for r in (form or {}).get("last5", []):
-        c = "#2ea043" if r["win"] else "#ff4d6d"
+        c = "var(--win)" if r["win"] else "var(--neg)"
         chips += (f"<span title='{r.get('opp', '')} {r['score']}' "
                   f"style='display:inline-block;width:16px;height:16px;border-radius:4px;"
                   f"background:{c};margin:0 1px;'></span>")
@@ -493,7 +493,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     def _sp(name, align):
         if not name or (isinstance(name, float) and pd.isna(name)):
             return ""
-        return (f"<div style='text-align:{align};font-size:0.74rem;color:#8b949e;"
+        return (f"<div style='text-align:{align};font-size:0.74rem;color:var(--muted);"
                 f"margin-top:5px;'>⚾ {player_link(name, gpk, sport)}</div>")
 
     # header: team form + probable starter on each side, facts in the middle
@@ -501,11 +501,11 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
         "<div style='display:flex;align-items:flex-start;gap:14px;'>"
         + _form_html(a_badge, away, matchup.get("away_form") or {}, "right",
                      _sp(g.get("away_pitcher"), "right"))
-        + "<span style='color:#8b949e;font-size:0.8rem;padding-top:6px;'>@</span>"
+        + "<span style='color:var(--muted);font-size:0.8rem;padding-top:6px;'>@</span>"
         + _form_html(h_badge, home, matchup.get("home_form") or {}, "left",
                      _sp(g.get("home_pitcher"), "left"))
         + "</div>"
-        f"<div style='text-align:center;color:#8b949e;font-size:0.76rem;margin-top:6px;'>"
+        f"<div style='text-align:center;color:var(--muted);font-size:0.76rem;margin-top:6px;'>"
         f"{fmt_time_et(g.get('game_time'))} · O/U {_num(g.get('total_line') or g.get('proj_total'))}"
         f" · proj {_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}{_weather_txt(g)}</div>"
     )
@@ -514,7 +514,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     conv = market_convictions(g)
     dials = (
         "<div style='display:flex;gap:8px;margin:14px 0 6px;"
-        "background:#0b0f18;border:1px solid #1e2636;border-radius:12px;"
+        "background:var(--bg2);border:1px solid var(--line);border-radius:12px;"
         "padding:10px 8px;'>"
         + "".join(_conviction_dial(label, c["side"], c["score"])
                   for label, c in conv.items())
@@ -537,11 +537,11 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     if tr:
         cells = "".join(
             f"<div style='flex:1;text-align:center;'>"
-            f"<div style='color:#8b949e;font-size:0.66rem;'>{t['stat']}</div>"
+            f"<div style='color:var(--muted);font-size:0.66rem;'>{t['stat']}</div>"
             f"<div style='font-size:0.8rem;'>{_fmt_stat(t['stat']+'%', t['away'])}"
             f" / {_fmt_stat(t['stat']+'%', t['home'])}</div></div>"
             for t in tr)
-        trends = ("<div style='font-size:0.72rem;color:#22d3ee;font-weight:700;"
+        trends = ("<div style='font-size:0.72rem;color:var(--acc2);font-weight:700;"
                   "text-transform:uppercase;margin:10px 0 2px;'>Trends "
                   "(away / home)</div>"
                   f"<div style='display:flex;gap:6px;'>{cells}</div>")
@@ -549,7 +549,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     lineups = _lineups_html(g, sport)
     analysis = _analysis_html(sport, g, matchup, min_edge)
     return (
-        "<div style='background:#121826;border:1px solid #1e2636;border-radius:14px;"
+        "<div style='background:var(--card);border:1px solid var(--line);border-radius:14px;"
         "padding:16px 18px;margin-bottom:14px;'>"
         f"{header}{dials}{tables}{trends}{lineups}{analysis}</div>"
     )
@@ -577,12 +577,14 @@ def _lineups_html(g: dict, sport: str | None = None) -> str:
             f"<div style='font-size:0.78rem;'>{i+1}. "
             f"{player_link(n, gpk, sport)}</div>"
             for i, n in enumerate(names[:9]))
-        return (f"<div style='flex:1;'><div style='color:#8b949e;font-size:0.72rem;"
+        return (f"<div style='flex:1;'><div style='color:var(--muted);font-size:0.72rem;"
                 f"font-weight:700;'>{team}</div>{rows or '—'}</div>")
 
-    return ("<div style='border-top:1px solid #1e2636;margin-top:10px;padding-top:8px;'>"
-            "<div style='font-size:0.78rem;color:#22d3ee;font-weight:700;"
-            "text-transform:uppercase;margin-bottom:4px;'>Confirmed lineups</div>"
+    return ("<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'>"
+            "<div style='font-size:0.78rem;color:var(--acc2);font-weight:700;"
+            "text-transform:uppercase;margin-bottom:4px;'>"
+            + ("Sworn lineup" if theme.is_docket() else "Confirmed lineups")
+            + "</div>"
             f"<div style='display:flex;gap:14px;'>{col(g.get('away_team',''), away)}"
             f"{col(g.get('home_team',''), home)}</div></div>")
 
@@ -681,24 +683,25 @@ def _analysis_html(sport, g, matchup, min_edge) -> str:
     conf = {k.upper(): c["score"] for k, c in market_convictions(g).items()}
     items = []
     for r in rows:
-        color = {"PLAY": "#00e676", "PASS": "#8b949e", "NOTE": "#e3b341"}[r["decision"]]
+        color = {"PLAY": "var(--acc)", "PASS": "var(--muted)", "NOTE": "var(--warn)"}[r["decision"]]
         score = conf.get(r["market"])
         conf_html = ""
         if r["decision"] != "NOTE":
-            verdict = "DECISION: " + r["decision"]
+            verdict = f"{theme.VERDICT_PREFIX}: {theme.verdict(r['decision'])}"
             if score is not None:
                 verdict += (f" <span style='color:{_conv_color(score)};'>"
-                            f"· CONFIDENCE {score:g}</span>")
+                            f"· {theme.CONFIDENCE_LABEL} {score:g}</span>")
             conf_html = f"<span style='color:{color};font-weight:700;'>{verdict}</span>"
         items.append(
             "<div style='margin:6px 0;font-size:0.84rem;'>"
-            f"<span style='color:#22d3ee;font-weight:700;'>{r['market']}:</span> "
+            f"<span style='color:var(--acc2);font-weight:700;'>{r['market']}:</span> "
             f"{r['text']} {conf_html}</div>"
         )
+    head = ("⚖️ The People's case" if theme.is_docket() else "📊 Statistical analysis")
     return (
-        "<div style='border-top:1px solid #1e2636;margin-top:10px;padding-top:8px;'>"
-        "<div style='font-size:0.78rem;color:#22d3ee;font-weight:700;"
-        "text-transform:uppercase;margin-bottom:2px;'>📊 Statistical analysis</div>"
+        "<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'>"
+        "<div style='font-size:0.78rem;color:var(--acc2);font-weight:700;"
+        f"text-transform:uppercase;margin-bottom:2px;'>{head}</div>"
         + "".join(items) + "</div>"
     )
 
@@ -936,11 +939,11 @@ def prop_chart(series: list[dict], line: float, title: str):
         x=alt.X("label:N", sort=None, axis=alt.Axis(title=None, labelAngle=-40)),
         y=alt.Y("value:Q", title=title),
         color=alt.condition("datum.value > %f" % line,
-                            alt.value("#00e676"), alt.value("#ff4d6d")),
+                            alt.value("var(--acc)"), alt.value("var(--neg)")),
         tooltip=["date", "value", "opp"],
     )
     rule = alt.Chart(pd.DataFrame({"y": [line]})).mark_rule(
-        color="#e3b341", strokeDash=[5, 4], size=2).encode(y="y:Q")
+        color="var(--warn)", strokeDash=[5, 4], size=2).encode(y="y:Q")
     return (bars + rule).properties(height=260, width="container")
 
 
@@ -999,14 +1002,14 @@ def calibration_chart(curve: pd.DataFrame):
     if curve.empty:
         return None
     diag = alt.Chart(pd.DataFrame({"x": [0, 1], "y": [0, 1]})).mark_line(
-        strokeDash=[4, 4], color="#6e7781").encode(x="x:Q", y="y:Q")
+        strokeDash=[4, 4], color="var(--faint)").encode(x="x:Q", y="y:Q")
     base = alt.Chart(curve)
-    line = base.mark_line(color="#22d3ee").encode(
+    line = base.mark_line(color="var(--acc2)").encode(
         x=alt.X("predicted:Q", title="Model predicted win %",
                 scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")),
         y=alt.Y("empirical:Q", title="Actual win %",
                 scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")))
-    pts = base.mark_circle(color="#00e676").encode(
+    pts = base.mark_circle(color="var(--acc)").encode(
         x="predicted:Q", y="empirical:Q",
         size=alt.Size("n:Q", title="games"),
         tooltip=[alt.Tooltip("predicted:Q", format=".0%"),

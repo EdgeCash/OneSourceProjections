@@ -1,7 +1,7 @@
-"""Render a self-contained HTML preview of the public landing page using the
-real renderers (``app/landing.py``) and the live ``latest.json`` data — the
-storefront a visitor sees before the password gate. Open the output in a
-browser to design the public face without deploying.
+"""Render a self-contained HTML preview of the public landing page (the Law &
+Order "cold open") using the real renderers (``app/landing.py`` + the themed
+stylesheet from ``app/theme.py``) and the live ``latest.json`` data. Open the
+output in a browser to design the public face without deploying.
 
     python scripts/make_landing_preview.py [-o landing.html]
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import landing  # noqa: E402
+from app import landing, theme  # noqa: E402
 from onesource import config  # noqa: E402
 
 
@@ -32,43 +32,45 @@ def build(data: dict | None) -> str:
     rows = landing.redacted_rows(day, config.MIN_EDGE)
     chips = "".join(f"<span class='osp-chip'>{s}</span>" for s in landing._SPORTS)
     gen = str((data or {}).get("generated_at", ""))[:16].replace("T", " ")
-    updated = f" · updated {gen} ET" if gen else ""
+    updated = f" · case file updated {gen} ET" if gen else ""
+
+    # static stand-in for the Web-Audio DUN-DUN button (no JS in a flat file)
+    dun = ("<div style='text-align:center;margin:14px 0;'>"
+           "<span style='font-family:var(--mono);background:#000;color:var(--acc);"
+           "border:2px solid var(--line);border-radius:6px;padding:9px 20px;"
+           "font-weight:700;letter-spacing:3px;'>▶ DUN-DUN</span></div>")
+    enter = ("<div style='text-align:center;margin:10px 0 4px;'>"
+             "<span style='display:inline-block;font-family:var(--disp);font-weight:700;"
+             "letter-spacing:1px;background:linear-gradient(90deg,var(--acc),var(--acc2));"
+             "color:#000;padding:12px 28px;border-radius:6px;'>"
+             "⚖️  ENTER THE COURTROOM  →</span></div>")
 
     body = (
-        "<div class='osp-land'>"
-        "<div class='osp-hero-wrap'>"
-        "<div class='osp-logo'>🎯 OneSource</div>"
-        "<div class='osp-tag'>The multi-sport model that beats the close.</div>"
-        "<div class='osp-sub'>Game and player-prop projections across six "
-        "sports, priced against the market and forward-tested every hour. "
-        "Edges, not vibes.</div>"
-        f"</div><div class='osp-chips'>{chips}</div>"
+        "<div class='osp-land'>" + landing._cold_open_html() + "</div>"
+        + dun
+        + "<div class='osp-land'>"
+        f"<div class='osp-chips'><span class='lbl'>Jurisdictions</span>{chips}</div>"
+        "<div class='osp-sec'>— The Conviction Record —</div>"
         + landing._stat_tiles_html(stats)
+        + "<div class='osp-sec'>— In Session —</div>"
         + landing._board_html(counts, rows)
+        + "<div class='osp-sec'>— Due Process —</div>"
         + landing._how_html()
-        + "<div style='text-align:center;margin:8px 0 4px;'>"
-        "<span style='display:inline-block;background:linear-gradient(90deg,#00e676,#22d3ee);"
-        "color:#06210f;font-weight:700;font-family:var(--disp);padding:11px 26px;"
-        "border-radius:10px;'>Enter the model  →</span></div>"
-        "<div class='osp-foot'>For research and entertainment only — "
-        "<b>not financial advice</b>. Model estimates carry no guarantee. "
-        f"21+. If gambling stops being fun, call 1-800-GAMBLER.{updated}</div>"
+        + enter
+        + "<div class='osp-foot'>For research and entertainment only — "
+        "<b>not financial advice</b>. The People's estimates carry no guarantee; "
+        "even a strong case loses. 21+. If gambling stops being fun, call "
+        f"1-800-GAMBLER.{updated}</div>"
         "</div>")
 
-    # The landing CSS leans on a couple of root vars set by the app shell;
-    # supply them here so the standalone file matches the deployed look.
-    root = ("<style>@import url('https://fonts.googleapis.com/css2?"
-            "family=Space+Grotesk:wght@500;600;700&display=swap');"
-            ":root{--disp:'Space Grotesk',system-ui,sans-serif;}"
-            "body{margin:0;background:"
-            "radial-gradient(1100px 520px at 8% -10%,rgba(0,230,118,0.10),transparent 55%),"
-            "radial-gradient(900px 480px at 100% -6%,rgba(34,211,238,0.08),transparent 50%),"
-            "#080b12;color:#e6edf3;font-family:system-ui,-apple-system,sans-serif;"
-            "padding:24px 18px;}</style>")
+    reset = ("<style>body{margin:0;background:var(--bg);padding:26px 18px;}"
+             "section[data-testid='stSidebar']{display:none;}</style>")
     return ("<!doctype html><html><head><meta charset='utf-8'>"
             "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-            "<title>OneSource — public landing preview</title>"
-            f"{root}{landing._LANDING_CSS}</head><body>{body}</body></html>")
+            "<title>OneSource — the cold open</title>"
+            # the real themed stylesheet (vars + fonts + case-file flourishes)
+            f"{theme.css('docket')}{landing._LANDING_CSS}{reset}</head>"
+            f"<body>{body}</body></html>")
 
 
 def main():

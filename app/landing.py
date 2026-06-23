@@ -1,15 +1,15 @@
-"""Public landing page — the storefront a visitor sees *before* the password
-gate. It shows the brand, the sports covered, honest forward-test credibility
-stats (Brier, CLV, ROI — the proof, not the picks), and a deliberately
-**redacted** teaser of today's board: how many edges the model found and on
-which sports, with the actual bets blurred behind the sign-in.
+"""Public landing page — the cold open. The storefront a visitor sees before
+the password gate, staged as a Law & Order title sequence: a black intertitle
+card, the "two separate yet equally important groups" narration (parodied),
+the *DUN-DUN*, an honest **conviction record**, and a deliberately **sealed**
+preview of today's docket — counts and blurred charges, never an actual pick.
 
 The picks are the product, so nothing here leaks a team, player, line, or a
 precise EV. The presentation helpers (``headline_stats``, ``teaser_counts``,
 ``redacted_rows``) are pure functions over the ``latest.json`` shapes so they
-can be unit-tested without Streamlit, mirroring ``app/ui.py``.
+can be unit-tested without Streamlit.
 
-Flow (driven by ``gate``):  landing  →  password (``auth.login_form``)  →  app.
+Flow (driven by ``gate``):  landing → password (``auth.login_form``) → app.
 """
 
 from __future__ import annotations
@@ -17,11 +17,19 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from app import auth, ui
+from app import auth, theme, ui
 from onesource import config
 
-# Sports we advertise on the front, in marquee order.
+# Sports we advertise on the front (the "jurisdictions"), in marquee order.
 _SPORTS = ["MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL"]
+
+# The franchise narration, retried for a betting model: the two separate yet
+# equally important groups are the model (the People) and the market (the price).
+_NARRATION = (
+    "In the sports-wagering system, the bettor is protected by two separate "
+    "yet equally important groups: <b>the model</b>, which weighs the evidence, "
+    "and <b>the market</b>, which sets the price. These are their stories."
+)
 
 
 # ---------------------------------------------------------------------------
@@ -29,10 +37,9 @@ _SPORTS = ["MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL"]
 # ---------------------------------------------------------------------------
 
 def headline_stats(perf: dict | None) -> list[dict]:
-    """Four credibility tiles drawn from the live performance summary. These
-    are the honest, public-safe proof points — model calibration and
-    closing-line value — never the edges themselves. Missing fields degrade
-    to an em-dash so the front never looks broken on a cold start."""
+    """Four credibility tiles — the *conviction record* — drawn from the live
+    performance summary. Honest, public-safe proof (calibration + closing-line
+    value), never the edges. Missing fields degrade to an em-dash."""
     overall = (perf or {}).get("overall", {}) or {}
 
     def num(v):
@@ -45,25 +52,25 @@ def headline_stats(perf: dict | None) -> list[dict]:
     roi = overall.get("roi_pct")
     bets = overall.get("bets", 0) or 0
     return [
-        {"label": "Games forward-tested",
+        {"label": "Cases tried",
          "value": f"{int(gg):,}" if num(gg) else "—",
-         "sub": "graded against final scores"},
-        {"label": "Model Brier",
+         "sub": "games graded against the final whistle"},
+        {"label": "Calibration",
          "value": f"{brier:.3f}" if num(brier) else "—",
-         "sub": "win-prob error · 0.25 = coin flip"},
+         "sub": "Brier score · 0.25 = a coin toss"},
         {"label": "Beat the close",
          "value": f"{beat * 100:.0f}%" if num(beat) else "—",
-         "sub": f"{int(clv_bets):,} bets vs. closing line"},
-        {"label": "Forward-test ROI",
+         "sub": f"{int(clv_bets):,} verdicts vs. the closing line"},
+        {"label": "Conviction ROI",
          "value": f"{roi:+.1f}%" if num(roi) else "—",
          "sub": f"{int(bets):,} graded bets · ¼-Kelly"},
     ]
 
 
 def teaser_counts(day_slates: dict | None, min_edge: float) -> dict:
-    """Aggregate, leak-free summary of today's board: how many edges cleared
-    the bar, the games/props split, which sports are live, and a *banded*
-    best-EV (e.g. '10%+') so the magnitude shows without the number."""
+    """Aggregate, leak-free summary of today's docket: how many charges cleared
+    the bar, the games/props split, the jurisdictions in session, and a
+    *banded* best-EV (e.g. '10%+') so the magnitude shows without the number."""
     board = ui.build_best_bets(day_slates or {}, min_edge)
     if board.empty:
         return {"total": 0, "games": 0, "props": 0, "sports": [], "best_band": None}
@@ -80,9 +87,9 @@ def teaser_counts(day_slates: dict | None, min_edge: float) -> dict:
 
 
 def redacted_rows(day_slates: dict | None, min_edge: float, n: int = 6) -> list[dict]:
-    """Top-EV rows with everything identifying stripped out: sport and market
-    *type* survive (MLB · Total), the bet and EV become blocks. Enough to feel
-    the board breathing; nothing a visitor could act on."""
+    """Top-EV charges with everything identifying stripped out: sport and market
+    *type* survive (MLB · Total); the bet and EV are sealed. Enough to feel the
+    docket breathing; nothing a visitor could act on."""
     board = ui.build_best_bets(day_slates or {}, min_edge)
     rows = []
     for _, r in board.head(n).iterrows():
@@ -103,65 +110,92 @@ _LANDING_CSS = """
   /* full-width storefront: hide the app chrome until the visitor signs in */
   section[data-testid="stSidebar"] { display: none; }
   .osp-land { max-width: 1040px; margin: 0 auto; }
-  .osp-hero-wrap { text-align:center; padding: 18px 0 6px; }
-  .osp-logo { font-family: var(--disp, 'Space Grotesk', sans-serif);
-    font-size: clamp(2.4rem, 7vw, 3.6rem); font-weight: 700; letter-spacing: -1px;
-    margin: 0; background: linear-gradient(90deg,#00e676,#22d3ee);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; }
-  .osp-tag { font-family: var(--disp, 'Space Grotesk', sans-serif);
-    font-size: clamp(1.05rem, 3.2vw, 1.5rem); font-weight: 600; color:#e6edf3;
-    margin: 6px 0 2px; letter-spacing:-0.3px; }
-  .osp-sub { color:#8b949e; font-size: 0.95rem; max-width: 620px;
-    margin: 6px auto 0; line-height: 1.5; }
-  .osp-chips { text-align:center; margin: 16px 0 8px; }
-  .osp-chip { display:inline-block; font-family: var(--disp,'Space Grotesk',sans-serif);
-    font-weight:600; font-size:0.82rem; color:#c9d1d9; padding:5px 13px; margin:4px;
-    border-radius:999px; border:1px solid #1e2636; background:#0e131d; }
-  .osp-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;
-    margin: 20px 0 6px; }
+  /* the cold-open intertitle */
+  .osp-coldopen { background:#000; border:1px solid var(--line);
+    border-radius:6px; padding:30px 24px 26px; text-align:center;
+    box-shadow: 0 0 0 1px rgba(var(--acc2-rgb),0.18), 0 18px 50px rgba(0,0,0,0.6);
+    animation: ospdun 0.8s ease-out; }
+  .osp-eyebrow { font-family:var(--mono); font-size:0.72rem; letter-spacing:5px;
+    text-transform:uppercase; color:var(--acc); margin-bottom:10px; }
+  .osp-logo { font-family:var(--disp); font-weight:700;
+    font-size: clamp(2.6rem, 8vw, 4.2rem); letter-spacing:3px; text-transform:uppercase;
+    color:#fff; text-shadow: 0 0 22px rgba(var(--acc2-rgb),0.55); margin:0; }
+  .osp-logo .amp { color:var(--acc); }
+  .osp-est { font-family:var(--mono); font-size:0.8rem; letter-spacing:3px;
+    color:var(--text2); margin-top:6px; }
+  .osp-narr { font-family:var(--disp); font-style:italic; font-weight:500;
+    color:var(--text2); max-width:760px; margin:18px auto 4px; line-height:1.65;
+    font-size: clamp(0.95rem, 2.4vw, 1.12rem); }
+  .osp-narr b { color:var(--acc); font-style:normal; }
+  .osp-chips { text-align:center; margin: 18px 0 4px; }
+  .osp-chips .lbl { font-family:var(--mono); font-size:0.66rem; letter-spacing:3px;
+    color:var(--faint); text-transform:uppercase; display:block; margin-bottom:8px; }
+  .osp-chip { display:inline-block; font-family:var(--mono); font-weight:700;
+    font-size:0.78rem; color:var(--text2); padding:5px 13px; margin:4px;
+    border-radius:4px; border:1px solid var(--line); background:var(--panel); }
+  .osp-sec { font-family:var(--mono); font-size:0.68rem; letter-spacing:4px;
+    text-transform:uppercase; color:var(--acc); text-align:center;
+    margin: 26px 0 12px; }
+  .osp-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
   @media (max-width: 720px){ .osp-grid{ grid-template-columns: repeat(2,1fr); } }
-  .osp-stat { position:relative; overflow:hidden; border:1px solid #1e2636;
-    border-radius:14px; padding:16px 16px 13px 18px; background:
-    linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)), #121826; }
+  .osp-stat { position:relative; overflow:hidden; border:1px solid var(--line);
+    border-radius:6px; padding:16px 16px 13px 18px; background:
+    linear-gradient(160deg, rgba(var(--acc-rgb),0.07), rgba(var(--acc2-rgb),0.04)), var(--card); }
   .osp-stat::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
-    background: linear-gradient(180deg,#00e676,#22d3ee); }
-  .osp-stat .v { font-family: var(--disp,'Space Grotesk',sans-serif); font-weight:700;
-    font-size:1.8rem; letter-spacing:-1px; color:#fff; }
-  .osp-stat .l { text-transform:uppercase; letter-spacing:0.6px; font-size:0.7rem;
-    font-weight:600; color:#8b949e; margin-top:2px; }
-  .osp-stat .s { color:#6e7781; font-size:0.72rem; margin-top:5px; }
-  .osp-board { border:1px solid #1e2636; border-radius:16px; background:#0e131d;
-    padding:16px 18px; margin: 18px 0 6px; }
+    background: linear-gradient(180deg,var(--acc),var(--acc2)); }
+  .osp-stat .v { font-family:var(--disp); font-weight:700; font-size:1.8rem;
+    color:var(--text); }
+  .osp-stat .l { text-transform:uppercase; letter-spacing:0.7px; font-size:0.7rem;
+    font-weight:700; color:var(--muted); margin-top:2px; font-family:var(--mono); }
+  .osp-stat .s { color:var(--faint); font-size:0.72rem; margin-top:5px; }
+  .osp-board { border:1px solid var(--line); border-radius:8px; background:var(--panel);
+    padding:16px 18px; }
   .osp-board-h { display:flex; justify-content:space-between; align-items:center;
     flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-  .osp-board-t { font-family: var(--disp,'Space Grotesk',sans-serif); font-weight:700;
-    font-size:1.05rem; color:#e6edf3; }
-  .osp-live { color:#00e676; font-size:0.74rem; font-weight:700; }
+  .osp-board-t { font-family:var(--disp); font-weight:700; font-size:1.05rem;
+    letter-spacing:1px; text-transform:uppercase; color:var(--text); }
+  .osp-live { color:var(--acc); font-size:0.72rem; font-weight:700; font-family:var(--mono);
+    letter-spacing:1px; }
   .osp-live .dot { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
   .osp-row { display:flex; align-items:center; gap:12px; padding:9px 6px;
-    border-top:1px solid #161d29; font-size:0.9rem; }
-  .osp-row .sp { font-family:var(--disp,'Space Grotesk',sans-serif); font-weight:700;
-    font-size:0.72rem; color:#22d3ee; width:54px; }
-  .osp-row .mk { color:#8b949e; font-size:0.78rem; width:96px; }
-  .osp-blur { flex:1; letter-spacing:2px; color:#39414d;
-    background:linear-gradient(90deg,#1b2230,#222b3c,#1b2230); border-radius:6px;
-    padding:2px 8px; filter: blur(0.6px); user-select:none; }
-  .osp-row .ev { color:#39414d; font-weight:700; }
-  .osp-lockline { text-align:center; color:#8b949e; font-size:0.82rem;
-    margin-top:12px; }
-  .osp-how { display:grid; grid-template-columns: repeat(3,1fr); gap:12px; margin:20px 0; }
+    border-top:1px solid var(--line3); font-size:0.9rem; }
+  .osp-row .sp { font-family:var(--mono); font-weight:700; font-size:0.72rem;
+    color:var(--acc2); width:54px; }
+  .osp-row .mk { color:var(--muted); font-size:0.78rem; width:96px; font-family:var(--mono); }
+  .osp-blur { flex:1; letter-spacing:2px; color:var(--faint2);
+    background:linear-gradient(90deg,var(--blur1),var(--blur2),var(--blur1));
+    border-radius:4px; padding:2px 8px; filter: blur(0.6px); user-select:none;
+    font-family:var(--mono); }
+  .osp-row .seal { font-family:var(--disp); font-weight:700; color:var(--neg);
+    font-size:0.7rem; letter-spacing:1px; }
+  .osp-row .ev { color:var(--faint2); font-weight:700; font-family:var(--mono); }
+  .osp-lockline { text-align:center; color:var(--muted); font-size:0.82rem;
+    margin-top:12px; font-family:var(--mono); }
+  .osp-how { display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
   @media (max-width: 720px){ .osp-how{ grid-template-columns: 1fr; } }
-  .osp-step { border:1px solid #1e2636; border-radius:12px; padding:13px 15px;
-    background:#0e131d; }
-  .osp-step .n { color:#00e676; font-weight:800; font-family:var(--disp,'Space Grotesk',sans-serif); }
-  .osp-step .h { font-weight:600; color:#e6edf3; margin:2px 0 3px; }
-  .osp-step .b { color:#8b949e; font-size:0.8rem; line-height:1.45; }
-  .osp-foot { text-align:center; color:#6e7781; font-size:0.74rem; margin-top:18px;
-    line-height:1.6; }
+  .osp-step { border:1px solid var(--line); border-radius:6px; padding:13px 15px;
+    background:var(--panel); }
+  .osp-step .n { color:var(--acc); font-weight:800; font-family:var(--disp);
+    font-size:1.1rem; letter-spacing:2px; }
+  .osp-step .h { font-weight:700; color:var(--text); margin:2px 0 3px; font-family:var(--disp);
+    text-transform:uppercase; letter-spacing:0.5px; font-size:0.92rem; }
+  .osp-step .b { color:var(--muted); font-size:0.8rem; line-height:1.45; }
+  .osp-foot { text-align:center; color:var(--faint); font-size:0.74rem; margin-top:18px;
+    line-height:1.6; font-family:var(--mono); }
 </style>
 """
+
+
+def _cold_open_html() -> str:
+    return (
+        "<div class='osp-coldopen'>"
+        "<div class='osp-eyebrow'>Office of the Projections Attorney</div>"
+        "<div class='osp-logo'>One<span class='amp'>·</span>Source</div>"
+        "<div class='osp-est'>SPECIAL WAGERS UNIT · EST. 2026</div>"
+        f"<div class='osp-narr'>{_NARRATION}</div>"
+        "</div>"
+    )
 
 
 def _stat_tiles_html(stats: list[dict]) -> str:
@@ -174,44 +208,46 @@ def _stat_tiles_html(stats: list[dict]) -> str:
 
 def _board_html(counts: dict, rows: list[dict]) -> str:
     if not counts["total"]:
-        body = ("<div class='osp-lockline'>No edges clear the bar on the live "
-                "slate right now — the board refreshes hourly.</div>")
-        sub = "waiting on lines"
+        body = ("<div class='osp-lockline'>No charges clear the bar on the live "
+                "docket right now — the board is re-filed hourly.</div>")
+        sub = "awaiting evidence"
     else:
         sports = " · ".join(counts["sports"]) or "—"
         best = counts["best_band"]
-        sub = (f"{counts['total']} edges · {counts['games']} games / "
+        sub = (f"{counts['total']} charges · {counts['games']} games / "
                f"{counts['props']} props · {sports}")
         row_html = "".join(
             f"<div class='osp-row'><span class='sp'>{r['sport']}</span>"
             f"<span class='mk'>{r['market']}</span>"
             f"<span class='osp-blur'>▓▓▓▓▓▓▓▓▓▓▓▓</span>"
+            f"<span class='seal'>SEALED</span>"
             f"<span class='ev'>+▓.▓%</span></div>"
             for r in rows)
         lock = (f"<div class='osp-lockline'>🔒 + {max(0, counts['total'] - len(rows))} "
-                f"more — best edge today lands in the <b>{best} EV</b> band. "
-                "Sign in to see the teams, lines, and prices.</div>")
+                f"more under seal — the lead charge today sits in the "
+                f"<b>{best} EV</b> band. Sign in to unseal the teams, lines, "
+                "and prices.</div>")
         body = row_html + lock
     return (
         "<div class='osp-board'>"
         "<div class='osp-board-h'>"
-        "<span class='osp-board-t'>Today's board</span>"
-        f"<span class='osp-live'><span class='dot'>●</span> LIVE · {sub}</span>"
+        "<span class='osp-board-t'>Today's Docket</span>"
+        f"<span class='osp-live'><span class='dot'>●</span> IN SESSION · {sub}</span>"
         "</div>" + body + "</div>"
     )
 
 
 def _how_html() -> str:
     steps = [
-        ("1", "Model the game", "Per-sport models (MLB Monte-Carlo with Statcast "
-         "+ park factors; Elo-primed engines elsewhere) produce a probability "
-         "for every market."),
-        ("2", "Price the market", "Strip the vig from the best available book "
-         "lines to get a fair price, then measure the edge against it — and "
-         "against the de-vigged consensus of 15+ books."),
-        ("3", "Size & forward-test", "Positive-EV spots get a ¼-Kelly stake, "
-         "then every pick is graded against the closing line and the final "
-         "score. The track record is the product."),
+        ("I.", "Investigate", "The People (per-sport models — MLB Monte-Carlo "
+         "with Statcast and park factors; Elo-primed engines elsewhere) build "
+         "the case: a probability for every market."),
+        ("II.", "Arraign", "Strip the vig from the best book lines to get a "
+         "fair price, then weigh the model against the de-vigged consensus of "
+         "15+ books. The charge stands only if it beats the number."),
+        ("III.", "Verdict & record", "A standing charge gets a ¼-Kelly stake — "
+         "then every verdict is graded against the closing line and the final "
+         "score. The conviction record is the whole product."),
     ]
     cells = "".join(
         f"<div class='osp-step'><span class='n'>{n}</span>"
@@ -221,7 +257,7 @@ def _how_html() -> str:
 
 
 def render_landing(data: dict | None) -> None:
-    """Paint the full public front, then expose the single CTA into the gate."""
+    """Paint the full cold open, then expose the single CTA into the gate."""
     st.markdown(_LANDING_CSS, unsafe_allow_html=True)
 
     slates = {}
@@ -239,34 +275,39 @@ def render_landing(data: dict | None) -> None:
 
     chips = "".join(f"<span class='osp-chip'>{s}</span>" for s in _SPORTS)
     gen = str((data or {}).get("generated_at", ""))[:16].replace("T", " ")
-    updated = f" · updated {gen} ET" if gen else ""
+    updated = f" · case file updated {gen} ET" if gen else ""
+
+    st.markdown("<div class='osp-land'>" + _cold_open_html() + "</div>",
+                unsafe_allow_html=True)
+
+    # the literal "dun-dun" — mutable, nothing autoplays
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c2:
+        theme.dun_dun_component()
 
     st.markdown(
         "<div class='osp-land'>"
-        "<div class='osp-hero-wrap'>"
-        "<div class='osp-logo'>🎯 OneSource</div>"
-        "<div class='osp-tag'>The multi-sport model that beats the close.</div>"
-        "<div class='osp-sub'>Game and player-prop projections across six "
-        "sports, priced against the market and forward-tested every hour. "
-        "Edges, not vibes.</div>"
-        f"</div><div class='osp-chips'>{chips}</div>"
+        f"<div class='osp-chips'><span class='lbl'>Jurisdictions</span>{chips}</div>"
+        "<div class='osp-sec'>— The Conviction Record —</div>"
         + _stat_tiles_html(stats)
+        + "<div class='osp-sec'>— In Session —</div>"
         + _board_html(counts, rows)
+        + "<div class='osp-sec'>— Due Process —</div>"
         + _how_html()
         + "</div>",
         unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns([1, 1.1, 1])
+    c1, c2, c3 = st.columns([1, 1.2, 1])
     with c2:
-        if st.button("Enter the model  →", width="stretch", type="primary"):
+        if st.button("⚖️  ENTER THE COURTROOM  →", width="stretch", type="primary"):
             st.session_state["osp_show_login"] = True
             st.rerun()
 
     st.markdown(
         "<div class='osp-foot'>For research and entertainment only — "
-        "<b>not financial advice</b>. Model estimates carry no guarantee. "
-        "21+. If gambling stops being fun, call 1-800-GAMBLER."
-        f"{updated}</div>",
+        "<b>not financial advice</b>. The People's estimates carry no guarantee; "
+        "even a strong case loses. 21+. If gambling stops being fun, call "
+        f"1-800-GAMBLER.{updated}</div>",
         unsafe_allow_html=True)
 
 
@@ -276,13 +317,13 @@ def render_landing(data: dict | None) -> None:
 
 def gate(data: dict | None) -> None:
     """Public-front gate. Returns (lets the app render) only when the visitor
-    is authenticated; otherwise shows the landing page, or — once they click
-    *Enter* — the password form, and stops the script."""
+    is authenticated; otherwise shows the cold open, or — once they click
+    *Enter the courtroom* — the password form, and stops the script."""
     if auth.is_authenticated():
         return
 
     if st.session_state.get("osp_show_login"):
-        if st.button("←  Back to overview"):
+        if st.button("←  Back to the cold open"):
             st.session_state["osp_show_login"] = False
             st.rerun()
         auth.login_form()  # st.stop()s until the password is correct

@@ -19,12 +19,12 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import ui  # noqa: E402
+from app import theme, ui  # noqa: E402
 from app.landing import gate  # noqa: E402
 from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
-st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
+st.set_page_config(page_title="OneSource · Daily Docket", page_icon="⚖️",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
@@ -36,75 +36,7 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
     except Exception:
         pass
 
-st.markdown("""
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-  :root { --acc:#00e676; --acc2:#22d3ee; --bg:#080b12; --card:#121826;
-          --line:#1e2636; --neg:#ff4d6d;
-          --disp:'Space Grotesk', system-ui, sans-serif; }
-  .stApp { background:
-    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,0.10), transparent 55%),
-    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,0.08), transparent 50%),
-    var(--bg); }
-  .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1340px; }
-  /* headings + brand in the bold display face */
-  h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
-    letter-spacing: -0.5px; }
-  section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0b0f18 0%,#070a11 100%);
-    border-right: 1px solid var(--line); }
-  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
-    border-radius: 10px; padding: 5px 10px; font-weight: 600;
-    transition: background .15s ease; }
-  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
-    background: rgba(0,230,118,0.10); }
-  /* metric cards: punchy, glowing accent edge, big display-face value */
-  [data-testid="stMetric"] { position: relative; overflow: hidden;
-    background: linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)),
-      var(--card);
-    border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
-  [data-testid="stMetric"]::before { content:""; position:absolute; left:0; top:0;
-    bottom:0; width:3px; background: linear-gradient(180deg,var(--acc),var(--acc2)); }
-  [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.74rem;
-    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
-  [data-testid="stMetricValue"] { font-family: var(--disp); font-weight: 700;
-    font-size: 1.85rem; letter-spacing: -1px; }
-  .osp-brand { font-size: 1.55rem; font-weight: 700; margin: 0 0 0.1rem 0;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    background: linear-gradient(90deg,var(--acc),var(--acc2)); -webkit-background-clip: text;
-    background-clip: text; -webkit-text-fill-color: transparent; }
-  .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
-  div[data-testid="stCaptionContainer"] { opacity: 0.62; }
-  /* tabs: bold, electric active underline */
-  .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
-    font-size: 0.96rem; }
-  .stTabs [aria-selected="true"] { color: var(--acc) !important; }
-  .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
-    height: 3px; }
-  /* buttons: glow on hover, lift on press */
-  .stButton > button { border-radius: 10px; border: 1px solid var(--line);
-    font-weight: 700; transition: all .15s ease; }
-  .stButton > button:hover { border-color: var(--acc); color: #fff;
-    box-shadow: 0 0 0 1px var(--acc), 0 6px 18px rgba(0,230,118,0.18);
-    transform: translateY(-1px); }
-  .stButton > button:active { transform: translateY(0); }
-  .osp-hero { background: linear-gradient(135deg, rgba(0,230,118,0.12),
-      rgba(34,211,238,0.06));
-    border: 1px solid rgba(0,230,118,0.25); border-radius: 18px; padding: 18px 22px;
-    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,0.35); }
-  .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:3px 10px;
-    border-radius:999px; margin-right:6px; }
-  .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
-  @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-  /* clickable player names -> profile dialog */
-  a.osp-plink { color:#c9d1d9 !important; text-decoration:none;
-    border-bottom:1px dashed rgba(0,230,118,0.0); transition: color .12s ease,
-    border-color .12s ease; }
-  a.osp-plink:hover { color:#00e676 !important;
-    border-bottom-color:rgba(0,230,118,0.7); }
-</style>
-""", unsafe_allow_html=True)
+st.markdown(theme.css(), unsafe_allow_html=True)
 
 
 @st.cache_data(ttl=300)
@@ -154,9 +86,9 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
         if not isinstance(v, (int, float)) or pd.isna(v):
             return ""
         if v >= min_edge * 100:
-            return "background-color: rgba(34,139,84,0.35); font-weight:600;"
+            return "background-color: rgba(var(--acc-rgb),0.32); font-weight:600;"
         if v < 0:
-            return "color: rgba(255,120,120,0.85);"
+            return "color: rgba(var(--neg-rgb),0.85);"
         return ""
     fmt = {c: "{:+.1f}%" for c in ev_cols if c in df.columns}
     fmt.update({c: "{:.0f}%" for c in ui.PCT_COLS if c in df.columns})
@@ -181,33 +113,51 @@ slates = slates_by_date(data) if data else {}
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
 
-# Two-tier navigation: a top-level area, then (when an area has several pages) a
-# sub-page. Grouped logically: overview -> research by sport -> bet-finding ->
-# live -> tools -> tracking.
-NAV_GROUPS = {
-    "🏠 Home": ["HOME"],
-    "🔬 Research": NAV_SPORTS,
-    "🎯 Bets": ["PLAYS", "EDGES", "EXPERTS", "DFS"],
-    "📡 Live": ["SCORES"],
-    "🧰 Tools": ["TOOLS"],
-    "📈 Performance": ["PERFORMANCE", "BACKTEST"],
-}
-_PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
-                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer",
-                "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
+# Two-tier navigation: a stable area id, then (when an area has several pages)
+# a sub-page. Grouped logically: overview -> research by sport -> bet-finding
+# -> live -> tools -> tracking. Display labels are theme-swapped (courtroom vs.
+# original) via format_func; the *ids* stay constant so widget state survives a
+# theme flip.
+NAV = [
+    ("HOME", ["HOME"]),
+    ("RESEARCH", NAV_SPORTS),
+    ("BETS", ["PLAYS", "EDGES", "EXPERTS", "DFS"]),
+    ("LIVE", ["SCORES"]),
+    ("TOOLS", ["TOOLS"]),
+    ("PERF", ["PERFORMANCE", "BACKTEST"]),
+]
+NAV_PAGES = dict(NAV)
+_AREA_ORIG = {"HOME": "🏠 Home", "RESEARCH": "🔬 Research", "BETS": "🎯 Bets",
+              "LIVE": "📡 Live", "TOOLS": "🧰 Tools", "PERF": "📈 Performance"}
+_PAGE_ORIG = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
+              "EXPERTS": "Expert consensus", "DFS": "DFS optimizer",
+              "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
+
+
+def _area_label(aid):
+    return theme.NAV_GROUP_LABELS[aid] if theme.is_docket() else _AREA_ORIG[aid]
+
+
+def _page_label(p):
+    labels = theme.PAGE_LABELS if theme.is_docket() else _PAGE_ORIG
+    return labels.get(p, p.title())
+
 
 with st.sidebar:
-    st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
-    st.caption("projections & research")
-    area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
-                    label_visibility="collapsed", key="nav_area")
-    pages = NAV_GROUPS[area]
+    _docket = theme.is_docket()
+    st.markdown(f"<div class='osp-brand'>{'⚖️' if _docket else '🎯'} OneSource</div>",
+                unsafe_allow_html=True)
+    st.caption("Special Wagers Unit" if _docket else "projections & research")
+    area = st.radio("Section", [aid for aid, pages in NAV if pages],
+                    label_visibility="collapsed", key="nav_area",
+                    format_func=_area_label)
+    pages = NAV_PAGES[area]
     if len(pages) == 1:
         section = pages[0]
     else:
         section = st.radio(
             area, pages, label_visibility="collapsed", key=f"nav_{area}",
-            format_func=lambda p: _PAGE_LABELS.get(p, p.title()))
+            format_func=_page_label)
     st.divider()
     min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
                          format="%.3f")
@@ -221,9 +171,21 @@ with st.sidebar:
     if st.button("↻ Refresh", width="stretch"):
         refresh()
         st.rerun()
+    st.divider()
+    st.radio("Courtroom lighting", list(theme.THEMES), horizontal=True,
+             key=theme.STATE_KEY, label_visibility="collapsed",
+             format_func=lambda t: {"docket": "⚖️ Case File",
+                                    "original": "💚 Original"}.get(t, t))
+    if theme.is_docket():
+        st.caption("Order in the court.")
+        theme.dun_dun_component()
 
 if not slates:
-    st.title("🎯 OneSource Projections")
+    st.markdown(theme.title_card("Office of the Projections Attorney",
+                                 "OneSource", "No docket filed — awaiting evidence")
+                if theme.is_docket() else
+                "<div class='osp-title'>🎯 OneSource Projections</div>",
+                unsafe_allow_html=True)
     st.info("No data yet. The hourly GitHub Action publishes "
             "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
     st.stop()
@@ -240,16 +202,38 @@ gen = str(data.get("generated_at", ""))[:16].replace("T", " ")
 # Top bar: title + search
 # ---------------------------------------------------------------------------
 
-def topbar(title: str, with_search: bool = True) -> str:
+def _datestamp() -> str:
+    """A deadpan Law & Order intertitle stamp: 'TUESDAY, JUNE 23 · 13:48 ET'."""
+    try:
+        ts = pd.Timestamp(gen)
+        day = ts.strftime("%A, %B %d").replace(" 0", " ").upper()
+        return f"{day} · {ts.strftime('%H:%M')} ET"
+    except Exception:
+        return "MANHATTAN · ET"
+
+
+def topbar(title: str, with_search: bool = True,
+           eyebrow: str = "Office of the Projections Attorney") -> str:
     left, right = st.columns([3, 2])
     with left:
-        st.markdown(f"<div class='osp-title'>{title}</div>", unsafe_allow_html=True)
+        if theme.is_docket():
+            st.markdown(theme.title_card(eyebrow, title, _datestamp()),
+                        unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='osp-title'>{title}</div>",
+                        unsafe_allow_html=True)
     q = ""
     if with_search:
         with right:
-            q = st.text_input("Search", "", placeholder="🔍  team or player…",
-                              label_visibility="collapsed")
-    st.caption(f"Updated {gen} ET · refreshes hourly · not financial advice")
+            q = st.text_input("Search", "", label_visibility="collapsed",
+                              placeholder=("🔍  search the record…"
+                                           if theme.is_docket()
+                                           else "🔍  team or player…"))
+    if not theme.is_docket():
+        st.caption(f"Updated {gen} ET · refreshes hourly · not financial advice")
+    else:
+        st.caption("The People's evidence is refreshed hourly · model "
+                   "estimates, not financial advice · 21+ · 1-800-GAMBLER")
     return q.strip().lower()
 
 
@@ -265,7 +249,8 @@ def ai_block(brief: str, key: str):
     cost. The in-app Claude analysis is offered second, clearly marked as a paid
     API call, and only when a key is configured. The analysis persists across
     reruns via session_state so it doesn't vanish on the next interaction."""
-    with st.expander("🤖 Send to AI  ·  free copy-paste"):
+    with st.expander("🧑‍⚖️ Brief co-counsel  ·  free copy-paste"
+                     if theme.is_docket() else "🤖 Send to AI  ·  free copy-paste"):
         st.caption("**Free** — copy this brief and paste it into Claude.ai or "
                    "any chatbot. Uses your own subscription; no API charge.")
         st.code(brief, language="markdown")
@@ -294,7 +279,7 @@ def ai_block(brief: str, key: str):
 # ---------------------------------------------------------------------------
 
 def render_sport(sport: str):
-    q = topbar(sport)
+    q = topbar(sport, eyebrow="Case File · The People v. the Field")
     date_sel = pick_date()
     blob = slates.get(date_sel, {}).get(sport, {})
     games = blob.get("games", []) or []
@@ -329,7 +314,8 @@ def render_sport(sport: str):
             with cols[i % 2]:
                 st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         if shown:
-            st.markdown("##### 📋 Full matchup breakdown")
+            st.markdown("##### " + ("🗂️ The Evidence" if theme.is_docket()
+                                    else "📋 Full matchup breakdown"))
             c1, c2 = st.columns([4, 2])
             labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
             with c2:
@@ -500,7 +486,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
     st.markdown(
         f"<div style='display:flex;align-items:center;margin:6px 0;'>{head}"
         f"<div><div style='font-size:1.15rem;font-weight:700;'>🔎 {title}</div>"
-        f"<div style='color:#8b949e;font-size:0.8rem;'>{sub}</div></div></div>",
+        f"<div style='color:var(--muted);font-size:0.8rem;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     c = st.columns(5)
@@ -650,7 +636,7 @@ def _player_profile(sport: str, player: str, market: str) -> str | None:
 # ---------------------------------------------------------------------------
 
 def render_plays():
-    q = topbar("Plays")
+    q = topbar(theme.t("PLAYS", "Plays"), eyebrow="Today's charges")
     date_sel = pick_date()
     board = ui.build_best_bets(slates.get(date_sel, {}), min_edge)
     if hide_wild and not board.empty:
@@ -746,7 +732,8 @@ def render_plays():
 # ---------------------------------------------------------------------------
 
 def render_dfs():
-    topbar("DFS Optimizer", with_search=False)
+    topbar(theme.t("DFS", "DFS Optimizer"), with_search=False,
+           eyebrow="Reduced charges · PrizePicks / Underdog")
     date_sel = pick_date()
     day = slates.get(date_sel, {})
     dfs_only = st.toggle(
@@ -818,7 +805,8 @@ def render_dfs():
 
 
 def render_performance():
-    topbar("Performance", with_search=False)
+    topbar(theme.t("PERFORMANCE", "Performance"), with_search=False,
+           eyebrow="The record · every verdict, win or lose")
     perf = (data or {}).get("performance", {})
     overall = perf.get("overall", {})
     ledger = load_ledger()
@@ -1077,8 +1065,8 @@ def _score_ticker(games: list[dict]):
     live = [g for g in games if g.get("state") == "in"] or games
     chips = []
     for g in live[:40]:
-        color = ("#00e676" if g.get("state") == "in"
-                 else "#8b949e" if g.get("state") == "post" else "#22d3ee")
+        color = ("var(--acc)" if g.get("state") == "in"
+                 else "var(--muted)" if g.get("state") == "post" else "var(--acc2)")
         chips.append(
             f"<span style='margin:0 18px;color:{color};font-weight:600;'>"
             f"{scores.ticker_text(g)}</span>")
@@ -1086,8 +1074,8 @@ def _score_ticker(games: list[dict]):
         return
     strip = "".join(chips)
     st.markdown(
-        "<div style='overflow:hidden;white-space:nowrap;border:1px solid #1e2636;"
-        "border-radius:8px;background:#0b0f18;padding:8px 0;margin-bottom:10px;'>"
+        "<div style='overflow:hidden;white-space:nowrap;border:1px solid var(--line);"
+        "border-radius:8px;background:var(--bg2);padding:8px 0;margin-bottom:10px;'>"
         "<div style='display:inline-block;padding-left:100%;"
         "animation:osp-marquee 60s linear infinite;'>" + strip + strip + "</div></div>"
         "<style>@keyframes osp-marquee{0%{transform:translateX(0)}"
@@ -1105,12 +1093,12 @@ def _score_card(g: dict) -> str:
                (g.get(side, {}).get("score") or 0) >
                (g.get("home" if side == "away" else "away", {}).get("score") or 0))
         weight = "800" if win else "500"
-        rec = f"<span style='color:#6e7781;font-size:0.7rem;'> {s.get('record','')}</span>" if s.get("record") else ""
+        rec = f"<span style='color:var(--faint);font-size:0.7rem;'> {s.get('record','')}</span>" if s.get("record") else ""
         return (f"<div style='display:flex;justify-content:space-between;'>"
                 f"<span style='font-weight:{weight};'>{logo}{s.get('abbrev') or s.get('team') or '—'}{rec}</span>"
                 f"<span style='font-weight:{weight};font-size:1.05rem;'>{sc}</span></div>")
-    color = ("#00e676" if g.get("state") == "in" else "#8b949e")
-    return ("<div style='background:#121826;border:1px solid #1e2636;border-radius:10px;"
+    color = ("var(--acc)" if g.get("state") == "in" else "var(--muted)")
+    return ("<div style='background:var(--card);border:1px solid var(--line);border-radius:10px;"
             "padding:10px 12px;'>"
             + row("away") + "<div style='height:4px;'></div>" + row("home")
             + f"<div style='color:{color};font-size:0.72rem;margin-top:6px;'>"
@@ -1164,7 +1152,8 @@ def render_scores_board(date_str: str):
 
 
 def render_scores():
-    topbar("Scoreboard", with_search=False)
+    topbar(theme.t("SCORES", "Scoreboard"), with_search=False,
+           eyebrow="The blotter · live wire")
     et_today = pd.Timestamp.now(tz="America/New_York")
     days = [(et_today - pd.Timedelta(days=d)).date().isoformat() for d in range(3)]
     date_str = st.radio("Day", days, horizontal=True, label_visibility="collapsed",
@@ -1180,7 +1169,8 @@ def render_scores():
 def render_tools():
     from onesource import calculators as calc
 
-    topbar("Betting Tools", with_search=False)
+    topbar(theme.t("TOOLS", "Betting Tools"), with_search=False,
+           eyebrow="Forensics lab")
     st.caption("The deterministic toolkit — fair odds, edge, and staking math "
                "on any prices you paste in.")
     t1, t2, t3, t4, t5 = st.tabs(["De-vig & EV", "Arbitrage & Middle", "Hedge",
@@ -1312,10 +1302,16 @@ def ui_ev(prob: float, american) -> float:
 # ---------------------------------------------------------------------------
 
 def render_home():
-    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Command Center"
-                "</div></div>", unsafe_allow_html=True)
-    st.caption(f"Updated {gen} ET · {len(NAV_SPORTS)} sports tracked · "
-               "model estimates, not financial advice")
+    if theme.is_docket():
+        st.markdown(theme.title_card("In session", "The Bench", _datestamp()),
+                    unsafe_allow_html=True)
+        st.caption(f"{len(NAV_SPORTS)} sports under investigation · model "
+                   "estimates, not financial advice · 21+ · 1-800-GAMBLER")
+    else:
+        st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Command "
+                    "Center</div></div>", unsafe_allow_html=True)
+        st.caption(f"Updated {gen} ET · {len(NAV_SPORTS)} sports tracked · "
+                   "model estimates, not financial advice")
     day = slates.get(default_date, {})
     board = ui.build_best_bets(day, min_edge)
     if hide_wild and not board.empty:
@@ -1369,10 +1365,10 @@ def render_home():
         if not any_rows:
             st.caption("No games scheduled on this slate.")
         ready, _ = ai.available()
-        chip = ("<span class='osp-pill live' style='background:rgba(0,230,118,0.18);"
-                "color:#00e676;'>● AI analyst on</span>" if ready else
+        chip = ("<span class='osp-pill live' style='background:rgba(var(--acc-rgb),0.18);"
+                "color:var(--acc);'>● AI analyst on</span>" if ready else
                 "<span class='osp-pill' style='background:rgba(110,118,129,0.18);"
-                "color:#8b949e;'>○ AI analyst off</span>")
+                "color:var(--muted);'>○ AI analyst off</span>")
         st.markdown(chip, unsafe_allow_html=True)
         st.caption("Open any matchup, prop, or board and hit **✨ Analyze** for a "
                    "Claude read." if ready else
@@ -1388,7 +1384,8 @@ def _book(b) -> str:
 
 
 def render_edges():
-    topbar("Edge Scanner", with_search=False)
+    topbar(theme.t("EDGES", "Edge Scanner"), with_search=False,
+           eyebrow="The wiretap · sharp signals")
     date_sel = pick_date()
     st.caption("Multi-book **consensus** edges: +EV vs the de-vigged market (the "
                "OddsJam/Unabated standard), plus arbitrage, middles, and soft "
@@ -1446,7 +1443,8 @@ def render_edges():
 # ---------------------------------------------------------------------------
 
 def render_experts():
-    q = topbar("Expert Consensus")
+    q = topbar(theme.t("EXPERTS", "Expert Consensus"),
+               eyebrow="The jury · where the sources agree")
     date_sel = pick_date()
     from onesource import experts
     rows = experts.consensus_table(slates.get(date_sel, {}), query=q or "")
@@ -1567,17 +1565,17 @@ def player_dialog(player: str, game_pk, sport: str | None):
     shot = _player_headshot(player, game_pk, sport)
     img = (f"<img src='{shot}' style='position:absolute;inset:0;width:56px;"
            f"height:56px;border-radius:50%;object-fit:cover;border:2px solid "
-           f"#00e676;' onerror=\"this.style.display='none'\">" if shot else "")
+           f"var(--acc);' onerror=\"this.style.display='none'\">" if shot else "")
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:14px;margin-bottom:4px;'>"
         f"<div style='position:relative;width:56px;height:56px;flex:0 0 auto;'>"
         f"<div style='position:absolute;inset:0;border-radius:50%;display:flex;"
         f"align-items:center;justify-content:center;font-weight:800;"
-        f"font-size:1.3rem;color:#06210f;"
-        f"background:linear-gradient(135deg,#00e676,#22d3ee);'>{initials}</div>"
+        f"font-size:1.3rem;color:var(--bg);"
+        f"background:linear-gradient(135deg,var(--acc),var(--acc2));'>{initials}</div>"
         f"{img}</div>"
         f"<div><div style='font-size:1.5rem;font-weight:800;'>{player}</div>"
-        f"<div style='color:#8b949e;font-size:0.85rem;'>{sub}</div></div></div>",
+        f"<div style='color:var(--muted);font-size:0.85rem;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     if not rows:
@@ -1614,8 +1612,8 @@ def player_dialog(player: str, game_pk, sport: str | None):
         if not isinstance(v, (int, float)) or pd.isna(v):
             return ""
         if v >= min_edge * 100:
-            return "color:#00e676;font-weight:700;"
-        return "color:#ff6b6b;" if v < 0 else ""
+            return "color:var(--acc);font-weight:700;"
+        return "color:var(--neg2);" if v < 0 else ""
     sty = (view.style.map(_ev_color, subset=["EV %"])
            .format({"Line": "{:g}", "Proj": "{:.2f}", "Model Over %": "{:.0f}%",
                     "EV %": "{:+.1f}%"}, na_rep="—"))
@@ -1665,9 +1663,9 @@ def _run_backtest(sport: str, seasons: tuple) -> dict:
 def _replay_card_html(g: dict) -> str:
     def mark(hit):
         if hit is None:
-            return "<span style='color:#8b949e;'>— push</span>"
-        return ("<span style='color:#00e676;font-weight:700;'>✓</span>" if hit
-                else "<span style='color:#ff6b6b;font-weight:700;'>✗</span>")
+            return "<span style='color:var(--muted);'>— push</span>"
+        return ("<span style='color:var(--acc);font-weight:700;'>✓</span>" if hit
+                else "<span style='color:var(--neg2);font-weight:700;'>✗</span>")
     hm, aw = g["home"], g["away"]
     hwp = g["home_win_prob"]
     fav_pct = max(hwp, 1 - hwp) * 100
@@ -1684,16 +1682,16 @@ def _replay_card_html(g: dict) -> str:
     if "tot_hit" in g:
         res.append(f"Tot {mark(g['tot_hit'])} {g['tot_pick']}")
     clv = g.get("clv")
-    clv_s = (f" · CLV <b style='color:{'#00e676' if clv >= 0 else '#ff6b6b'};'>"
+    clv_s = (f" · CLV <b style='color:{'var(--acc)' if clv >= 0 else 'var(--neg2)'};'>"
              f"{clv:+.1%}</b>") if clv is not None else ""
     return (
-        "<div style='background:#121826;border:1px solid #1e2636;border-radius:12px;"
+        "<div style='background:var(--card);border:1px solid var(--line);border-radius:12px;"
         "padding:12px 14px;margin-bottom:10px;'>"
-        f"<div style='font-weight:700;'>{aw} <span style='color:#8b949e;'>@</span> {hm}"
+        f"<div style='font-weight:700;'>{aw} <span style='color:var(--muted);'>@</span> {hm}"
         f"<span style='float:right;'>{g['away_score']}–{g['home_score']}</span></div>"
-        f"<div style='color:#22d3ee;font-size:0.8rem;margin-top:4px;'>Model: "
+        f"<div style='color:var(--acc2);font-size:0.8rem;margin-top:4px;'>Model: "
         f"{g['ml_fav'].split()[-1]} {fav_pct:.0f}% · proj total {g['proj_total']:.0f}</div>"
-        f"<div style='color:#8b949e;font-size:0.8rem;'>Close: {' · '.join(close) or '—'}</div>"
+        f"<div style='color:var(--muted);font-size:0.8rem;'>Close: {' · '.join(close) or '—'}</div>"
         f"<div style='font-size:0.85rem;margin-top:6px;'>{' &nbsp; '.join(res)}{clv_s}</div>"
         "</div>")
 
@@ -1739,7 +1737,13 @@ def _slate_record(games: list[dict]) -> str:
 
 
 def render_backtest():
-    st.markdown("<div class='osp-title'>🧪 Model backtest</div>", unsafe_allow_html=True)
+    if theme.is_docket():
+        st.markdown(theme.title_card("Re-opening the files", "Cold Cases",
+                                     "Walk-forward review · no lookahead"),
+                    unsafe_allow_html=True)
+    else:
+        st.markdown("<div class='osp-title'>🧪 Model backtest</div>",
+                    unsafe_allow_html=True)
     tab_g, tab_p = st.tabs(["🎮 Game model", "🎯 Prop calibration"])
     with tab_g:
         _render_game_model()
@@ -1768,9 +1772,9 @@ def _render_prop_calibration():
         st.markdown(f"**{sport}**")
         df = pd.DataFrame(rows)
         sty = df.style.map(
-            lambda v: ("color:#00e676;" if isinstance(v, (int, float)) and abs(v) < 0.01
-                       else "color:#ffa657;" if isinstance(v, (int, float)) and abs(v) < 0.025
-                       else "color:#ff6b6b;" if isinstance(v, (int, float)) else ""),
+            lambda v: ("color:var(--acc);" if isinstance(v, (int, float)) and abs(v) < 0.01
+                       else "color:var(--warn);" if isinstance(v, (int, float)) and abs(v) < 0.025
+                       else "color:var(--neg2);" if isinstance(v, (int, float)) else ""),
             subset=["Gap"]).format(
             {"MAE": "{:.3f}", "Pred over": "{:.3f}", "Actual over": "{:.3f}",
              "Gap": "{:+.4f}"}, na_rep="—")

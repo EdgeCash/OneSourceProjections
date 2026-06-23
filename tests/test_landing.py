@@ -40,13 +40,12 @@ _PERF = {"overall": {
 def test_headline_stats_formats_perf():
     tiles = landing.headline_stats(_PERF)
     assert [t["label"] for t in tiles] == [
-        "Games forward-tested", "Model Brier", "Beat the close",
-        "Forward-test ROI"]
+        "Cases tried", "Calibration", "Beat the close", "Conviction ROI"]
     vals = {t["label"]: t["value"] for t in tiles}
-    assert vals["Games forward-tested"] == "164"
-    assert vals["Model Brier"] == "0.242"
+    assert vals["Cases tried"] == "164"
+    assert vals["Calibration"] == "0.242"
     assert vals["Beat the close"] == "52%"
-    assert vals["Forward-test ROI"] == "+5.1%"
+    assert vals["Conviction ROI"] == "+5.1%"
 
 
 def test_headline_stats_handles_missing():
