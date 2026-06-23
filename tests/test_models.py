@@ -101,3 +101,22 @@ def test_prob_over_for_row_uses_row_dispersion():
     assert tight != loose
     # missing dispersion (batter rows) falls back without error
     assert pipeline.prob_over_for_row(base, 16.5) is not None
+
+
+def test_pitcher_prop_stats_exposed_for_grading():
+    import pandas as pd
+    from onesource import playerlogs as pl
+    df = pd.DataFrame([{
+        "name": "Zack Wheeler", "date": "2026-06-21", "opponent": "NYM",
+        "season": 2026, "inningsPitched": 5.667, "hits": 4, "baseOnBalls": 2,
+        "earnedRuns": 3, "strikeOuts": 8}])
+    base = pl._normalize_frame("mlb", df)
+    assert base["outs"].iloc[0] == 17.0          # 5⅔ innings -> 17 outs
+    assert base["hits"].iloc[0] == 4             # pitcher hits = hits allowed
+    assert base["earnedRuns"].iloc[0] == 3
+    assert base["baseOnBalls"].iloc[0] == 2
+    # market map points at the columns we now expose
+    assert pl.market_to_stat("pitcher_outs") == ("outs", "P")
+    assert pl.market_to_stat("pitcher_hits_allowed") == ("hits", "P")
+    assert pl.market_to_stat("pitcher_earned_runs") == ("earnedRuns", "P")
+    assert pl.market_to_stat("pitcher_walks") == ("baseOnBalls", "P")

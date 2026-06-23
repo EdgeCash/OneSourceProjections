@@ -27,9 +27,9 @@ MARKET_STAT = {
     # MLB (nested 'stats' dict)
     "pitcher_strikeouts": ("strikeOuts", "P"),
     "pitcher_outs": ("outs", "P"),
-    "pitcher_hits_allowed": ("hitsAllowed", "P"),
+    "pitcher_hits_allowed": ("hits", "P"),       # pitcher row's hits = hits allowed
     "pitcher_earned_runs": ("earnedRuns", "P"),
-    "pitcher_walks": ("baseOnBalls", "P"),
+    "pitcher_walks": ("baseOnBalls", "P"),       # pitcher row's BB = walks allowed
     "batter_hits": ("hits", "B"),
     "batter_total_bases": ("totalBases", "B"),
     "batter_home_runs": ("homeRuns", "B"),
@@ -114,11 +114,17 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
         base["season"] = df["season"]
     else:
         base["season"] = pd.to_datetime(df["date"]).dt.year
-    for key in ("strikeOuts", "hits", "totalBases", "homeRuns"):
+    for key in ("strikeOuts", "hits", "totalBases", "homeRuns",
+                "baseOnBalls", "earnedRuns", "inningsPitched"):
         if "stats" in df.columns:          # backfill: nested stats dict
             base[key] = df["stats"].map(lambda s, k=key: (s or {}).get(k))
         elif key in df.columns:            # forward store: flat columns
             base[key] = df[key]
+    # Pitcher outs recorded = innings pitched × 3 (IP already stored as decimal
+    # innings, e.g. 5⅔ -> 5.667), so the outs prop market can be graded.
+    if "inningsPitched" in base.columns:
+        base["outs"] = (pd.to_numeric(base["inningsPitched"], errors="coerce")
+                        * 3).round()
     for col in ("points", "rebounds", "assists", "three_made", "steals",
                 "blocks", "pra"):
         if col in df.columns:
