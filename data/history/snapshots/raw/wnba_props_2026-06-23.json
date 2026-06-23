@@ -1,0 +1,280 @@
+[
+ {
+  "sport": "WNBA",
+  "market_id": 396,
+  "event_id": 2603,
+  "participant": {
+   "id": "132",
+   "name": "Sabrina Ionescu",
+   "link": "/wnba/props/sabrina-ionescu/",
+   "player": {
+    "short_name": "S. Ionescu",
+    "first_name": "Sabrina",
+    "last_name": "Ionescu",
+    "image": "https://images.fantasypros.com/images/players/wnba/132/headshot/210x210.webp",
+    "slug": "sabrina-ionescu",
+    "position": "G",
+    "team": "NYL",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 22.5,
+   "odds": -104,
+   "book": 36,
+   "consensus_line": 21.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 21.5,
+     "cost": -105,
+     "book_id": 12,
+     "created": "2026-06-22 20:57:35"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "e30620c0867a87af8ab72d503fbc2dd2"
+   },
+   "probability": 0.025701637650179965,
+   "expected_value": -0.9519491122192287,
+   "bet_rating": 1
+  },
+  "under": {
+   "line": 21.5,
+   "odds": -115,
+   "book": 13,
+   "consensus_line": 21.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 21.5,
+     "cost": -109,
+     "book_id": 13,
+     "created": "2026-06-22 20:58:42"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "73c85454266d9eb29af6a808d8878205"
+   },
+   "probability": 0.97429836234982,
+   "expected_value": 0.8215143296105331,
+   "bet_rating": 5
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 3.66,
+   "probability": 0.97429836234982,
+   "expected_value": 0.8215143296105331,
+   "bet_rating": 5,
+   "diff": -17.84
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 7,
+    "value": 104.4,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/sabrina-ionescu/points-assists-rebounds/",
+   "analyzer": "/wnba/props/sabrina-ionescu/points-assists-rebounds/",
+   "affiliate": "https://sportsbook.caesars.com/us/nj/bet/betslip?selectionIds=17f54da9-37a1-3552-b6d5-1813fe666a15"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 7,
+    "under": 8,
+    "push": 0
+   },
+   "last_20": {
+    "over": 10,
+    "under": 10,
+    "push": 0
+   },
+   "season": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 30,
+    "under": 11,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 4,
+   "streak_type": "under"
+  }
+ },
+ {
+  "sport": "WNBA",
+  "market_id": 394,
+  "event_id": 2603,
+  "participant": {
+   "id": "132",
+   "name": "Sabrina Ionescu",
+   "link": "/wnba/props/sabrina-ionescu/",
+   "player": {
+    "short_name": "S. Ionescu",
+    "first_name": "Sabrina",
+    "last_name": "Ionescu",
+    "image": "https://images.fantasypros.com/images/players/wnba/132/headshot/210x210.webp",
+    "slug": "sabrina-ionescu",
+    "position": "G",
+    "team": "NYL",
+    "popularity": null,
+    "jersey_number": null
+   }
+  },
+  "over": {
+   "line": 17.5,
+   "odds": -110,
+   "book": 33,
+   "consensus_line": 17.5,
+   "consensus_odds": -120,
+   "selection": {
+    "participant": null,
+    "selection": "over",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -107,
+     "book_id": 12,
+     "created": "2026-06-22 20:57:35"
+    },
+    "label": "Over",
+    "short_label": "Over",
+    "id": "f3e69e8d4170f4cd5191d97bddb0fede"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "under": {
+   "line": 17.5,
+   "odds": -115,
+   "book": 13,
+   "consensus_line": 17.5,
+   "consensus_odds": -115,
+   "selection": {
+    "participant": null,
+    "selection": "under",
+    "active": true,
+    "opening_line": {
+     "line": 17.5,
+     "cost": -110,
+     "book_id": 13,
+     "created": "2026-06-22 20:58:42"
+    },
+    "label": "Under",
+    "short_label": "Under",
+    "id": "9d354c67550d54d0229fe2e76dd3849b"
+   },
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null
+  },
+  "projection": {
+   "recommended_side": "under",
+   "value": 2.96,
+   "probability": null,
+   "expected_value": null,
+   "bet_rating": null,
+   "diff": -14.54
+  },
+  "extra": {
+   "opposition_rank": {
+    "rank": 7,
+    "value": 104.4,
+    "tied": false
+   }
+  },
+  "scoring": {
+   "is_scored": false,
+   "is_push": false,
+   "push_reason": null,
+   "actual": 0
+  },
+  "links": {
+   "odds": "wnba/odds/player-props/sabrina-ionescu/points-assists/",
+   "analyzer": "/wnba/props/sabrina-ionescu/points-assists/",
+   "affiliate": "https://sportsbook.caesars.com/us/nj/bet/betslip?selectionIds=831b5b0b-6fc9-3f70-9fc1-581fbb40603d"
+  },
+  "performance": {
+   "last_1": {
+    "over": 0,
+    "under": 1,
+    "push": 0
+   },
+   "last_5": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "last_10": {
+    "over": 4,
+    "under": 6,
+    "push": 0
+   },
+   "last_15": {
+    "over": 8,
+    "under": 7,
+    "push": 0
+   },
+   "last_20": {
+    "over": 11,
+    "under": 9,
+    "push": 0
+   },
+   "season": {
+    "over": 1,
+    "under": 4,
+    "push": 0
+   },
+   "prior_season": {
+    "over": 30,
+    "under": 11,
+    "push": 0
+   },
+   "h2h": {
+    "over": 0,
+    "under": 0,
+    "push": 0
+   },
+   "streak": 4,
+   "streak_type": "under"
+  }
+ }
+]
