@@ -20,7 +20,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
-from app.auth import require_password  # noqa: E402
+from app.landing import gate  # noqa: E402
 from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
@@ -35,8 +35,6 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
             os.environ[_k] = str(st.secrets[_k])
     except Exception:
         pass
-
-require_password()
 
 st.markdown("""
 <style>
@@ -174,6 +172,11 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
 # ---------------------------------------------------------------------------
 
 data = load_data()
+
+# Public landing page → password gate → app. Returns only once the visitor is
+# authenticated; otherwise renders the storefront / login and stops the script.
+gate(data)
+
 slates = slates_by_date(data) if data else {}
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
