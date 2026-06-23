@@ -395,7 +395,8 @@ def _conviction(ev) -> float:
 
 
 def _conv_color(score: float) -> str:
-    return "var(--acc)" if score >= 6 else "var(--warn)" if score >= 3 else "var(--neg)"
+    # electric-blue → amber → bright-red, the L&O accent ramp
+    return "var(--elec)" if score >= 6 else "var(--warn)" if score >= 3 else "var(--vivid)"
 
 
 def market_convictions(g: dict) -> dict:

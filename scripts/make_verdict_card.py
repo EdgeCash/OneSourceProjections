@@ -127,10 +127,10 @@ def build(data: dict, redact: bool, story: bool) -> str:
     align-items:flex-start;padding:24px;font-family:var(--body);}}
   .card{{position:relative;width:1080px;height:{h}px;background:
     radial-gradient(1200px 600px at 10% -8%, rgba(var(--acc-rgb),0.10), transparent 55%),
-    var(--bg);border:1px solid var(--line);box-sizing:border-box;
-    padding:64px 64px 52px;color:var(--text);overflow:hidden;}}
+    var(--bg);border:1px solid var(--line);border-top:6px solid var(--elec);
+    box-sizing:border-box;padding:60px 64px 52px;color:var(--text);overflow:hidden;}}
   .mast{{display:flex;justify-content:space-between;align-items:baseline;
-    border-bottom:2px solid var(--acc);padding-bottom:16px;}}
+    border-bottom:3px solid var(--vivid);padding-bottom:16px;}}
   .mast .b{{font-family:var(--disp);font-weight:700;font-size:34px;letter-spacing:4px;}}
   .mast .b .dot{{color:var(--acc);}}
   .mast .u{{font-family:var(--mono);font-size:18px;letter-spacing:3px;color:var(--muted);}}

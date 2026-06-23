@@ -112,6 +112,7 @@ _LANDING_CSS = """
   .osp-land { max-width: 1040px; margin: 0 auto; }
   /* the cold-open intertitle */
   .osp-coldopen { background:#000; border:1px solid var(--line);
+    border-top:3px solid var(--elec); border-bottom:3px solid var(--vivid);
     border-radius:6px; padding:30px 24px 26px; text-align:center;
     box-shadow: 0 0 0 1px rgba(var(--acc2-rgb),0.18), 0 18px 50px rgba(0,0,0,0.6);
     animation: ospdun 0.8s ease-out; }
@@ -184,9 +185,9 @@ _LANDING_CSS = """
   .osp-trial-lede { text-align:center; color:var(--muted); font-size:0.9rem;
     max-width:620px; margin:0 auto 6px; line-height:1.5; }
   .osp-trial-lede b { color:var(--acc); }
-  .osp-trial-out { border:1px solid var(--line); border-left:3px solid var(--acc);
-    border-radius:8px; background:var(--panel); padding:18px 22px; margin-top:10px;
-    animation: ospdun 0.7s ease-out; }
+  .osp-trial-out { border:1px solid var(--line); border-top:3px solid var(--elec);
+    border-bottom:3px solid var(--vivid); border-radius:8px; background:var(--panel);
+    padding:18px 22px; margin-top:10px; animation: ospdun 0.7s ease-out; }
   .osp-trial-out .cap { font-family:var(--disp); font-weight:700; font-size:1.05rem;
     letter-spacing:0.5px; text-transform:uppercase; color:var(--text); text-align:center; }
   .osp-trial-out .ring-wrap { text-align:center; margin:14px 0 6px; }
@@ -320,11 +321,12 @@ def _how_html() -> str:
 
 
 def _band_color(b: str) -> str:
+    # electric blue for a strong case, gold for the toss-up, bright red for doubt
     if b in ("Open-and-shut", "Strong case"):
-        return "var(--acc)"
+        return "var(--elec)"
     if b == "Circumstantial":
-        return "var(--warn)"
-    return "var(--neg-text)"
+        return "var(--acc)"
+    return "var(--vivid)"
 
 
 def _verdict_card_html(res: dict) -> str:

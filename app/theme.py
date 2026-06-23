@@ -43,6 +43,8 @@ _ORIGINAL = {
     "--acc": "#00e676", "--acc2": "#22d3ee",
     "--neg": "#ff4d6d", "--neg2": "#ff6b6b", "--warn": "#e3b341",
     "--win": "#2ea043", "--pos": "#2ea043",
+    # vivid L&O accents — electric blue + bright red, for verdicts & rates
+    "--elec": "#22d3ee", "--vivid": "#ff4d6d",
     # text-tier variants (AA-safe on dark) for oxblood/info used as small text
     "--neg-text": "#ff6b6b", "--info-text": "#22d3ee",
     "--muted": "#8b949e", "--muted2": "#7d8794", "--faint": "#6e7781",
@@ -67,6 +69,9 @@ _DOCKET = {
     "--neg2": "#cf6a6a",
     "--warn": "#cf9a33",       # amber (NOTE / caution)
     "--win": "#6f8b3a", "--pos": "#6f8b3a",   # olive "convicted" green
+    # vivid L&O title-sequence accents — electric blue (LAW) + bright red
+    # (ORDER) — used on verdicts, conviction rates, and the twin rules.
+    "--elec": "#3d8bff", "--vivid": "#ff4438",
     # text-tier variants — oxblood/info fail AA as small text on dark, so
     # these lifted tiers carry any oxblood/info *text* (loss numbers, labels)
     "--neg-text": "#cf6a6a", "--info-text": "#7ea3c9",
@@ -225,11 +230,11 @@ def css(theme: str | None = None) -> str:
     text-transform:uppercase; letter-spacing:2px; padding:4px 12px; border-radius:3px;
     border:2.5px solid currentColor; transform:rotate(-4deg); font-size:0.86rem;
     opacity:0.92; animation: tbslam 0.30s ease-out; }}
-  .osp-stamp.indicted {{ color:var(--acc); }}
-  .osp-stamp.true-bill {{ color:var(--pos); }}
-  .osp-stamp.dismissed {{ color:var(--neg-text); border-style:double; }}
+  .osp-stamp.indicted {{ color:var(--elec); }}
+  .osp-stamp.true-bill {{ color:var(--acc); }}
+  .osp-stamp.dismissed {{ color:var(--vivid); border-style:double; }}
   .osp-stamp.exhibit {{ color:var(--info-text); }}
-  .osp-stamp.sealed {{ color:var(--neg-text); }}
+  .osp-stamp.sealed {{ color:var(--vivid); }}
   @keyframes tbslam {{ 0%{{transform:scale(1.6) rotate(-14deg);opacity:0;}}
     55%{{transform:scale(.94) rotate(-2deg);opacity:1;}}
     72%{{transform:scale(1.02) rotate(-5deg);}}
