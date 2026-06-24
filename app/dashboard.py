@@ -24,7 +24,7 @@ from app.auth import require_password  # noqa: E402
 from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
 from onesource.sports import SPORTS, default_slate_date  # noqa: E402
 
-st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
+st.set_page_config(page_title="Project 54.7", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
@@ -220,7 +220,8 @@ with st.sidebar:
         st.rerun()
 
 if not slates:
-    st.title("🎯 OneSource Projections")
+    st.title("🎯 Project 54.7")
+    st.caption("52.4% pays the house. 54.7% pays you.")
     st.info("No data yet. The hourly GitHub Action publishes "
             "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
     st.stop()

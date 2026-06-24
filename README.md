@@ -1,10 +1,17 @@
-# OneSource Projections
+# Project 54.7
 
-Personal multi-sport betting model — **MLB, WNBA, NBA, NFL, NCAAF, NHL** —
-projecting games (moneyline / total / spread) and player props, with edges
-computed against BettingPros market lines and a private Streamlit dashboard.
+**52.4% pays the house. 54.7% pays you.**
 
-**Personal use only. Not financial advice. Bet responsibly.**
+A straight-shooting, multi-sport projection engine — **MLB, WNBA, NBA, NFL,
+NCAAF, NHL** — projecting games (moneyline / total / spread) and player props,
+with edges computed against market lines and a private Streamlit dashboard.
+Data, projections, and tools mixed with a little wagering advice — every pick
+graded in public, wins and losses, and the trigger is always yours.
+
+**Personal research. Not financial advice. No bankroll promises. Bet responsibly.**
+
+> **Brand & voice:** see [`docs/BRAND.md`](docs/BRAND.md). The product brand is
+> *Project 54.7*; the repo/package keep the `onesource` name for continuity.
 
 > **Consolidation note (June 2026):** this repo is now the canonical home for
 > EdgeCash's projection work — the best modules from the older repos were
