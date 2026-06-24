@@ -183,15 +183,17 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in S
 # live -> tools -> tracking.
 NAV_GROUPS = {
     "🏠 Home": ["HOME"],
-    "🔬 Research": NAV_SPORTS,
-    "🎯 Bets": ["PLAYS", "EDGES", "EXPERTS", "DFS"],
-    "📡 Live": ["SCORES"],
-    "🧰 Tools": ["TOOLS"],
-    "📈 Performance": ["PERFORMANCE", "BACKTEST"],
+    "🎯 Projections": NAV_SPORTS + ["PLAYS", "EDGES", "DFS", "SCORES"],
+    "🛠️ Edge Builder": ["EDGE_BUILDER"],
+    "🤖 Prompt Engine": ["PROMPT_ENGINE"],
+    "📒 Ledger": ["PERFORMANCE"],
+    "🔬 Research Hub": ["BACKTEST", "EXPERTS", "TOOLS", "DOCS"],
 }
 _PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
-                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer",
-                "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
+                "DFS": "DFS optimizer", "SCORES": "Live scores",
+                "PERFORMANCE": "Track record", "BACKTEST": "Backtest",
+                "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
+                "DOCS": "Methodology & docs"}
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
@@ -1322,10 +1324,10 @@ def ui_ev(prob: float, american) -> float:
 # ---------------------------------------------------------------------------
 
 def render_home():
-    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Command Center"
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Project 54.7"
                 "</div></div>", unsafe_allow_html=True)
-    st.caption(f"Updated {gen} ET · {len(NAV_SPORTS)} sports tracked · "
-               "model estimates, not financial advice")
+    st.caption("52.4% pays the house. 54.7% pays you. · "
+               f"Updated {gen} ET · model estimates, not financial advice")
     day = slates.get(default_date, {})
     board = ui.build_best_bets(day, min_edge)
     if hide_wild and not board.empty:
@@ -1333,20 +1335,40 @@ def render_home():
     perf = (data or {}).get("performance", {}).get("overall", {})
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
-    c = st.columns(4)
-    c[0].metric("Slate", default_date or "—")
-    c[1].metric("Games", games_today)
-    c[2].metric("Edges ≥ thresh", 0 if board.empty else len(board))
-    c[3].metric("Best EV", f"{board['ev'].max():+.1%}" if not board.empty else "—")
-    c2 = st.columns(4)
-    c2[0].metric("Graded games", perf.get("graded_games", 0))
-    c2[1].metric("Model Brier", perf.get("model_brier") or "—",
-                 help="Win-probability error; 0.25 = coin flip, lower is better.")
+    # --- The receipts (scoreboard first — the anti-guru move) ---------------
+    st.markdown("##### 📒 The receipts — every pick graded, wins *and* losses")
+    win = perf.get("bet_win_rate")
     roi = perf.get("roi_pct")
-    c2[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—")
     clv = perf.get("avg_clv_pct")
-    c2[3].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
-                 help="Edge vs the closing line — the truest early skill signal.")
+    units = perf.get("units")
+    beat = perf.get("clv_beat_rate")
+    s = st.columns(5)
+    s[0].metric("Win %", f"{win*100:.1f}%" if win is not None else "—",
+                delta=(f"{(win*100-54.7):+.1f} vs 54.7" if win is not None else None),
+                help="Bets graded as wins ÷ settled bets. 54.7% is the "
+                     "professional bar (52.4% just clears the vig).")
+    s[1].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help=f"Profit ÷ amount staked, over {perf.get('bets', 0)} bets.")
+    s[2].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+                help="Edge vs the closing line — the truest early skill signal.")
+    s[3].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
+                help="Share of bets that beat the closing line.")
+    s[4].metric("Units", f"{units:+.1f}u" if units is not None else "—",
+                help=f"Net units across {perf.get('bets', 0)} graded bets "
+                     f"(Brier {perf.get('model_brier') or '—'}).")
+    if win is None:
+        st.caption("No graded bets yet — the scoreboard fills in as picks settle. "
+                   "Full history on the **Ledger** tab.")
+    else:
+        st.caption("We show this first, on purpose. Full breakdown on **Ledger**.")
+    st.divider()
+
+    # --- Today's slate ------------------------------------------------------
+    st.markdown(f"##### 🗓️ Today — {default_date or '—'}")
+    c = st.columns(3)
+    c[0].metric("Games", games_today)
+    c[1].metric("Edges ≥ thresh", 0 if board.empty else len(board))
+    c[2].metric("Best EV", f"{board['ev'].max():+.1%}" if not board.empty else "—")
 
     left, right = st.columns([3, 2])
     with left:
@@ -1903,6 +1925,53 @@ def _render_replay_research_card(sport: str, gd: dict):
 
 
 # ---------------------------------------------------------------------------
+# Edge Builder · Prompt Engine · Research Hub docs (Project 54.7 tabs)
+# ---------------------------------------------------------------------------
+
+def render_edge_builder():
+    from app import byoe
+    byoe.render()
+
+
+def render_prompt_engine():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🤖 Prompt Engine"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Turn a slate into an AI-ready brief with a risk posture you "
+               "choose — Conservative, Standard, or Aggressive. Copy it into "
+               "Claude.ai on your own subscription, or run it in-app. A tool, "
+               "not a take.")
+    scope = st.selectbox("Scope", ["Whole slate"] + NAV_SPORTS)
+    day = slates.get(default_date, {})
+    board = ui.build_best_bets(day, min_edge)
+    if scope != "Whole slate" and not board.empty:
+        board = board[board["sport"] == scope]
+    if board is None or board.empty:
+        st.info("No edges on this slate/scope yet to brief on — lower **Min "
+                "edge** in the sidebar, or check back as lines post.")
+        return
+    ai_block(ui.ai_brief_board(board, default_date), key="prompt_engine")
+
+
+_DOC_PAGES = {
+    "Brand & voice": "docs/BRAND.md",
+    "Accuracy roadmap": "docs/ACCURACY_ROADMAP.md",
+    "Research synthesis": "docs/research/00-synthesis.md",
+    "Consolidation & provenance": "docs/CONSOLIDATION.md",
+}
+
+
+def render_docs():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🔬 Research Hub"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Show the work. How the model is built, what we validated, and "
+               "what we're still chasing — the opposite of a black box.")
+    pick = st.selectbox("Document", list(_DOC_PAGES))
+    path = config.REPO_ROOT / _DOC_PAGES[pick]
+    st.markdown(path.read_text() if path.exists()
+                else f"_{_DOC_PAGES[pick]} not found._")
+
+
+# ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
 
@@ -1922,6 +1991,12 @@ elif section == "DFS":
     render_dfs()
 elif section == "TOOLS":
     render_tools()
+elif section == "EDGE_BUILDER":
+    render_edge_builder()
+elif section == "PROMPT_ENGINE":
+    render_prompt_engine()
+elif section == "DOCS":
+    render_docs()
 elif section == "PERFORMANCE":
     render_performance()
 elif section == "BACKTEST":
