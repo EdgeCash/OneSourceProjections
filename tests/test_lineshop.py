@@ -2,9 +2,9 @@
 
 import json
 
-from onesource import lineshop
-from onesource.clients import oddsapi
-from onesource.names import normalize
+from project547 import lineshop
+from project547.clients import oddsapi
+from project547.names import normalize
 
 
 def _events():

@@ -54,6 +54,11 @@ class Sport:
     # (the market prices QB news sharply), so left at 0 pending a real-time
     # QB/depth-chart signal that can actually beat the close. Capability kept.
     qb_coeff: float = 0.0
+    # weight on the opponent-adjusted EPA margin (project547/epa.py) vs the
+    # points-based off/def margin. 0 = off. Stays 0 until scripts/validate_epa.py
+    # shows EPA ratings beat the points model walk-forward (roadmap Stage 1);
+    # needs live play-by-play wired into the slate before it can run in prod.
+    epa_blend: float = 0.0
 
 
 SPORTS: dict[str, Sport] = {

@@ -1,4 +1,4 @@
-"""OneSource Projections — research dashboard.
+"""Project 54.7 — research dashboard.
 
 Run locally:  streamlit run app/dashboard.py
 Data source:  data/output/latest.json (rewritten hourly by the GitHub
@@ -21,14 +21,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
-from onesource.sports import SPORTS, default_slate_date  # noqa: E402
+from project547 import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
+from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
-st.set_page_config(page_title="OneSource Projections", page_icon="🎯",
+st.set_page_config(page_title="Project 54.7", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
-# environment so the anthropic SDK (and onesource.ai) can find them.
+# environment so the anthropic SDK (and project547.ai) can find them.
 for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
     try:
         if _k not in os.environ and _k in st.secrets:
@@ -38,34 +38,38 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
 
 require_password()
 
-st.markdown("""
-<style>
+_PALETTES = {
+    "light": dict(acc="#00a352", acc2="#0e7490", bg="#f6f8fc", card="#ffffff",
+                  line="#e4e9f2", neg="#e11d48", text="#0e1726",
+                  sb1="#ffffff", sb2="#eef2f8", glow="0.06", shadow="0.10"),
+    "dark": dict(acc="#00e676", acc2="#22d3ee", bg="#080b12", card="#121826",
+                 line="#1e2636", neg="#ff4d6d", text="#e6edf3",
+                 sb1="#0b0f18", sb2="#070a11", glow="0.10", shadow="0.35"),
+}
+
+_THEME_CSS = """
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-  :root { --acc:#00e676; --acc2:#22d3ee; --bg:#080b12; --card:#121826;
-          --line:#1e2636; --neg:#ff4d6d;
-          --disp:'Space Grotesk', system-ui, sans-serif; }
+  .stApp, body { color: var(--text); }
   .stApp { background:
-    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,0.10), transparent 55%),
-    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,0.08), transparent 50%),
+    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,var(--glow)), transparent 55%),
+    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,var(--glow)), transparent 50%),
     var(--bg); }
   .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1340px; }
-  /* headings + brand in the bold display face */
   h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
     letter-spacing: -0.5px; }
   section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0b0f18 0%,#070a11 100%);
+    background: linear-gradient(180deg,var(--sb1) 0%,var(--sb2) 100%);
     border-right: 1px solid var(--line); }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
     border-radius: 10px; padding: 5px 10px; font-weight: 600;
     transition: background .15s ease; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
     background: rgba(0,230,118,0.10); }
-  /* metric cards: punchy, glowing accent edge, big display-face value */
   [data-testid="stMetric"] { position: relative; overflow: hidden;
     background: linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)),
       var(--card);
     border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+    box-shadow: 0 6px 18px rgba(0,0,0,var(--shadow)); }
   [data-testid="stMetric"]::before { content:""; position:absolute; left:0; top:0;
     bottom:0; width:3px; background: linear-gradient(180deg,var(--acc),var(--acc2)); }
   [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.74rem;
@@ -78,35 +82,66 @@ st.markdown("""
     background-clip: text; -webkit-text-fill-color: transparent; }
   .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
   div[data-testid="stCaptionContainer"] { opacity: 0.62; }
-  /* tabs: bold, electric active underline */
   .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
     font-size: 0.96rem; }
   .stTabs [aria-selected="true"] { color: var(--acc) !important; }
   .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
     height: 3px; }
-  /* buttons: glow on hover, lift on press */
   .stButton > button { border-radius: 10px; border: 1px solid var(--line);
     font-weight: 700; transition: all .15s ease; }
-  .stButton > button:hover { border-color: var(--acc); color: #fff;
+  .stButton > button:hover { border-color: var(--acc); color: var(--acc);
     box-shadow: 0 0 0 1px var(--acc), 0 6px 18px rgba(0,230,118,0.18);
     transform: translateY(-1px); }
   .stButton > button:active { transform: translateY(0); }
+  /* form surfaces follow the palette so dark mode stays legible */
+  [data-baseweb="select"] > div, .stTextInput input, .stNumberInput input,
+  .stTextArea textarea { background: var(--card) !important; color: var(--text) !important;
+    border-color: var(--line) !important; }
   .osp-hero { background: linear-gradient(135deg, rgba(0,230,118,0.12),
       rgba(34,211,238,0.06));
     border: 1px solid rgba(0,230,118,0.25); border-radius: 18px; padding: 18px 22px;
-    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,0.35); }
+    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,var(--shadow)); }
   .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:3px 10px;
     border-radius:999px; margin-right:6px; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-  /* clickable player names -> profile dialog */
-  a.osp-plink { color:#c9d1d9 !important; text-decoration:none;
+  a.osp-plink { color: var(--text) !important; text-decoration:none;
     border-bottom:1px dashed rgba(0,230,118,0.0); transition: color .12s ease,
     border-color .12s ease; }
-  a.osp-plink:hover { color:#00e676 !important;
+  a.osp-plink:hover { color: var(--acc) !important;
     border-bottom-color:rgba(0,230,118,0.7); }
-</style>
-""", unsafe_allow_html=True)
+  /* mobile: tighter padding, smaller display type, full-width buttons */
+  @media (max-width: 640px) {
+    .block-container { padding: 0.6rem 0.6rem 2rem; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem; }
+    .osp-title { font-size: 1.4rem; } .osp-brand { font-size: 1.3rem; }
+    .osp-hero { padding: 13px 15px; }
+    .stButton > button { width: 100%; }
+  }
+"""
+
+
+def _theme_css(theme: str) -> str:
+    p = _PALETTES.get(theme, _PALETTES["light"])
+    root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
+            + "--disp:'Space Grotesk', system-ui, sans-serif; }")
+    return f"<style>{root}{_THEME_CSS}</style>"
+
+
+st.markdown(_theme_css(st.session_state.get("theme", "light")),
+            unsafe_allow_html=True)
+
+
+def _theme_toggle(key: str):
+    """Light/Dark master toggle. Both placements (sidebar + landing) stay in
+    sync via the shared ``theme`` state, re-seeded from it each render."""
+    st.session_state[key] = (st.session_state.get("theme", "light") == "dark")
+
+    def _cb():
+        st.session_state.theme = "dark" if st.session_state[key] else "light"
+
+    st.toggle("🌙 Night mode", key=key, on_change=_cb,
+              help="Light by day, dark by night — your call.")
 
 
 @st.cache_data(ttl=300)
@@ -124,7 +159,7 @@ def refresh():
     from datetime import datetime, timedelta
     from zoneinfo import ZoneInfo
 
-    from onesource import pipeline
+    from project547 import pipeline
 
     et = ZoneInfo("America/New_York")
     today = datetime.now(et).date()
@@ -183,19 +218,24 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in S
 # live -> tools -> tracking.
 NAV_GROUPS = {
     "🏠 Home": ["HOME"],
-    "🔬 Research": NAV_SPORTS,
-    "🎯 Bets": ["PLAYS", "EDGES", "EXPERTS", "DFS"],
-    "📡 Live": ["SCORES"],
-    "🧰 Tools": ["TOOLS"],
-    "📈 Performance": ["PERFORMANCE", "BACKTEST"],
+    "🎯 Projections": ["PLAYS"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
+    "🛠️ Edge Builder": ["EDGE_BUILDER"],
+    "🤖 Prompt Engine": ["PROMPT_ENGINE"],
+    "📒 Ledger": ["PERFORMANCE"],
+    "🔬 Research Hub": ["SHARPSHEET", "OTHER_SPORTS", "BACKTEST", "EXPERTS",
+                        "TOOLS", "DOCS"],
 }
-_PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
-                "EXPERTS": "Expert consensus", "DFS": "DFS optimizer",
-                "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
+_PAGE_LABELS = {"PLAYS": "Curated plays", "PLAYS_DETAIL": "Plays — full table",
+                "EDGES": "Edge scanner", "DFS": "DFS optimizer",
+                "SCORES": "Live scores", "PERFORMANCE": "Track record",
+                "SHARPSHEET": "Sharp Sheets", "OTHER_SPORTS": "Other sports",
+                "BACKTEST": "Backtest", "EXPERTS": "Expert consensus",
+                "TOOLS": "Calculators", "DOCS": "Methodology & docs"}
 
 with st.sidebar:
-    st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
-    st.caption("projections & research")
+    st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
+    st.caption("52.4% pays the house. 54.7% pays you.")
+    _theme_toggle("theme_sb")
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
                     label_visibility="collapsed", key="nav_area")
     pages = NAV_GROUPS[area]
@@ -220,7 +260,8 @@ with st.sidebar:
         st.rerun()
 
 if not slates:
-    st.title("🎯 OneSource Projections")
+    st.title("🎯 Project 54.7")
+    st.caption("52.4% pays the house. 54.7% pays you.")
     st.info("No data yet. The hourly GitHub Action publishes "
             "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
     st.stop()
@@ -262,10 +303,22 @@ def ai_block(brief: str, key: str):
     cost. The in-app Claude analysis is offered second, clearly marked as a paid
     API call, and only when a key is configured. The analysis persists across
     reruns via session_state so it doesn't vanish on the next interaction."""
+    from project547 import ai_modes
     with st.expander("🤖 Send to AI  ·  free copy-paste"):
+        # Risk mode (ported from Edge Equation): Conservative / Standard /
+        # Aggressive change the betting *posture* of the read — selectivity,
+        # stake ladder, prop discipline, edge floor — not the numbers.
+        mode = st.radio(
+            "AI risk mode", list(ai_modes.MODE_ORDER),
+            index=ai_modes.MODE_ORDER.index(ai_modes.DEFAULT_MODE),
+            format_func=ai_modes.label, horizontal=True, key=f"ai_mode_{key}",
+            help="How aggressive the AI's bet recommendations are. Applies to "
+                 "both the copy-paste brief and the in-app read.")
+        st.caption(ai_modes.MODES[mode][1])
+        full_brief = f"{brief}\n\n{ai_modes.MODES[mode][3]}"
         st.caption("**Free** — copy this brief and paste it into Claude.ai or "
                    "any chatbot. Uses your own subscription; no API charge.")
-        st.code(brief, language="markdown")
+        st.code(full_brief, language="markdown")
         st.caption("Hover the box and click ⧉ to copy.")
         ready, _ = ai.available()
         if ready:
@@ -278,7 +331,7 @@ def ai_block(brief: str, key: str):
                               "Claude subscription)."):
                 try:
                     with st.spinner("Claude is reading the brief…"):
-                        st.session_state[out_key] = ai.analyze(brief)
+                        st.session_state[out_key] = ai.analyze(brief, mode=mode)
                 except Exception as e:  # network/auth/rate-limit — show, don't crash
                     st.session_state[out_key] = f"⚠️ AI analyst error: {e}"
             c2.caption("Optional paid one-click read (Anthropic API, ~5¢).")
@@ -368,6 +421,43 @@ def _matchup(sport: str, home: str, away: str, asof: str) -> dict:
         return {}
 
 
+def _bp_validator(sport: str, g: dict, date_sel: str):
+    """BettingPros as a validator on a modeled matchup: compare our model's home
+    win prob to BP's de-vigged consensus, and show BP's prop second opinion.
+    Defensive — BP errors/no-coverage just render nothing."""
+    from project547 import baseline as _baseline
+    from project547 import bp as _bp
+    bp_sport = _bp.modeled_bp_sport(sport)
+    if not bp_sport:
+        return
+    home, away = g.get("home_team", ""), g.get("away_team", "")
+    bpb = _bp.game_baseline(bp_sport, date_sel, home, away)
+    our = g.get("home_win_prob")
+    if bpb:
+        if isinstance(our, (int, float)):
+            st.markdown(f"**🔍 BettingPros check** — model **{our*100:.0f}%** vs "
+                        f"BP **{bpb.home_wp*100:.0f}%** (home win)")
+            c = _baseline.compare(our, bpb.home_wp)
+            st.caption("✅ We agree with BettingPros — higher confidence."
+                       if c["agree"] else
+                       f"⚠️ We diverge from BettingPros — {c['label']}. "
+                       "That's our edge or a data check, not a coin flip.")
+        else:
+            st.markdown(f"**🔍 BettingPros baseline** — home "
+                        f"{bpb.home_wp*100:.0f}% / away {bpb.away_wp*100:.0f}%")
+    props = _bp.prop_projections(bp_sport, date_sel, teams=[home, away], limit=8)
+    if props:
+        with st.expander(f"📊 BettingPros prop projections ({len(props)}) — "
+                         "their model, our second opinion"):
+            st.dataframe(pd.DataFrame([{
+                "Player": p["participant"], "Line": p["bp_line"],
+                "BP proj": p["bp_projection"],
+                "EV%": (f"{p['bp_ev']*100:+.1f}"
+                        if isinstance(p["bp_ev"], (int, float)) else None),
+                "Side": p["bp_recommended_side"], "Rating": p["bp_bet_rating"],
+            } for p in props]), hide_index=True, width="stretch")
+
+
 def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = True):
     m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
     if not m:
@@ -376,6 +466,7 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
+    _bp_validator(sport, g, date_sel)
     ai_block(ui.ai_brief_game(sport, g, m, min_edge),
              key=f"game_{sport}_{date_sel}_{g.get('away_team','')}_{g.get('home_team','')}")
     if caption:
@@ -386,14 +477,14 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
 
 @st.cache_data(ttl=300, show_spinner=False)
 def load_best_lines(sport: str, date_sel: str) -> dict:
-    from onesource import lineshop
+    from project547 import lineshop
     # frozenset keys aren't JSON-friendly for caching, so stringify them
     return {" vs ".join(sorted(k)): v
             for k, v in lineshop.best_lines(sport, date_sel).items()}
 
 
 def _shop_line(sport: str, g: dict, date_sel: str):
-    from onesource.names import normalize
+    from project547.names import normalize
     best = load_best_lines(sport, date_sel)
     key = " vs ".join(sorted({normalize(g.get("home_team", "")),
                               normalize(g.get("away_team", ""))}))
@@ -569,7 +660,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
             moved = "toward the over" if now_ < open_ else "toward the under"
             bits.append(f"Over opened **{ui.fmt_american(open_)}**, now "
                         f"**{ui.fmt_american(now_)}** (moved {moved}).")
-        from onesource.names import normalize as _norm
+        from project547.names import normalize as _norm
         inj = next((i for i in (injuries or [])
                     if i.get("norm") == _norm(player)), None)
         if inj:
@@ -615,8 +706,8 @@ def _player_profile(sport: str, player: str, market: str) -> str | None:
     if sport != "MLB":
         return None
     try:
-        from onesource import internal_stats
-        from onesource.names import normalize as _norm
+        from project547 import internal_stats
+        from project547.names import normalize as _norm
         season = int(default_date[:4]) if default_date else 2026
         n = _norm(player)
         if str(market).startswith("pitcher"):
@@ -646,8 +737,8 @@ def _player_profile(sport: str, player: str, market: str) -> str | None:
 # PLAYS: cross-sport best bets
 # ---------------------------------------------------------------------------
 
-def render_plays():
-    q = topbar("Plays")
+def render_plays_detail():
+    q = topbar("Plays — full table")
     date_sel = pick_date()
     board = ui.build_best_bets(slates.get(date_sel, {}), min_edge)
     if hide_wild and not board.empty:
@@ -668,7 +759,7 @@ def render_plays():
     c[3].metric("Best EV", f"{board['ev'].max():+.1%}")
 
     # line shopping: best available price + book per bet from multi-book odds
-    from onesource import lineshop
+    from project547 import lineshop
     shop = ({sp: lineshop.best_lines(sp, date_sel)
              for sp in board["sport"].unique()} if not board.empty else {})
 
@@ -736,6 +827,74 @@ def render_plays():
         st.caption("Single props — sortable; click the **EV %** header for a "
                    "quick high-to-low EV check.")
         render_board(props, f"board_props_{date_sel}", "prop")
+
+
+# ---------------------------------------------------------------------------
+# Sharp Sheet — the deep matchup breakdown behind a play (research starter)
+# ---------------------------------------------------------------------------
+
+def _resolve_game(sport: str, r, date_sel: str) -> dict | None:
+    """The slate game dict behind a board row (game or prop), or None."""
+    from project547.names import normalize
+    games = slates.get(date_sel, {}).get(sport, {}).get("games", []) or []
+    h, a = r.get("_home"), r.get("_away")
+    if isinstance(h, str) and isinstance(a, str):
+        names = {normalize(h), normalize(a)}
+    else:  # prop rows carry "Team vs Opponent" in `game`
+        names = {normalize(x) for x in str(r.get("game", "")).split(" vs ")}
+    names.discard("")
+    for g in games:
+        if {normalize(g.get("home_team", "")), normalize(g.get("away_team", ""))} & names:
+            return g
+    return {"home_team": h, "away_team": a} if isinstance(h, str) else None
+
+
+@st.dialog("📊 Sharp Sheet", width="large")
+def _sharpsheet(sport: str, g: dict | None, date_sel: str):
+    if not g:
+        st.info("Couldn't resolve the matchup behind this play.")
+        return
+    st.markdown(f"### {g.get('away_team')} @ {g.get('home_team')}")
+    st.caption(f"{sport} · {date_sel} · the full breakdown behind the play — "
+               "offense vs defense, the edges, and the model's read.")
+    render_research_card(sport, g, date_sel)
+
+
+def render_plays():
+    """Curated plays — simple and scannable (matchup | play), grouped by sport,
+    with a Sharp Sheet chip on every row for the deep breakdown. Passes shown."""
+    q = topbar("Curated plays")
+    date_sel = pick_date()
+    day = slates.get(date_sel, {})
+    board = ui.build_best_bets(day, min_edge)
+    if hide_wild and not board.empty:
+        board = board[pd.to_numeric(board["ev"], errors="coerce") < 0.30]
+    if q and not board.empty:
+        board = board[board["bet"].str.lower().str.contains(q)
+                      | board["game"].str.lower().str.contains(q)]
+    st.caption("The model's edges, plain. Hit **📊 Sharp Sheet** on any row for "
+               "the full breakdown. We show the passes too.")
+    sports_in_slate = [s for s in NAV_SPORTS if s in day]
+    if not sports_in_slate:
+        st.info("No slate loaded yet.")
+        return
+    for sport in sports_in_slate:
+        rows = (board[board["sport"] == sport] if not board.empty
+                else board.iloc[0:0])
+        st.markdown(f"#### {sport}")
+        if rows.empty:
+            st.caption("No plays — nothing cleared the bar. "
+                       "(A pass is a position, not a bug.)")
+            continue
+        for i, r in rows.reset_index(drop=True).iterrows():
+            cM, cP, cB = st.columns([5, 4, 2], vertical_alignment="center")
+            cM.markdown(f"**{r['game']}**")
+            price = ui.fmt_american(r["price"]) if pd.notna(r.get("price")) else ""
+            cP.markdown(f"<span style='color:#00e676;font-weight:600'>{r['bet']} "
+                        f"{price}</span>", unsafe_allow_html=True)
+            if cB.button("📊 Sharp Sheet", key=f"ss_{sport}_{date_sel}_{i}",
+                         width="stretch"):
+                _sharpsheet(sport, _resolve_game(sport, r, date_sel), date_sel)
 
 
 # ---------------------------------------------------------------------------
@@ -814,8 +973,34 @@ def render_dfs():
                  width="stretch", hide_index=True)
 
 
+def _source_tracking_section():
+    """Projection accuracy by source — our model vs the de-vigged market vs
+    BettingPros, across every sport. This is how we prove we beat the baseline."""
+    from project547 import tracking
+    s = tracking.summary()
+    bs = s.get("by_source", {})
+    if not bs:
+        return
+    st.markdown("##### 📊 Projection accuracy by source")
+    st.caption(f"Who's been right, across every sport "
+               f"({s['graded_events']} graded events). Our edge = beating the "
+               "de-vigged market baseline.")
+    label = {"model": "Our model", "blend": "Model + adj",
+             "market": "Market baseline", "bettingpros": "BettingPros"}
+    order = [k for k in ("model", "blend", "market", "bettingpros") if k in bs]
+    for col, src in zip(st.columns(len(order)), order):
+        d = bs[src]
+        acc = f"{d['accuracy']*100:.0f}%" if d.get("accuracy") is not None else "—"
+        lift = d.get("lift_vs_market")
+        col.metric(label[src], acc,
+                   delta=(f"{lift*100:+.0f} vs market" if lift else None),
+                   help=f"n={d['n']} graded · Brier {d.get('brier')}")
+    st.divider()
+
+
 def render_performance():
     topbar("Performance", with_search=False)
+    _source_tracking_section()
     perf = (data or {}).get("performance", {})
     overall = perf.get("overall", {})
     ledger = load_ledger()
@@ -971,7 +1156,7 @@ def render_performance():
 
     # Model vs market: does the model add signal where it disagrees with the
     # market? The honest test of independent skill, not market-following.
-    from onesource import scorecard as _sc
+    from project547 import scorecard as _sc
     sc = _sc.scorecard(ledger)
     st.subheader("Model vs market")
     d, a = sc["disagree"], sc["agree"]
@@ -1065,12 +1250,12 @@ def render_performance():
 
 @st.cache_data(ttl=30, show_spinner=False)
 def load_scores(date_str: str) -> list[dict]:
-    from onesource import scores
+    from project547 import scores
     return scores.live_scoreboard(date_str)
 
 
 def _score_ticker(games: list[dict]):
-    from onesource import scores
+    from project547 import scores
     live = [g for g in games if g.get("state") == "in"] or games
     chips = []
     for g in live[:40]:
@@ -1147,7 +1332,7 @@ def render_scores_board(date_str: str):
               f"{g['home'].get('abbrev') or g['home'].get('team')}" for g in games]
     pick = st.selectbox("📋 Open a box score", ["—", *labels], key="boxpick")
     if pick != "—":
-        from onesource import scores
+        from project547 import scores
         g = games[labels.index(pick)]
         box = scores.box_score(g["sport"], g["game_id"])
         if not box.get("teams"):
@@ -1175,7 +1360,7 @@ def render_scores():
 # ---------------------------------------------------------------------------
 
 def render_tools():
-    from onesource import calculators as calc
+    from project547 import calculators as calc
 
     topbar("Betting Tools", with_search=False)
     st.caption("The deterministic toolkit — fair odds, edge, and staking math "
@@ -1240,7 +1425,7 @@ def render_tools():
         kp = k[0].number_input("Win %", 0.0, 100.0, 55.0, 0.5, key="k_p") / 100
         ko = k[1].number_input("Odds", value=-110, step=5, key="k_o")
         kf = k[2].slider("Kelly fraction", 0.0, 1.0, 0.25, 0.05)
-        from onesource import odds as _odds
+        from project547 import odds as _odds
         stake_frac = _odds.kelly_stake(kp, ko, kf)
         ror = calc.risk_of_ruin(kp, ko, fraction=kf)
         kc = st.columns(3)
@@ -1264,7 +1449,7 @@ def render_tools():
             st.warning("Enter comma-separated numbers, e.g. -110, +120.")
         st.divider()
         st.markdown("**Same-game parlay** — correlation-adjusted fair price & EV")
-        from onesource import sgp as _sgp
+        from project547 import sgp as _sgp
         legs_p = st.text_input("Leg win % (comma-separated)", "55, 60",
                                key="sgp_p")
         preset = st.selectbox("Leg relationship (sets ρ)",
@@ -1300,7 +1485,7 @@ def render_tools():
 
 
 def ui_ev(prob: float, american) -> float:
-    from onesource import odds as _odds
+    from project547 import odds as _odds
     return _odds.expected_value(prob, american)
 
 
@@ -1309,10 +1494,13 @@ def ui_ev(prob: float, american) -> float:
 # ---------------------------------------------------------------------------
 
 def render_home():
-    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Command Center"
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Project 54.7"
                 "</div></div>", unsafe_allow_html=True)
-    st.caption(f"Updated {gen} ET · {len(NAV_SPORTS)} sports tracked · "
-               "model estimates, not financial advice")
+    st.caption("52.4% pays the house. 54.7% pays you. · "
+               f"Updated {gen} ET · model estimates, not financial advice")
+    _, _tg = st.columns([5, 1])
+    with _tg:
+        _theme_toggle("theme_home")
     day = slates.get(default_date, {})
     board = ui.build_best_bets(day, min_edge)
     if hide_wild and not board.empty:
@@ -1320,20 +1508,40 @@ def render_home():
     perf = (data or {}).get("performance", {}).get("overall", {})
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
-    c = st.columns(4)
-    c[0].metric("Slate", default_date or "—")
-    c[1].metric("Games", games_today)
-    c[2].metric("Edges ≥ thresh", 0 if board.empty else len(board))
-    c[3].metric("Best EV", f"{board['ev'].max():+.1%}" if not board.empty else "—")
-    c2 = st.columns(4)
-    c2[0].metric("Graded games", perf.get("graded_games", 0))
-    c2[1].metric("Model Brier", perf.get("model_brier") or "—",
-                 help="Win-probability error; 0.25 = coin flip, lower is better.")
+    # --- The receipts (scoreboard first — the anti-guru move) ---------------
+    st.markdown("##### 📒 The receipts — every pick graded, wins *and* losses")
+    win = perf.get("bet_win_rate")
     roi = perf.get("roi_pct")
-    c2[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—")
     clv = perf.get("avg_clv_pct")
-    c2[3].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
-                 help="Edge vs the closing line — the truest early skill signal.")
+    units = perf.get("units")
+    beat = perf.get("clv_beat_rate")
+    s = st.columns(5)
+    s[0].metric("Win %", f"{win*100:.1f}%" if win is not None else "—",
+                delta=(f"{(win*100-54.7):+.1f} vs 54.7" if win is not None else None),
+                help="Bets graded as wins ÷ settled bets. 54.7% is the "
+                     "professional bar (52.4% just clears the vig).")
+    s[1].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help=f"Profit ÷ amount staked, over {perf.get('bets', 0)} bets.")
+    s[2].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+                help="Edge vs the closing line — the truest early skill signal.")
+    s[3].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
+                help="Share of bets that beat the closing line.")
+    s[4].metric("Units", f"{units:+.1f}u" if units is not None else "—",
+                help=f"Net units across {perf.get('bets', 0)} graded bets "
+                     f"(Brier {perf.get('model_brier') or '—'}).")
+    if win is None:
+        st.caption("No graded bets yet — the scoreboard fills in as picks settle. "
+                   "Full history on the **Ledger** tab.")
+    else:
+        st.caption("We show this first, on purpose. Full breakdown on **Ledger**.")
+    st.divider()
+
+    # --- Today's slate ------------------------------------------------------
+    st.markdown(f"##### 🗓️ Today — {default_date or '—'}")
+    c = st.columns(3)
+    c[0].metric("Games", games_today)
+    c[1].metric("Edges ≥ thresh", 0 if board.empty else len(board))
+    c[2].metric("Best EV", f"{board['ev'].max():+.1%}" if not board.empty else "—")
 
     left, right = st.columns([3, 2])
     with left:
@@ -1445,7 +1653,7 @@ def render_edges():
 def render_experts():
     q = topbar("Expert Consensus")
     date_sel = pick_date()
-    from onesource import experts
+    from project547 import experts
     rows = experts.consensus_table(slates.get(date_sel, {}), query=q or "")
     st.caption("Where independent reads agree: **our model**, **BettingPros' "
                "expert recommendation** (with their ★ confidence), and the "
@@ -1492,7 +1700,7 @@ def _player_headshot(player: str, game_pk, sport: str | None):
     attaches to each game. None when we don't have an id (or non-MLB)."""
     if sport and sport != "MLB":
         return None
-    from onesource.names import normalize
+    from project547.names import normalize
     key = normalize(player)
     for _date, sl in (slates or {}).items():
         for sp, blob in (sl or {}).items():
@@ -1536,7 +1744,7 @@ def _find_player_props(player: str, game_pk, sport: str | None):
     """All prop rows for a player on the loaded slates, plus the sport they
     were found in. game_pk disambiguates same-named players across games.
     Names are normalised (accents/case) so lineup and prop spellings match."""
-    from onesource.names import normalize
+    from project547.names import normalize
     target = normalize(player)
     found, found_sport = [], sport
     for _date, sl in (slates or {}).items():
@@ -1655,7 +1863,7 @@ def _backfill_seasons(sport: str) -> list[int]:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _run_backtest(sport: str, seasons: tuple) -> dict:
-    from onesource import backtest
+    from project547 import backtest
     return backtest.run_game_backtest(sport, list(seasons), draws=800, detail=True)
 
 
@@ -1890,6 +2098,212 @@ def _render_replay_research_card(sport: str, gd: dict):
 
 
 # ---------------------------------------------------------------------------
+# Edge Builder · Prompt Engine · Research Hub docs (Project 54.7 tabs)
+# ---------------------------------------------------------------------------
+
+def render_edge_builder():
+    from app import byoe
+    byoe.render()
+
+
+def render_prompt_engine():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🤖 Prompt Engine"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Turn a slate into an AI-ready brief with a risk posture you "
+               "choose — Conservative, Standard, or Aggressive. Copy it into "
+               "Claude.ai on your own subscription, or run it in-app. A tool, "
+               "not a take.")
+    scope = st.selectbox("Scope", ["Whole slate"] + NAV_SPORTS)
+    day = slates.get(default_date, {})
+    board = ui.build_best_bets(day, min_edge)
+    if scope != "Whole slate" and not board.empty:
+        board = board[board["sport"] == scope]
+    if board is None or board.empty:
+        st.info("No edges on this slate/scope yet to brief on — lower **Min "
+                "edge** in the sidebar, or check back as lines post.")
+        return
+    ai_block(ui.ai_brief_board(board, default_date), key="prompt_engine")
+
+
+_DOC_PAGES = {
+    "Brand & voice": "docs/BRAND.md",
+    "Accuracy roadmap": "docs/ACCURACY_ROADMAP.md",
+    "Research synthesis": "docs/research/00-synthesis.md",
+    "Consolidation & provenance": "docs/CONSOLIDATION.md",
+}
+
+
+def render_docs():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🔬 Research Hub"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Show the work. How the model is built, what we validated, and "
+               "what we're still chasing — the opposite of a black box.")
+    pick = st.selectbox("Document", list(_DOC_PAGES))
+    path = config.REPO_ROOT / _DOC_PAGES[pick]
+    st.markdown(path.read_text() if path.exists()
+                else f"_{_DOC_PAGES[pick]} not found._")
+
+
+def render_sharpsheet_browser():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>📊 Sharp Sheets"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("The research starter. Pick a matchup for the full breakdown — "
+               "offense vs defense, league ranks, the edges, and the model's "
+               "read. Same sheet that opens from a play's chip.")
+    date_sel = pick_date()
+    day = slates.get(date_sel, {})
+    sports_in = [s for s in NAV_SPORTS if (day.get(s, {}) or {}).get("games")]
+    if not sports_in:
+        st.info("No matchups on this slate yet.")
+        return
+    sport = st.selectbox("Sport", sports_in)
+    games = day.get(sport, {}).get("games", []) or []
+    labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in games]
+    pick = st.selectbox("Matchup", labels)
+    if pick:
+        render_research_card(sport, games[labels.index(pick)], date_sel)
+
+
+def _extra_team_head(t: dict, align: str) -> str:
+    logo = (f"<img src='{t['logo']}' width='44' style='vertical-align:middle'/> "
+            if t.get("logo") else "")
+    rank = f"<span style='opacity:.55'>#{t['rank']}</span> " if t.get("rank") else ""
+    sub = " · ".join(x for x in [t.get("record"), t.get("form")] if x)
+    return (f"<div style='text-align:{align};min-width:40%'>{logo}{rank}"
+            f"<b style='font-size:1.05rem'>{t.get('name','')}</b>"
+            f"<div style='opacity:.65;font-size:.82rem'>{sub}</div></div>")
+
+
+def _extra_sheet(g: dict, bp_sport: str | None = None):
+    a, h = g["away"], g["home"]
+    st.markdown(
+        "<div class='osp-hero'><div style='display:flex;justify-content:space-between;"
+        f"align-items:center;gap:12px'>{_extra_team_head(a, 'left')}"
+        "<div style='opacity:.5;font-weight:700'>@</div>"
+        f"{_extra_team_head(h, 'right')}</div></div>", unsafe_allow_html=True)
+    meta = " · ".join(x for x in [
+        g.get("league"), g.get("detail"), g.get("venue"),
+        ("neutral site" if g.get("neutral") else None)] if x)
+    if meta:
+        st.caption(meta)
+    o = g.get("odds") or {}
+    if o:
+        bits = [o.get("details"),
+                (f"O/U {o['over_under']}" if o.get("over_under") is not None else None),
+                o.get("provider")]
+        line = " · ".join(b for b in bits if b)
+        if line:
+            st.markdown("**Market:** " + line)
+    from project547 import baseline as _baseline
+    b = _baseline.market_baseline(o.get("home_ml"), o.get("away_ml"), o.get("draw_ml"))
+    if b:
+        st.markdown("**📈 Baseline projection** (de-vigged market): "
+                    + " · ".join(f"{k} {v}" for k, v in b.as_pct().items()))
+        st.caption("The market-implied baseline — the number every model is "
+                   "measured against. Our own adjustment + tracking layer onto "
+                   "this; BettingPros gives a sharper baseline where it covers "
+                   "the sport.")
+    # BettingPros: sharper consensus baseline + validator + their prop model
+    if bp_sport:
+        from project547 import bp as _bp
+        d10 = (g.get("date") or "")[:10]
+        hn, an = h.get("name", ""), a.get("name", "")
+        bpb = _bp.game_baseline(bp_sport, d10, hn, an)
+        if bpb:
+            st.markdown("**🎯 BettingPros baseline** (consensus, de-vigged): "
+                        + " · ".join(f"{k} {v}" for k, v in bpb.as_pct().items()))
+            if b:
+                c = _baseline.compare(b.home_wp, bpb.home_wp)
+                st.caption("✅ Market and BettingPros agree here."
+                           if c["agree"] else
+                           f"⚠️ Market vs BettingPros differ — "
+                           f"{c['label'].replace('home', 'the home side')}.")
+        bprops = _bp.prop_projections(bp_sport, d10, teams=[hn, an])
+        if bprops:
+            try:
+                from project547.clients import bettingpros as _bpc
+                mlk = _bpc.market_lookup(bp_sport)
+            except Exception:
+                mlk = {}
+            st.markdown("**BettingPros player projections** — their model as our "
+                        "second opinion (baseline / validator, not gospel).")
+            st.dataframe(pd.DataFrame([{
+                "Player": p["participant"],
+                "Market": (mlk.get(p["market_id"]) or {}).get("name") or p["market_id"],
+                "Line": p["bp_line"], "BP proj": p["bp_projection"],
+                "EV%": (f"{p['bp_ev']*100:+.1f}"
+                        if isinstance(p["bp_ev"], (int, float)) else None),
+                "Side": p["bp_recommended_side"], "Rating": p["bp_bet_rating"],
+            } for p in bprops]), hide_index=True, width="stretch")
+    labels = [s["label"] for s in a["stats"]]
+    for s in h["stats"]:
+        if s["label"] not in labels:
+            labels.append(s["label"])
+    if labels:
+        am = {s["label"]: s["value"] for s in a["stats"]}
+        hm = {s["label"]: s["value"] for s in h["stats"]}
+        df = pd.DataFrame([{a.get("name", "Away"): am.get(l, "—"), "Stat": l,
+                            h.get("name", "Home"): hm.get(l, "—")} for l in labels])
+        st.dataframe(df, hide_index=True, width="stretch")
+    else:
+        st.caption("No season stats published for this matchup yet.")
+    st.caption("Stats & logos: ESPN (free). We don't model this league — the "
+               "sheet is here for *your* read, not ours.")
+
+
+def _extra_field(g: dict):
+    """Leaderboard / field events (golf, racing) — schedule, field, odds."""
+    st.markdown(f"<div class='osp-hero'><div class='osp-title'>{g.get('name','')}"
+                "</div></div>", unsafe_allow_html=True)
+    meta = " · ".join(x for x in [g.get("league"), g.get("detail"),
+                                  g.get("venue")] if x)
+    if meta:
+        st.caption(meta)
+    if g.get("odds") and g["odds"].get("details"):
+        st.markdown(f"**Market:** {g['odds']['details']}")
+    rows = [{"#": c.get("rank") or i + 1, "Competitor": c["name"],
+             "Score / Pos": c.get("score") or ("✓" if c.get("winner") else "—")}
+            for i, c in enumerate(g.get("competitors", []))]
+    if rows:
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    st.caption("Schedule, field & data: ESPN (free). We don't model this event "
+               "— it's here so you don't have to leave to research it.")
+
+
+def render_other_sports():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🌍 Other Sports"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Sharp Sheets for in-season leagues we don't model — full stats, "
+               "logos, form and odds, so you can make your own read. "
+               "Data & logos: ESPN (free).")
+    from project547.clients import espn_extra
+    groups = espn_extra.leagues_by_group()
+    cg, cl, cd = st.columns([1, 2, 2])
+    group = cg.selectbox("Sport", list(groups))
+    opts = groups[group]
+    label = cl.selectbox("League", [n for _k, n in opts])
+    key = next(k for k, n in opts if n == label)
+    default_d = pd.to_datetime(default_date).date() if default_date else None
+    date_sel = cd.date_input("Date", value=default_d).isoformat()
+    try:
+        evs = espn_extra.events(key, date_sel)
+    except Exception as e:  # network/parse — never crash the page
+        st.warning(f"Couldn't load {label} from ESPN: {e}")
+        return
+    if not evs:
+        st.info(f"No {label} events on {date_sel}.")
+        return
+    labels = [g["name"] for g in evs]
+    pick = st.selectbox("Event", labels)
+    g = evs[labels.index(pick)]
+    if g.get("is_matchup"):
+        from project547 import baseline as _baseline
+        _extra_sheet(g, _baseline.bp_sport_for(group))
+    else:
+        _extra_field(g)
+
+
+# ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
 
@@ -1901,6 +2315,12 @@ elif section == "SCORES":
     render_scores()
 elif section == "PLAYS":
     render_plays()
+elif section == "PLAYS_DETAIL":
+    render_plays_detail()
+elif section == "SHARPSHEET":
+    render_sharpsheet_browser()
+elif section == "OTHER_SPORTS":
+    render_other_sports()
 elif section == "EDGES":
     render_edges()
 elif section == "EXPERTS":
@@ -1909,6 +2329,12 @@ elif section == "DFS":
     render_dfs()
 elif section == "TOOLS":
     render_tools()
+elif section == "EDGE_BUILDER":
+    render_edge_builder()
+elif section == "PROMPT_ENGINE":
+    render_prompt_engine()
+elif section == "DOCS":
+    render_docs()
 elif section == "PERFORMANCE":
     render_performance()
 elif section == "BACKTEST":

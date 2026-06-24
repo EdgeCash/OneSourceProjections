@@ -27,10 +27,10 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import (config, notify, pipeline, playerlogs, plays,  # noqa: E402
-                       results, snapshots)
-from onesource.config import OUTPUT_DIR  # noqa: E402
-from onesource.sports import active_sports, default_slate_date  # noqa: E402
+from project547 import (config, notify, pipeline, playerlogs, plays,  # noqa: E402
+                       results, snapshots, tracking)
+from project547.config import OUTPUT_DIR  # noqa: E402
+from project547.sports import active_sports, default_slate_date  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("hourly")
@@ -38,6 +38,8 @@ log = logging.getLogger("hourly")
 ET = ZoneInfo("America/New_York")
 
 
+# Legacy Streamlit deployment URL (brand is now Project 54.7; redeploy under a
+# new URL is a separate infra step — left functional until then).
 APP_URL = "https://onesourceprojections.streamlit.app"
 RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
 
@@ -155,6 +157,14 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
+    # 2c) snapshot projection sources (our model / de-vigged market / BettingPros)
+    #     for accuracy tracking across every sport — modeled and unmodeled.
+    for d in upcoming:
+        try:
+            tracking.snapshot(d)
+        except Exception as e:
+            log.error("tracking snapshot %s failed: %s", d, e)
+
     # 2b) apply any Played/Skip taps from prior runs, then log first-qualify
     #     DFS legs and push notifications ONLY for plays worth making: a +EV
     #     PrizePicks/Underdog card, or a sharp game bet. Each push carries
@@ -201,6 +211,11 @@ def main():
     #    window (idempotent) so missed runs or late-posting finals still get
     #    picked up; box-score ingest stays on yesterday+today (heavier).
     graded = results.grade_recent(today.isoformat(), days=4)
+    try:  # grade projection-tracking finals over the same window (idempotent)
+        for i in range(4):
+            tracking.grade((today - timedelta(days=i)).isoformat())
+    except Exception as e:
+        log.error("tracking grade failed: %s", e)
     try:
         graded_legs = plays.grade_plays(today.isoformat(), days=4)
         if graded_legs:
@@ -227,7 +242,7 @@ def main():
     # 4) write the combined site data file
     perf = results.performance()
     primary = default_slate_date(upcoming, slates) or today.isoformat()
-    from onesource.clients import oddsapi
+    from project547.clients import oddsapi
     out = {
         "generated_at": datetime.now(ET).isoformat(),
         "primary_date": primary,

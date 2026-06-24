@@ -22,8 +22,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import config                       # noqa: E402
-from onesource.clients import bettingpros as bp    # noqa: E402
+from project547 import config                       # noqa: E402
+from project547.clients import bettingpros as bp    # noqa: E402
 
 DFS = bp.DFS_BOOK_NAMES
 

@@ -1,4 +1,4 @@
-from onesource.models.elo import Elo, EloConfig
+from project547.models.elo import Elo, EloConfig
 
 
 def test_home_edge_and_neutral_start():

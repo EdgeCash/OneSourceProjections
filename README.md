@@ -1,10 +1,29 @@
-# OneSource Projections
+# Project 54.7
 
-Personal multi-sport betting model — **MLB, WNBA, NBA, NFL, NCAAF, NHL** —
-projecting games (moneyline / total / spread) and player props, with edges
-computed against BettingPros market lines and a private Streamlit dashboard.
+**52.4% pays the house. 54.7% pays you.**
 
-**Personal use only. Not financial advice. Bet responsibly.**
+A straight-shooting, multi-sport projection engine — **MLB, WNBA, NBA, NFL,
+NCAAF, NHL** — projecting games (moneyline / total / spread) and player props,
+with edges computed against market lines and a private Streamlit dashboard.
+Data, projections, and tools mixed with a little wagering advice — every pick
+graded in public, wins and losses, and the trigger is always yours.
+
+**Personal research. Not financial advice. No bankroll promises. Bet responsibly.**
+
+> **Brand & voice:** see [`docs/BRAND.md`](docs/BRAND.md). The product brand is
+> *Project 54.7*; the Python package is `project547` (renamed from `onesource`).
+> The GitHub repo stays `OneSourceProjections` to preserve history/links.
+
+> **Consolidation note (June 2026):** this repo is now the canonical home for
+> EdgeCash's projection work — the best modules from the older repos were
+> consolidated here (see [`docs/CONSOLIDATION.md`](docs/CONSOLIDATION.md)).
+> Research on the most accurate public NFL/NCAAF models and the resulting
+> upgrade plan live in [`docs/research/`](docs/research/00-synthesis.md) and
+> [`docs/ACCURACY_ROADMAP.md`](docs/ACCURACY_ROADMAP.md). The headline finding:
+> the betting/edge math is already strong; the biggest accuracy lever is rating
+> teams on **opponent-adjusted EPA/play** (new: `project547/epa.py`,
+> `clients/nflverse.py`, `clients/cfbd.py`) instead of points — staged for
+> validation before going live.
 
 ## How it works
 
@@ -20,12 +39,12 @@ BettingPros  ──► lines, best prices, BP projections ───┘    de-vig
                                               Streamlit dashboard (password-gated)
 ```
 
-The pipeline runs every sport that's in season (`onesource/sports.py`
+The pipeline runs every sport that's in season (`project547/sports.py`
 defines the calendar; override with `--sports`).
 
 ### MLB (the deep model)
 
-- **Game model** (`onesource/models/game.py`): recent team scoring rate
+- **Game model** (`project547/models/game.py`): recent team scoring rate
   shrunk toward league average; opposing **starter** quality applied over
   the innings starters cover and opposing **bullpen** quality over the
   rest (each as FIP / league FIP); **park factors** applied to the venue
@@ -33,23 +52,23 @@ defines the calendar; override with `--sports`).
   Poisson Monte Carlo (ties resolved as extra innings) → win prob,
   over/under probs, run-line cover probs. Park factors are derived
   empirically (`scripts/compute_park_factors.py` →
-  `data/history/park_factors.json`, loaded via `onesource/parks.py`).
+  `data/history/park_factors.json`, loaded via `project547/parks.py`).
   Backtested 2024–2026, each component improves the model monotonically
   (Brier 0.2483→0.2463, total-runs MAE 3.60→3.55, favorite hit-rate
   0.540→0.552); open→close CLV is +12.8% moneyline ROI at opening prices.
-- **Prop models** (`onesource/models/props.py`): Poisson for Ks and total
+- **Prop models** (`project547/models/props.py`): Poisson for Ks and total
   bases, binomial for hits, per-PA rate for HRs. Our Statcast-informed
   rates are blended 50/50 with FantasyPros projections when available.
 
 ### WNBA / NBA / NFL / NCAAF / NHL (the generic engine)
 
-- **Game model** (`onesource/models/generic.py`): offensive/defensive
+- **Game model** (`project547/models/generic.py`): offensive/defensive
   ratings from recent final scores (ESPN), shrunk toward league average,
   plus home advantage. Basketball/football use a Normal margin/total
   model; NHL uses the same Poisson simulation as MLB. Per-sport constants
-  (league scoring, HFA, volatility) live in `onesource/sports.py`. For
+  (league scoring, HFA, volatility) live in `project547/sports.py`. For
   sports with `elo_blend > 0`, an Elo rating system
-  (`onesource/models/elo.py`, maintained live from results) is blended
+  (`project547/models/elo.py`, maintained live from results) is blended
   into the moneyline win probability. WNBA uses 0.35 off/def + 0.65 Elo,
   which backtests to Brier 0.227 → **0.215** (favorite hit-rate
   0.62 → 0.67), well-calibrated across a 0.2–0.9 range.
@@ -106,8 +125,8 @@ Required secrets (env vars, `.env`, or Streamlit secrets):
 
 1. `python scripts/discover_markets.py MLB` — prints your account's market
    IDs (id, slug, name, category). Update `BP_MARKET_IDS` in
-   `onesource/config.py` to match; the defaults are placeholders. The
-   flatteners in `onesource/clients/bettingpros.py` pull fields
+   `project547/config.py` to match; the defaults are placeholders. The
+   flatteners in `project547/clients/bettingpros.py` pull fields
    defensively, but spot-check one `/offers` and one `/props` response
    against them on first run.
 2. `python scripts/run_daily.py` — should print game/prop counts. Batter
@@ -150,7 +169,7 @@ it runs, the more closing-line history and graded results accumulate.
 Each prop carries a hit-rate heatmap — how often the player has gone over
 that line in their last 5 / 10 / 20 games, the season, and head-to-head vs
 the opponent — computed from our own box-score logs
-(`onesource/playerlogs.py`) and shown as a red→green gradient on the Props
+(`project547/playerlogs.py`) and shown as a red→green gradient on the Props
 view. Selecting a prop draws a bar chart of the player's recent games
 against the line (green = over, red = under). Logs come from the imported
 backfill plus a forward store the hourly job appends from MLB boxscores, so
@@ -160,13 +179,13 @@ the import for now.)
 
 ## Game research cards
 
-Each game has a full matchup breakdown (`onesource/teamstats.py` +
+Each game has a full matchup breakdown (`project547/teamstats.py` +
 `app/ui.research_card_html`): the team's offense compared to the opponent's
 matching defense across Season/L10/L5 with **league ranks** and a star
 **advantage** flag where the offense out-ranks the defense it faces, plus
 model gauges (moneyline / total with PLAY/PASS) and — for MLB — game
 trends (NRFI%, F5 win%, RL cover%, Over%, Pythagorean). Team identity is
-resolved through `onesource/teams.py` so full names, cities, and
+resolved through `project547/teams.py` so full names, cities, and
 abbreviations all join. Stats are derived from our box-score logs; a few
 reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
@@ -176,7 +195,7 @@ omitted. Generate a static HTML preview of all the graphics with
 
 MLB has its own richer pipeline (Statcast, xFIP, park factors → Poisson Monte
 Carlo). Every other sport runs through the generic engine (`models/generic.py`),
-parameterized per sport in `onesource/sports.py`: scoring environment
+parameterized per sport in `project547/sports.py`: scoring environment
 (`league_ppg`), home edge (`hfa`), the margin/total standard deviations that
 turn projections into probabilities, a `normal` (basketball/football) or
 `poisson` (hockey) distribution, and a log5-style `multiplicative` score method.
@@ -194,7 +213,7 @@ games home, valid/monotonic totals, and Elo responding to results).
 
 ## Model-vs-market scorecard (proof of independent skill)
 
-`onesource/scorecard.py` answers the question that matters most: does the model
+`project547/scorecard.py` answers the question that matters most: does the model
 add signal, or just echo the market? At grading time every game now stores both
 our win probability and the market's de-vigged win probability, so the
 scorecard splits graded games into where the model **agrees** vs **disagrees**
@@ -211,7 +230,7 @@ Shown under **Performance → Model vs market**; pure functions, unit-tested in
 
 ## Multi-book edge scanner (the sharp layer)
 
-`onesource/edge.py` adds what the elite tools (OddsJam, Unabated) are built on:
+`project547/edge.py` adds what the elite tools (OddsJam, Unabated) are built on:
 edges measured against the **de-vigged market consensus**, not a single price.
 It takes every book's price on a market from the captured Odds API snapshots,
 strips the vig from each, averages the fair probabilities, and grades the best
@@ -228,7 +247,7 @@ spend.
 
 ## Expert consensus (searchable)
 
-`onesource/experts.py` builds a multi-source consensus per prop from three
+`project547/experts.py` builds a multi-source consensus per prop from three
 *independent* reads: **our model** (`model_over_prob` → a lean), **BettingPros'
 expert recommendation** (`bp_recommended_side` + their `bp_bet_rating` ★
 confidence — premium fields populated by the `BP_USER` auth), and the **public**
@@ -239,8 +258,8 @@ Pure over the published slate, unit-tested in `tests/test_experts.py`.
 
 ## SGP correlation finder
 
-`onesource/sgp.py` prices same-game parlays through the Gaussian copula
-(`onesource.calculators`) using correlation **priors** for common leg
+`project547/sgp.py` prices same-game parlays through the Gaussian copula
+(`project547.calculators`) using correlation **priors** for common leg
 relationships (`CORRELATION_PRESETS`). Given each leg's win probability and a
 correlation, `price_sgp` returns the correlation-adjusted joint probability, the
 fair vs naive-independent prices, the "lift", and — with the book's quoted SGP
@@ -274,7 +293,7 @@ panel. The **free** path is primary: copy the clean markdown brief
 (`app.ui.ai_brief_*`) into Claude.ai or any chatbot on your own subscription —
 no API cost. When `ANTHROPIC_API_KEY` is set, an optional **✨ Analyze in-app**
 button (clearly marked as a paid ~5¢ Anthropic API call) returns a grounded
-read from Claude (`onesource/ai.py`, Opus 4.8 with adaptive thinking) without
+read from Claude (`project547/ai.py`, Opus 4.8 with adaptive thinking) without
 leaving the app.
 
 ## Dashboard layout
@@ -331,7 +350,7 @@ home box behind Tailscale for a fully invisible deployment.
 - **Game market IDs** for non-MLB sports are resolved at runtime from
   `/markets` by slug (`bettingpros.game_market_ids`). If a sport's
   moneyline/total/spread slugs differ from the candidates in
-  `onesource/clients/bettingpros.py`, run `scripts/discover_markets.py
+  `project547/clients/bettingpros.py`, run `scripts/discover_markets.py
   <SPORT>` and extend the candidate lists.
 - **NFL week numbers**: FantasyPros NFL projections are weekly
   (`fantasypros.nfl_projections(season, week)`); wiring week inference
@@ -343,15 +362,15 @@ home box behind Tailscale for a fully invisible deployment.
   `data/history/` (closing lines for 4 sports, a decade of MLB
   backfill + Statcast xstats, WNBA player logs to 2018 and Elo to 2002,
   648k graded prop projections, fitted calibration params). Load it via
-  `onesource/history.py`; see `data/history/README.md` for the manifest.
-- **Backtesting** (`onesource/backtest.py`, `scripts/run_backtest.py`):
+  `project547/history.py`; see `data/history/README.md` for the manifest.
+- **Backtesting** (`project547/backtest.py`, `scripts/run_backtest.py`):
   walk-forward (no lookahead) game backtests for MLB and WNBA graded
   against actuals and closing lines, plus a WNBA prop-distribution
   calibration check. Run `python scripts/run_backtest.py`; it writes a
   dated report to `reports/`. See the latest report for current model
   skill, calibration, and CLV — read it before sizing up.
-- **Model knobs** live in `onesource/config.py` (MLB) and
-  `onesource/sports.py` (per-sport constants).
+- **Model knobs** live in `project547/config.py` (MLB) and
+  `project547/sports.py` (per-sport constants).
 
 ## The data library & credit-free rebuilds
 
@@ -365,7 +384,7 @@ automatically (`snapshots.compact`).
 To ship a model/feature tweak between hourly pulls without burning
 BettingPros/FantasyPros credits, run the **"Rebuild site"** workflow from
 the Actions tab (or `python scripts/rebuild_site.py`). It re-runs the
-pipeline with the paid APIs replayed from the library (`onesource/
+pipeline with the paid APIs replayed from the library (`project547/
 replay.py`) — free sources still fetch live — and commits a fresh
 latest.json. Pure UI changes need nothing at all: Streamlit redeploys on
 every push.

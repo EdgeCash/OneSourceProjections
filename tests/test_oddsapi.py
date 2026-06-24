@@ -1,9 +1,9 @@
 """The Odds API client: parsing, best-price line shopping, snapshot mapping,
 and the credit-floor guard. No network — payloads are mocked."""
 
-from onesource import clv, config
-from onesource.clients import oddsapi
-from onesource.names import normalize
+from project547 import clv, config
+from project547.clients import oddsapi
+from project547.names import normalize
 
 
 def _events():

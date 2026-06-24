@@ -1,6 +1,6 @@
 """First-qualify DFS play logging, closing-line refresh, and grading."""
 
-import onesource.plays as plays
+import project547.plays as plays
 
 
 def _blob(pp_line=5.5, pp_prob=0.63):
@@ -50,7 +50,7 @@ def test_grade_plays_marks_hit_and_push(tmp_path, monkeypatch):
     monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
     plays.log_qualifying("2026-06-15", _blob())
 
-    import onesource.playerlogs as pl
+    import project547.playerlogs as pl
     monkeypatch.setattr(pl, "actual_value", lambda *a, **k: 7.0)  # over 5.5 -> win
     n = plays.grade_plays("2026-06-15", days=4)
     assert n == 1
@@ -66,7 +66,7 @@ def test_grade_plays_marks_hit_and_push(tmp_path, monkeypatch):
 def test_grade_push_when_actual_equals_line(tmp_path, monkeypatch):
     monkeypatch.setattr(plays, "LOG", tmp_path / "dfs_plays.jsonl")
     plays.log_qualifying("2026-06-15", _blob())
-    import onesource.playerlogs as pl
+    import project547.playerlogs as pl
     monkeypatch.setattr(pl, "actual_value", lambda *a, **k: 5.5)  # exact line
     plays.grade_plays("2026-06-15", days=4)
     p = plays.load_plays()[0]
@@ -202,7 +202,7 @@ def test_played_accuracy_combines_dfs_and_games(tmp_path, monkeypatch):
     monkeypatch.setattr(plays, "load_plays", lambda: rows)
     # one confirmed-played game bet (loss)
     plays.CONFIRM.write_text('{"played": ["game|2026-06-15|MLB|BOS @ NYY|moneyline|home"], "skipped": []}')
-    import onesource.results as results
+    import project547.results as results
     monkeypatch.setattr(results, "load_ledger", lambda: [
         {"date": "2026-06-15", "sport": "MLB", "game": "BOS @ NYY",
          "market": "moneyline", "side": "home", "pnl": -1.0, "won": False},
@@ -212,7 +212,7 @@ def test_played_accuracy_combines_dfs_and_games(tmp_path, monkeypatch):
 
 
 def test_model_accuracy_directional():
-    import onesource.results as results
+    import project547.results as results
     rows = [
         {"market": "model_winprob", "pred_home_wp": 0.7, "home_won": 1},  # right
         {"market": "model_winprob", "pred_home_wp": 0.3, "home_won": 0},  # right

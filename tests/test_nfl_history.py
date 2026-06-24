@@ -2,7 +2,7 @@
 lines), using real lines from the pasted dump including the tricky cases:
 home vs away favorite, neutral site, OT, ties, PK, and seeded playoff rows."""
 
-from onesource import nfl_history as nh
+from project547 import nfl_history as nh
 
 SAMPLE = "\n".join([
     "2016 Regular Season - Week 1",

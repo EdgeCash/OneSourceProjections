@@ -1,6 +1,6 @@
 import math
 
-from onesource import odds
+from project547 import odds
 
 
 def test_american_decimal_roundtrip():

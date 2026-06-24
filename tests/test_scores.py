@@ -1,7 +1,7 @@
 """Scoreboard + box-score parsing (mocked payloads, no network)."""
 
-from onesource import scores
-from onesource.clients import espn, mlb_statsapi
+from project547 import scores
+from project547.clients import espn, mlb_statsapi
 
 
 def test_espn_parse_scoreboard():

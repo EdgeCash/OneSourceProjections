@@ -1,6 +1,6 @@
 import pytest
 
-from onesource import edge
+from project547 import edge
 
 
 # A two-way moneyline across three books. Pinnacle-ish tight pair plus two

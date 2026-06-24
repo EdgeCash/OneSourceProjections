@@ -1,6 +1,6 @@
 import math
 
-from onesource import calculators as calc
+from project547 import calculators as calc
 
 
 def test_hold_and_no_vig():

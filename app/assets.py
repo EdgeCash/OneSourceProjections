@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import hashlib
 
-from onesource.names import normalize
+from project547.names import normalize
 
 # MLBAM team ids -> (full name, [abbrev variants])
 _MLB = {

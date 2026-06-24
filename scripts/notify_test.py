@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import notify  # noqa: E402
+from project547 import notify  # noqa: E402
 
 
 def main() -> None:

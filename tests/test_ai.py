@@ -1,6 +1,6 @@
 import pytest
 
-from onesource import ai
+from project547 import ai
 
 
 def test_available_false_without_key(monkeypatch):

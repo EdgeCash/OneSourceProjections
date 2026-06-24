@@ -9,7 +9,7 @@ import pytest
 import requests
 
 from app import ui
-from onesource.clients import bettingpros, espn
+from project547.clients import bettingpros, espn
 
 
 # ---------------------------------------------------------------------------
@@ -203,7 +203,7 @@ def test_analysis_pass_when_no_market():
 # ---------------------------------------------------------------------------
 
 def test_props_have_line_column_even_without_offers(monkeypatch):
-    from onesource import pipeline
+    from project547 import pipeline
 
     monkeypatch.setattr(bettingpros, "events",
                         lambda s, d: (_ for _ in ()).throw(RuntimeError("down")))
@@ -220,7 +220,7 @@ def test_props_have_line_column_even_without_offers(monkeypatch):
 # ---------------------------------------------------------------------------
 
 def test_market_eval_single_price_uses_raw_model_prob():
-    from onesource import pipeline
+    from project547 import pipeline
     # one-sided -110 prop, model 56%: edge must survive (no shrink toward vig)
     out = pipeline._market_eval(0.56, -110, None)
     assert out["p_used"] == 0.56 and out["p_fair"] is None
@@ -229,7 +229,7 @@ def test_market_eval_single_price_uses_raw_model_prob():
 
 
 def test_market_eval_two_way_still_shrinks():
-    from onesource import pipeline, config
+    from project547 import pipeline, config
     # symmetric -110/-110 fair = 0.50; model 0.60 should be pulled toward 0.50
     out = pipeline._market_eval(0.60, -110, -110)
     assert out["p_fair"] == 0.5
@@ -239,7 +239,7 @@ def test_market_eval_two_way_still_shrinks():
 
 
 def test_market_eval_rejects_implausible_single_price():
-    from onesource import pipeline
+    from project547 import pipeline
     # an implied prob outside [0.01, 0.99] is rejected, no edge surfaced
     out = pipeline._market_eval(0.5, -100000, None)
     assert out["ev_a"] is None and out["p_fair"] is None

@@ -19,8 +19,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import history  # noqa: E402
-from onesource.config import REPO_ROOT  # noqa: E402
+from project547 import history  # noqa: E402
+from project547.config import REPO_ROOT  # noqa: E402
 
 SHRINK_GAMES = 200  # ghost games of neutral park pulling toward 1.0
 

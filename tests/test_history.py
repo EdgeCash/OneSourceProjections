@@ -1,7 +1,7 @@
 """Sanity checks that the imported historical data loads and has the
 expected shape. These exercise the real files in data/history/."""
 
-from onesource import history
+from project547 import history
 
 
 def test_closing_lines_load():

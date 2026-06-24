@@ -1,4 +1,4 @@
-from onesource import backtest
+from project547 import backtest
 
 
 def test_team_key_mlb_distinguishes_sox():
@@ -114,7 +114,7 @@ def test_mlb_prop_calibration():
 
 
 def test_total_bases_neg_binom_beats_poisson():
-    from onesource.models import props
+    from project547.models import props
     # overdispersed -> NB puts more mass at 0 and the tail, so for a low
     # half-line it gives a lower P(over) than Poisson at the same mean
     mean, line = 1.6, 1.5
@@ -161,7 +161,7 @@ def test_prop_calibration_summary_artifact():
     """The committed summary the Prop-calibration UI reads stays well-formed
     and reflects the post-fix calibration (all gaps small)."""
     import json
-    from onesource import config
+    from project547 import config
     path = config.REPO_ROOT / "data" / "history" / "calibration" / "props_calibration_summary.json"
     cal = json.loads(path.read_text())
     assert "MLB" in cal and "batter_hits" in cal["MLB"]

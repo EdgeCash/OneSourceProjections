@@ -1,7 +1,7 @@
 import math
 
-from onesource.models import game, props
-from onesource.names import normalize
+from project547.models import game, props
+from project547.names import normalize
 
 
 def test_game_sim_symmetry():
@@ -77,7 +77,7 @@ def test_name_normalization():
 
 
 def test_pitcher_markets_means_and_blend():
-    from onesource.models import props as pm
+    from project547.models import props as pm
     # outs = innings*3; FP projection blends in
     assert pm.pitcher_outs(5.0)["mean"] == 15.0
     blended = pm.pitcher_outs(5.0, fp_projected_outs=18.0)["mean"]
@@ -93,7 +93,7 @@ def test_pitcher_markets_means_and_blend():
 
 
 def test_prob_over_for_row_uses_row_dispersion():
-    from onesource import pipeline
+    from project547 import pipeline
     base = {"dist": "negbinom", "param": 16.0}
     # a high-dispersion (tight) outs line vs the default total-bases dispersion
     tight = pipeline.prob_over_for_row({**base, "dispersion": 40.0}, 16.5)
@@ -105,7 +105,7 @@ def test_prob_over_for_row_uses_row_dispersion():
 
 def test_pitcher_prop_stats_exposed_for_grading():
     import pandas as pd
-    from onesource import playerlogs as pl
+    from project547 import playerlogs as pl
     df = pd.DataFrame([{
         "name": "Zack Wheeler", "date": "2026-06-21", "opponent": "NYM",
         "season": 2026, "inningsPitched": 5.667, "hits": 4, "baseOnBalls": 2,

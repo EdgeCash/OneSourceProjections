@@ -1,7 +1,7 @@
 import pandas as pd
 
 from app import ui
-from onesource import playerlogs as pl
+from project547 import playerlogs as pl
 
 
 def test_market_to_stat():
@@ -54,8 +54,8 @@ def test_prop_chart_builds_and_handles_empty():
 
 
 def test_ingest_mlb_idempotent_and_feeds_rates(tmp_path, monkeypatch):
-    from onesource import history
-    from onesource.clients import mlb_statsapi
+    from project547 import history
+    from project547.clients import mlb_statsapi
 
     monkeypatch.setattr(pl, "FORWARD_DIR", tmp_path)
     monkeypatch.setattr(mlb_statsapi, "final_scores", lambda d: [

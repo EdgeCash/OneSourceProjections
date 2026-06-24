@@ -59,19 +59,26 @@ def _user_content(brief: str, question: str | None) -> str:
 
 
 def analyze_stream(brief: str, question: str | None = None,
-                   model: str | None = None):
+                   model: str | None = None, mode: str | None = None):
     """Yield the analyst's response text chunk-by-chunk (for ``st.write_stream``).
-    Raises ``RuntimeError`` with a friendly message if not configured."""
+    Raises ``RuntimeError`` with a friendly message if not configured.
+
+    ``mode`` selects an Ask-AI risk posture (conservative/standard/aggressive,
+    see ``project547/ai_modes.py``); None keeps the neutral base posture."""
     ready, reason = available()
     if not ready:
         raise RuntimeError(reason)
     import anthropic
 
+    system = SYSTEM
+    if mode:
+        from .ai_modes import system_for_mode
+        system = system_for_mode(SYSTEM, mode)
     client = anthropic.Anthropic()
     with client.messages.stream(
         model=model or MODEL,
         max_tokens=6000,
-        system=SYSTEM,
+        system=system,
         thinking={"type": "adaptive"},
         output_config={"effort": "medium"},
         messages=[{"role": "user", "content": _user_content(brief, question)}],
@@ -80,6 +87,6 @@ def analyze_stream(brief: str, question: str | None = None,
 
 
 def analyze(brief: str, question: str | None = None,
-            model: str | None = None) -> str:
+            model: str | None = None, mode: str | None = None) -> str:
     """Blocking variant: return the full analysis as a string."""
-    return "".join(analyze_stream(brief, question, model)).strip()
+    return "".join(analyze_stream(brief, question, model, mode)).strip()

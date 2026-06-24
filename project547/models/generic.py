@@ -94,6 +94,12 @@ class GenericGameProjection:
     away_exp: float
     home_win_prob: float
     total_mean: float
+    margin_mean: float | None = None  # explicit home-margin mean; defaults to
+    # home_exp - away_exp, but an EPA/Elo blend can override it so win and cover
+    # probabilities stay consistent with each other.
+
+    def _margin(self) -> float:
+        return self.margin_mean if self.margin_mean is not None else self.home_exp - self.away_exp
 
     def prob_over(self, line: float, sport: Sport) -> float:
         if sport.model == "normal":
@@ -105,7 +111,7 @@ class GenericGameProjection:
     def home_cover_prob(self, spread: float, sport: Sport) -> float:
         """P(home margin + spread > 0); spread is the home handicap
         (e.g. -1.5 for home favorite)."""
-        margin_mean = self.home_exp - self.away_exp
+        margin_mean = self._margin()
         if sport.model == "normal":
             return float(1 - stats.norm.cdf(-spread, margin_mean, sport.sigma_margin))
         return _poisson_cover(self.home_exp, self.away_exp, spread)
@@ -128,6 +134,7 @@ def project_game(
     away: TeamRating | None,
 ) -> GenericGameProjection:
     h_exp, a_exp = expected_score(sport, home, away)
+    margin_mean = None
     if sport.model == "normal":
         margin_mean = h_exp - a_exp
         win = float(1 - stats.norm.cdf(0, margin_mean, sport.sigma_margin))
@@ -138,6 +145,28 @@ def project_game(
         away_exp=round(a_exp, 2),
         home_win_prob=round(win, 4),
         total_mean=round(h_exp + a_exp, 2),
+        margin_mean=round(margin_mean, 2) if margin_mean is not None else None,
+    )
+
+
+def with_epa_margin(proj: GenericGameProjection, epa_margin: float,
+                    sport: Sport, weight: float) -> GenericGameProjection:
+    """Blend an EPA-derived home margin into a normal-model projection.
+
+    ``weight`` is the EPA share (0 = unchanged points model, 1 = pure EPA).
+    Recomputes home_win_prob and stores the blended margin so cover probability
+    stays consistent. No-op for non-normal (Poisson) sports. This is the live
+    integration point for the EPA ratings — gated on validation
+    (scripts/validate_epa.py) before any sport sets epa_blend > 0."""
+    if sport.model != "normal" or weight <= 0:
+        return proj
+    base = proj.margin_mean if proj.margin_mean is not None else proj.home_exp - proj.away_exp
+    blended = (1 - weight) * base + weight * epa_margin
+    win = float(1 - stats.norm.cdf(0, blended, sport.sigma_margin))
+    return GenericGameProjection(
+        home_exp=proj.home_exp, away_exp=proj.away_exp,
+        home_win_prob=round(win, 4), total_mean=proj.total_mean,
+        margin_mean=round(blended, 2),
     )
 
 

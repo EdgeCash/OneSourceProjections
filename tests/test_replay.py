@@ -5,8 +5,8 @@ import json
 
 import pytest
 
-from onesource import replay, snapshots
-from onesource.clients import bettingpros
+from project547 import replay, snapshots
+from project547.clients import bettingpros
 
 
 def test_flatten_offers_passthrough():
@@ -72,7 +72,7 @@ def test_replay_offers_and_events(tmp_path, monkeypatch):
     ]))
     replay.activate()
     replay.set_date("2026-06-13")
-    from onesource.clients import bettingpros as bp
+    from project547.clients import bettingpros as bp
     assert len(bp.offers("WNBA", 371)) == 1
     assert bp.offers("WNBA", 999) == []          # other market filtered out
     assert len(bp.props("WNBA", "2026-06-13")) == 1
@@ -87,8 +87,8 @@ def _restore_clients():
     tests see the real clients."""
     import importlib
 
-    from onesource.clients import bettingpros as bp
-    from onesource.clients import fantasypros as fp
+    from project547.clients import bettingpros as bp
+    from project547.clients import fantasypros as fp
     saved_bp = {k: getattr(bp, k) for k in ("markets", "events", "offers", "props")}
     saved_fp = fp.mlb_projections
     yield

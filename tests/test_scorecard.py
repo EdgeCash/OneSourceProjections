@@ -1,4 +1,4 @@
-from onesource import scorecard
+from project547 import scorecard
 
 
 def _g(date, game, model, market, won, sport="MLB"):

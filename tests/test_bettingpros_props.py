@@ -1,7 +1,7 @@
 """Per-book prop extraction, incl. DFS operators (PrizePicks/Underdog), from
 the BettingPros props payload (selections[].books[].lines[] nesting)."""
 
-from onesource.clients import bettingpros as bp
+from project547.clients import bettingpros as bp
 
 # Mirrors the live props shape flatten_props already iterates: each prop has
 # over/under selections, each with a per-book lines list.
