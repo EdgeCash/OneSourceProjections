@@ -973,8 +973,34 @@ def render_dfs():
                  width="stretch", hide_index=True)
 
 
+def _source_tracking_section():
+    """Projection accuracy by source — our model vs the de-vigged market vs
+    BettingPros, across every sport. This is how we prove we beat the baseline."""
+    from project547 import tracking
+    s = tracking.summary()
+    bs = s.get("by_source", {})
+    if not bs:
+        return
+    st.markdown("##### 📊 Projection accuracy by source")
+    st.caption(f"Who's been right, across every sport "
+               f"({s['graded_events']} graded events). Our edge = beating the "
+               "de-vigged market baseline.")
+    label = {"model": "Our model", "blend": "Model + adj",
+             "market": "Market baseline", "bettingpros": "BettingPros"}
+    order = [k for k in ("model", "blend", "market", "bettingpros") if k in bs]
+    for col, src in zip(st.columns(len(order)), order):
+        d = bs[src]
+        acc = f"{d['accuracy']*100:.0f}%" if d.get("accuracy") is not None else "—"
+        lift = d.get("lift_vs_market")
+        col.metric(label[src], acc,
+                   delta=(f"{lift*100:+.0f} vs market" if lift else None),
+                   help=f"n={d['n']} graded · Brier {d.get('brier')}")
+    st.divider()
+
+
 def render_performance():
     topbar("Performance", with_search=False)
+    _source_tracking_section()
     perf = (data or {}).get("performance", {})
     overall = perf.get("overall", {})
     ledger = load_ledger()

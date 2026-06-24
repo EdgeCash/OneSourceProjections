@@ -28,7 +28,7 @@ from zoneinfo import ZoneInfo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from project547 import (config, notify, pipeline, playerlogs, plays,  # noqa: E402
-                       results, snapshots)
+                       results, snapshots, tracking)
 from project547.config import OUTPUT_DIR  # noqa: E402
 from project547.sports import active_sports, default_slate_date  # noqa: E402
 
@@ -157,6 +157,14 @@ def main():
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
 
+    # 2c) snapshot projection sources (our model / de-vigged market / BettingPros)
+    #     for accuracy tracking across every sport — modeled and unmodeled.
+    for d in upcoming:
+        try:
+            tracking.snapshot(d)
+        except Exception as e:
+            log.error("tracking snapshot %s failed: %s", d, e)
+
     # 2b) apply any Played/Skip taps from prior runs, then log first-qualify
     #     DFS legs and push notifications ONLY for plays worth making: a +EV
     #     PrizePicks/Underdog card, or a sharp game bet. Each push carries
@@ -203,6 +211,11 @@ def main():
     #    window (idempotent) so missed runs or late-posting finals still get
     #    picked up; box-score ingest stays on yesterday+today (heavier).
     graded = results.grade_recent(today.isoformat(), days=4)
+    try:  # grade projection-tracking finals over the same window (idempotent)
+        for i in range(4):
+            tracking.grade((today - timedelta(days=i)).isoformat())
+    except Exception as e:
+        log.error("tracking grade failed: %s", e)
     try:
         graded_legs = plays.grade_plays(today.isoformat(), days=4)
         if graded_legs:
