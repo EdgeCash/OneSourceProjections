@@ -24,6 +24,16 @@ def _tok(name: str) -> set[str]:
     return {w for w in re.split(r"[^a-z]+", (name or "").lower()) if len(w) >= 4}
 
 
+# Sports we model -> BettingPros sport code (BP uses the same codes for the
+# majors). Used to validate our model against BP on the modeled sheets.
+MODELED_BP_SPORT = {"NFL": "NFL", "NBA": "NBA", "NHL": "NHL", "MLB": "MLB",
+                    "WNBA": "WNBA", "NCAAF": "NCAAF"}
+
+
+def modeled_bp_sport(sport_key: str) -> str | None:
+    return MODELED_BP_SPORT.get(sport_key)
+
+
 def _side_for(participant: str, home: str, away: str) -> str | None:
     pt = _tok(participant)
     if pt & _tok(home):

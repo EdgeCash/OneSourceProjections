@@ -421,6 +421,43 @@ def _matchup(sport: str, home: str, away: str, asof: str) -> dict:
         return {}
 
 
+def _bp_validator(sport: str, g: dict, date_sel: str):
+    """BettingPros as a validator on a modeled matchup: compare our model's home
+    win prob to BP's de-vigged consensus, and show BP's prop second opinion.
+    Defensive — BP errors/no-coverage just render nothing."""
+    from project547 import baseline as _baseline
+    from project547 import bp as _bp
+    bp_sport = _bp.modeled_bp_sport(sport)
+    if not bp_sport:
+        return
+    home, away = g.get("home_team", ""), g.get("away_team", "")
+    bpb = _bp.game_baseline(bp_sport, date_sel, home, away)
+    our = g.get("home_win_prob")
+    if bpb:
+        if isinstance(our, (int, float)):
+            st.markdown(f"**🔍 BettingPros check** — model **{our*100:.0f}%** vs "
+                        f"BP **{bpb.home_wp*100:.0f}%** (home win)")
+            c = _baseline.compare(our, bpb.home_wp)
+            st.caption("✅ We agree with BettingPros — higher confidence."
+                       if c["agree"] else
+                       f"⚠️ We diverge from BettingPros — {c['label']}. "
+                       "That's our edge or a data check, not a coin flip.")
+        else:
+            st.markdown(f"**🔍 BettingPros baseline** — home "
+                        f"{bpb.home_wp*100:.0f}% / away {bpb.away_wp*100:.0f}%")
+    props = _bp.prop_projections(bp_sport, date_sel, teams=[home, away], limit=8)
+    if props:
+        with st.expander(f"📊 BettingPros prop projections ({len(props)}) — "
+                         "their model, our second opinion"):
+            st.dataframe(pd.DataFrame([{
+                "Player": p["participant"], "Line": p["bp_line"],
+                "BP proj": p["bp_projection"],
+                "EV%": (f"{p['bp_ev']*100:+.1f}"
+                        if isinstance(p["bp_ev"], (int, float)) else None),
+                "Side": p["bp_recommended_side"], "Rating": p["bp_bet_rating"],
+            } for p in props]), hide_index=True, width="stretch")
+
+
 def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = True):
     m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
     if not m:
@@ -429,6 +466,7 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         return
     st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
+    _bp_validator(sport, g, date_sel)
     ai_block(ui.ai_brief_game(sport, g, m, min_edge),
              key=f"game_{sport}_{date_sel}_{g.get('away_team','')}_{g.get('home_team','')}")
     if caption:

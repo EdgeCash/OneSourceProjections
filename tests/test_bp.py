@@ -61,3 +61,9 @@ def test_validator_agreement_and_divergence():
     assert baseline.compare(0.58, 0.56)["agree"]                 # within tol
     far = baseline.compare(0.62, 0.50)
     assert not far["agree"] and "higher" in far["label"]
+
+
+def test_modeled_bp_sport_mapping():
+    assert bp.modeled_bp_sport("NFL") == "NFL"
+    assert bp.modeled_bp_sport("WNBA") == "WNBA"
+    assert bp.modeled_bp_sport("Cricket") is None
