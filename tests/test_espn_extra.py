@@ -21,7 +21,10 @@ def _soccer():
         "competitions": [{
             "venue": {"fullName": "Dignity Health Sports Park"},
             "odds": [{"details": "MIA -110", "overUnder": 3.5,
-                      "provider": {"name": "ESPN BET"}}],
+                      "provider": {"name": "ESPN BET"},
+                      "homeTeamOdds": {"moneyLine": 165},
+                      "awayTeamOdds": {"moneyLine": 150},
+                      "drawOdds": 220}],
             "competitors": [
                 team("LA Galaxy", "LA", True, "8-6-4", "WWDLW", 3, [("Goals/G", "1.7")]),
                 team("Inter Miami", "MIA", False, "10-4-3", "WWWDW", 1, [("Goals/G", "2.1")]),
@@ -59,6 +62,8 @@ def test_team_matchup_parsed():
     assert g["away"]["record"] == "10-4-3" and g["away"]["form"] == "WWWDW"
     assert g["home"]["logo"].endswith("LA.png")
     assert g["odds"]["over_under"] == 3.5
+    assert g["odds"]["home_ml"] == 165 and g["odds"]["away_ml"] == 150
+    assert g["odds"]["draw_ml"] == 220
     assert {s["label"]: s["value"] for s in g["away"]["stats"]}["Goals/G"] == "2.1"
 
 

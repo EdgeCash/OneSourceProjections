@@ -119,8 +119,12 @@ def _odds(comp: dict) -> dict | None:
     o = (comp.get("odds") or [None])[0]
     if not o:
         return None
+    def _ml(side):  # ESPN nests per-side moneylines here when priced
+        return (o.get(side) or {}).get("moneyLine")
     return {"details": o.get("details"), "over_under": o.get("overUnder"),
             "spread": o.get("spread"),
+            "home_ml": _ml("homeTeamOdds"), "away_ml": _ml("awayTeamOdds"),
+            "draw_ml": o.get("drawOdds"),
             "provider": (o.get("provider") or {}).get("name")}
 
 

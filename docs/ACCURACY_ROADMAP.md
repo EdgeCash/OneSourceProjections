@@ -109,6 +109,23 @@ direction, not a finished model. To turn it on in production:
 
 ---
 
+## Stage 6 — Baselines + tracking for sports we don't model yet 🔜
+Leverage the paid FP/BP feeds and the market itself so we offer (and *track*) a
+projection on every sport, then earn our keep by beating the baseline.
+- ✅ **Market-implied baseline** — `project547/baseline.py`: de-vig the line
+  (2-way or 3-way) into a baseline win prob; shown on every Other-Sports sheet.
+  The de-vigged line is the strongest free baseline (our own research says so).
+- 🔜 **BettingPros baseline** (where BP covers the sport — `bp_sport_for`):
+  pull BP consensus/projection/EV via `clients/bettingpros` for a sharper
+  baseline than one book. FantasyPros only covers NFL/NBA/MLB, so it's for the
+  modeled sports' player props, not the long tail.
+- 🔜 **Our adjustment** — `baseline.apply_edge` is the hook; ships at 0 so we can
+  **track the baseline itself from day one**, then add a little of our own math
+  per sport and measure the lift.
+- 🔜 **Tracking** — log each baseline (and adjusted) projection to the ledger so
+  its CLV/accuracy is graded like any pick; this is how we prove value-add on
+  sports we don't model.
+
 ## Data acquisition checklist (free unless noted)
 - [ ] nflverse PBP parquet per season → local cache under `data/history/` (no key)
 - [ ] CFBD free key in `.env` (`CFBD_API_KEY`); budget $10/mo Patreon tier before

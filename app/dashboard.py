@@ -2122,12 +2122,23 @@ def _extra_sheet(g: dict):
         ("neutral site" if g.get("neutral") else None)] if x)
     if meta:
         st.caption(meta)
-    o = g.get("odds")
+    o = g.get("odds") or {}
     if o:
         bits = [o.get("details"),
                 (f"O/U {o['over_under']}" if o.get("over_under") is not None else None),
                 o.get("provider")]
-        st.markdown("**Market:** " + " · ".join(b for b in bits if b))
+        line = " · ".join(b for b in bits if b)
+        if line:
+            st.markdown("**Market:** " + line)
+    from project547 import baseline as _baseline
+    b = _baseline.market_baseline(o.get("home_ml"), o.get("away_ml"), o.get("draw_ml"))
+    if b:
+        st.markdown("**📈 Baseline projection** (de-vigged market): "
+                    + " · ".join(f"{k} {v}" for k, v in b.as_pct().items()))
+        st.caption("The market-implied baseline — the number every model is "
+                   "measured against. Our own adjustment + tracking layer onto "
+                   "this; BettingPros gives a sharper baseline where it covers "
+                   "the sport.")
     labels = [s["label"] for s in a["stats"]]
     for s in h["stats"]:
         if s["label"] not in labels:
