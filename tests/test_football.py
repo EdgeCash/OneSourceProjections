@@ -5,10 +5,10 @@ synthetic inputs so the football path is known-good before the season opens
 
 import pytest
 
-from onesource import pipeline, playerlogs
-from onesource.clients import espn
-from onesource.models import generic
-from onesource.models.generic import (DEFAULT_NB_DISPERSION, NB_DISPERSION,
+from project547 import pipeline, playerlogs
+from project547.clients import espn
+from project547.models import generic
+from project547.models.generic import (DEFAULT_NB_DISPERSION, NB_DISPERSION,
                                        prop_prob_over)
 
 
@@ -147,9 +147,9 @@ def test_football_box_parses_all_categories():
 
 # --- research cards + projections from committed backdata --------------------
 
-from onesource import teamstats  # noqa: E402
-from onesource.models.generic import TeamRating, project_game  # noqa: E402
-from onesource.sports import SPORTS  # noqa: E402
+from project547 import teamstats  # noqa: E402
+from project547.models.generic import TeamRating, project_game  # noqa: E402
+from project547.sports import SPORTS  # noqa: E402
 
 
 def _rating(df, team, season):
@@ -213,7 +213,7 @@ def test_nfl_player_hit_rates_from_backdata():
 
 
 def test_team_ratings_opponent_adjustment():
-    from onesource.models.generic import team_ratings
+    from project547.models.generic import team_ratings
     # A and B post identical raw offense (30 twice), but A's opponent W is a
     # weak defense (allows 50 elsewhere) while B's opponent S is stingy (allows 3).
     results = [
@@ -233,7 +233,7 @@ def test_team_ratings_opponent_adjustment():
 
 
 def test_shift_win_prob_rest_adjustment():
-    from onesource.models.generic import shift_win_prob
+    from project547.models.generic import shift_win_prob
     assert shift_win_prob(0.5, 0.0, 13.5) == 0.5         # no delta -> no-op
     assert shift_win_prob(0.7, 5.0, 0.0) == 0.7          # no sigma (Poisson) -> no-op
     assert shift_win_prob(0.5, 3.0, 13.5) > 0.5          # home gains points

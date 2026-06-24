@@ -1,6 +1,6 @@
 # Research synthesis — what accurate football models do vs. what we have
 
-This synthesizes the three research reports in this folder against OneSource's
+This synthesizes the three research reports in this folder against Project 54.7's
 actual engine (audited file-by-file, June 2026), to answer the question that
 kicked off the consolidation: *what do the most accurate NFL/NCAAF projection
 models do, and what do we need to do to match them with the resources we have?*
@@ -14,7 +14,7 @@ The best public football models are a **layered ensemble**: an opponent-adjusted
 **EPA/play** power rating as the backbone, optionally stacked with gradient-boosted
 trees, then **shrunk toward the de-vigged market line**, with outputs **calibrated**
 (isotonic/Platt) and validated **walk-forward** on proper scoring rules with
-**CLV** as the business metric. OneSource already has the *betting* half of this
+**CLV** as the business metric. Project 54.7 already has the *betting* half of this
 right (devig, market-shrink, fractional Kelly, CLV tracking, calibrated EV bands,
 walk-forward backtest). What it lacks is the *ratings* half: it rates teams on
 **points scored/allowed**, not EPA — the single biggest accuracy lever — and it
@@ -23,7 +23,7 @@ work, and both are achievable with free data (nflverse, CollegeFootballData).
 
 ## Gap analysis (research finding → our state → verdict)
 
-| Area | What accurate models do | OneSource today | Gap |
+| Area | What accurate models do | Project 54.7 today | Gap |
 |---|---|---|---|
 | **Team rating signal** | Opponent-adjusted **EPA/play** + success rate, garbage-time filtered, offense weighted ~1.6× defense | Points scored/allowed, shrunk to league avg, optional SoS (`models/generic.py`) | **LARGE — #1 lever.** Points are downstream of EPA and noisier |
 | **Power-rating core** | Elo w/ MOV multiplier, modeled HFA, season regression | Elo w/ MOV (sqrt) + season regress + per-sport HFA already present (`models/elo.py`, `sports.py`) | Small — refine MOV to nfelo autocorrelation form |
@@ -44,7 +44,7 @@ Two big gaps, both data-driven, both fixable with **free** sources:
 
 1. **EPA ratings.** Rate teams on opponent-adjusted EPA/play instead of (or
    blended with) points. Shipped in this consolidation as a foundation:
-   `onesource/epa.py` (ridge opponent-adjustment), `clients/nflverse.py`
+   `project547/epa.py` (ridge opponent-adjustment), `clients/nflverse.py`
    (NFL PBP → EPA), `clients/cfbd.py` (NCAAF PPA/EPA + priors). Not yet wired
    into live projections — staged in the roadmap so it's *validated* against the
    backtest first (the same "prove the edge before wiring" discipline the
@@ -62,6 +62,6 @@ entirely in the **inputs** (EPA, college advanced stats), not the bet math.
 
 Research is blunt: the bar is the market, and realistic edges are **~52.5–54%
 ATS / positive CLV**, not 60%+. Success = beating the close, measured by CLV over
-300–500+ bets — which OneSource already tracks. The EPA upgrade should show up
+300–500+ bets — which Project 54.7 already tracks. The EPA upgrade should show up
 first as **better win-probability calibration** (lower Brier/log-loss) and then
 as CLV, validated walk-forward before going live.

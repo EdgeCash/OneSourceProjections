@@ -10,7 +10,7 @@ Endpoints available to partners: /books, /events, /markets,
 /markets/offer-counts, /offers, /props.
 
 Rate limits: 5 req/sec (500 burst), 5,000 requests/day total. Responses
-are disk-cached (see onesource/cache.py) and a client-side throttle keeps
+are disk-cached (see project547/cache.py) and a client-side throttle keeps
 us at <= 4 req/sec.
 """
 

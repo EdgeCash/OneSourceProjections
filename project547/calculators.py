@@ -1,6 +1,6 @@
 """Betting calculators — the deterministic toolkit every research site ships.
 
-All pure functions over odds math (onesource.odds), so they're unit-tested
+All pure functions over odds math (project547.odds), so they're unit-tested
 without the dashboard. American odds in, plain dicts/floats out.
 """
 

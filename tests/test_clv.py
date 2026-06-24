@@ -2,8 +2,8 @@
 
 import json
 
-from onesource import clv
-from onesource.names import normalize
+from project547 import clv
+from project547.names import normalize
 
 
 def _write_snapshot(tmp_path, sport, date, rows):

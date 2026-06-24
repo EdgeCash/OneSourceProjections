@@ -64,7 +64,7 @@ def analyze_stream(brief: str, question: str | None = None,
     Raises ``RuntimeError`` with a friendly message if not configured.
 
     ``mode`` selects an Ask-AI risk posture (conservative/standard/aggressive,
-    see ``onesource/ai_modes.py``); None keeps the neutral base posture."""
+    see ``project547/ai_modes.py``); None keeps the neutral base posture."""
     ready, reason = available()
     if not ready:
         raise RuntimeError(reason)

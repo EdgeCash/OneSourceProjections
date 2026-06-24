@@ -1,4 +1,4 @@
-"""OneSource Projections — research dashboard.
+"""Project 54.7 — research dashboard.
 
 Run locally:  streamlit run app/dashboard.py
 Data source:  data/output/latest.json (rewritten hourly by the GitHub
@@ -21,14 +21,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from onesource import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
-from onesource.sports import SPORTS, default_slate_date  # noqa: E402
+from project547 import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
+from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
 st.set_page_config(page_title="Project 54.7", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
-# environment so the anthropic SDK (and onesource.ai) can find them.
+# environment so the anthropic SDK (and project547.ai) can find them.
 for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
     try:
         if _k not in os.environ and _k in st.secrets:
@@ -124,7 +124,7 @@ def refresh():
     from datetime import datetime, timedelta
     from zoneinfo import ZoneInfo
 
-    from onesource import pipeline
+    from project547 import pipeline
 
     et = ZoneInfo("America/New_York")
     today = datetime.now(et).date()
@@ -194,7 +194,7 @@ _PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
                 "PERFORMANCE": "Live results", "BACKTEST": "Backtest"}
 
 with st.sidebar:
-    st.markdown("<div class='osp-brand'>🎯 OneSource</div>", unsafe_allow_html=True)
+    st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
     st.caption("projections & research")
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
                     label_visibility="collapsed", key="nav_area")
@@ -263,7 +263,7 @@ def ai_block(brief: str, key: str):
     cost. The in-app Claude analysis is offered second, clearly marked as a paid
     API call, and only when a key is configured. The analysis persists across
     reruns via session_state so it doesn't vanish on the next interaction."""
-    from onesource import ai_modes
+    from project547 import ai_modes
     with st.expander("🤖 Send to AI  ·  free copy-paste"):
         # Risk mode (ported from Edge Equation): Conservative / Standard /
         # Aggressive change the betting *posture* of the read — selectivity,
@@ -399,14 +399,14 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
 
 @st.cache_data(ttl=300, show_spinner=False)
 def load_best_lines(sport: str, date_sel: str) -> dict:
-    from onesource import lineshop
+    from project547 import lineshop
     # frozenset keys aren't JSON-friendly for caching, so stringify them
     return {" vs ".join(sorted(k)): v
             for k, v in lineshop.best_lines(sport, date_sel).items()}
 
 
 def _shop_line(sport: str, g: dict, date_sel: str):
-    from onesource.names import normalize
+    from project547.names import normalize
     best = load_best_lines(sport, date_sel)
     key = " vs ".join(sorted({normalize(g.get("home_team", "")),
                               normalize(g.get("away_team", ""))}))
@@ -582,7 +582,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
             moved = "toward the over" if now_ < open_ else "toward the under"
             bits.append(f"Over opened **{ui.fmt_american(open_)}**, now "
                         f"**{ui.fmt_american(now_)}** (moved {moved}).")
-        from onesource.names import normalize as _norm
+        from project547.names import normalize as _norm
         inj = next((i for i in (injuries or [])
                     if i.get("norm") == _norm(player)), None)
         if inj:
@@ -628,8 +628,8 @@ def _player_profile(sport: str, player: str, market: str) -> str | None:
     if sport != "MLB":
         return None
     try:
-        from onesource import internal_stats
-        from onesource.names import normalize as _norm
+        from project547 import internal_stats
+        from project547.names import normalize as _norm
         season = int(default_date[:4]) if default_date else 2026
         n = _norm(player)
         if str(market).startswith("pitcher"):
@@ -681,7 +681,7 @@ def render_plays():
     c[3].metric("Best EV", f"{board['ev'].max():+.1%}")
 
     # line shopping: best available price + book per bet from multi-book odds
-    from onesource import lineshop
+    from project547 import lineshop
     shop = ({sp: lineshop.best_lines(sp, date_sel)
              for sp in board["sport"].unique()} if not board.empty else {})
 
@@ -984,7 +984,7 @@ def render_performance():
 
     # Model vs market: does the model add signal where it disagrees with the
     # market? The honest test of independent skill, not market-following.
-    from onesource import scorecard as _sc
+    from project547 import scorecard as _sc
     sc = _sc.scorecard(ledger)
     st.subheader("Model vs market")
     d, a = sc["disagree"], sc["agree"]
@@ -1078,12 +1078,12 @@ def render_performance():
 
 @st.cache_data(ttl=30, show_spinner=False)
 def load_scores(date_str: str) -> list[dict]:
-    from onesource import scores
+    from project547 import scores
     return scores.live_scoreboard(date_str)
 
 
 def _score_ticker(games: list[dict]):
-    from onesource import scores
+    from project547 import scores
     live = [g for g in games if g.get("state") == "in"] or games
     chips = []
     for g in live[:40]:
@@ -1160,7 +1160,7 @@ def render_scores_board(date_str: str):
               f"{g['home'].get('abbrev') or g['home'].get('team')}" for g in games]
     pick = st.selectbox("📋 Open a box score", ["—", *labels], key="boxpick")
     if pick != "—":
-        from onesource import scores
+        from project547 import scores
         g = games[labels.index(pick)]
         box = scores.box_score(g["sport"], g["game_id"])
         if not box.get("teams"):
@@ -1188,7 +1188,7 @@ def render_scores():
 # ---------------------------------------------------------------------------
 
 def render_tools():
-    from onesource import calculators as calc
+    from project547 import calculators as calc
 
     topbar("Betting Tools", with_search=False)
     st.caption("The deterministic toolkit — fair odds, edge, and staking math "
@@ -1253,7 +1253,7 @@ def render_tools():
         kp = k[0].number_input("Win %", 0.0, 100.0, 55.0, 0.5, key="k_p") / 100
         ko = k[1].number_input("Odds", value=-110, step=5, key="k_o")
         kf = k[2].slider("Kelly fraction", 0.0, 1.0, 0.25, 0.05)
-        from onesource import odds as _odds
+        from project547 import odds as _odds
         stake_frac = _odds.kelly_stake(kp, ko, kf)
         ror = calc.risk_of_ruin(kp, ko, fraction=kf)
         kc = st.columns(3)
@@ -1277,7 +1277,7 @@ def render_tools():
             st.warning("Enter comma-separated numbers, e.g. -110, +120.")
         st.divider()
         st.markdown("**Same-game parlay** — correlation-adjusted fair price & EV")
-        from onesource import sgp as _sgp
+        from project547 import sgp as _sgp
         legs_p = st.text_input("Leg win % (comma-separated)", "55, 60",
                                key="sgp_p")
         preset = st.selectbox("Leg relationship (sets ρ)",
@@ -1313,7 +1313,7 @@ def render_tools():
 
 
 def ui_ev(prob: float, american) -> float:
-    from onesource import odds as _odds
+    from project547 import odds as _odds
     return _odds.expected_value(prob, american)
 
 
@@ -1458,7 +1458,7 @@ def render_edges():
 def render_experts():
     q = topbar("Expert Consensus")
     date_sel = pick_date()
-    from onesource import experts
+    from project547 import experts
     rows = experts.consensus_table(slates.get(date_sel, {}), query=q or "")
     st.caption("Where independent reads agree: **our model**, **BettingPros' "
                "expert recommendation** (with their ★ confidence), and the "
@@ -1505,7 +1505,7 @@ def _player_headshot(player: str, game_pk, sport: str | None):
     attaches to each game. None when we don't have an id (or non-MLB)."""
     if sport and sport != "MLB":
         return None
-    from onesource.names import normalize
+    from project547.names import normalize
     key = normalize(player)
     for _date, sl in (slates or {}).items():
         for sp, blob in (sl or {}).items():
@@ -1549,7 +1549,7 @@ def _find_player_props(player: str, game_pk, sport: str | None):
     """All prop rows for a player on the loaded slates, plus the sport they
     were found in. game_pk disambiguates same-named players across games.
     Names are normalised (accents/case) so lineup and prop spellings match."""
-    from onesource.names import normalize
+    from project547.names import normalize
     target = normalize(player)
     found, found_sport = [], sport
     for _date, sl in (slates or {}).items():
@@ -1668,7 +1668,7 @@ def _backfill_seasons(sport: str) -> list[int]:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _run_backtest(sport: str, seasons: tuple) -> dict:
-    from onesource import backtest
+    from project547 import backtest
     return backtest.run_game_backtest(sport, list(seasons), draws=800, detail=True)
 
 

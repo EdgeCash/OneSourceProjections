@@ -10,7 +10,7 @@ quote is too expensive.
 
 We don't have per-player joint histories wired in, so we use well-established
 correlation **priors** for common same-game relationships and run them through
-the Gaussian-copula joint-probability model in ``onesource.calculators``. Given
+the Gaussian-copula joint-probability model in ``project547.calculators``. Given
 each leg's win probability and a correlation, ``price_sgp`` returns the true
 joint probability, the fair SGP price, the naive independent price, the
 correlation "lift", and — if you pass the book's quoted SGP odds — the EV and

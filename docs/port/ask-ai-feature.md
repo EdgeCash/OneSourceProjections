@@ -2,7 +2,7 @@
 
 **Source repo:** `Sports-projections` (a.k.a. "Edge Equation")
 **Source commit:** `9ccb19182187104fd6b25f8749ce29f03f16fd84` (2026-06-24)
-**Target:** `OneSourceProjections` (OSP), which already has `onesource/ai.py` (Anthropic) and a Streamlit `app/`.
+**Target:** `OneSourceProjections` (OSP), which already has `project547/ai.py` (Anthropic) and a Streamlit `app/`.
 
 > Note on the LLM call below: when porting, default to the latest Claude models
 > (`claude-opus-4-8` / `claude-sonnet-4-6`) per the consolidation. The **prompt
@@ -68,7 +68,7 @@ IDs, params, caching) because it is the repo's live Anthropic integration.
   (imported at L388/L408).
 
 ### What OSP already has (the port target)
-- **`OneSourceProjections/onesource/ai.py`** — single-mode in-app analyst.
+- **`OneSourceProjections/project547/ai.py`** — single-mode in-app analyst.
   `MODEL = claude-opus-4-8` (L20), one `SYSTEM` prompt (L22), `analyze_stream()`
   (L61) using `client.messages.stream(...)` with `thinking={"type":"adaptive"}`,
   `output_config={"effort":"medium"}`, `max_tokens=6000`.
@@ -169,7 +169,7 @@ chatbot, not server-side.
 - Cost telemetry via `compute_cost()` + `PRICING` table; cache reads 0.1×,
   cache writes 1.25× base input.
 - **For OSP, document the call as `claude-opus-4-8` (deep reads) /
-  `claude-sonnet-4-6` (cheaper), matching `onesource/ai.py`'s existing default.**
+  `claude-sonnet-4-6` (cheaper), matching `project547/ai.py`'s existing default.**
 
 ---
 
@@ -420,12 +420,12 @@ function cpBuild(){
 
 ## 6. Port plan into OneSourceProjections
 
-OSP already has the hard part: an Anthropic client (`onesource/ai.py`), markdown
+OSP already has the hard part: an Anthropic client (`project547/ai.py`), markdown
 brief builders (`app/ui.py:ai_brief_game/prop/board`), and a "Send to AI" panel
 (`app/dashboard.py:ai_block`). Today `ai_block` is **single-mode** (one `SYSTEM`
 prompt, one button). The port adds the **three modes + per-game style picker**.
 
-### Step 1 — Add a modes module: `onesource/ai_modes.py`
+### Step 1 — Add a modes module: `project547/ai_modes.py`
 Port `curation_styles.py`'s mode definitions verbatim (the wording is the asset).
 Adapt the engine-context block to OSP's data instead of Edge Equation's
 `_build_engine_candidates`. Expose:
@@ -437,7 +437,7 @@ Adapt the engine-context block to OSP's data instead of Edge Equation's
   changes selection thresholds and sizing posture, matching the source.
 - `style_note(mode)` from `CUSTOM_STYLE_NOTES` (verbatim) for the per-game read.
 
-### Step 2 — Extend `onesource/ai.py` to take a mode
+### Step 2 — Extend `project547/ai.py` to take a mode
 Add a `mode` param to `analyze`/`analyze_stream`:
 ```python
 def analyze_stream(brief, question=None, model=None, mode="standard"):
@@ -481,9 +481,9 @@ style note. In Streamlit this is server-side (`st.selectbox`), so no JS port is
 needed — `cpBuild()`'s logic becomes a Python string-assembly function in `ui.py`.
 
 ### Step 6 — Files to add/edit (summary)
-- **Add:** `onesource/ai_modes.py` (mode registry + `system_prompt`, ported
+- **Add:** `project547/ai_modes.py` (mode registry + `system_prompt`, ported
   verbatim from `curation_styles.py`).
-- **Edit:** `onesource/ai.py` — add `mode` param threading the mode system prompt.
+- **Edit:** `project547/ai.py` — add `mode` param threading the mode system prompt.
 - **Edit:** `app/dashboard.py` `ai_block()` — add the 3-way mode selector + pass
   `mode` through.
 - **Edit (optional):** `app/ui.py` — add a `build_custom_prompt()` helper

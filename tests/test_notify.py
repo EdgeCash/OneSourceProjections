@@ -1,6 +1,6 @@
 """ntfy.sh push notifier — config gating and request shape."""
 
-import onesource.notify as notify
+import project547.notify as notify
 
 
 def test_send_noop_when_unconfigured(monkeypatch):

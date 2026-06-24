@@ -4,7 +4,7 @@ projections over the points-based ratings the generic model uses today?
 Builds, per game (week >= TRUST_WEEK), two leakage-free signals from only that
 season's earlier weeks:
   * points_margin — home margin from points-for/against ratings (today's model)
-  * epa_margin    — home margin from opponent-adjusted EPA ratings (onesource/epa)
+  * epa_margin    — home margin from opponent-adjusted EPA ratings (project547/epa)
 
 Then compares several ways to turn signals into a win probability, all scored
 walk-forward with proper rules (Brier / LogLoss / MarginMAE):
@@ -28,7 +28,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from onesource import epa
+from project547 import epa
 
 PBP_DIR = pathlib.Path("data/history/pbp/nfl")
 TRUST_WEEK = 5

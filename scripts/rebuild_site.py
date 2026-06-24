@@ -19,8 +19,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import pandas as pd  # noqa: E402
 
-from onesource import pipeline, replay, results  # noqa: E402
-from onesource.config import OUTPUT_DIR  # noqa: E402
+from project547 import pipeline, replay, results  # noqa: E402
+from project547.config import OUTPUT_DIR  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("rebuild")

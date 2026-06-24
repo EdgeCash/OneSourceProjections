@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from onesource import ai_modes, byoe
-from onesource.sports import SPORTS
+from project547 import ai_modes, byoe
+from project547.sports import SPORTS
 
 NFL = SPORTS["NFL"]
 

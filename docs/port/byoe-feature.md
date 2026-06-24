@@ -15,7 +15,7 @@ saved formula against every upcoming game and grades the picks.
 
 **It is NOT AI-generated.** The "algorithm generation" is **weighted-factor
 composition over league z-scores** — pure, deterministic math. No LLM call is
-involved anywhere in the feature. (OSP's `onesource/ai.py` is unrelated and is
+involved anywhere in the feature. (OSP's `project547/ai.py` is unrelated and is
 only relevant as an *optional* enhancement in the port plan.)
 
 **The feature exists in two repos.** The **best / most complete** implementation
@@ -351,14 +351,14 @@ names) — `web/lib/edge-stats.ts`: `EDGE_STATS[{key,label,blurb,category}]` and
 
 ## 6. Port plan into OneSourceProjections
 
-OSP is a **Python engine (`onesource/`) + Streamlit app (`app/`)**, data driven
-by `data/output/latest.json`, with `onesource/ai.py` for optional Anthropic
+OSP is a **Python engine (`project547/`) + Streamlit app (`app/`)**, data driven
+by `data/output/latest.json`, with `project547/ai.py` for optional Anthropic
 analysis. BYOE ports almost verbatim because its engine is pure stdlib Python.
 
 **Source commit to port from:** `edge-equation-v1` @
 `599e6c8485bae087f306d5cd1b2793c0be7584f0`.
 
-### Step 1 — New engine module: `onesource/byoe.py`
+### Step 1 — New engine module: `project547/byoe.py`
 Port `edge_scoring.py` + the `Edge`/`EdgeInput` dataclasses from `edges.py` into
 one module. Keep it pure (stdlib only — OSP already uses numpy/pandas elsewhere,
 but BYOE doesn't need them). Public surface:
@@ -368,11 +368,11 @@ but BYOE doesn't need them). Public surface:
   `backtest` — verbatim, minus the FastAPI-specific bits.
 - **Adapter:** write `build_team_index(...)` to read OSP's own data instead of
   `games.json`/`team_stats.json`. OSP already has team rolling stats in
-  `onesource/teamstats.py` (`league_ranks`, season/L10/L5 splits) and historical
-  results in `onesource/history.py` — feed those into the z-score index. This is
+  `project547/teamstats.py` (`league_ranks`, season/L10/L5 splits) and historical
+  results in `project547/history.py` — feed those into the z-score index. This is
   the only real integration work; everything downstream is unchanged.
 
-### Step 2 — Stat catalog: `onesource/byoe_stats.py` (or a dict in `byoe.py`)
+### Step 2 — Stat catalog: `project547/byoe_stats.py` (or a dict in `byoe.py`)
 Port `EDGE_STATS` + `PRESETS`, **re-keyed to OSP's actual stat column names**
 (from `teamstats.py` / the projections output). Group into categories for the
 picker. Generalize beyond MLB if desired (OSP covers MLB + WNBA + NFL) — but to
@@ -397,7 +397,7 @@ Recreate `EdgeBuilder.tsx` as Streamlit widgets:
 - `st.text_input` name; `st.radio` market; `st.multiselect` + `st.number_input`
   per chosen stat for weights (cap 12); `st.radio` model + staking; optional max
   stake.
-- **Live backtest:** on rerun call `onesource.byoe.backtest(equation, ...)` and
+- **Live backtest:** on rerun call `project547.byoe.backtest(equation, ...)` and
   render the summary + an equity curve via `st.line_chart(ledger.cumulative)`.
   (Streamlit reruns on every widget change, so you get the "Proving Ground"
   behavior for free — no debounce/JS port needed; drop
@@ -406,22 +406,22 @@ Recreate `EdgeBuilder.tsx` as Streamlit widgets:
   synthetic game → show pick (+prob).
 - **Save:** button → write JSON (Step 3). A "My Equations" list to load/delete.
 - Register it in `app/dashboard.py` alongside the existing
-  `from onesource import ai, config, dfs, edge, ... ` imports and the
+  `from project547 import ai, config, dfs, edge, ... ` imports and the
   sport-nav/section layout.
 
 ### Step 5 — Daily scoring (optional)
 Port `tools/edges/run_edge_scoring.py` to a script under OSP `scripts/` (OSP
 already rewrites `latest.json` hourly via a GitHub Action) so saved equations
 get scored/graded against the slate and accumulate a record. Reuse OSP's results
-store (`onesource/results.py`, `onesource/scorecard.py`) for grading instead of
+store (`project547/results.py`, `project547/scorecard.py`) for grading instead of
 re-implementing `grade_pick`'s odds plumbing where OSP already has it.
 
 ### Step 6 — Optional AI layer (OSP-native enhancement, not in the source)
 edge-equation-v1 has **no** AI in BYOE. OSP can add value: after a backtest,
 build a markdown brief (equation + backtest summary + the model-vs-market edges
-OSP already computes in `onesource/edge.py`) and pass it to
-`onesource.ai.analyze_stream(brief, question)` (Claude Opus 4.8, adaptive
-thinking — see `onesource/ai.py:61`) to critique the equation ("you're
+OSP already computes in `project547/edge.py`) and pass it to
+`project547.ai.analyze_stream(brief, question)` (Claude Opus 4.8, adaptive
+thinking — see `project547/ai.py:61`) to critique the equation ("you're
 over-weighting a noisy stat", "thin sample"). This reuses the existing
 `available()` graceful-degradation pattern. Keep it strictly *additive* — the
 core generator stays deterministic.
@@ -432,13 +432,13 @@ core generator stays deterministic.
 - Drop multi-user concerns: `user_id`, subscriber gate, `visibility`,
   leaderboard, discussion board, feedback inbox (`BoardStore`, `FeedbackStore`,
   the `/byoe/board` + `/byoe/feedback` endpoints).
-- Drop FastAPI/pydantic — Streamlit calls `onesource.byoe` functions directly.
+- Drop FastAPI/pydantic — Streamlit calls `project547.byoe` functions directly.
 - Keep, verbatim: `zscore_index`, composite, weighted + Poisson models, Kelly
   staking, `backtest`. This is the irreplaceable, ported core.
 
 ### Net new OSP files
-- `onesource/byoe.py` — engine (ported `edge_scoring.py` + `Edge` model).
-- `onesource/byoe_stats.py` — stat catalog + presets (re-keyed to OSP stats).
+- `project547/byoe.py` — engine (ported `edge_scoring.py` + `Edge` model).
+- `project547/byoe_stats.py` — stat catalog + presets (re-keyed to OSP stats).
 - `app/byoe.py` — Streamlit builder UI; wired into `app/dashboard.py`.
 - `data/byoe/equations.json` (runtime) — saved custom equations.
 - (optional) `scripts/run_byoe_scoring.py`, `tests/test_byoe.py`.

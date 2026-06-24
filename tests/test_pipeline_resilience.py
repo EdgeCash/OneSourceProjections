@@ -1,7 +1,7 @@
 """The per-sport pipeline must keep games even when the props step fails (and
 vice-versa) so a transient data KeyError can't blank a whole sport's slate."""
 
-from onesource import pipeline
+from project547 import pipeline
 
 
 class _FakeDF:

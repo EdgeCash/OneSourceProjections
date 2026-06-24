@@ -5,8 +5,8 @@ import json
 
 import pytest
 
-from onesource import results, snapshots
-from onesource.clients import bettingpros, espn, mlb_statsapi
+from project547 import results, snapshots
+from project547.clients import bettingpros, espn, mlb_statsapi
 
 
 @pytest.fixture

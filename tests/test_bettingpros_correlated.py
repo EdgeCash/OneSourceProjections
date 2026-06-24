@@ -1,4 +1,4 @@
-from onesource.clients import bettingpros as bp
+from project547.clients import bettingpros as bp
 
 
 def test_correlated_picks_parses_defensively():

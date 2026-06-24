@@ -7,7 +7,7 @@ stake ladder, correlation policy, prop discipline, the edge floor, and how
 strict the four-persona sign-off is — without changing the underlying numbers.
 
 Here those same rule blocks (preserved close to verbatim) become a posture the
-in-app AI analyst (`onesource/ai.py`) can adopt when you press Ask-AI on a game
+in-app AI analyst (`project547/ai.py`) can adopt when you press Ask-AI on a game
 breakdown: pick a mode and the analyst's recommendations get more or less
 aggressive, anchored to the same projections/edges.
 """

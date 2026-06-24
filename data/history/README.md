@@ -2,7 +2,7 @@
 
 Curated from prior EdgeCash repos (Sports-projections, edge-equation-v1,
 Sports-stats-data) on 2026-06-12. Everything here is gzipped; load with
-`onesource/history.py`. Sizes are small because only model-relevant
+`project547/history.py`. Sizes are small because only model-relevant
 history was carried over — raw scrape dumps, vendor cards, and
 non-modeled leagues (KBO/EPL/UCL, NCAA baseball/softball) were left behind.
 

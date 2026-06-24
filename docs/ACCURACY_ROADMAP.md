@@ -13,12 +13,12 @@ Legend: ✅ done in this consolidation · 🔜 next · ⏳ later · effort S/M/L
 ---
 
 ## Stage 0 — Foundations (this consolidation) ✅
-- ✅ **EPA ratings engine** — `onesource/epa.py`: opponent-adjusted EPA/play +
+- ✅ **EPA ratings engine** — `project547/epa.py`: opponent-adjusted EPA/play +
   success rate via ridge regression with team dummies; offense weighted 1.6×;
   garbage-time filter; EPA→points conversion. Pure, unit-tested.
-- ✅ **nflverse PBP loader** — `onesource/clients/nflverse.py`: season
+- ✅ **nflverse PBP loader** — `project547/clients/nflverse.py`: season
   play-by-play → opponent-adjusted team EPA (free, no key).
-- ✅ **CFBD client** — `onesource/clients/cfbd.py`: NCAAF PPA(EPA), SP+/FPI,
+- ✅ **CFBD client** — `project547/clients/cfbd.py`: NCAAF PPA(EPA), SP+/FPI,
   returning production, talent, lines, games (free key via `CFBD_API_KEY`).
 - ✅ Research + inventory captured in `docs/`.
 

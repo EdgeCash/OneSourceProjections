@@ -11,10 +11,10 @@ import math
 
 import pytest
 
-from onesource import epa
-from onesource.clients import cfbd, nflverse
-from onesource.models import generic
-from onesource.sports import SPORTS
+from project547 import epa
+from project547.clients import cfbd, nflverse
+from project547.models import generic
+from project547.sports import SPORTS
 
 
 def _round_robin_plays(off_strength, def_strength, plays_per_pair=40, noise=0.0):

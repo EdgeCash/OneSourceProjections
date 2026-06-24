@@ -4,7 +4,7 @@ Usage:
     python scripts/run_daily.py [date] [--sports MLB,WNBA,NHL]
 
 With no --sports flag, runs every sport that is in season for the date
-(see onesource/sports.py).
+(see project547/sports.py).
 """
 
 import argparse
@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from onesource import pipeline  # noqa: E402
+from project547 import pipeline  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 

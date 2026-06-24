@@ -3,10 +3,10 @@
 
 import pytest
 
-from onesource.models import generic
-from onesource.models.elo import Elo, EloConfig
-from onesource.models.generic import TeamRating
-from onesource.sports import SPORTS
+from project547.models import generic
+from project547.models.elo import Elo, EloConfig
+from project547.models.generic import TeamRating
+from project547.sports import SPORTS
 
 GENERIC = ["WNBA", "NBA", "NFL", "NCAAF", "NHL"]
 

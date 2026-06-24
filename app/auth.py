@@ -7,7 +7,7 @@ import hmac
 
 import streamlit as st
 
-from onesource.config import APP_PASSWORD
+from project547.config import APP_PASSWORD
 
 
 def require_password() -> bool:

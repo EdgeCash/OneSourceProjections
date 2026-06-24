@@ -1,4 +1,4 @@
-from onesource import teams, teamstats as ts
+from project547 import teams, teamstats as ts
 
 
 def test_canon_resolves_variants():
@@ -75,7 +75,7 @@ def test_default_slate_date_stays_on_today_during_evening():
     from datetime import datetime
     from zoneinfo import ZoneInfo
 
-    from onesource.sports import default_slate_date
+    from project547.sports import default_slate_date
 
     et = ZoneInfo("America/New_York")
     dates = ["2026-06-12", "2026-06-13"]

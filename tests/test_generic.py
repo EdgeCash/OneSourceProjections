@@ -1,5 +1,5 @@
-from onesource.models import generic
-from onesource.sports import SPORTS, active_sports, in_season
+from project547.models import generic
+from project547.sports import SPORTS, active_sports, in_season
 
 
 def _ratings(home_ppg, home_allowed, away_ppg, away_allowed, league):

@@ -1,7 +1,7 @@
 """Forward-test grading: archive a slate, feed finals, and confirm the
 ledger accrues calibration (Brier) + graded bet rows, idempotently."""
 
-from onesource import results
+from project547 import results
 
 
 def _slate():
@@ -83,7 +83,7 @@ def test_grade_recent_sweeps_window(tmp_path, monkeypatch):
 
 
 def test_grade_attaches_clv_from_closing_lines(tmp_path, monkeypatch):
-    from onesource.names import normalize
+    from project547.names import normalize
     # closing line has the home side fair at 50% — our bet was at -130 (56.5%
     # implied), so we got a WORSE price than the close -> negative CLV.
     closes = {

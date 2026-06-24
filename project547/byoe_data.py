@@ -1,6 +1,6 @@
-"""Adapter: OneSource historical data -> BYOE inputs.
+"""Adapter: Project 54.7 historical data -> BYOE inputs.
 
-Keeps `onesource/byoe.py` pure (no pandas). This turns `teamstats.team_games`
+Keeps `project547/byoe.py` pure (no pandas). This turns `teamstats.team_games`
 into (a) a list of games the BYOE engine can grade and (b) a walk-forward
 z-index function that, for any date, builds league z-scores from each team's
 season-to-date stats *before* that date — point-in-time, no leakage.

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from onesource import dfs
+from project547 import dfs
 
 
 def test_hit_distribution_and_evs():

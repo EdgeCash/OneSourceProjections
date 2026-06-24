@@ -36,7 +36,7 @@ BP_USER_KEY = lambda: secret("BP_USER_KEY")  # noqa: E731
 APP_PASSWORD = lambda: secret("APP_PASSWORD")  # noqa: E731
 THE_ODDS_API_KEY = lambda: secret("THE_ODDS_API_KEY")  # noqa: E731
 # CollegeFootballData (NCAAF EPA/PPA, SP+/FPI, returning production, talent,
-# lines). Free key at https://collegefootballdata.com/key. See onesource/clients/cfbd.py.
+# lines). Free key at https://collegefootballdata.com/key. See project547/clients/cfbd.py.
 CFBD_API_KEY = lambda: secret("CFBD_API_KEY")  # noqa: E731
 
 # ntfy.sh push notifications (new first-qualify DFS cards). Set NTFY_TOPIC to a

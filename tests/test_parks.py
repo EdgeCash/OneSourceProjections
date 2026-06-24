@@ -1,5 +1,5 @@
-from onesource import parks
-from onesource.models import game
+from project547 import parks
+from project547.models import game
 
 
 def test_factor_resolves_names_and_abbrevs():

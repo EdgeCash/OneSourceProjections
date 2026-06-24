@@ -1,6 +1,6 @@
 import pytest
 
-from onesource import sgp
+from project547 import sgp
 
 
 def test_two_leg_independent_matches_product():

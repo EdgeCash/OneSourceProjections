@@ -1,8 +1,8 @@
 """Build Your Own Edge — Streamlit page.
 
 Lets you weight team stats into a custom edge, pick a market/model/staking rule,
-and walk-forward backtest it on OneSource's historical games. Engine:
-``onesource/byoe.py``; data adapter: ``onesource/byoe_data.py``.
+and walk-forward backtest it on Project 54.7's historical games. Engine:
+``project547/byoe.py``; data adapter: ``project547/byoe_data.py``.
 
 Run standalone:  streamlit run app/byoe.py
 Or import ``render()`` into the dashboard nav.
@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import streamlit as st
 
-from onesource import byoe, byoe_data, teamstats
-from onesource.sports import SPORTS
+from project547 import byoe, byoe_data, teamstats
+from project547.sports import SPORTS
 
 # Sports with a usable team_games history for BYOE.
 _SPORTS = [k for k in ("NFL", "NCAAF", "NBA", "WNBA", "MLB") if k in SPORTS]

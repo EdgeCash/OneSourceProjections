@@ -29,9 +29,9 @@ no live provider keys. Every match was an env-var reference (`os.environ.get` /
 
 | Added to OSP | From | Why |
 |---|---|---|
-| `onesource/epa.py` | new (informed by `edge-equation-v1` Elo/composites + `Sports-projections` football model + research) | Opponent-adjusted EPA/play ratings — the #1 accuracy lever OSP lacked |
-| `onesource/clients/nflverse.py` | new (extends OSP's existing nflverse game-results ingestion) | NFL play-by-play → team EPA (free, no key) |
-| `onesource/clients/cfbd.py` | new (CFBD source flagged by research) | NCAAF advanced data: PPA/EPA, SP+/FPI, returning production, talent, lines |
+| `project547/epa.py` | new (informed by `edge-equation-v1` Elo/composites + `Sports-projections` football model + research) | Opponent-adjusted EPA/play ratings — the #1 accuracy lever OSP lacked |
+| `project547/clients/nflverse.py` | new (extends OSP's existing nflverse game-results ingestion) | NFL play-by-play → team EPA (free, no key) |
+| `project547/clients/cfbd.py` | new (CFBD source flagged by research) | NCAAF advanced data: PPA/EPA, SP+/FPI, returning production, talent, lines |
 | `tests/test_epa.py` | new | Offline tests for the above |
 | `docs/research/*`, `docs/inventory/*` | research agents + repo readers | SOTA methodology, data/feature, modeling research + per-repo manifests |
 | `docs/ACCURACY_ROADMAP.md`, `docs/research/00-synthesis.md` | this consolidation | The updated build outline driven by the research |

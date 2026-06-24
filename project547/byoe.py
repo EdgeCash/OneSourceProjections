@@ -2,7 +2,7 @@
 
 Ported and generalized from Edge Equation's `edge_scoring.py`
 (edge-equation-v1, commit 599e6c8). The original was MLB-only (runs / Poisson);
-this version is sport-agnostic and reuses OneSource's Normal game model so it
+this version is sport-agnostic and reuses Project 54.7's Normal game model so it
 works for the NFL/NCAAF launch target as well as the existing sports.
 
 The idea: the user weights a handful of team stats into a custom **edge**.

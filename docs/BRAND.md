@@ -15,9 +15,10 @@ tone or copy anywhere in the product, defer to this.
 - **Project** does double duty: we **project** games, and the whole thing is an
   ongoing **experiment** — a public lab notebook, never a finished promise.
 
-The repo and Python package keep the legacy name `onesource` for continuity
-(import paths, git history). *Project 54.7* is the **product brand** — every
-surface a person sees: the dashboard, briefs, reports, docs.
+The Python package is **`project547`** (renamed from the legacy `onesource`).
+The GitHub repo is still named `OneSourceProjections` to preserve history and
+inbound links from the archived repos. *Project 54.7* is the **product brand** —
+every surface a person sees: the dashboard, briefs, reports, docs.
 
 ## Tagline
 

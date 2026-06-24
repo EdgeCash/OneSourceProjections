@@ -17,7 +17,7 @@ This is the **newest active Python deterministic model** and the recommended con
 - **Entry points:**
   - `scripts/run_daily.py` — run pipeline, write `data/output/latest.json` (`--sports WNBA,MLB` to filter).
   - `scripts/hourly_update.py` — the production cadence (snapshot + project + grade + write). Driven by `.github/workflows/hourly.yml`.
-  - `scripts/rebuild_site.py` — re-run pipeline with paid APIs **replayed from the committed library** (zero credits) via `onesource/replay.py`.
+  - `scripts/rebuild_site.py` — re-run pipeline with paid APIs **replayed from the committed library** (zero credits) via `project547/replay.py`.
   - `scripts/run_backtest.py` — walk-forward backtests → `reports/`.
   - `app/dashboard.py` — `streamlit run app/dashboard.py`.
   - Helper scripts: `compute_park_factors.py`, `discover_markets.py`, `dump_bp_props.py`, `make_preview.py`, `notify_test.py`.
@@ -28,16 +28,16 @@ This is the **newest active Python deterministic model** and the recommended con
 
 ## 2. Projection engine / models
 
-Core model code lives in `onesource/models/`; the orchestration and market math in `onesource/pipeline.py`.
+Core model code lives in `project547/models/`; the orchestration and market math in `project547/pipeline.py`.
 
 | Module | What it does | Sports | Inputs | Outputs | Quality |
 |---|---|---|---|---|---|
-| `onesource/models/game.py` (115L) | MLB game model. Shrunk recent scoring rate adjusted for opposing starter xFIP (over the innings starters cover) + bullpen FIP, park factors, HFA; 20k-draw Poisson Monte Carlo. | MLB | `TeamInputs` (runs/game, opp starter & bullpen xFIP, park factors) + `config` knobs | `GameProjection`: win prob, total mean, over-probs, run-line cover probs | **5** — canonical, transparent, backtested monotonic component-by-component (Brier 0.2483→0.2463). |
-| `onesource/models/props.py` (186L) | MLB player props: Poisson Ks, Binomial hits (xBA), Poisson/neg-binomial total bases, per-PA HR. Blends our Statcast rate 50/50 with FantasyPros. | MLB | per-PA rates, FP projections, line | P(over) per market | **5** — well-calibrated (backtest gaps ≈0 except batter_hits +0.03), unit-tested. |
-| `onesource/models/generic.py` (214L) | Cross-sport engine. Off/def ratings from recent ESPN scores shrunk to league avg (`RATING_SHRINK=0.65`), additive or multiplicative score method, Normal margin/total (basketball/football) or Poisson (NHL); Elo blended per `elo_blend`. Props via negative-binomial (counts) / Normal (yardage), dispersion by `NB_DISPERSION` keyword. | **NFL, NCAAF**, WNBA, NBA, NHL | results list, `Sport` config, projections | `GameProjection`-like (home_win_prob, total, over probs), `prop_prob_over` | **4** — clean and well-tested for the math, but football/NCAAF is *priming-tuned, not yet validated on live results* (no NFL/NCAAF games graded this offseason). |
-| `onesource/models/elo.py` (60L) | Logistic Elo with HFA, MOV multiplier, between-season regression. Walk-forward safe. | all team sports w/ `elo_blend>0` | game results stream | rating dict, home win prob | **5** — small, pure, unit-tested (`test_elo.py`), backtested on WNBA. |
-| `onesource/sports.py` (172L) | Sport registry — per-sport constants (league_ppg, hfa, sigma_margin/total, model type, Elo params, score_method, rest/qb coeffs, in-season months). **NFL & NCAAF entries fully populated.** | all | — | `Sport` dataclasses | **5** — central, documented, with backtest-derived tuning notes inline. |
-| `onesource/pipeline.py` (1256L) | Daily orchestrator: builds slate, projects games/props, pulls BP lines, de-vigs, shrinks to market consensus (`MARKET_SHRINK`), computes EV + ¼-Kelly. Branches `_run_mlb` vs generic. Degrades gracefully without keys. | all | clients + models + config | projection DataFrames → `latest.json` | **4** — comprehensive and resilient (`test_pipeline_resilience.py`), but large (1256L); a consolidation candidate for decomposition. |
+| `project547/models/game.py` (115L) | MLB game model. Shrunk recent scoring rate adjusted for opposing starter xFIP (over the innings starters cover) + bullpen FIP, park factors, HFA; 20k-draw Poisson Monte Carlo. | MLB | `TeamInputs` (runs/game, opp starter & bullpen xFIP, park factors) + `config` knobs | `GameProjection`: win prob, total mean, over-probs, run-line cover probs | **5** — canonical, transparent, backtested monotonic component-by-component (Brier 0.2483→0.2463). |
+| `project547/models/props.py` (186L) | MLB player props: Poisson Ks, Binomial hits (xBA), Poisson/neg-binomial total bases, per-PA HR. Blends our Statcast rate 50/50 with FantasyPros. | MLB | per-PA rates, FP projections, line | P(over) per market | **5** — well-calibrated (backtest gaps ≈0 except batter_hits +0.03), unit-tested. |
+| `project547/models/generic.py` (214L) | Cross-sport engine. Off/def ratings from recent ESPN scores shrunk to league avg (`RATING_SHRINK=0.65`), additive or multiplicative score method, Normal margin/total (basketball/football) or Poisson (NHL); Elo blended per `elo_blend`. Props via negative-binomial (counts) / Normal (yardage), dispersion by `NB_DISPERSION` keyword. | **NFL, NCAAF**, WNBA, NBA, NHL | results list, `Sport` config, projections | `GameProjection`-like (home_win_prob, total, over probs), `prop_prob_over` | **4** — clean and well-tested for the math, but football/NCAAF is *priming-tuned, not yet validated on live results* (no NFL/NCAAF games graded this offseason). |
+| `project547/models/elo.py` (60L) | Logistic Elo with HFA, MOV multiplier, between-season regression. Walk-forward safe. | all team sports w/ `elo_blend>0` | game results stream | rating dict, home win prob | **5** — small, pure, unit-tested (`test_elo.py`), backtested on WNBA. |
+| `project547/sports.py` (172L) | Sport registry — per-sport constants (league_ppg, hfa, sigma_margin/total, model type, Elo params, score_method, rest/qb coeffs, in-season months). **NFL & NCAAF entries fully populated.** | all | — | `Sport` dataclasses | **5** — central, documented, with backtest-derived tuning notes inline. |
+| `project547/pipeline.py` (1256L) | Daily orchestrator: builds slate, projects games/props, pulls BP lines, de-vigs, shrinks to market consensus (`MARKET_SHRINK`), computes EV + ¼-Kelly. Branches `_run_mlb` vs generic. Degrades gracefully without keys. | all | clients + models + config | projection DataFrames → `latest.json` | **4** — comprehensive and resilient (`test_pipeline_resilience.py`), but large (1256L); a consolidation candidate for decomposition. |
 
 **Supporting analysis modules** (operate over the projected slate, mostly pure + unit-tested): `edge.py` (276L, market-consensus / arb / middles / low-hold), `calculators.py` (176L, de-vig/Kelly/odds math), `odds.py` (American odds primitives), `sgp.py` (Gaussian-copula same-game-parlay pricing), `experts.py` (model vs BP-expert vs public consensus), `scorecard.py` (model-vs-market skill split), `clv.py` (closing-line value), `lineshop.py` (best-price finder), `dfs.py` (PrizePicks/Underdog pick'em optimizer), `teamstats.py` + `playerlogs.py` (research cards & hit-rate splits — football market→stat maps present), `internal_stats.py` (replaces blocked pybaseball on CI), `nfl_history.py` (376L, parser for sportsoddshistory NFL results+lines).
 
@@ -50,7 +50,7 @@ Core model code lives in `onesource/models/`; the orchestration and market math 
 
 ## 3. Data assets ("crown jewels")
 
-All under `data/`, gzipped, loaded via `onesource/history.py`. Manifest: `data/history/README.md`. Total `data/history` ≈ 59 MB.
+All under `data/`, gzipped, loaded via `project547/history.py`. Manifest: `data/history/README.md`. Total `data/history` ≈ 59 MB.
 
 | Path | Contents | Approx size / coverage |
 |---|---|---|
@@ -82,7 +82,7 @@ All under `data/`, gzipped, loaded via `onesource/history.py`. Manifest: `data/h
 
 ## 4. Integrations
 
-All clients in `onesource/clients/`. Keys resolved through `onesource/config.py::secret()` — **env var first, then Streamlit secrets** (so it works in Actions, local `.env`, and Streamlit Cloud).
+All clients in `project547/clients/`. Keys resolved through `project547/config.py::secret()` — **env var first, then Streamlit secrets** (so it works in Actions, local `.env`, and Streamlit Cloud).
 
 | Client | API | Auth / key resolution |
 |---|---|---|
@@ -126,17 +126,17 @@ Source commit: `d2897f20ca8e48a7ef21923bd5da7933a2a39944`.
 
 | Component | Recommendation | Reason |
 |---|---|---|
-| `onesource/models/generic.py` + `sports.py` + `elo.py` | **MIGRATE** | Canonical cross-sport engine; the NFL/NCAAF launch path. Well-tested, parameterized, ready to flip on. |
-| `onesource/models/game.py` + `props.py` (MLB) | **MIGRATE** | Deepest, best-validated models (Brier/calibration proven). Keep as the MLB reference even if NFL launches first. |
-| `onesource/pipeline.py` | **MIGRATE (NEEDS-REVIEW)** | Essential orchestrator but 1256L; review for decomposition during consolidation. Resilient + tested. |
-| `onesource/edge.py`, `calculators.py`, `odds.py`, `clv.py`, `lineshop.py`, `sgp.py`, `scorecard.py` | **MIGRATE** | Pure, unit-tested sharp/odds layer — sport-agnostic, high reuse value. |
-| `onesource/clients/*` | **MIGRATE** | The integration layer (BP/FP/Odds/ESPN/StatsAPI). Centralized key handling. Carry as-is. |
+| `project547/models/generic.py` + `sports.py` + `elo.py` | **MIGRATE** | Canonical cross-sport engine; the NFL/NCAAF launch path. Well-tested, parameterized, ready to flip on. |
+| `project547/models/game.py` + `props.py` (MLB) | **MIGRATE** | Deepest, best-validated models (Brier/calibration proven). Keep as the MLB reference even if NFL launches first. |
+| `project547/pipeline.py` | **MIGRATE (NEEDS-REVIEW)** | Essential orchestrator but 1256L; review for decomposition during consolidation. Resilient + tested. |
+| `project547/edge.py`, `calculators.py`, `odds.py`, `clv.py`, `lineshop.py`, `sgp.py`, `scorecard.py` | **MIGRATE** | Pure, unit-tested sharp/odds layer — sport-agnostic, high reuse value. |
+| `project547/clients/*` | **MIGRATE** | The integration layer (BP/FP/Odds/ESPN/StatsAPI). Centralized key handling. Carry as-is. |
 | `data/history/` (bp_odds, closing_lines, snapshots, statcast, fantasypros, backfill) | **MIGRATE — PRESERVE VERBATIM** | Crown jewels; paid-API/vendor-derived and irreplaceable. Copy bit-for-bit, never regenerate. |
-| `onesource/replay.py` + `scripts/rebuild_site.py` | **MIGRATE** | Enables credit-free rebuilds against the library — critical operational capability. |
-| `onesource/nfl_history.py` + `internal_stats.py` | **MIGRATE** | NFL ingest parser (launch-relevant) and CI-safe stats fallback. |
+| `project547/replay.py` + `scripts/rebuild_site.py` | **MIGRATE** | Enables credit-free rebuilds against the library — critical operational capability. |
+| `project547/nfl_history.py` + `internal_stats.py` | **MIGRATE** | NFL ingest parser (launch-relevant) and CI-safe stats fallback. |
 | `experts.py`, `dfs.py`, `teamstats.py`, `playerlogs.py`, `ai.py`, `weather.py`, `notify.py` | **NEEDS-REVIEW** | Feature modules valuable but secondary to launch; migrate if the consolidation target keeps the same dashboard scope. `weather.py` MLB-only. |
 | `app/` (Streamlit dashboard) | **NEEDS-REVIEW** | Migrate only if the consolidated product keeps Streamlit; otherwise it's a presentation layer to re-platform. |
 | `scripts/notify_test.py`, `dump_bp_props.py`, `discover_markets.py` | **NEEDS-REVIEW** | One-off/diagnostic utilities; keep `discover_markets` (operational), the others are situational. |
 | Duplicate/legacy upstream repos (Sports-projections, edge-equation-v1, Sports-stats-data, profit-hunt) | **SKIP** | Already curated into this repo's `data/history/` (2026-06-12). This repo supersedes them. |
 
-**Bottom line:** OneSourceProjections is the correct migration base. Migrate the `onesource/` package + `data/history/` wholesale (preserving the crown-jewel data verbatim), prioritizing the generic engine + `sports.py` for the NFL/NCAAF launch. NCAAF has the deepest game backfill (2004+) but **no closing-line history** and **no live validation** — flag for review before sizing bets.
+**Bottom line:** OneSourceProjections is the correct migration base. Migrate the `project547/` package + `data/history/` wholesale (preserving the crown-jewel data verbatim), prioritizing the generic engine + `sports.py` for the NFL/NCAAF launch. NCAAF has the deepest game backfill (2004+) but **no closing-line history** and **no live validation** — flag for review before sizing bets.

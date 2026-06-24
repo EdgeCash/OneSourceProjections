@@ -4,7 +4,7 @@ OSP already ingests nflverse *game* results (scores + closing lines) via
 ``nfl_history.ingest_nflverse``. This adds the layer research identified as the
 #1 NFL accuracy lever: the **play-by-play** feed, which carries per-play EPA,
 success and win-probability, aggregated into opponent-adjusted team ratings
-(``onesource/epa.py``).
+(``project547/epa.py``).
 
 nflverse ships pre-built season parquet files on its data releases (no API key,
 free, back to 1999; expected-pass metrics from 2006). We read those directly
