@@ -2110,7 +2110,7 @@ def _extra_team_head(t: dict, align: str) -> str:
             f"<div style='opacity:.65;font-size:.82rem'>{sub}</div></div>")
 
 
-def _extra_sheet(g: dict):
+def _extra_sheet(g: dict, bp_sport: str | None = None):
     a, h = g["away"], g["home"]
     st.markdown(
         "<div class='osp-hero'><div style='display:flex;justify-content:space-between;"
@@ -2139,6 +2139,38 @@ def _extra_sheet(g: dict):
                    "measured against. Our own adjustment + tracking layer onto "
                    "this; BettingPros gives a sharper baseline where it covers "
                    "the sport.")
+    # BettingPros: sharper consensus baseline + validator + their prop model
+    if bp_sport:
+        from project547 import bp as _bp
+        d10 = (g.get("date") or "")[:10]
+        hn, an = h.get("name", ""), a.get("name", "")
+        bpb = _bp.game_baseline(bp_sport, d10, hn, an)
+        if bpb:
+            st.markdown("**🎯 BettingPros baseline** (consensus, de-vigged): "
+                        + " · ".join(f"{k} {v}" for k, v in bpb.as_pct().items()))
+            if b:
+                c = _baseline.compare(b.home_wp, bpb.home_wp)
+                st.caption("✅ Market and BettingPros agree here."
+                           if c["agree"] else
+                           f"⚠️ Market vs BettingPros differ — "
+                           f"{c['label'].replace('home', 'the home side')}.")
+        bprops = _bp.prop_projections(bp_sport, d10, teams=[hn, an])
+        if bprops:
+            try:
+                from project547.clients import bettingpros as _bpc
+                mlk = _bpc.market_lookup(bp_sport)
+            except Exception:
+                mlk = {}
+            st.markdown("**BettingPros player projections** — their model as our "
+                        "second opinion (baseline / validator, not gospel).")
+            st.dataframe(pd.DataFrame([{
+                "Player": p["participant"],
+                "Market": (mlk.get(p["market_id"]) or {}).get("name") or p["market_id"],
+                "Line": p["bp_line"], "BP proj": p["bp_projection"],
+                "EV%": (f"{p['bp_ev']*100:+.1f}"
+                        if isinstance(p["bp_ev"], (int, float)) else None),
+                "Side": p["bp_recommended_side"], "Rating": p["bp_bet_rating"],
+            } for p in bprops]), hide_index=True, width="stretch")
     labels = [s["label"] for s in a["stats"]]
     for s in h["stats"]:
         if s["label"] not in labels:
@@ -2200,7 +2232,11 @@ def render_other_sports():
     labels = [g["name"] for g in evs]
     pick = st.selectbox("Event", labels)
     g = evs[labels.index(pick)]
-    (_extra_sheet if g.get("is_matchup") else _extra_field)(g)
+    if g.get("is_matchup"):
+        from project547 import baseline as _baseline
+        _extra_sheet(g, _baseline.bp_sport_for(group))
+    else:
+        _extra_field(g)
 
 
 # ---------------------------------------------------------------------------

@@ -74,6 +74,18 @@ def market_baseline(home_ml, away_ml, draw_ml=None, *,
         return None
 
 
+def compare(our_home_wp: float, other_home_wp: float, tol: float = 0.04) -> dict:
+    """Validator: how our home win prob sits vs another source (BP / market).
+    Within ``tol`` = agreement (confidence); a big gap is either our edge or a
+    data problem worth a look."""
+    delta = our_home_wp - other_home_wp
+    if abs(delta) <= tol:
+        label = "agree"
+    else:
+        label = f"we're {abs(delta)*100:.0f}pts {'higher' if delta > 0 else 'lower'} on home"
+    return {"agree": abs(delta) <= tol, "delta": round(delta, 4), "label": label}
+
+
 def apply_edge(base: Baseline, home_delta: float) -> Baseline:
     """Our adjustment on top of the baseline: nudge the home win prob by
     ``home_delta`` (probability points, e.g. +0.03), take it from the away side,

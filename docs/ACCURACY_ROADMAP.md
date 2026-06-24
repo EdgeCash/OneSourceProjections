@@ -115,10 +115,12 @@ projection on every sport, then earn our keep by beating the baseline.
 - ✅ **Market-implied baseline** — `project547/baseline.py`: de-vig the line
   (2-way or 3-way) into a baseline win prob; shown on every Other-Sports sheet.
   The de-vigged line is the strongest free baseline (our own research says so).
-- 🔜 **BettingPros baseline** (where BP covers the sport — `bp_sport_for`):
-  pull BP consensus/projection/EV via `clients/bettingpros` for a sharper
-  baseline than one book. FantasyPros only covers NFL/NBA/MLB, so it's for the
-  modeled sports' player props, not the long tail.
+- ✅ **BettingPros baseline + validator** — `project547/bp.py`: de-vig BP's
+  consensus moneyline into a baseline, surface BP's own prop projections/EV/
+  recommended side as a second opinion, and a `baseline.compare` market-vs-BP
+  agreement check. Shown on Other-Sports matchup sheets where BP covers the
+  sport. FantasyPros only covers NFL/NBA/MLB, so it's for the modeled sports'
+  player props, not the long tail.
 - 🔜 **Our adjustment** — `baseline.apply_edge` is the hook; ships at 0 so we can
   **track the baseline itself from day one**, then add a little of our own math
   per sport and measure the lift.
