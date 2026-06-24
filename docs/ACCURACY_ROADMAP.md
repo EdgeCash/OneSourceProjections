@@ -22,6 +22,29 @@ Legend: ✅ done in this consolidation · 🔜 next · ⏳ later · effort S/M/L
   returning production, talent, lines, games (free key via `CFBD_API_KEY`).
 - ✅ Research + inventory captured in `docs/`.
 
+## Validation log — EPA ratings (Stage 1 gate)
+
+**2026-06: EPA does NOT yet beat the points model — kept OFF (`epa_blend=0`).**
+Walk-forward on nflverse PBP via `scripts/validate_epa.py`, NFL games week ≥ 5:
+
+| Seasons | n | Model | Brier | LogLoss | MarginMAE |
+|---|---|---|---|---|---|
+| 2022 | 207 | Points | 0.2257 | 0.6428 | 9.28 |
+| 2022 | 207 | EPA | 0.2272 | 0.6619 | 10.74 |
+| 2022 | 207 | Blend 50/50 | **0.2196** | **0.6300** | 9.50 |
+| 2022–23 | 415 | Points | **0.2293** | **0.6504** | **9.67** |
+| 2022–23 | 415 | EPA | 0.2436 | 0.7157 | 11.26 |
+| 2022–23 | 415 | Blend 50/50 | 0.2313 | 0.6601 | 9.98 |
+
+The 50/50 blend looked great on 2022 alone but the edge vanished on 2023 — a
+textbook single-season mirage. EPA *alone* is clearly worse. So the naive
+implementation (simple ridge SoS + a heuristic EPA→points scale) is not good
+enough to wire in. The harness did its job: it stopped an unvalidated change.
+**Next** (before EPA earns a weight): calibrate the EPA→margin mapping by
+regression instead of a fixed scale; tune ridge `lam`; add cross-season
+carryover and a real QB adjustment; re-run over 2019–2024 (target 1000+ games)
+and require a clear, *stable* Brier/LogLoss win before setting `epa_blend>0`.
+
 ## Stage 1 — Wire EPA into projections (the #1 lever) 🔜
 1. **EPA-backed team ratings for NFL** (M). Build a season EPA store from
    nflverse PBP (cache parquet locally; never re-pull). Blend EPA-derived

@@ -262,10 +262,22 @@ def ai_block(brief: str, key: str):
     cost. The in-app Claude analysis is offered second, clearly marked as a paid
     API call, and only when a key is configured. The analysis persists across
     reruns via session_state so it doesn't vanish on the next interaction."""
+    from onesource import ai_modes
     with st.expander("🤖 Send to AI  ·  free copy-paste"):
+        # Risk mode (ported from Edge Equation): Conservative / Standard /
+        # Aggressive change the betting *posture* of the read — selectivity,
+        # stake ladder, prop discipline, edge floor — not the numbers.
+        mode = st.radio(
+            "AI risk mode", list(ai_modes.MODE_ORDER),
+            index=ai_modes.MODE_ORDER.index(ai_modes.DEFAULT_MODE),
+            format_func=ai_modes.label, horizontal=True, key=f"ai_mode_{key}",
+            help="How aggressive the AI's bet recommendations are. Applies to "
+                 "both the copy-paste brief and the in-app read.")
+        st.caption(ai_modes.MODES[mode][1])
+        full_brief = f"{brief}\n\n{ai_modes.MODES[mode][3]}"
         st.caption("**Free** — copy this brief and paste it into Claude.ai or "
                    "any chatbot. Uses your own subscription; no API charge.")
-        st.code(brief, language="markdown")
+        st.code(full_brief, language="markdown")
         st.caption("Hover the box and click ⧉ to copy.")
         ready, _ = ai.available()
         if ready:
@@ -278,7 +290,7 @@ def ai_block(brief: str, key: str):
                               "Claude subscription)."):
                 try:
                     with st.spinner("Claude is reading the brief…"):
-                        st.session_state[out_key] = ai.analyze(brief)
+                        st.session_state[out_key] = ai.analyze(brief, mode=mode)
                 except Exception as e:  # network/auth/rate-limit — show, don't crash
                     st.session_state[out_key] = f"⚠️ AI analyst error: {e}"
             c2.caption("Optional paid one-click read (Anthropic API, ~5¢).")

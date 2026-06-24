@@ -13,6 +13,8 @@ import pytest
 
 from onesource import epa
 from onesource.clients import cfbd, nflverse
+from onesource.models import generic
+from onesource.sports import SPORTS
 
 
 def _round_robin_plays(off_strength, def_strength, plays_per_pair=40, noise=0.0):
@@ -109,6 +111,27 @@ def test_cfbd_requires_key_with_default_transport():
     c = cfbd.CFBDClient(api_key="")
     with pytest.raises(RuntimeError):
         c.team_ppa(2025)
+
+
+def test_epa_blend_shifts_win_prob_and_is_consistent():
+    nfl = SPORTS["NFL"]
+    # A roughly even points projection (home_exp ~ away_exp).
+    base = generic.GenericGameProjection(home_exp=23.0, away_exp=23.0,
+                                         home_win_prob=0.5, total_mean=46.0,
+                                         margin_mean=0.0)
+    # EPA says home is +7. Blend at 0.5 -> margin ~+3.5 -> win prob > 0.5.
+    blended = generic.with_epa_margin(base, epa_margin=7.0, sport=nfl, weight=0.5)
+    assert blended.home_win_prob > 0.5
+    assert blended.margin_mean == pytest.approx(3.5, abs=1e-6)
+    # Cover prob at pick'em should exceed 0.5 too (consistent with the margin).
+    assert blended.home_cover_prob(0.0, nfl) > 0.5
+
+
+def test_epa_blend_is_noop_at_zero_weight_and_for_poisson():
+    nfl, mlb = SPORTS["NFL"], SPORTS["MLB"]
+    base = generic.GenericGameProjection(23.0, 20.0, 0.6, 43.0, margin_mean=3.0)
+    assert generic.with_epa_margin(base, 12.0, nfl, 0.0) is base
+    assert generic.with_epa_margin(base, 12.0, mlb, 0.5) is base  # poisson sport
 
 
 def test_nflverse_team_ratings_from_injected_frame():
