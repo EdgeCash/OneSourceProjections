@@ -6,6 +6,17 @@ computed against BettingPros market lines and a private Streamlit dashboard.
 
 **Personal use only. Not financial advice. Bet responsibly.**
 
+> **Consolidation note (June 2026):** this repo is now the canonical home for
+> EdgeCash's projection work — the best modules from the older repos were
+> consolidated here (see [`docs/CONSOLIDATION.md`](docs/CONSOLIDATION.md)).
+> Research on the most accurate public NFL/NCAAF models and the resulting
+> upgrade plan live in [`docs/research/`](docs/research/00-synthesis.md) and
+> [`docs/ACCURACY_ROADMAP.md`](docs/ACCURACY_ROADMAP.md). The headline finding:
+> the betting/edge math is already strong; the biggest accuracy lever is rating
+> teams on **opponent-adjusted EPA/play** (new: `onesource/epa.py`,
+> `clients/nflverse.py`, `clients/cfbd.py`) instead of points — staged for
+> validation before going live.
+
 ## How it works
 
 ```
