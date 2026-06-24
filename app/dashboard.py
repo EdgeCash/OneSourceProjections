@@ -38,34 +38,38 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
 
 require_password()
 
-st.markdown("""
-<style>
+_PALETTES = {
+    "light": dict(acc="#00a352", acc2="#0e7490", bg="#f6f8fc", card="#ffffff",
+                  line="#e4e9f2", neg="#e11d48", text="#0e1726",
+                  sb1="#ffffff", sb2="#eef2f8", glow="0.06", shadow="0.10"),
+    "dark": dict(acc="#00e676", acc2="#22d3ee", bg="#080b12", card="#121826",
+                 line="#1e2636", neg="#ff4d6d", text="#e6edf3",
+                 sb1="#0b0f18", sb2="#070a11", glow="0.10", shadow="0.35"),
+}
+
+_THEME_CSS = """
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-  :root { --acc:#00e676; --acc2:#22d3ee; --bg:#080b12; --card:#121826;
-          --line:#1e2636; --neg:#ff4d6d;
-          --disp:'Space Grotesk', system-ui, sans-serif; }
+  .stApp, body { color: var(--text); }
   .stApp { background:
-    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,0.10), transparent 55%),
-    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,0.08), transparent 50%),
+    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,var(--glow)), transparent 55%),
+    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,var(--glow)), transparent 50%),
     var(--bg); }
   .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1340px; }
-  /* headings + brand in the bold display face */
   h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
     letter-spacing: -0.5px; }
   section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0b0f18 0%,#070a11 100%);
+    background: linear-gradient(180deg,var(--sb1) 0%,var(--sb2) 100%);
     border-right: 1px solid var(--line); }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
     border-radius: 10px; padding: 5px 10px; font-weight: 600;
     transition: background .15s ease; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
     background: rgba(0,230,118,0.10); }
-  /* metric cards: punchy, glowing accent edge, big display-face value */
   [data-testid="stMetric"] { position: relative; overflow: hidden;
     background: linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)),
       var(--card);
     border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+    box-shadow: 0 6px 18px rgba(0,0,0,var(--shadow)); }
   [data-testid="stMetric"]::before { content:""; position:absolute; left:0; top:0;
     bottom:0; width:3px; background: linear-gradient(180deg,var(--acc),var(--acc2)); }
   [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.74rem;
@@ -78,35 +82,66 @@ st.markdown("""
     background-clip: text; -webkit-text-fill-color: transparent; }
   .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
   div[data-testid="stCaptionContainer"] { opacity: 0.62; }
-  /* tabs: bold, electric active underline */
   .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
     font-size: 0.96rem; }
   .stTabs [aria-selected="true"] { color: var(--acc) !important; }
   .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
     height: 3px; }
-  /* buttons: glow on hover, lift on press */
   .stButton > button { border-radius: 10px; border: 1px solid var(--line);
     font-weight: 700; transition: all .15s ease; }
-  .stButton > button:hover { border-color: var(--acc); color: #fff;
+  .stButton > button:hover { border-color: var(--acc); color: var(--acc);
     box-shadow: 0 0 0 1px var(--acc), 0 6px 18px rgba(0,230,118,0.18);
     transform: translateY(-1px); }
   .stButton > button:active { transform: translateY(0); }
+  /* form surfaces follow the palette so dark mode stays legible */
+  [data-baseweb="select"] > div, .stTextInput input, .stNumberInput input,
+  .stTextArea textarea { background: var(--card) !important; color: var(--text) !important;
+    border-color: var(--line) !important; }
   .osp-hero { background: linear-gradient(135deg, rgba(0,230,118,0.12),
       rgba(34,211,238,0.06));
     border: 1px solid rgba(0,230,118,0.25); border-radius: 18px; padding: 18px 22px;
-    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,0.35); }
+    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,var(--shadow)); }
   .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:3px 10px;
     border-radius:999px; margin-right:6px; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-  /* clickable player names -> profile dialog */
-  a.osp-plink { color:#c9d1d9 !important; text-decoration:none;
+  a.osp-plink { color: var(--text) !important; text-decoration:none;
     border-bottom:1px dashed rgba(0,230,118,0.0); transition: color .12s ease,
     border-color .12s ease; }
-  a.osp-plink:hover { color:#00e676 !important;
+  a.osp-plink:hover { color: var(--acc) !important;
     border-bottom-color:rgba(0,230,118,0.7); }
-</style>
-""", unsafe_allow_html=True)
+  /* mobile: tighter padding, smaller display type, full-width buttons */
+  @media (max-width: 640px) {
+    .block-container { padding: 0.6rem 0.6rem 2rem; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem; }
+    .osp-title { font-size: 1.4rem; } .osp-brand { font-size: 1.3rem; }
+    .osp-hero { padding: 13px 15px; }
+    .stButton > button { width: 100%; }
+  }
+"""
+
+
+def _theme_css(theme: str) -> str:
+    p = _PALETTES.get(theme, _PALETTES["light"])
+    root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
+            + "--disp:'Space Grotesk', system-ui, sans-serif; }")
+    return f"<style>{root}{_THEME_CSS}</style>"
+
+
+st.markdown(_theme_css(st.session_state.get("theme", "light")),
+            unsafe_allow_html=True)
+
+
+def _theme_toggle(key: str):
+    """Light/Dark master toggle. Both placements (sidebar + landing) stay in
+    sync via the shared ``theme`` state, re-seeded from it each render."""
+    st.session_state[key] = (st.session_state.get("theme", "light") == "dark")
+
+    def _cb():
+        st.session_state.theme = "dark" if st.session_state[key] else "light"
+
+    st.toggle("🌙 Night mode", key=key, on_change=_cb,
+              help="Light by day, dark by night — your call.")
 
 
 @st.cache_data(ttl=300)
@@ -198,7 +233,8 @@ _PAGE_LABELS = {"PLAYS": "Curated plays", "PLAYS_DETAIL": "Plays — full table"
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
-    st.caption("projections & research")
+    st.caption("52.4% pays the house. 54.7% pays you.")
+    _theme_toggle("theme_sb")
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
                     label_visibility="collapsed", key="nav_area")
     pages = NAV_GROUPS[area]
@@ -1397,6 +1433,9 @@ def render_home():
                 "</div></div>", unsafe_allow_html=True)
     st.caption("52.4% pays the house. 54.7% pays you. · "
                f"Updated {gen} ET · model estimates, not financial advice")
+    _, _tg = st.columns([5, 1])
+    with _tg:
+        _theme_toggle("theme_home")
     day = slates.get(default_date, {})
     board = ui.build_best_bets(day, min_edge)
     if hide_wild and not board.empty:
