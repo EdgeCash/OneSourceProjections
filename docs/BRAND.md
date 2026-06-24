@@ -32,6 +32,29 @@ A straight shooter. A math rebel. We hand you **data, projections, and tools**
 plus a little wagering advice — and the choice is always yours. We are the
 opposite of a tout.
 
+## Persona — the Anti-Guru Math Rebel
+
+**Josh Pate, not Colin Cowherd.**
+
+That contrast *is* the brand. One analyst holds his opinions loosely, shows his
+reasoning, and tells you how confident he is — so when he misses, you shrug; he
+never sold you certainty. The other trades in hot takes and absolute calls — so
+every miss is a gotcha you can't wait to flame. We are unapologetically the
+first guy.
+
+- **Anti-guru.** No rooftop promises, no "lock of the week," no personality cult.
+  The math is the star, not a face. We'd rather be *useful* than *loud*.
+- **Holds opinions loosely.** Every take ships with its confidence and the number
+  behind it. "Model likes this, here's how much, your call" — never "trust me."
+- **Math rebel.** We rebel against the tout-industrial complex: we publish our
+  losses, we tell you when to *pass*, and we hand you the tools to disagree with
+  us (Edge Builder). Transparency is the rebellion.
+- **Earns trust on a losing week.** The whole point. A guru is only as good as
+  his last pick; we're as good as our *process*, shown in the open.
+
+If a line of copy would sound at home from a screaming tout, cut it. If it sounds
+like a sharp friend showing you the spreadsheet, ship it.
+
 ## Brand pillars
 
 1. **Receipts over promises.** Every projection is graded and the record is
