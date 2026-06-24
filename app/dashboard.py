@@ -222,14 +222,15 @@ NAV_GROUPS = {
     "🛠️ Edge Builder": ["EDGE_BUILDER"],
     "🤖 Prompt Engine": ["PROMPT_ENGINE"],
     "📒 Ledger": ["PERFORMANCE"],
-    "🔬 Research Hub": ["SHARPSHEET", "BACKTEST", "EXPERTS", "TOOLS", "DOCS"],
+    "🔬 Research Hub": ["SHARPSHEET", "OTHER_SPORTS", "BACKTEST", "EXPERTS",
+                        "TOOLS", "DOCS"],
 }
 _PAGE_LABELS = {"PLAYS": "Curated plays", "PLAYS_DETAIL": "Plays — full table",
                 "EDGES": "Edge scanner", "DFS": "DFS optimizer",
                 "SCORES": "Live scores", "PERFORMANCE": "Track record",
-                "SHARPSHEET": "Sharp Sheets", "BACKTEST": "Backtest",
-                "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
-                "DOCS": "Methodology & docs"}
+                "SHARPSHEET": "Sharp Sheets", "OTHER_SPORTS": "Other sports",
+                "BACKTEST": "Backtest", "EXPERTS": "Expert consensus",
+                "TOOLS": "Calculators", "DOCS": "Methodology & docs"}
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
@@ -2099,6 +2100,78 @@ def render_sharpsheet_browser():
         render_research_card(sport, games[labels.index(pick)], date_sel)
 
 
+def _extra_team_head(t: dict, align: str) -> str:
+    logo = (f"<img src='{t['logo']}' width='44' style='vertical-align:middle'/> "
+            if t.get("logo") else "")
+    rank = f"<span style='opacity:.55'>#{t['rank']}</span> " if t.get("rank") else ""
+    sub = " · ".join(x for x in [t.get("record"), t.get("form")] if x)
+    return (f"<div style='text-align:{align};min-width:40%'>{logo}{rank}"
+            f"<b style='font-size:1.05rem'>{t.get('name','')}</b>"
+            f"<div style='opacity:.65;font-size:.82rem'>{sub}</div></div>")
+
+
+def _extra_sheet(g: dict):
+    a, h = g["away"], g["home"]
+    st.markdown(
+        "<div class='osp-hero'><div style='display:flex;justify-content:space-between;"
+        f"align-items:center;gap:12px'>{_extra_team_head(a, 'left')}"
+        "<div style='opacity:.5;font-weight:700'>@</div>"
+        f"{_extra_team_head(h, 'right')}</div></div>", unsafe_allow_html=True)
+    meta = " · ".join(x for x in [
+        g.get("league"), g.get("detail"), g.get("venue"),
+        ("neutral site" if g.get("neutral") else None)] if x)
+    if meta:
+        st.caption(meta)
+    o = g.get("odds")
+    if o:
+        bits = [o.get("details"),
+                (f"O/U {o['over_under']}" if o.get("over_under") is not None else None),
+                o.get("provider")]
+        st.markdown("**Market:** " + " · ".join(b for b in bits if b))
+    labels = [s["label"] for s in a["stats"]]
+    for s in h["stats"]:
+        if s["label"] not in labels:
+            labels.append(s["label"])
+    if labels:
+        am = {s["label"]: s["value"] for s in a["stats"]}
+        hm = {s["label"]: s["value"] for s in h["stats"]}
+        df = pd.DataFrame([{a.get("name", "Away"): am.get(l, "—"), "Stat": l,
+                            h.get("name", "Home"): hm.get(l, "—")} for l in labels])
+        st.dataframe(df, hide_index=True, width="stretch")
+    else:
+        st.caption("No season stats published for this matchup yet.")
+    st.caption("Stats & logos: ESPN (free). We don't model this league — the "
+               "sheet is here for *your* read, not ours.")
+
+
+def render_other_sports():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🌍 Other Sports"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("Sharp Sheets for in-season leagues we don't model — full stats, "
+               "logos, form and odds, so you can make your own read. "
+               "Data & logos: ESPN (free).")
+    from project547.clients import espn_extra
+    groups = espn_extra.leagues_by_group()
+    cg, cl, cd = st.columns([1, 2, 2])
+    group = cg.selectbox("Sport", list(groups))
+    opts = groups[group]
+    label = cl.selectbox("League", [n for _k, n in opts])
+    key = next(k for k, n in opts if n == label)
+    default_d = pd.to_datetime(default_date).date() if default_date else None
+    date_sel = cd.date_input("Date", value=default_d).isoformat()
+    try:
+        gms = espn_extra.games(key, date_sel)
+    except Exception as e:  # network/parse — never crash the page
+        st.warning(f"Couldn't load {label} from ESPN: {e}")
+        return
+    if not gms:
+        st.info(f"No {label} matches on {date_sel}.")
+        return
+    labels = [g["name"] for g in gms]
+    pick = st.selectbox("Matchup", labels)
+    _extra_sheet(gms[labels.index(pick)])
+
+
 # ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
@@ -2115,6 +2188,8 @@ elif section == "PLAYS_DETAIL":
     render_plays_detail()
 elif section == "SHARPSHEET":
     render_sharpsheet_browser()
+elif section == "OTHER_SPORTS":
+    render_other_sports()
 elif section == "EDGES":
     render_edges()
 elif section == "EXPERTS":
