@@ -80,6 +80,36 @@ def test_backtest_grades_and_profits_on_strong_edge():
     assert len(res.equity) == 10
 
 
+def test_odds_for_uses_real_market_odds():
+    z = byoe.zscore_index(STATS)
+    g = {"home": "A", "away": "D", "home_ml": -200, "away_ml": 170,
+         "spread": -3.0, "spread_home_odds": -115, "spread_away_odds": -105,
+         "total": 44.0, "total_over_odds": -108, "total_under_odds": -112}
+    ml = byoe.Edge("ml", EDGE.inputs, market="moneyline", model="normal")
+    sp = byoe.Edge("sp", EDGE.inputs, market="spread", model="normal")
+    to = byoe.Edge("to", EDGE.inputs, market="total", model="normal")
+    home_pick = byoe.Pick("A", 0.6, 5.0)
+    over_pick = byoe.Pick("OVER", 0.55, None)
+    assert byoe._odds_for(home_pick, ml, g) == -200
+    assert byoe._odds_for(home_pick, sp, g) == -115
+    assert byoe._odds_for(over_pick, to, g) == -108
+    # missing odds -> -110 default
+    assert byoe._odds_for(home_pick, ml, {"home": "A", "away": "D"}) == -110
+
+
+def test_backtest_uses_attached_closing_odds():
+    z = byoe.zscore_index(STATS)
+    # underdog ML win at +150 pays more than the -110 default would imply
+    flat = byoe.Edge("f", EDGE.inputs, market="moneyline", model="normal", stake="flat")
+    games = [{"date": "2025-09-01", "home": "D", "away": "A",
+              "home_score": 17, "away_score": 31, "away_ml": -150,
+              "home_ml": 130}]
+    res = byoe.backtest(flat, NFL, games, z_index_fn=lambda _d: z)
+    assert res.n == 1 and res.wins == 1
+    # A (away) was the pick and won at -150 -> 1u profit = 100/150 ~ 0.667u
+    assert res.units == pytest.approx(100 / 150, abs=1e-6)
+
+
 def test_backtest_handles_pushes_on_spread():
     z = byoe.zscore_index(STATS)
     games = [{"date": "2025-09-01", "home": "A", "away": "D",

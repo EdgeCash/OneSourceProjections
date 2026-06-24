@@ -221,8 +221,7 @@ def backtest(edge: Edge, sport: Sport, games: list[dict], z_index_fn) -> Backtes
         hs, as_ = g.get("home_score"), g.get("away_score")
         if hs is None or as_ is None:
             continue
-        odds = (g.get("home_ml") if pick.pick == g["home"]
-                else g.get("away_ml") if pick.pick == g["away"] else -110)
+        odds = _odds_for(pick, edge, g)
         units = stake_units(pick, odds, edge)
         won = _graded(pick, g, hs, as_)
         res.n += 1
@@ -238,6 +237,21 @@ def backtest(edge: Edge, sport: Sport, games: list[dict], z_index_fn) -> Backtes
         bank = round(res.units, 3)
         res.equity.append(bank)
     return res
+
+
+def _odds_for(pick: Pick, edge: Edge, g: dict) -> float:
+    """American odds for the pick on its market — real closing odds when present
+    (attached by byoe_data), else the -110 standard."""
+    default = -110
+    if edge.market == "moneyline":
+        o = g.get("home_ml") if pick.pick == g["home"] else g.get("away_ml")
+    elif edge.market == "spread":
+        o = g.get("spread_home_odds") if pick.pick == g["home"] else g.get("spread_away_odds")
+    elif edge.market == "total":
+        o = g.get("total_over_odds") if pick.pick == "OVER" else g.get("total_under_odds")
+    else:
+        o = None
+    return o if isinstance(o, (int, float)) else default
 
 
 def _graded(pick: Pick, g: dict, hs: float, as_: float) -> bool | None:

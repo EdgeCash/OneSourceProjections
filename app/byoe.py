@@ -84,9 +84,11 @@ def render():
         m4.metric("Units", f"{s['units']:+.1f}")
         if res.equity:
             st.line_chart({"units": res.equity})
-        st.caption("⚠️ This history has no stored moneyline prices, so EV/ROI "
-                   "use a -110 default — treat units as a relative signal, not a "
-                   "betting result. Wire real closing odds for true CLV/ROI.")
+        be = "52.4% (-110)"
+        st.caption(f"Graded against **real closing lines + american odds** "
+                   f"(spread/total/moneyline). Break-even is ~{be}; beating the "
+                   f"close is the bar. Note: these are bets *at* the close, so "
+                   f"this is ROI/ATS, not CLV — CLV needs opening lines.")
 
 
 if __name__ == "__main__":
