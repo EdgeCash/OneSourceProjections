@@ -1,0 +1,257 @@
+[
+ {
+  "id": 98873,
+  "sr_id": "652a3969-8a96-4acf-812a-dea0bbfda0a4",
+  "sport": "MLB",
+  "scheduled": "2026-06-25 16:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TB",
+  "visitor": "KC",
+  "link": "/mlb/matchups/kansas-city-royals-vs-tampa-bay-rays/?date=2026-06-25",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "visitor_probable": {
+    "id": "5890",
+    "name": "Seth Lugo",
+    "link": "/mlb/props/seth-lugo/",
+    "player": {
+     "short_name": "S. Lugo",
+     "first_name": "Seth",
+     "last_name": "Lugo",
+     "image": "https://images.fantasypros.com/images/players/mlb/5890/headshot/210x210.webp",
+     "position": "SP",
+     "team": "KC",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "seth-lugo",
+     "jersey_number": 67
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TB",
+   "season": "2025",
+   "split": "A",
+   "r": "0.953",
+   "1b": "0.906",
+   "2b": "0.951",
+   "3b": "1.224",
+   "hr": "0.980",
+   "name": "George M. Steinbrenner Field"
+  },
+  "venue": {
+   "name": "Tropicana Field",
+   "address": "One Tropicana Drive",
+   "city": "St. Petersburg",
+   "state": "FL",
+   "country": "USA",
+   "zip": "33705",
+   "surface": "turf",
+   "capacity": 25025,
+   "stadium_type": "indoor",
+   "id": "3aaaf4af-0f8c-49c1-8bf1-1780bb5a5f5c"
+  },
+  "participants": [
+   {
+    "id": "TB",
+    "name": "Rays",
+    "link": "/mlb/teams/tampa-bay-rays/",
+    "team": {
+     "city": "Tampa Bay",
+     "abbreviation": "TB",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 43,
+      "L": 33,
+      "T": 0
+     },
+     "slug": "tampa-bay-rays",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "KC",
+    "name": "Royals",
+    "link": "/mlb/teams/kansas-city-royals/",
+    "team": {
+     "city": "Kansas City",
+     "abbreviation": "KC",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 34,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "kansas-city-royals",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 88,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "SW",
+   "forecast_wind_degree": 221,
+   "forecast_rain_chance": 2,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1018,
+   "forecast_humidity": 0.69
+  },
+  "broadcasts": [
+   {
+    "network": "ROYL",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98179,
+  "sr_id": "1a856282-14ff-4b82-9c0d-2956f6747dad",
+  "sport": "MLB",
+  "scheduled": "2026-06-25 16:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "SEA",
+  "link": "/mlb/matchups/pittsburgh-pirates-vs-seattle-mariners/?date=2026-06-25",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "44682",
+    "name": "Bubba Chandler",
+    "link": "/mlb/props/bubba-chandler/",
+    "player": {
+     "short_name": "B. Chandler",
+     "first_name": "Bubba",
+     "last_name": "Chandler",
+     "image": "https://images.fantasypros.com/images/players/mlb/44682/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "bubba-chandler",
+     "jersey_number": 36
+    }
+   },
+   "visitor_probable": {
+    "id": "45184",
+    "name": "Bryce Miller",
+    "link": "/mlb/props/bryce-miller/",
+    "player": {
+     "short_name": "B. Miller",
+     "first_name": "Bryce",
+     "last_name": "Miller",
+     "image": "https://images.fantasypros.com/images/players/mlb/45184/headshot/210x210.webp",
+     "position": "SP",
+     "team": "SEA",
+     "conference": "AL",
+     "division": "West",
+     "slug": "bryce-miller",
+     "jersey_number": 50
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 39,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "SEA",
+    "name": "Mariners",
+    "link": "/mlb/teams/seattle-mariners/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 41,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "seattle-mariners",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 76,
+   "forecast_wind_speed": 13,
+   "forecast_wind_direction": "SW",
+   "forecast_wind_degree": 225,
+   "forecast_rain_chance": 3,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.55
+  },
+  "broadcasts": [
+   {
+    "network": "SEAM",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
