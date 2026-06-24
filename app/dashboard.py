@@ -183,15 +183,16 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in S
 # live -> tools -> tracking.
 NAV_GROUPS = {
     "🏠 Home": ["HOME"],
-    "🎯 Projections": NAV_SPORTS + ["PLAYS", "EDGES", "DFS", "SCORES"],
+    "🎯 Projections": ["PLAYS"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
     "🛠️ Edge Builder": ["EDGE_BUILDER"],
     "🤖 Prompt Engine": ["PROMPT_ENGINE"],
     "📒 Ledger": ["PERFORMANCE"],
-    "🔬 Research Hub": ["BACKTEST", "EXPERTS", "TOOLS", "DOCS"],
+    "🔬 Research Hub": ["SHARPSHEET", "BACKTEST", "EXPERTS", "TOOLS", "DOCS"],
 }
-_PAGE_LABELS = {"PLAYS": "Best bets", "EDGES": "Edge scanner",
-                "DFS": "DFS optimizer", "SCORES": "Live scores",
-                "PERFORMANCE": "Track record", "BACKTEST": "Backtest",
+_PAGE_LABELS = {"PLAYS": "Curated plays", "PLAYS_DETAIL": "Plays — full table",
+                "EDGES": "Edge scanner", "DFS": "DFS optimizer",
+                "SCORES": "Live scores", "PERFORMANCE": "Track record",
+                "SHARPSHEET": "Sharp Sheets", "BACKTEST": "Backtest",
                 "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
                 "DOCS": "Methodology & docs"}
 
@@ -661,8 +662,8 @@ def _player_profile(sport: str, player: str, market: str) -> str | None:
 # PLAYS: cross-sport best bets
 # ---------------------------------------------------------------------------
 
-def render_plays():
-    q = topbar("Plays")
+def render_plays_detail():
+    q = topbar("Plays — full table")
     date_sel = pick_date()
     board = ui.build_best_bets(slates.get(date_sel, {}), min_edge)
     if hide_wild and not board.empty:
@@ -751,6 +752,74 @@ def render_plays():
         st.caption("Single props — sortable; click the **EV %** header for a "
                    "quick high-to-low EV check.")
         render_board(props, f"board_props_{date_sel}", "prop")
+
+
+# ---------------------------------------------------------------------------
+# Sharp Sheet — the deep matchup breakdown behind a play (research starter)
+# ---------------------------------------------------------------------------
+
+def _resolve_game(sport: str, r, date_sel: str) -> dict | None:
+    """The slate game dict behind a board row (game or prop), or None."""
+    from project547.names import normalize
+    games = slates.get(date_sel, {}).get(sport, {}).get("games", []) or []
+    h, a = r.get("_home"), r.get("_away")
+    if isinstance(h, str) and isinstance(a, str):
+        names = {normalize(h), normalize(a)}
+    else:  # prop rows carry "Team vs Opponent" in `game`
+        names = {normalize(x) for x in str(r.get("game", "")).split(" vs ")}
+    names.discard("")
+    for g in games:
+        if {normalize(g.get("home_team", "")), normalize(g.get("away_team", ""))} & names:
+            return g
+    return {"home_team": h, "away_team": a} if isinstance(h, str) else None
+
+
+@st.dialog("📊 Sharp Sheet", width="large")
+def _sharpsheet(sport: str, g: dict | None, date_sel: str):
+    if not g:
+        st.info("Couldn't resolve the matchup behind this play.")
+        return
+    st.markdown(f"### {g.get('away_team')} @ {g.get('home_team')}")
+    st.caption(f"{sport} · {date_sel} · the full breakdown behind the play — "
+               "offense vs defense, the edges, and the model's read.")
+    render_research_card(sport, g, date_sel)
+
+
+def render_plays():
+    """Curated plays — simple and scannable (matchup | play), grouped by sport,
+    with a Sharp Sheet chip on every row for the deep breakdown. Passes shown."""
+    q = topbar("Curated plays")
+    date_sel = pick_date()
+    day = slates.get(date_sel, {})
+    board = ui.build_best_bets(day, min_edge)
+    if hide_wild and not board.empty:
+        board = board[pd.to_numeric(board["ev"], errors="coerce") < 0.30]
+    if q and not board.empty:
+        board = board[board["bet"].str.lower().str.contains(q)
+                      | board["game"].str.lower().str.contains(q)]
+    st.caption("The model's edges, plain. Hit **📊 Sharp Sheet** on any row for "
+               "the full breakdown. We show the passes too.")
+    sports_in_slate = [s for s in NAV_SPORTS if s in day]
+    if not sports_in_slate:
+        st.info("No slate loaded yet.")
+        return
+    for sport in sports_in_slate:
+        rows = (board[board["sport"] == sport] if not board.empty
+                else board.iloc[0:0])
+        st.markdown(f"#### {sport}")
+        if rows.empty:
+            st.caption("No plays — nothing cleared the bar. "
+                       "(A pass is a position, not a bug.)")
+            continue
+        for i, r in rows.reset_index(drop=True).iterrows():
+            cM, cP, cB = st.columns([5, 4, 2], vertical_alignment="center")
+            cM.markdown(f"**{r['game']}**")
+            price = ui.fmt_american(r["price"]) if pd.notna(r.get("price")) else ""
+            cP.markdown(f"<span style='color:#00e676;font-weight:600'>{r['bet']} "
+                        f"{price}</span>", unsafe_allow_html=True)
+            if cB.button("📊 Sharp Sheet", key=f"ss_{sport}_{date_sel}_{i}",
+                         width="stretch"):
+                _sharpsheet(sport, _resolve_game(sport, r, date_sel), date_sel)
 
 
 # ---------------------------------------------------------------------------
@@ -1971,6 +2040,26 @@ def render_docs():
                 else f"_{_DOC_PAGES[pick]} not found._")
 
 
+def render_sharpsheet_browser():
+    st.markdown("<div class='osp-hero'><div class='osp-title'>📊 Sharp Sheets"
+                "</div></div>", unsafe_allow_html=True)
+    st.caption("The research starter. Pick a matchup for the full breakdown — "
+               "offense vs defense, league ranks, the edges, and the model's "
+               "read. Same sheet that opens from a play's chip.")
+    date_sel = pick_date()
+    day = slates.get(date_sel, {})
+    sports_in = [s for s in NAV_SPORTS if (day.get(s, {}) or {}).get("games")]
+    if not sports_in:
+        st.info("No matchups on this slate yet.")
+        return
+    sport = st.selectbox("Sport", sports_in)
+    games = day.get(sport, {}).get("games", []) or []
+    labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in games]
+    pick = st.selectbox("Matchup", labels)
+    if pick:
+        render_research_card(sport, games[labels.index(pick)], date_sel)
+
+
 # ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
@@ -1983,6 +2072,10 @@ elif section == "SCORES":
     render_scores()
 elif section == "PLAYS":
     render_plays()
+elif section == "PLAYS_DETAIL":
+    render_plays_detail()
+elif section == "SHARPSHEET":
+    render_sharpsheet_browser()
 elif section == "EDGES":
     render_edges()
 elif section == "EXPERTS":
