@@ -2144,6 +2144,25 @@ def _extra_sheet(g: dict):
                "sheet is here for *your* read, not ours.")
 
 
+def _extra_field(g: dict):
+    """Leaderboard / field events (golf, racing) — schedule, field, odds."""
+    st.markdown(f"<div class='osp-hero'><div class='osp-title'>{g.get('name','')}"
+                "</div></div>", unsafe_allow_html=True)
+    meta = " · ".join(x for x in [g.get("league"), g.get("detail"),
+                                  g.get("venue")] if x)
+    if meta:
+        st.caption(meta)
+    if g.get("odds") and g["odds"].get("details"):
+        st.markdown(f"**Market:** {g['odds']['details']}")
+    rows = [{"#": c.get("rank") or i + 1, "Competitor": c["name"],
+             "Score / Pos": c.get("score") or ("✓" if c.get("winner") else "—")}
+            for i, c in enumerate(g.get("competitors", []))]
+    if rows:
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    st.caption("Schedule, field & data: ESPN (free). We don't model this event "
+               "— it's here so you don't have to leave to research it.")
+
+
 def render_other_sports():
     st.markdown("<div class='osp-hero'><div class='osp-title'>🌍 Other Sports"
                 "</div></div>", unsafe_allow_html=True)
@@ -2160,16 +2179,17 @@ def render_other_sports():
     default_d = pd.to_datetime(default_date).date() if default_date else None
     date_sel = cd.date_input("Date", value=default_d).isoformat()
     try:
-        gms = espn_extra.games(key, date_sel)
+        evs = espn_extra.events(key, date_sel)
     except Exception as e:  # network/parse — never crash the page
         st.warning(f"Couldn't load {label} from ESPN: {e}")
         return
-    if not gms:
-        st.info(f"No {label} matches on {date_sel}.")
+    if not evs:
+        st.info(f"No {label} events on {date_sel}.")
         return
-    labels = [g["name"] for g in gms]
-    pick = st.selectbox("Matchup", labels)
-    _extra_sheet(gms[labels.index(pick)])
+    labels = [g["name"] for g in evs]
+    pick = st.selectbox("Event", labels)
+    g = evs[labels.index(pick)]
+    (_extra_sheet if g.get("is_matchup") else _extra_field)(g)
 
 
 # ---------------------------------------------------------------------------
