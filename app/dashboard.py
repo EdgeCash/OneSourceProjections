@@ -50,6 +50,20 @@ _PALETTES = {
 _THEME_CSS = """
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
   .stApp, body { color: var(--text); }
+  /* --- hide default Streamlit chrome (premium product, not scaffolding).
+         Keep stHeader itself (transparent) so the mobile sidebar toggle lives. */
+  [data-testid="stToolbar"], [data-testid="stDecoration"],
+  [data-testid="stStatusWidget"], #MainMenu, footer,
+  .stDeployButton { display: none !important; }
+  [data-testid="stHeader"] { background: transparent !important; }
+  /* --- one section-header system (uppercase kicker + accent rule) --- */
+  .osp-sec { font-family: var(--disp); font-size: 0.82rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px; color: var(--text);
+    margin: 18px 0 8px; padding-bottom: 6px; display: flex; align-items: center;
+    gap: 8px; border-bottom: 1px solid var(--line); }
+  .osp-sec .ico { font-size: 0.95rem; }
+  .osp-sec .tag { margin-left: auto; font-size: 0.66rem; font-weight: 600;
+    text-transform: none; letter-spacing: 0; color: var(--text); opacity: 0.5; }
   .stApp { background:
     radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,var(--glow)), transparent 55%),
     radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,var(--glow)), transparent 50%),
@@ -82,11 +96,19 @@ _THEME_CSS = """
     background-clip: text; -webkit-text-fill-color: transparent; }
   .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
   div[data-testid="stCaptionContainer"] { opacity: 0.62; }
+  /* tighter vertical rhythm + aligned numerals everywhere */
+  [data-testid="stVerticalBlock"] { gap: 0.7rem; }
+  [data-testid="stMetricValue"], [data-testid="stDataFrame"],
+  .osp-sec .tag { font-variant-numeric: tabular-nums; }
+  /* tabs as segmented pills (premium, not the default underline) */
+  .stTabs [data-baseweb="tab-list"] { gap: 0.35rem; background: var(--card);
+    padding: 0.3rem; border-radius: 12px; border: 1px solid var(--line); }
   .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
-    font-size: 0.96rem; }
-  .stTabs [aria-selected="true"] { color: var(--acc) !important; }
-  .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
-    height: 3px; }
+    font-size: 0.92rem; height: 34px; padding: 0 0.85rem; border-radius: 8px;
+    color: var(--text); }
+  .stTabs [aria-selected="true"] { background: var(--acc) !important;
+    color: #04130b !important; }
+  .stTabs [data-baseweb="tab-highlight"] { display: none; }
   .stButton > button { border-radius: 10px; border: 1px solid var(--line);
     font-weight: 700; transition: all .15s ease; }
   .stButton > button:hover { border-color: var(--acc); color: var(--acc);
@@ -143,6 +165,43 @@ def _theme_toggle(key: str):
 
     st.toggle("☀️ Day mode", key=key, on_change=_cb,
               help="Dark by default — flip to a light sheet if you prefer.")
+
+
+def section_header(text: str, icon: str = "", tag: str = "") -> None:
+    """One consistent section header across the whole app: an uppercase kicker
+    with an accent underline (replaces the mix of #####/st.subheader/#### )."""
+    ico = f"<span class='ico'>{icon}</span>" if icon else ""
+    tg = f"<span class='tag'>{tag}</span>" if tag else ""
+    st.markdown(f"<div class='osp-sec'>{ico}<span>{text}</span>{tg}</div>",
+                unsafe_allow_html=True)
+
+
+def _hr_color(v):
+    """Heatmap color for a 0-1 hit rate (green = hits the line, red = misses)."""
+    if v is None or pd.isna(v):
+        return ("#5d6878", "rgba(93,104,120,.12)")
+    if v >= 0.60:
+        return ("#2ee27a", "rgba(46,226,122,.14)")
+    if v >= 0.50:
+        return ("#f0b429", "rgba(240,180,41,.14)")
+    return ("#ff5d63", "rgba(255,93,99,.14)")
+
+
+def hit_rate_chips(chips: dict) -> None:
+    """Render L5/L10/... hit rates as green→red heatmap chips (matches the
+    props-table convention) instead of plain st.metric tiles."""
+    cells = []
+    for k, v in chips.items():
+        col, bg = _hr_color(v)
+        val = f"{v * 100:.0f}%" if (v is not None and pd.notna(v)) else "—"
+        cells.append(
+            f"<div style='flex:1;text-align:center;border-radius:10px;padding:8px 4px;"
+            f"background:{bg};border:1px solid {col}3a;'>"
+            f"<div style='font-size:.6rem;text-transform:uppercase;letter-spacing:.3px;"
+            f"opacity:.65;'>{k}</div>"
+            f"<div style='font-size:1.1rem;font-weight:700;color:{col};'>{val}</div></div>")
+    st.markdown("<div style='display:flex;gap:6px;margin:2px 0 6px;'>"
+                + "".join(cells) + "</div>", unsafe_allow_html=True)
 
 
 @st.cache_data(ttl=300)
@@ -380,7 +439,7 @@ def render_sport(sport: str):
             with cols[i % 2]:
                 st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         if shown:
-            st.markdown("##### 📋 Full matchup breakdown")
+            section_header("Full matchup breakdown", "📋")
             c1, c2 = st.columns([4, 2])
             labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
             with c2:
@@ -627,9 +686,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
             chips = {"L5": hr.get("l5"), "L10": hr.get("l10"),
                      "L20": hr.get("l20"), "Season": hr.get("season"),
                      "H2H": hr.get("h2h")}
-            cc = st.columns(len(chips))
-            for i, (k_, v) in enumerate(chips.items()):
-                cc[i].metric(k_, f"{v * 100:.0f}%" if v is not None else "—")
+            hit_rate_chips(chips)
         # model vs BettingPros read + market context
         bits = []
         bp_proj, bp_side = p.get("bp_projection"), p.get("bp_recommended_side")
@@ -882,7 +939,7 @@ def render_plays():
     for sport in sports_in_slate:
         rows = (board[board["sport"] == sport] if not board.empty
                 else board.iloc[0:0])
-        st.markdown(f"#### {sport}")
+        section_header(sport)
         if rows.empty:
             st.caption("No plays — nothing cleared the bar. "
                        "(A pass is a position, not a bug.)")
@@ -956,7 +1013,7 @@ def render_dfs():
         if all(s_["power_ev"] is not None and s_["power_ev"] < 0 for s_ in slips):
             st.warning("Even with edge, no positive-EV power slip today — the "
                        "multipliers' house edge swamps it. Flex or pass.")
-    st.markdown("##### Candidate pool (by edge)")
+    section_header("Candidate pool (by edge)")
     pool = cands[cands["edge"].notna()].head(25).copy()
     if "line_source" not in pool.columns:
         pool["line_source"] = "consensus"
@@ -982,7 +1039,7 @@ def _source_tracking_section():
     bs = s.get("by_source", {})
     if not bs:
         return
-    st.markdown("##### 📊 Projection accuracy by source")
+    section_header("Projection accuracy by source", "📊")
     st.caption(f"Who's been right, across every sport "
                f"({s['graded_events']} graded events). Our edge = beating the "
                "de-vigged market baseline.")
@@ -1049,7 +1106,7 @@ def render_performance():
 
     # Closing Line Value — the fastest, lowest-variance read on real edge.
     clv_bets = overall.get("clv_bets") or 0
-    st.subheader("Closing line value")
+    section_header("Closing line value")
     if not clv_bets:
         st.info("CLV accrues once recommended bets are graded against the "
                 "captured closing line. Beating the no-vig close is the "
@@ -1072,7 +1129,7 @@ def render_performance():
     # DFS (PrizePicks/Underdog) played-card track record.
     dfs_perf = plays.summary()
     if dfs_perf.get("legs_logged"):
-        st.subheader("DFS plays (PrizePicks / Underdog)")
+        section_header("DFS plays (PrizePicks / Underdog)")
         dc = st.columns(4)
         dc[0].metric("Legs played", dfs_perf["played_logged"],
                      help="Legs in a notified +EV card — what you actually put in. "
@@ -1108,8 +1165,8 @@ def render_performance():
                  if played_keys else sharp)
         label = "played" if played_keys else "flagged"
         if shown:
-            st.subheader(f"Sharp game plays (EV {config.SHARP_EV_MIN:.0%}"
-                         f"–{config.SHARP_EV_MAX:.0%})")
+            section_header(f"Sharp game plays (EV {config.SHARP_EV_MIN:.0%}"
+                   f"–{config.SHARP_EV_MAX:.0%})")
             sp = st.columns(4)
             wins = sum(1 for r in shown if r.get("won"))
             units = sum(r["pnl"] for r in shown)
@@ -1126,12 +1183,16 @@ def render_performance():
 
     equity = ui.cumulative_units(ledger)
     if not equity.empty:
-        st.subheader("Cumulative units")
-        st.line_chart(equity, y="units", height=260)
+        section_header("Cumulative units")
+        eq = ui.equity_chart(equity)
+        if eq is not None:
+            st.altair_chart(eq, use_container_width=True)
+        else:
+            st.line_chart(equity, y="units", height=260)
 
     # Calibration: do our stated win-probabilities match reality?
     curve = ui.calibration_curve(ledger)
-    st.subheader("Win-probability calibration")
+    section_header("Win-probability calibration")
     if curve.empty:
         st.info("Calibration accrues as projected games finish. Each graded "
                 "game adds a point comparing our predicted win % to the actual "
@@ -1159,7 +1220,7 @@ def render_performance():
     # market? The honest test of independent skill, not market-following.
     from project547 import scorecard as _sc
     sc = _sc.scorecard(ledger)
-    st.subheader("Model vs market")
+    section_header("Model vs market")
     d, a = sc["disagree"], sc["agree"]
     if not d["n"] and not a["n"]:
         st.info("Accrues once games are graded with a captured closing line. "
@@ -1234,11 +1295,11 @@ def render_performance():
 
     by_sport = perf.get("by_sport", {})
     if by_sport:
-        st.subheader("By sport")
+        section_header("By sport")
         st.dataframe(pd.DataFrame(by_sport).T, width="stretch")
     recent = ui.recent_bets(ledger)
     if not recent.empty:
-        st.subheader("Recent graded bets")
+        section_header("Recent graded bets")
         st.dataframe(recent, width="stretch", hide_index=True)
     st.caption("Forward-test record at projection-time prices. Brier + "
                "calibration cover every projected game; units/ROI cover "
@@ -1321,7 +1382,7 @@ def render_scores_board(date_str: str):
     for g in games:
         by_sport.setdefault(g["sport"], []).append(g)
     for sport, gs in by_sport.items():
-        st.markdown(f"##### {sport}")
+        section_header(sport)
         cols = st.columns(3)
         for i, g in enumerate(gs):
             with cols[i % 3]:
@@ -1560,7 +1621,7 @@ def render_home():
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
     # --- The receipts (supporting the heroes; full ledger on the Ledger tab) -
-    st.markdown("##### 📒 The receipts — every pick graded, wins *and* losses")
+    section_header("The receipts — every pick graded, wins and losses", "📒")
     roi = perf.get("roi_pct")
     clv = perf.get("avg_clv_pct")
     units = perf.get("units")
@@ -1585,7 +1646,7 @@ def render_home():
     st.divider()
 
     # --- Today's slate ------------------------------------------------------
-    st.markdown(f"##### 🗓️ Today — {default_date or '—'}")
+    section_header(f"Today — {default_date or '—'}", "🗓️")
     c = st.columns(3)
     c[0].metric("Games", games_today)
     c[1].metric("Edges ≥ thresh", 0 if board.empty else len(board))
@@ -1593,7 +1654,7 @@ def render_home():
 
     left, right = st.columns([3, 2])
     with left:
-        st.markdown("##### 🔥 Today's top edges")
+        section_header("Today's top edges", "🔥")
         if board.empty:
             st.info("No edges over the current threshold yet — lower **Min edge** "
                     "in the sidebar, or check back as lineups post.")
@@ -1611,15 +1672,20 @@ def render_home():
                     "Model %", min_value=0, max_value=100, format="%.0f%%")})
             st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
     with right:
-        st.markdown("##### 🗓️ Slate at a glance")
-        any_rows = False
+        section_header("Slate at a glance", "🗓️")
+        pills = []
         for sport in NAV_SPORTS:
             b = day.get(sport, {})
             ng, npr = len(b.get("games", []) or []), len(b.get("props", []) or [])
             if ng or npr:
-                any_rows = True
-                st.markdown(f"- **{sport}** — {ng} games · {npr} props")
-        if not any_rows:
+                pills.append(
+                    "<span class='osp-pill' style='background:var(--card);"
+                    "border:1px solid var(--line);color:var(--text);'>"
+                    f"<b>{sport}</b> · {ng}g · {npr}p</span>")
+        if pills:
+            st.markdown("<div style='display:flex;flex-wrap:wrap;gap:6px;'>"
+                        + "".join(pills) + "</div>", unsafe_allow_html=True)
+        else:
             st.caption("No games scheduled on this slate.")
         ready, _ = ai.available()
         chip = ("<span class='osp-pill live' style='background:rgba(0,230,118,0.18);"
@@ -1656,7 +1722,7 @@ def render_edges():
         if not any(scan.get(k) for k in ("plus_ev", "arbs", "middles", "low_holds")):
             continue
         found = True
-        st.markdown(f"#### {sport}")
+        section_header(sport)
         pev = scan["plus_ev"]
         if pev:
             st.markdown("**➕ Positive EV vs consensus**")
@@ -2062,7 +2128,7 @@ def _render_game_model():
                 f"{ml['favorite_hit_rate'] * 100:.1f}%" if ml["favorite_hit_rate"] else "—")
     m[4].metric("Total MAE", tot["mae"])
 
-    st.markdown("##### Closing-line value & ROI")
+    section_header("Closing-line value & ROI")
     rows = []
     for label, key in (("Moneyline", "moneyline_bets"), ("Spread", "spread_bets"),
                        ("Total", "total_bets")):
@@ -2082,7 +2148,7 @@ def _render_game_model():
 
     cal = res.get("calibration") or []
     if cal:
-        st.markdown("##### Win-probability calibration")
+        section_header("Win-probability calibration")
         cdf = pd.DataFrame(cal)
         chart = cdf.set_index("predicted")[["empirical"]].copy()
         chart["ideal"] = chart.index
@@ -2092,7 +2158,7 @@ def _render_game_model():
 
     games = res.get("games") or []
     if games:
-        st.markdown("##### 📼 Game-by-game replay")
+        section_header("Game-by-game replay", "📼")
         def _label(g):
             return f"{g['season']} · Week {g['week']}" if g.get("week") else g["date"]
         slates: dict = {}
@@ -2114,7 +2180,7 @@ def _render_game_model():
             cols[i % 2].markdown(_replay_card_html(g), unsafe_allow_html=True)
 
         if sport in ("NFL", "NCAAF"):   # teamstats matchup engine = football
-            st.markdown("##### 📋 Full research card (historical)")
+            section_header("Full research card (historical)", "📋")
             labels = [f"{g['away']} @ {g['home']}" for g in slate_games]
             sel = st.selectbox("Matchup", labels, key=f"bt_card_{sport}")
             _render_replay_research_card(sport, slate_games[labels.index(sel)])

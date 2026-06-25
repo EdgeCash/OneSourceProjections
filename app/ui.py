@@ -1180,6 +1180,29 @@ def cumulative_units(ledger: list[dict]) -> pd.DataFrame:
     return daily.cumsum().rename("units").to_frame()
 
 
+def equity_chart(equity: pd.DataFrame):
+    """Palette-matched equity curve (cumulative units) with a gradient fill and
+    a dashed zero line — replaces the default blue st.line_chart. None if empty."""
+    import altair as alt
+
+    if equity is None or equity.empty:
+        return None
+    df = equity.reset_index()
+    df.columns = ["date", "units"]
+    base = alt.Chart(df)
+    area = base.mark_area(
+        line={"color": "#00c46a", "strokeWidth": 2},
+        color=alt.Gradient(gradient="linear", x1=1, x2=1, y1=0, y2=1, stops=[
+            alt.GradientStop(color="rgba(0,196,106,0.32)", offset=0),
+            alt.GradientStop(color="rgba(0,196,106,0.02)", offset=1)])).encode(
+        x=alt.X("date:T", title=None),
+        y=alt.Y("units:Q", title="Units"),
+        tooltip=[alt.Tooltip("date:T"), alt.Tooltip("units:Q", format="+.1f")])
+    zero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(
+        color="#5d6878", strokeDash=[4, 4]).encode(y="y:Q")
+    return (area + zero).properties(height=260, width="container")
+
+
 def calibration_curve(ledger: list[dict], n_bins: int = 10) -> pd.DataFrame:
     """Reliability curve from the model_winprob ledger rows: bucket games by
     predicted home win-prob and compare to the empirical win rate. Columns:

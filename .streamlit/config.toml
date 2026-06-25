@@ -6,6 +6,20 @@ primaryColor = "#00c46a"
 backgroundColor = "#0a0e16"
 secondaryBackgroundColor = "#121927"
 textColor = "#e7ecf3"
+linkColor = "#22d3ee"
+# Shape + borders kill the boxy default look (Streamlit >= 1.50).
+baseRadius = "0.7rem"
+borderColor = "#222c3d"
+showWidgetBorder = true
+# Dark-theme every st.dataframe header/border without touching call sites.
+dataframeHeaderBackgroundColor = "#121927"
+dataframeBorderColor = "#222c3d"
+
+# The sidebar reads as app chrome (a touch darker than the canvas).
+[theme.sidebar]
+backgroundColor = "#0d1320"
+secondaryBackgroundColor = "#0a0e16"
+borderColor = "#222c3d"
 
 [browser]
 gatherUsageStats = false
