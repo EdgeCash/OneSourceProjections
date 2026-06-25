@@ -106,7 +106,7 @@ DFS_MIN_EDGE = 0.04
 # the close), while very high model EV on these efficient markets means a stale
 # line / missing info, not value (6-10%: negative CLV, losing). So we notify the
 # sharp band and FLAG, not chase, the high-EV ones. Revisit as the sample grows.
-SHARP_EV_MIN = 0.03   # notify at/above this EV...
+SHARP_EV_MIN = 0.02   # notify at/above this EV (the curated 2-6% band)...
 SHARP_EV_MAX = 0.06   # ...and at/below this (the validated sweet spot)
 STALE_EV = 0.08       # at/above this, likely a stale line -> "verify", no push
 

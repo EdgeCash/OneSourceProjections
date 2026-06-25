@@ -106,16 +106,17 @@ def _notify_dfs_card(date: str, card: dict, pid: str) -> None:
 
 
 def _notify_game_plays(date: str, sharp: list[dict], pid: str) -> None:
-    """Push the CLV-validated 'sharp' moneyline/total plays."""
+    """Push the curated 2-6% EV moneyline/total plays (the only text stream)."""
     if not notify.configured():
         return
     lines = [f"- {c['sport']} {c['game']}: {c['pick']} {c['market']} "
              f"({c['ev'] * 100:+.0f}% EV)" for c in sharp[:8]]
-    head = f"🎯 {len(sharp)} sharp game play{'s' if len(sharp) != 1 else ''} — {date}"
+    head = (f"🎯 {len(sharp)} curated play{'s' if len(sharp) != 1 else ''} "
+            f"(2-6% EV) — {date}")
     notify.send("\n".join(lines), title=head, tags=["dart"],
                 priority="high", click=f"{APP_URL}/?section=PLAYS",
                 actions=_confirm_actions(pid))
-    log.info("pushed %d sharp game plays for %s", len(sharp), date)
+    log.info("pushed %d curated game plays for %s", len(sharp), date)
 
 
 def main():
@@ -183,18 +184,14 @@ def main():
     pushed_keys: set = set()
     for d in upcoming:
         try:
-            plays.log_qualifying(d, slates.get(d, {}))  # track every candidate
+            plays.log_qualifying(d, slates.get(d, {}))  # track every DFS candidate
 
-            card = plays.playable_card(d)               # best +EV slip
-            if card:
-                keys = {plays._leg_key(d, leg) for leg in card["legs"]}
-                if keys - notified:                     # has a leg not yet pushed
-                    pid = plays.register_pending("dfs", d, keys)
-                    _notify_dfs_card(d, card, pid)
-                    pushed_keys |= keys
+            # DFS cards are still tracked above for the ledger, but we no longer
+            # push them — the only notification stream is the curated 2-6% game
+            # plays (the band the owner is paper-testing for ROI).
 
-            # only push the CLV-validated "sharp" band; 'watch'/'stale' tiers
-            # are tracked in the ledger but not chased via notifications.
+            # push ONLY the curated 2-6% band ("sharp" tier); 'watch'/'stale'
+            # tiers are tracked in the ledger but never texted.
             sharp = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
                      if c.get("tier") == "sharp" and c["key"] not in notified]
             if sharp:
