@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98585,
+  "sr_id": "465bf48a-bc5a-4023-9ccc-d1971b535046",
+  "sport": "MLB",
+  "scheduled": "2026-06-26 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "CIN",
+  "link": "/mlb/matchups/cincinnati-reds-vs-pittsburgh-pirates/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47239",
+    "name": "Paul Skenes",
+    "link": "/mlb/props/paul-skenes/",
+    "player": {
+     "short_name": "P. Skenes",
+     "first_name": "Paul",
+     "last_name": "Skenes",
+     "image": "https://images.fantasypros.com/images/players/mlb/47239/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "paul-skenes",
+     "jersey_number": 30
+    }
+   },
+   "visitor_probable": {
+    "id": "44726",
+    "name": "Andrew Abbott",
+    "link": "/mlb/props/andrew-abbott/",
+    "player": {
+     "short_name": "A. Abbott",
+     "first_name": "Andrew",
+     "last_name": "Abbott",
+     "image": "https://images.fantasypros.com/images/players/mlb/44726/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "andrew-abbott",
+     "jersey_number": 41
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 40,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "CIN",
+    "name": "Reds",
+    "link": "/mlb/teams/cincinnati-reds/",
+    "team": {
+     "city": "Cincinnati",
+     "abbreviation": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 37,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "cincinnati-reds",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 76,
+   "forecast_wind_speed": 8,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 288,
+   "forecast_rain_chance": 28,
+   "forecast_icon": "Cloudy",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.67
+  },
+  "broadcasts": [
+   {
+    "network": "SportsNet PT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99626,
+  "sr_id": "b684da32-6605-46bd-a54c-936edf3013d0",
+  "sport": "MLB",
+  "scheduled": "2026-06-26 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DET",
+  "visitor": "HOU",
+  "link": "/mlb/matchups/detroit-tigers-vs-houston-astros/?date=2026-06-26",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "45088",
+    "name": "Keider Montero",
+    "link": "/mlb/props/keider-montero/",
+    "player": {
+     "short_name": "K. Montero",
+     "first_name": "Keider",
+     "last_name": "Montero",
+     "image": "https://images.fantasypros.com/images/players/mlb/45088/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "keider-montero",
+     "jersey_number": 54
+    }
+   },
+   "visitor_probable": {
+    "id": "46837",
+    "name": "Spencer Arrighetti",
+    "link": "/mlb/props/spencer-arrighetti/",
+    "player": {
+     "short_name": "S. Arrighetti",
+     "first_name": "Spencer",
+     "last_name": "Arrighetti",
+     "image": "https://images.fantasypros.com/images/players/mlb/46837/headshot/210x210.webp",
+     "position": "SP",
+     "team": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "slug": "spencer-arrighetti",
+     "jersey_number": 41
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "DET",
+   "season": "2025",
+   "split": "A",
+   "r": "1.039",
+   "1b": "1.025",
+   "2b": "0.993",
+   "3b": "1.274",
+   "hr": "0.928",
+   "name": "Comerica Park"
+  },
+  "venue": {
+   "name": "Comerica Park",
+   "address": "2100 Woodward Avenue",
+   "city": "Detroit",
+   "state": "MI",
+   "country": "USA",
+   "zip": "48226",
+   "surface": "grass",
+   "capacity": 41083,
+   "stadium_type": "outdoor",
+   "id": "ef9a5eef-06c6-4963-ac70-7fd02c8c8d42"
+  },
+  "participants": [
+   {
+    "id": "DET",
+    "name": "Tigers",
+    "link": "/mlb/teams/detroit-tigers/",
+    "team": {
+     "city": "Detroit",
+     "abbreviation": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 34,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "detroit-tigers",
+     "stadium_deg_offset": "150"
+    }
+   },
+   {
+    "id": "HOU",
+    "name": "Astros",
+    "link": "/mlb/teams/houston-astros/",
+    "team": {
+     "city": "Houston",
+     "abbreviation": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 39,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "houston-astros",
+     "stadium_deg_offset": "-15"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 75,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "ESE",
+   "forecast_wind_degree": 119,
+   "forecast_rain_chance": 1,
+   "forecast_icon": "Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.55
+  },
+  "broadcasts": [
+   {
+    "network": "DSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
