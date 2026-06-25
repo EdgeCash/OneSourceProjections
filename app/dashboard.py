@@ -1881,19 +1881,21 @@ def player_dialog(player: str, game_pk, sport: str | None):
     initials = "".join(w[0] for w in str(player).split()[:2]).upper() or "?"
     sub = " · ".join(x for x in (team, f"vs {opp}" if opp else "") if x)
     shot = _player_headshot(player, game_pk, sport)
-    img = (f"<img src='{shot}' style='position:absolute;inset:0;width:56px;"
-           f"height:56px;border-radius:50%;object-fit:cover;border:2px solid "
-           f"var(--good);' onerror=\"this.style.display='none'\">" if shot else "")
+    img = (f"<img src='{shot}' style='position:absolute;inset:0;width:60px;"
+           f"height:60px;border-radius:50%;object-fit:cover;border:2px solid "
+           f"var(--text);' onerror=\"this.style.display='none'\">" if shot else "")
     st.markdown(
-        f"<div style='display:flex;align-items:center;gap:14px;margin-bottom:4px;'>"
-        f"<div style='position:relative;width:56px;height:56px;flex:0 0 auto;'>"
+        f"<div style='display:flex;align-items:center;gap:15px;margin-bottom:6px;"
+        f"padding-bottom:12px;border-bottom:1.5px solid var(--text);'>"
+        f"<div style='position:relative;width:60px;height:60px;flex:0 0 auto;'>"
         f"<div style='position:absolute;inset:0;border-radius:50%;display:flex;"
-        f"align-items:center;justify-content:center;font-weight:800;"
-        f"font-size:1.3rem;color:#06210f;"
-        f"background:linear-gradient(135deg,var(--good),var(--acc2));'>{initials}</div>"
-        f"{img}</div>"
-        f"<div><div style='font-size:1.5rem;font-weight:800;'>{player}</div>"
-        f"<div style='color:var(--muted);font-size:0.85rem;'>{sub}</div></div></div>",
+        f"align-items:center;justify-content:center;font-family:var(--disp);"
+        f"font-weight:600;font-size:1.3rem;color:var(--bg);background:var(--text);"
+        f"border:2px solid var(--text);'>{initials}</div>{img}</div>"
+        f"<div><div style='font-family:var(--disp);font-size:1.6rem;font-weight:600;"
+        f"letter-spacing:.03em;'>{player}</div>"
+        f"<div style='color:var(--muted);font-size:0.82rem;text-transform:uppercase;"
+        f"letter-spacing:.06em;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     if not rows:
@@ -2417,6 +2419,35 @@ def render_other_sports():
 # ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
+
+def render_ticker():
+    """The two brand numbers, pinned to the top of every page so the whole app
+    stands on the 54.7 promise — Model (engine) and Curated (2-6%) hit rates."""
+    m = results.hero_metrics(load_ledger())
+
+    def chip(label, pct):
+        col = _hero_band(pct)
+        val = f"{pct:.1f}%" if pct is not None else "—"
+        return (f"<span style='font-family:var(--disp);font-size:.64rem;"
+                f"letter-spacing:.08em;color:var(--muted);text-transform:uppercase;'>"
+                f"{label}</span> <b style='font-family:var(--disp);font-size:1.02rem;"
+                f"color:{col};'>{val}</b>")
+
+    st.markdown(
+        "<div style='display:flex;align-items:center;gap:22px;"
+        "border-bottom:1.5px solid var(--text);padding:4px 2px 8px;margin-bottom:10px;'>"
+        "<span style='margin-right:auto;font-family:var(--disp);font-weight:700;"
+        "letter-spacing:.06em;font-size:.92rem;'>PROJECT 54.7</span>"
+        f"{chip('Engine', m['engine_pct'])}"
+        "<span style='color:var(--line);'>|</span>"
+        f"{chip('Curated 2–6%', m['curated_pct'])}"
+        "<span style='font-size:.6rem;color:var(--faint);font-family:var(--disp);"
+        "letter-spacing:.06em;'>UPDATED DAILY</span></div>",
+        unsafe_allow_html=True)
+
+
+if section != "HOME":  # Home leads with the full glowing heroes already
+    render_ticker()
 
 if section == "HOME":
     render_home()
