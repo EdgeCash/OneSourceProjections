@@ -1559,32 +1559,29 @@ def render_home():
     perf = (data or {}).get("performance", {}).get("overall", {})
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
-    # --- The receipts (scoreboard first — the anti-guru move) ---------------
+    # --- The receipts (supporting the heroes; full ledger on the Ledger tab) -
     st.markdown("##### 📒 The receipts — every pick graded, wins *and* losses")
-    win = perf.get("bet_win_rate")
     roi = perf.get("roi_pct")
     clv = perf.get("avg_clv_pct")
     units = perf.get("units")
     beat = perf.get("clv_beat_rate")
-    s = st.columns(5)
-    s[0].metric("Win %", f"{win*100:.1f}%" if win is not None else "—",
-                delta=(f"{(win*100-54.7):+.1f} vs 54.7" if win is not None else None),
-                help="Bets graded as wins ÷ settled bets. 54.7% is the "
-                     "professional bar (52.4% just clears the vig).")
-    s[1].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
-                help=f"Profit ÷ amount staked, over {perf.get('bets', 0)} bets.")
-    s[2].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+    nbets = perf.get("bets", 0)
+    s = st.columns(4)
+    s[0].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help=f"Profit ÷ amount staked, over {nbets} bets.")
+    s[1].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
                 help="Edge vs the closing line — the truest early skill signal.")
-    s[3].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
+    s[2].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
                 help="Share of bets that beat the closing line.")
-    s[4].metric("Units", f"{units:+.1f}u" if units is not None else "—",
-                help=f"Net units across {perf.get('bets', 0)} graded bets "
+    s[3].metric("Units", f"{units:+.1f}u" if units is not None else "—",
+                help=f"Net units across {nbets} graded bets "
                      f"(Brier {perf.get('model_brier') or '—'}).")
-    if win is None:
-        st.caption("No graded bets yet — the scoreboard fills in as picks settle. "
+    if not nbets:
+        st.caption("No graded bets yet — fills in as picks settle. "
                    "Full history on the **Ledger** tab.")
     else:
-        st.caption("We show this first, on purpose. Full breakdown on **Ledger**.")
+        st.caption("Supporting receipts behind the two numbers above. "
+                   "Full breakdown on the **Ledger** tab.")
     st.divider()
 
     # --- Today's slate ------------------------------------------------------
