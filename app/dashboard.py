@@ -50,6 +50,20 @@ _PALETTES = {
 _THEME_CSS = """
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
   .stApp, body { color: var(--text); }
+  /* --- hide default Streamlit chrome (premium product, not scaffolding).
+         Keep stHeader itself (transparent) so the mobile sidebar toggle lives. */
+  [data-testid="stToolbar"], [data-testid="stDecoration"],
+  [data-testid="stStatusWidget"], #MainMenu, footer,
+  .stDeployButton { display: none !important; }
+  [data-testid="stHeader"] { background: transparent !important; }
+  /* --- one section-header system (uppercase kicker + accent rule) --- */
+  .osp-sec { font-family: var(--disp); font-size: 0.82rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px; color: var(--text);
+    margin: 18px 0 8px; padding-bottom: 6px; display: flex; align-items: center;
+    gap: 8px; border-bottom: 1px solid var(--line); }
+  .osp-sec .ico { font-size: 0.95rem; }
+  .osp-sec .tag { margin-left: auto; font-size: 0.66rem; font-weight: 600;
+    text-transform: none; letter-spacing: 0; color: var(--text); opacity: 0.5; }
   .stApp { background:
     radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,var(--glow)), transparent 55%),
     radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,var(--glow)), transparent 50%),
@@ -82,11 +96,19 @@ _THEME_CSS = """
     background-clip: text; -webkit-text-fill-color: transparent; }
   .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
   div[data-testid="stCaptionContainer"] { opacity: 0.62; }
+  /* tighter vertical rhythm + aligned numerals everywhere */
+  [data-testid="stVerticalBlock"] { gap: 0.7rem; }
+  [data-testid="stMetricValue"], [data-testid="stDataFrame"],
+  .osp-sec .tag { font-variant-numeric: tabular-nums; }
+  /* tabs as segmented pills (premium, not the default underline) */
+  .stTabs [data-baseweb="tab-list"] { gap: 0.35rem; background: var(--card);
+    padding: 0.3rem; border-radius: 12px; border: 1px solid var(--line); }
   .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
-    font-size: 0.96rem; }
-  .stTabs [aria-selected="true"] { color: var(--acc) !important; }
-  .stTabs [data-baseweb="tab-highlight"] { background: var(--acc) !important;
-    height: 3px; }
+    font-size: 0.92rem; height: 34px; padding: 0 0.85rem; border-radius: 8px;
+    color: var(--text); }
+  .stTabs [aria-selected="true"] { background: var(--acc) !important;
+    color: #04130b !important; }
+  .stTabs [data-baseweb="tab-highlight"] { display: none; }
   .stButton > button { border-radius: 10px; border: 1px solid var(--line);
     font-weight: 700; transition: all .15s ease; }
   .stButton > button:hover { border-color: var(--acc); color: var(--acc);
@@ -143,6 +165,15 @@ def _theme_toggle(key: str):
 
     st.toggle("☀️ Day mode", key=key, on_change=_cb,
               help="Dark by default — flip to a light sheet if you prefer.")
+
+
+def section_header(text: str, icon: str = "", tag: str = "") -> None:
+    """One consistent section header across the whole app: an uppercase kicker
+    with an accent underline (replaces the mix of #####/st.subheader/#### )."""
+    ico = f"<span class='ico'>{icon}</span>" if icon else ""
+    tg = f"<span class='tag'>{tag}</span>" if tag else ""
+    st.markdown(f"<div class='osp-sec'>{ico}<span>{text}</span>{tg}</div>",
+                unsafe_allow_html=True)
 
 
 @st.cache_data(ttl=300)
