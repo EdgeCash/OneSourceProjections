@@ -223,7 +223,7 @@ def lineup_status(sport: str, g: dict) -> dict:
     return {"state": "pending", "label": "Lineups pending"}
 
 
-_STATUS_COLOR = {"confirmed": "#00e676", "partial": "#e3b341", "pending": "#6e7781"}
+_STATUS_COLOR = {"confirmed": "var(--good)", "partial": "var(--mid)", "pending": "var(--faint)"}
 
 
 def _status_badge(sport: str, g: dict) -> str:
@@ -254,32 +254,32 @@ def game_card_html(sport: str, g: dict) -> str:
         sp_o = g.get("rl_home_odds", g.get("spread_home_odds"))
         odds_bits.append(f"{'RL' if 'rl_home_line' in g else 'Spread'} "
                          f"{sp:+g} {fmt_american(sp_o)}")
-    market_line = (f"<div style='color:#8b97a8;font-size:0.76rem;margin-top:6px;'>"
+    market_line = (f"<div style='color:var(--muted);font-size:0.76rem;margin-top:6px;'>"
                    f"{' · '.join(odds_bits)}{_weather_txt(g)}</div>"
                    if (odds_bits or g.get('weather')) else "")
 
     edge = _best_edge(g)
     if edge:
-        edge_html = (f"<span style='color:#2ee27a;font-weight:600;'>"
+        edge_html = (f"<span style='color:var(--good);font-weight:600;'>"
                      f"▲ {edge[0]} · +{edge[1] * 100:.1f}% EV</span>")
     else:
-        edge_html = "<span style='color:#8b97a8;'>no edge ≥ threshold</span>"
+        edge_html = "<span style='color:var(--muted);'>no edge ≥ threshold</span>"
 
     gpk = g.get("game_pk")
 
     def side(badge, name, exp, wp, fav, pitcher=None):
         weight = "700" if fav else "500"
-        sp_row = (f"<div style='color:#8b97a8;font-size:0.74rem;margin-top:1px;'>"
+        sp_row = (f"<div style='color:var(--muted);font-size:0.74rem;margin-top:1px;'>"
                   f"⚾ {player_link(pitcher, gpk, sport)}</div>"
                   if pitcher and pd.notna(pitcher) else "")
         framed = (f"<span style='display:inline-flex;border-radius:11px;padding:2px;"
-                  f"background:#0a0e16;border:2px solid rgba(255,255,255,0.78);"
+                  f"background:var(--bg);border:2px solid rgba(255,255,255,0.78);"
                   f"box-shadow:0 0 0 1px #000,0 2px 6px rgba(0,0,0,0.5);'>{badge}</span>")
         return (
             f"<div style='display:flex;align-items:center;gap:10px;flex:1;'>"
             f"{framed}"
             f"<div><div style='font-weight:{weight};font-size:0.95rem;'>{name}</div>"
-            f"<div style='color:#8b97a8;font-size:0.8rem;'>win {_pct(wp)}</div>"
+            f"<div style='color:var(--muted);font-size:0.8rem;'>win {_pct(wp)}</div>"
             f"{sp_row}</div>"
             f"<div style='margin-left:auto;font-size:1.5rem;font-weight:700;'>"
             f"{_num(exp)}</div></div>"
@@ -287,19 +287,19 @@ def game_card_html(sport: str, g: dict) -> str:
 
     home_fav = (h_wp or 0) >= (a_wp or 0)
     return (
-        "<div style='background:#121927;border:1px solid #222c3d;border-radius:14px;"
+        "<div style='background:var(--card);border:1px solid var(--line);border-radius:14px;"
         "padding:14px 16px;margin-bottom:12px;"
         "box-shadow:0 1px 2px rgba(0,0,0,0.4),0 8px 22px rgba(0,0,0,0.4);'>"
         f"<div style='display:flex;justify-content:space-between;align-items:center;"
         f"margin-bottom:8px;'>"
-        f"<span style='color:#8b97a8;font-size:0.78rem;'>"
+        f"<span style='color:var(--muted);font-size:0.78rem;'>"
         f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</span>"
         f"{_status_badge(sport, g)}</div>"
         f"{side(a_badge, away, a_exp, a_wp, not home_fav, g.get('away_pitcher'))}"
         "<div style='height:8px;'></div>"
         f"{side(h_badge, home, h_exp, h_wp, home_fav, g.get('home_pitcher'))}"
         f"{market_line}"
-        "<div style='border-top:1px solid #222c3d;margin-top:10px;padding-top:8px;"
+        "<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;"
         f"font-size:0.85rem;'>{edge_html}</div>"
         "</div>"
     )
@@ -322,10 +322,10 @@ def _fmt_stat(label: str, v) -> str:
 
 def _rank_badge(rank, n_teams: int) -> str:
     if rank is None or pd.isna(rank):
-        return "<span style='color:#5d6878;font-size:0.72rem;'>—</span>"
+        return "<span style='color:var(--faint);font-size:0.72rem;'>—</span>"
     rank = int(rank)
     third = max(1, n_teams / 3)
-    color = "#2ee27a" if rank <= third else ("#f0b429" if rank <= 2 * third else "#ff5d63")
+    color = "var(--good)" if rank <= third else ("var(--mid)" if rank <= 2 * third else "var(--neg)")
     return (f"<span style='color:{color};font-size:0.72rem;font-weight:600;'>"
             f"{rank}</span>")
 
@@ -334,8 +334,8 @@ def _adv_badge(adv: int) -> str:
     """Center advantage marker: filled green chevrons when the offense
     out-ranks the defense it faces, a muted dash otherwise."""
     if not adv:
-        return "<span style='color:#39414d;'>·</span>"
-    return (f"<span style='color:#04130b;background:#2ee27a;border-radius:5px;"
+        return "<span style='color:var(--faint);'>·</span>"
+    return (f"<span style='color:var(--bg);background:var(--good);border-radius:5px;"
             f"padding:1px 5px;font-size:0.66rem;font-weight:800;'>"
             f"{'▲' * adv}</span>")
 
@@ -350,7 +350,7 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
     dsl = (rows[0].get("def_situ_label") if rows else None) or def_label
     th = "text-align:right;padding:3px 5px;"
     head = (
-        "<tr style='color:#7d8794;font-size:0.62rem;text-transform:uppercase;"
+        "<tr style='color:var(--muted);font-size:0.62rem;text-transform:uppercase;"
         "letter-spacing:0.3px;'>"
         "<th style='text-align:left;padding:3px 6px;'>Stat</th>"
         f"<th style='{th}'>Szn</th><th style='{th}'>{osl}</th>"
@@ -362,11 +362,11 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
     body = []
     for r in rows:
         s = r["stat"]
-        muted = "text-align:right;padding:3px 5px;color:#7d8794;"
+        muted = "text-align:right;padding:3px 5px;color:var(--muted);"
         strong = "text-align:right;padding:3px 5px;font-weight:700;"
         norm = "text-align:right;padding:3px 5px;"
         body.append(
-            "<tr style='border-top:1px solid #1c2330;'>"
+            "<tr style='border-top:1px solid var(--line);'>"
             f"<td style='text-align:left;padding:3px 6px;font-weight:600;'>{s}</td>"
             f"<td style='{muted}'>{_fmt_stat(s, r.get('off_season'))}</td>"
             f"<td style='{norm}'>{_fmt_stat(s, r.get('off_situ'))}</td>"
@@ -381,7 +381,7 @@ def _stat_table_html(title: str, rows: list[dict], n_teams: int,
             f"<td style='{muted}'>{_fmt_stat(s, r.get('def_season'))}</td></tr>"
         )
     return (
-        f"<div style='font-size:0.74rem;color:#22d3ee;font-weight:700;"
+        f"<div style='font-size:0.74rem;color:var(--acc2);font-weight:700;"
         f"text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 2px;'>{title}</div>"
         "<table style='width:100%;border-collapse:collapse;font-size:0.82rem;'>"
         f"{head}{''.join(body)}</table>"
@@ -397,7 +397,7 @@ def _conviction(ev) -> float:
 
 
 def _conv_color(score: float) -> str:
-    return "#00e676" if score >= 6 else "#e3b341" if score >= 3 else "#ff4d6d"
+    return "var(--good)" if score >= 6 else "var(--mid)" if score >= 3 else "var(--neg)"
 
 
 def market_convictions(g: dict) -> dict:
@@ -446,12 +446,12 @@ def _conviction_dial(label: str, side: str, score: float) -> str:
     pct = max(0.0, min(100.0, score * 10))
     return (
         "<div style='flex:1;text-align:center;padding:4px 6px;'>"
-        f"<div style='color:#8b949e;font-size:0.66rem;font-weight:700;"
+        f"<div style='color:var(--muted);font-size:0.66rem;font-weight:700;"
         f"text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;'>{label}</div>"
         f"<div style='width:62px;height:62px;border-radius:50%;margin:0 auto;"
-        f"background:conic-gradient({color} {pct}%, #1e2636 {pct}% 100%);"
+        f"background:conic-gradient({color} {pct}%, var(--line) {pct}% 100%);"
         f"display:flex;align-items:center;justify-content:center;'>"
-        f"<div style='width:48px;height:48px;border-radius:50%;background:#0b0f18;"
+        f"<div style='width:48px;height:48px;border-radius:50%;background:var(--card2);"
         f"display:flex;align-items:center;justify-content:center;"
         f"font-size:1.15rem;font-weight:800;color:{color};'>{score:g}</div></div>"
         f"<div style='font-size:0.74rem;font-weight:600;margin-top:4px;'>{side}</div>"
@@ -467,11 +467,11 @@ def _form_html(badge: str, team: str, form: dict, align: str,
     rec = ""
     if form:
         streak = f" · {form['streak']}" if form.get("streak") else ""
-        rec = (f"<div style='color:#8b97a8;font-size:0.74rem;margin-top:2px;'>"
+        rec = (f"<div style='color:var(--muted);font-size:0.74rem;margin-top:2px;'>"
                f"{form.get('w', 0)}–{form.get('l', 0)}{streak}</div>")
     chips = ""
     for r in (form or {}).get("last5", []):
-        c = "#2ee27a" if r["win"] else "#ff5d63"
+        c = "var(--good)" if r["win"] else "var(--neg)"
         chips += (f"<span title='{r.get('opp', '')} {r.get('score', '')}' "
                   f"style='display:inline-block;width:15px;height:15px;border-radius:4px;"
                   f"background:{c};margin:0 1px;'></span>")
@@ -479,7 +479,7 @@ def _form_html(badge: str, team: str, form: dict, align: str,
                   if chips else "")
     # bordered logo — the framed look that reads as premium on a dark sheet
     logo = (f"<span style='display:inline-flex;border-radius:13px;padding:2px;"
-            f"background:#0a0e16;border:2px solid rgba(255,255,255,0.78);"
+            f"background:var(--bg);border:2px solid rgba(255,255,255,0.78);"
             f"box-shadow:0 0 0 1px #000,0 3px 8px rgba(0,0,0,0.5);'>{badge}</span>")
     name = f"<span style='font-weight:700;font-size:1.05rem;'>{team}</span>"
     name_row = f"{name}{logo}" if align == "right" else f"{logo}{name}"
@@ -498,19 +498,19 @@ def _form_html(badge: str, team: str, form: dict, align: str,
 def _grade(ev) -> tuple[str, str]:
     """Letter grade + color for a model edge (EV). A = strong, F = negative."""
     if ev is None or (isinstance(ev, float) and pd.isna(ev)):
-        return ("—", "#5d6878")
+        return ("—", "var(--faint)")
     e = float(ev) * 100
     if e >= 8:
-        return ("A", "#19d97e")
+        return ("A", "var(--good)")
     if e >= 5:
-        return ("B", "#2ee27a")
+        return ("B", "var(--good)")
     if e >= 3:
-        return ("C", "#f0b429")
+        return ("C", "var(--mid)")
     if e >= 1:
-        return ("D", "#c98a00")
+        return ("D", "var(--mid)")
     if e >= 0:
-        return ("D-", "#8a8a9a")
-    return ("F", "#ff5d63")
+        return ("D-", "var(--faint)")
+    return ("F", "var(--neg)")
 
 
 def _info_bar_html(sport: str, g: dict) -> str:
@@ -557,8 +557,8 @@ def _conf_chip(sport: str, g: dict) -> str:
     state = lineup_status(sport, g)["state"]
     val, desc = _CONF_MAP.get(state, _CONF_MAP["pending"])
     return (f"<span title='Confidence {val} — {desc}.' "
-            f"style='cursor:help;border-bottom:1px dotted #5d6878;'>"
-            f"Confidence <b style='color:#e7ecf3;'>{val}</b></span>")
+            f"style='cursor:help;border-bottom:1px dotted var(--faint);'>"
+            f"Confidence <b style='color:var(--text);'>{val}</b></span>")
 
 
 def _verdict_rows(g: dict) -> list[tuple]:
@@ -611,7 +611,7 @@ def _verdict_rows(g: dict) -> list[tuple]:
     return rows
 
 
-def _gauge_svg(prob, needle_color: str = "#e7ecf3") -> str:
+def _gauge_svg(prob, needle_color: str = "var(--text)") -> str:
     """A semicircular speedometer: red→amber→green arc with a needle pointing
     to ``prob`` (0–1). Right side (high probability) is green = strong pick."""
     if prob is None or (isinstance(prob, float) and pd.isna(prob)):
@@ -629,8 +629,8 @@ def _gauge_svg(prob, needle_color: str = "#e7ecf3") -> str:
         return (f"<path d='M {x1:.2f} {y1:.2f} A {R} {R} 0 0 1 {x2:.2f} {y2:.2f}' "
                 f"fill='none' stroke='{col}' stroke-width='8'/>")
 
-    arcs = (seg(0.0, 0.5, "#ff5d63") + seg(0.5, 0.62, "#f0b429")
-            + seg(0.62, 1.0, "#2ee27a"))
+    arcs = (seg(0.0, 0.5, "var(--neg)") + seg(0.5, 0.62, "var(--mid)")
+            + seg(0.62, 1.0, "var(--good)"))
     nx, ny = pt(prob, R - 7)
     needle = (f"<line x1='{cx}' y1='{cy}' x2='{nx:.2f}' y2='{ny:.2f}' "
               f"stroke='{needle_color}' stroke-width='2.6' stroke-linecap='round'/>"
@@ -642,17 +642,17 @@ def _gauge_svg(prob, needle_color: str = "#e7ecf3") -> str:
 def _verdict_box(label: str, pick: str, prob, ev, min_edge: float, wm: str = "") -> str:
     gl, gc = _grade(ev)
     play = ev is not None and pd.notna(ev) and ev >= min_edge
-    dco, dbg = ("#2ee27a", "#0f2c1c") if play else ("#8b97a8", "#1a2230")
+    dco, dbg = ("var(--good)", "#0f2c1c") if play else ("var(--muted)", "var(--line)")
     decision = "PLAY" if play else "PASS"
-    pctc = ("#2ee27a" if (prob is not None and pd.notna(prob) and prob >= 0.62)
-            else ("#f0b429" if (prob is not None and pd.notna(prob) and prob >= 0.5)
-                  else "#e7ecf3"))
+    pctc = ("var(--good)" if (prob is not None and pd.notna(prob) and prob >= 0.62)
+            else ("var(--mid)" if (prob is not None and pd.notna(prob) and prob >= 0.5)
+                  else "var(--text)"))
     evtxt = f"{ev * 100:+.1f}%" if (ev is not None and pd.notna(ev)) else "—"
     return (
-        "<div style='border:1px solid #222c3d;border-radius:12px;padding:9px 8px 9px;"
-        "text-align:center;background:linear-gradient(180deg,#161e2d,#0f1623);'>"
+        "<div style='border:1px solid var(--line);border-radius:12px;padding:9px 8px 9px;"
+        "text-align:center;background:linear-gradient(180deg,var(--card),var(--card2));'>"
         f"<div style='font-size:0.62rem;text-transform:uppercase;letter-spacing:0.4px;"
-        f"color:#8b97a8;font-weight:700;margin-bottom:1px;'>{label}</div>"
+        f"color:var(--muted);font-weight:700;margin-bottom:1px;'>{label}</div>"
         f"<div style='position:relative;'>{_gauge_svg(prob, gc)}"
         f"<div style='position:absolute;left:0;right:0;bottom:-2px;font-size:1.25rem;"
         f"font-weight:700;color:{pctc};'>{_pct(prob)}</div></div>"
@@ -660,118 +660,279 @@ def _verdict_box(label: str, pick: str, prob, ev, min_edge: float, wm: str = "")
         f"<div style='margin-top:4px;display:flex;gap:6px;justify-content:center;"
         f"align-items:center;'>"
         f"<span style='display:inline-flex;width:20px;height:20px;border-radius:6px;"
-        f"background:{gc};color:#04130b;font-size:0.72rem;font-weight:800;"
+        f"background:{gc};color:var(--bg);font-size:0.72rem;font-weight:800;"
         f"align-items:center;justify-content:center;'>{gl}</span>"
         f"<span style='font-size:0.63rem;font-weight:700;padding:1px 6px;border-radius:5px;"
         f"color:{dco};background:{dbg};'>{decision}</span>"
-        f"<span style='font-size:0.66rem;color:#5d6878;'>EV {evtxt}</span></div></div>"
+        f"<span style='font-size:0.66rem;color:var(--faint);'>EV {evtxt}</span></div></div>"
     )
+
+
+# ---------------------------------------------------------------------------
+# The Daily Docket — calm, sharp matchup card (cream/vintage).
+# ① Who's the better side?  ② Is the price fair?  ③ What's the play?
+# ---------------------------------------------------------------------------
+
+def _ring(prob, color: str) -> str:
+    """A calm conviction ring filled to prob, the % in the middle."""
+    p = 0 if (prob is None or pd.isna(prob)) else max(0, min(100, round(float(prob) * 100)))
+    return (
+        f"<div style='width:72px;height:72px;border-radius:50%;margin:0 auto 5px;"
+        f"background:conic-gradient({color} {p}%, var(--line) 0);"
+        f"display:flex;align-items:center;justify-content:center;'>"
+        f"<div style='width:54px;height:54px;border-radius:50%;background:var(--card);"
+        f"display:flex;align-items:center;justify-content:center;font-family:var(--disp);"
+        f"font-weight:600;font-size:1.05rem;color:var(--text);'>{_pct(prob)}</div></div>")
+
+
+def _gauge_color(prob) -> str:
+    if prob is None or pd.isna(prob):
+        return "var(--faint)"
+    if prob >= 0.60:
+        return "var(--good)"
+    if prob >= 0.52:
+        return "var(--mid)"
+    return "var(--faint)"
+
+
+def _why(text: str) -> str:
+    return (
+        "<div style='display:flex;gap:10px;background:var(--card2);"
+        "border-left:3px solid var(--acc2);border-radius:0 5px 5px 0;"
+        "padding:9px 13px;margin-top:11px;'>"
+        "<span style='font-family:var(--disp);font-size:.62rem;letter-spacing:.1em;"
+        "color:var(--acc2);flex:0 0 auto;padding-top:1px;'>WHY</span>"
+        f"<span style='font-size:.84rem;color:var(--text);line-height:1.45;'>{text}</span></div>")
+
+
+_DTAG = {
+    "lean": "background:var(--card2);color:var(--text);border:1px solid var(--line);",
+    "edge": "background:rgba(47,122,74,.14);color:var(--good);border:1px solid rgba(47,122,74,.35);",
+    "play": "background:var(--good);color:var(--bg);",
+    "pass": "background:var(--card2);color:var(--muted);border:1px solid var(--line);",
+    "warn": "background:rgba(200,148,26,.16);color:var(--mid);border:1px solid rgba(200,148,26,.4);",
+}
+
+
+def _qhead(num: int, q: str, tag_text: str = "", tag_kind: str = "lean") -> str:
+    tag = (f"<span style='margin-left:auto;font-family:var(--disp);font-size:.64rem;"
+           f"letter-spacing:.06em;padding:3px 9px;border-radius:3px;"
+           f"{_DTAG.get(tag_kind, _DTAG['lean'])}'>{tag_text}</span>") if tag_text else ""
+    return (
+        "<div style='display:flex;align-items:center;gap:10px;margin-bottom:12px;'>"
+        "<span style='width:22px;height:22px;border-radius:50%;background:var(--text);"
+        "color:var(--bg);font-family:var(--disp);font-weight:600;font-size:.8rem;"
+        f"display:flex;align-items:center;justify-content:center;flex:0 0 auto;'>{num}</span>"
+        f"<span style='font-family:var(--disp);font-weight:600;font-size:1rem;"
+        f"letter-spacing:.02em;'>{q}</span>{tag}</div>")
+
+
+def _docket_team(badge: str, team: str, form: dict, align: str, extra: str = "") -> str:
+    rec = ""
+    if form:
+        streak = f" · {form['streak']}" if form.get("streak") else ""
+        rec = (f"<div style='font-size:0.72rem;color:var(--muted);'>"
+               f"{form.get('w', 0)}–{form.get('l', 0)}{streak}</div>")
+    chips = ""
+    for r in (form or {}).get("last5", []):
+        c = "var(--good)" if r["win"] else "var(--neg)"
+        chips += (f"<span title='{r.get('opp','')} {r.get('score','')}' "
+                  f"style='display:inline-block;width:13px;height:13px;border-radius:3px;"
+                  f"background:{c};margin:0 1px;'></span>")
+    chips = (f"<div style='margin-top:4px;text-align:{align};'>{chips}</div>"
+             if chips else "")
+    frame = (f"<span style='display:inline-flex;border-radius:11px;padding:2px;"
+             f"background:var(--bg);border:1.5px solid var(--text);'>{badge}</span>")
+    name = (f"<div style='font-family:var(--disp);font-weight:600;font-size:1.2rem;"
+            f"letter-spacing:.03em;'>{team.split()[-1]}</div>")
+    nm = (f"<div>{name}{rec}</div>{frame}" if align == "right"
+          else f"{frame}<div>{name}{rec}</div>")
+    return (
+        f"<div style='flex:1;'><div style='display:flex;align-items:center;gap:11px;"
+        f"justify-content:flex-{'end' if align == 'right' else 'start'};'>{nm}</div>"
+        f"<div style='text-align:{align};'>{chips}{extra}</div></div>")
 
 
 def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.02) -> str:
     away, home = g.get("away_team", ""), g.get("home_team", "")
-    a_badge = assets.team_badge_html(sport, away, 38)
-    h_badge = assets.team_badge_html(sport, home, 38)
+    a_badge = assets.team_badge_html(sport, away, 34)
+    h_badge = assets.team_badge_html(sport, home, 34)
     n = matchup.get("n_teams", 30)
     gpk = g.get("game_pk")
 
     def _sp(name, align):
         if not name or (isinstance(name, float) and pd.isna(name)):
             return ""
-        return (f"<div style='text-align:{align};font-size:0.74rem;color:#8b97a8;"
-                f"margin-top:6px;'>⚾ {player_link(name, gpk, sport)}</div>")
+        return (f"<div style='text-align:{align};font-size:0.72rem;color:var(--muted);"
+                f"margin-top:5px;'>⚾ {player_link(name, gpk, sport)}</div>")
 
-    # top odds/info strip (date · time · ML · total), bled to the card edges
-    info = _info_bar_html(sport, g)
-
-    # center context column — fills the header space with the game's facts
+    # ---- header: teams + records + last-5, line + proj down the middle ----
+    line_bits = []
+    aml, hml = g.get("away_ml"), g.get("home_ml")
+    if aml is not None and pd.notna(aml) and hml is not None and pd.notna(hml):
+        line_bits.append(f"ML <b>{away.split()[-1]} {fmt_american(aml)} / "
+                         f"{home.split()[-1]} {fmt_american(hml)}</b>")
+    if g.get("total_line") is not None and pd.notna(g.get("total_line")):
+        line_bits.append(f"Total <b>{g['total_line']:g}</b>")
     wx = _weather_txt(g).lstrip(" ·")
-    center_bits = [
-        f"<div style='font-size:0.8rem;font-weight:700;color:#e7ecf3;'>"
-        f"{fmt_time_et(g.get('game_time'))}</div>",
-        f"<div style='font-size:1.15rem;font-weight:700;margin-top:3px;'>"
-        f"{_num(_exp(g,'away'))} <span style='color:#5d6878;'>–</span> "
-        f"{_num(_exp(g,'home'))}</div>",
-        f"<div style='font-size:0.64rem;color:#8b97a8;text-transform:uppercase;"
-        f"letter-spacing:0.3px;'>proj · o/u "
-        f"{_num(g.get('total_line') or g.get('proj_total'))}</div>",
-    ]
     if wx:
-        center_bits.append(f"<div style='font-size:0.72rem;color:#8b97a8;"
-                           f"margin-top:6px;'>{wx}</div>")
-    center_bits.append(f"<div style='font-size:0.72rem;margin-top:5px;'>"
-                       f"{_conf_chip(sport, g)}</div>")
-    center = ("<div style='flex:0 0 auto;text-align:center;min-width:150px;'>"
-              + "".join(center_bits) + "</div>")
-
-    # header: bordered logo + form + probable starter, facts down the middle
+        line_bits.append(wx)
     header = (
         "<div style='display:flex;align-items:center;gap:14px;'>"
-        + _form_html(a_badge, away, matchup.get("away_form") or {}, "right",
-                     _sp(g.get("away_pitcher"), "right"))
-        + center
-        + _form_html(h_badge, home, matchup.get("home_form") or {}, "left",
-                     _sp(g.get("home_pitcher"), "left"))
+        + _docket_team(a_badge, away, matchup.get("away_form") or {}, "right",
+                       _sp(g.get("away_pitcher"), "right"))
+        + ("<div style='flex:0 0 auto;text-align:center;min-width:120px;'>"
+           f"<div style='font-family:var(--disp);font-size:.6rem;letter-spacing:.1em;"
+           f"color:var(--faint);'>PROJECTED</div>"
+           f"<div style='font-family:var(--disp);font-weight:600;font-size:1.5rem;'>"
+           f"{_num(_exp(g,'away'))} – {_num(_exp(g,'home'))}</div>"
+           f"<div style='font-size:.66rem;color:var(--muted);'>"
+           f"{fmt_time_et(g.get('game_time'))}</div></div>")
+        + _docket_team(h_badge, home, matchup.get("home_form") or {}, "left",
+                       _sp(g.get("home_pitcher"), "left"))
         + "</div>"
+        + (f"<div style='display:flex;gap:20px;justify-content:center;margin-top:11px;"
+           f"font-size:.74rem;color:var(--muted);'>"
+           + "".join(f"<span>{b}</span>" for b in line_bits) + "</div>"
+           if line_bits else "")
     )
 
-    # speedometer verdict gauges (model pick per market it has data for)
+    # ---- ① who's the better side? — gauges + lean + why ----
     vrows = _verdict_rows(g)
-    wm = {"Moneyline": (away.split()[-1] if away else ""),
-          "Run Line": (home.split()[-1] if home else ""),
-          "Spread": (home.split()[-1] if home else ""), "Total": "O/U"}
-    dials = ""
-    if vrows:
-        boxes = "".join(_verdict_box(lbl, pick, prob, ev, min_edge, wm.get(lbl, ""))
-                        for lbl, pick, prob, ev in vrows)
-        dials = (
-            "<div style='border-top:1px solid #222c3d;margin:12px -18px 0;"
-            "padding:12px 18px 2px;'>"
-            "<div style='font-size:0.68rem;font-weight:700;text-transform:uppercase;"
-            "letter-spacing:0.4px;color:#8b97a8;margin-bottom:8px;'>Model Verdict</div>"
-            f"<div style='display:grid;grid-template-columns:repeat({len(vrows)},"
-            f"1fr);gap:10px;'>{boxes}</div></div>")
+    gauges = "".join(
+        f"<div style='text-align:center;'>{_ring(prob, _gauge_color(prob))}"
+        f"<div style='font-family:var(--disp);font-size:.6rem;letter-spacing:.07em;"
+        f"color:var(--muted);text-transform:uppercase;'>{lbl}</div>"
+        f"<div style='font-size:.72rem;font-weight:600;'>{pick}</div></div>"
+        for lbl, pick, prob, ev in vrows)
+    hwp, awp = g.get("home_win_prob") or 0, g.get("away_win_prob") or 0
+    fav = home if hwp >= awp else away
+    wp = max(hwp, awp)
+    mop = g.get("model_over_prob")
+    over = (mop or 0) >= 0.5
+    tot = g.get("total_line") or g.get("proj_total")
+    lean_tag = f"{fav.split()[-1]} · {'OVER' if over else 'UNDER'} LEAN"
+    why1 = (f"Model makes the <b>{fav.split()[-1]} {wp:.0%}</b> to win and projects "
+            f"<b>{_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</b>"
+            + (f" — a lean to the <b>{'over' if over else 'under'} {_num(tot)}</b>."
+               if mop is not None and pd.notna(mop) else "."))
+    sec1 = (_qhead(1, "Who's the better side?", lean_tag, "lean")
+            + (f"<div style='display:grid;grid-template-columns:repeat({max(1,len(vrows))},"
+               f"1fr);gap:14px;'>{gauges}</div>" if vrows else "")
+            + _why(why1))
 
-    # advanced analytics (split tables + trends), collapsed to keep top scannable
+    # ---- best model edge drives ② and ③ ----
+    edges = [e for e in _game_edges("", g)
+             if e.get("ev") is not None and pd.notna(e["ev"])]
+    best = max(edges, key=lambda e: e["ev"]) if edges else None
+
+    # ---- ② is the price fair? ----
+    if best and best.get("price") is not None:
+        imp = _implied(best["price"])
+        ev = float(best["ev"])
+        kind = "edge" if ev >= min_edge else "pass"
+        grid = (
+            "<div style='display:grid;grid-template-columns:repeat(4,1fr);"
+            "border:1.5px solid var(--text);border-radius:6px;overflow:hidden;'>"
+            + _pf_cell("MARKET", fmt_american(best["price"]))
+            + _pf_cell("IMPLIED", _pct(imp))
+            + _pf_cell("OUR MODEL", _pct(best.get("model_prob")), True)
+            + _pf_cell("EDGE", f"{ev * 100:+.1f}%", True,
+                       "var(--good)" if ev >= 0 else "var(--neg)") + "</div>")
+        why2 = (f"We price <b>{best['bet']}</b> at <b>{_pct(best.get('model_prob'))}</b> "
+                f"vs the market's <b>{_pct(imp)}</b> — a <b>{ev*100:+.1f}%</b> edge.")
+        sec2 = _qhead(2, "Is the price fair?", "EDGE" if kind == "edge" else "EFFICIENT",
+                      kind) + grid + _why(why2)
+    else:
+        sec2 = _qhead(2, "Is the price fair?", "NO LINE", "pass") + _why(
+            "No market price posted yet — the docket fills in once the board opens.")
+
+    # ---- ③ what's the play? ----
+    if best and float(best["ev"]) >= min_edge:
+        ev = float(best["ev"])
+        if 0.02 <= ev < 0.06:
+            tag, kind, vcol = "PLAY · 2–6% BAND", "play", "var(--good)"
+            why3 = ("Squarely in our curated <b>2–6% band</b> — the range our record hits "
+                    "~60%. Logged at this price and graded to the close. No revisions.")
+        elif ev >= 0.08:
+            tag, kind, vcol = "VERIFY — OFF-MARKET", "warn", "var(--mid)"
+            why3 = ("Edge is large enough that the market likely knows something we don't "
+                    "(injury, lineup, bullpen). We flag these — we don't chase them.")
+        else:
+            tag, kind, vcol = "LEAN", "edge", "var(--good)"
+            why3 = "A modest edge — worth a lean, just under our core play threshold."
+        glyph = "▶" if kind != "warn" else "⚠"
+        verdict = (
+            f"<div style='display:flex;align-items:center;gap:14px;border:1.5px solid "
+            f"{vcol};border-radius:6px;padding:12px 16px;"
+            f"background:color-mix(in srgb, {vcol} 7%, transparent);'>"
+            f"<span style='font-family:var(--disp);font-weight:600;font-size:1.1rem;"
+            f"color:{vcol};'>{glyph} {best['bet']}</span>"
+            "<div style='margin-left:auto;display:flex;gap:18px;text-align:center;'>"
+            + _vmeta("MODEL", _pct(best.get("model_prob")))
+            + _vmeta("EV", f"{ev*100:+.1f}%", vcol) + "</div></div>")
+    else:
+        tag, kind = "NO PLAY", "pass"
+        verdict = (
+            "<div style='border:1.5px solid var(--line);border-radius:6px;"
+            "padding:12px 16px;background:var(--card2);font-family:var(--disp);"
+            "font-weight:600;font-size:1rem;color:var(--muted);'>"
+            "No flagged edge — priced efficiently. Pass.</div>")
+        why3 = ("Our number and the market agree tonight. We only fire when the gap clears "
+                "our threshold — discipline is the edge.")
+    sec3 = _qhead(3, "Is the price wrong — what's the play?", tag, kind) + verdict + _why(why3)
+
+    # ---- advanced analytics (deep tables + trends + lineups) behind a reveal ----
     off_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
     tables = ""
     if matchup.get("away_off_vs_home_def"):
-        tables += _stat_table_html(f"{away} {off_lbl}",
-                                   matchup["away_off_vs_home_def"], n)
+        tables += _stat_table_html(f"{away} {off_lbl}", matchup["away_off_vs_home_def"], n)
     if matchup.get("home_off_vs_away_def"):
-        tables += _stat_table_html(f"{home} {off_lbl}",
-                                   matchup["home_off_vs_away_def"], n)
-    trends = ""
+        tables += _stat_table_html(f"{home} {off_lbl}", matchup["home_off_vs_away_def"], n)
     tr = matchup.get("trends") or []
     if tr:
         cells = "".join(
             f"<div style='flex:1;text-align:center;'>"
-            f"<div style='color:#8b97a8;font-size:0.66rem;'>{t['stat']}</div>"
+            f"<div style='color:var(--muted);font-size:0.66rem;'>{t['stat']}</div>"
             f"<div style='font-size:0.8rem;'>{_fmt_stat(t['stat']+'%', t['away'])}"
-            f" / {_fmt_stat(t['stat']+'%', t['home'])}</div></div>"
-            for t in tr)
-        trends = ("<div style='font-size:0.72rem;color:#22d3ee;font-weight:700;"
-                  "text-transform:uppercase;margin:10px 0 2px;'>Trends "
-                  "(away / home)</div>"
-                  f"<div style='display:flex;gap:6px;'>{cells}</div>")
-    advanced = ""
-    if tables or trends:
-        advanced = (
-            "<details style='border:1px solid #222c3d;border-radius:10px;"
-            "margin-top:12px;background:#0d1320;'>"
-            "<summary style='cursor:pointer;padding:10px 13px;font-size:0.84rem;"
-            "font-weight:600;color:#e7ecf3;'>📊 Advanced Analytics — splits &amp; "
-            "matchup</summary>"
-            f"<div style='padding:0 13px 12px;'>{tables}{trends}</div></details>")
+            f" / {_fmt_stat(t['stat']+'%', t['home'])}</div></div>" for t in tr)
+        tables += ("<div style='font-size:0.7rem;color:var(--acc2);font-weight:700;"
+                   "text-transform:uppercase;margin:10px 0 2px;'>Trends (away / home)</div>"
+                   f"<div style='display:flex;gap:6px;'>{cells}</div>")
+    reveal = ""
+    if tables or _lineups_html(g, sport):
+        reveal = (
+            "<details style='border:1.5px solid var(--line);border-radius:6px;"
+            "margin-top:6px;background:var(--card2);'>"
+            "<summary style='cursor:pointer;padding:11px 14px;font-family:var(--disp);"
+            "font-size:.82rem;font-weight:600;letter-spacing:.04em;color:var(--acc2);'>"
+            "ADVANCED MATCHUP ANALYTICS &amp; LINEUPS →</summary>"
+            f"<div style='padding:2px 14px 14px;'>{tables}{_lineups_html(g, sport)}</div></details>")
 
-    lineups = _lineups_html(g, sport)
-    analysis = _analysis_html(sport, g, matchup, min_edge)
+    secwrap = lambda h: f"<div style='padding:15px 20px;border-top:1.5px solid var(--line);'>{h}</div>"
     return (
-        "<div style='background:#121927;border:1px solid #222c3d;border-radius:16px;"
-        "padding:16px 18px;margin-bottom:14px;overflow:hidden;"
-        "box-shadow:0 1px 2px rgba(0,0,0,0.4),0 12px 34px rgba(0,0,0,0.45);'>"
-        f"{info}{header}{dials}{lineups}{analysis}{advanced}</div>"
-    )
+        "<div style='background:var(--card);border:1.5px solid var(--text);"
+        "border-radius:8px;margin-bottom:16px;overflow:hidden;'>"
+        f"<div style='padding:16px 20px;'>{header}</div>"
+        f"{secwrap(sec1)}{secwrap(sec2)}{secwrap(sec3)}"
+        f"<div style='padding:12px 20px;'>{reveal}</div></div>")
+
+
+def _pf_cell(label, value, hl=False, color=None) -> str:
+    bg = "background:rgba(47,122,74,.06);" if hl else ""
+    col = f"color:{color};" if color else ""
+    return (f"<div style='padding:11px 8px;text-align:center;border-right:1px solid var(--line);{bg}'>"
+            f"<div style='font-family:var(--disp);font-size:.58rem;letter-spacing:.06em;"
+            f"color:var(--muted);'>{label}</div>"
+            f"<div style='font-family:var(--disp);font-weight:600;font-size:1.1rem;"
+            f"margin-top:3px;{col}'>{value}</div></div>")
+
+
+def _vmeta(label, value, color=None) -> str:
+    col = f"color:{color};" if color else ""
+    return (f"<div><div style='font-family:var(--disp);font-size:.58rem;letter-spacing:.06em;"
+            f"color:var(--muted);'>{label}</div>"
+            f"<div style='font-family:var(--disp);font-weight:600;font-size:1rem;{col}'>{value}</div></div>")
 
 
 def _weather_txt(g: dict) -> str:
@@ -796,14 +957,14 @@ def _lineups_html(g: dict, sport: str | None = None) -> str:
             f"<div style='font-size:0.8rem;padding:2px 0;'>{i+1}. "
             f"{player_link(n, gpk, sport)}</div>"
             for i, n in enumerate(names[:9]))
-        return (f"<div style='flex:1;'><div style='color:#8b97a8;font-size:0.72rem;"
+        return (f"<div style='flex:1;'><div style='color:var(--muted);font-size:0.72rem;"
                 f"font-weight:700;text-transform:uppercase;margin-bottom:3px;'>"
                 f"{team}</div>{rows or '—'}</div>")
 
-    return ("<div style='border-top:1px solid #222c3d;margin-top:12px;padding-top:10px;'>"
-            "<div style='font-size:0.78rem;color:#22d3ee;font-weight:700;"
+    return ("<div style='border-top:1px solid var(--line);margin-top:12px;padding-top:10px;'>"
+            "<div style='font-size:0.78rem;color:var(--acc2);font-weight:700;"
             "text-transform:uppercase;margin-bottom:5px;'>Lineups "
-            "<span style='color:#5d6878;font-weight:400;text-transform:none;'>"
+            "<span style='color:var(--faint);font-weight:400;text-transform:none;'>"
             "— click a name for the player panel</span></div>"
             f"<div style='display:flex;gap:18px;'>{col(g.get('away_team',''), away)}"
             f"{col(g.get('home_team',''), home)}</div></div>")
@@ -903,7 +1064,7 @@ def _analysis_html(sport, g, matchup, min_edge) -> str:
     conf = {k.upper(): c["score"] for k, c in market_convictions(g).items()}
     items = []
     for r in rows:
-        color = {"PLAY": "#00e676", "PASS": "#8b949e", "NOTE": "#e3b341"}[r["decision"]]
+        color = {"PLAY": "var(--good)", "PASS": "var(--muted)", "NOTE": "var(--mid)"}[r["decision"]]
         score = conf.get(r["market"])
         conf_html = ""
         if r["decision"] != "NOTE":
@@ -914,12 +1075,12 @@ def _analysis_html(sport, g, matchup, min_edge) -> str:
             conf_html = f"<span style='color:{color};font-weight:700;'>{verdict}</span>"
         items.append(
             "<div style='margin:6px 0;font-size:0.84rem;'>"
-            f"<span style='color:#22d3ee;font-weight:700;'>{r['market']}:</span> "
+            f"<span style='color:var(--acc2);font-weight:700;'>{r['market']}:</span> "
             f"{r['text']} {conf_html}</div>"
         )
     return (
-        "<div style='border-top:1px solid #1e2636;margin-top:10px;padding-top:8px;'>"
-        "<div style='font-size:0.78rem;color:#22d3ee;font-weight:700;"
+        "<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'>"
+        "<div style='font-size:0.78rem;color:var(--acc2);font-weight:700;"
         "text-transform:uppercase;margin-bottom:2px;'>📊 Statistical analysis</div>"
         + "".join(items) + "</div>"
     )
@@ -1158,11 +1319,11 @@ def prop_chart(series: list[dict], line: float, title: str):
         x=alt.X("label:N", sort=None, axis=alt.Axis(title=None, labelAngle=-40)),
         y=alt.Y("value:Q", title=title),
         color=alt.condition("datum.value > %f" % line,
-                            alt.value("#00e676"), alt.value("#ff4d6d")),
+                            alt.value("var(--good)"), alt.value("var(--neg)")),
         tooltip=["date", "value", "opp"],
     )
     rule = alt.Chart(pd.DataFrame({"y": [line]})).mark_rule(
-        color="#e3b341", strokeDash=[5, 4], size=2).encode(y="y:Q")
+        color="var(--mid)", strokeDash=[5, 4], size=2).encode(y="y:Q")
     return (bars + rule).properties(height=260, width="container")
 
 
@@ -1191,7 +1352,7 @@ def equity_chart(equity: pd.DataFrame):
     df.columns = ["date", "units"]
     base = alt.Chart(df)
     area = base.mark_area(
-        line={"color": "#00c46a", "strokeWidth": 2},
+        line={"color": "var(--good)", "strokeWidth": 2},
         color=alt.Gradient(gradient="linear", x1=1, x2=1, y1=0, y2=1, stops=[
             alt.GradientStop(color="rgba(0,196,106,0.32)", offset=0),
             alt.GradientStop(color="rgba(0,196,106,0.02)", offset=1)])).encode(
@@ -1199,7 +1360,7 @@ def equity_chart(equity: pd.DataFrame):
         y=alt.Y("units:Q", title="Units"),
         tooltip=[alt.Tooltip("date:T"), alt.Tooltip("units:Q", format="+.1f")])
     zero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(
-        color="#5d6878", strokeDash=[4, 4]).encode(y="y:Q")
+        color="var(--faint)", strokeDash=[4, 4]).encode(y="y:Q")
     return (area + zero).properties(height=260, width="container")
 
 
@@ -1244,14 +1405,14 @@ def calibration_chart(curve: pd.DataFrame):
     if curve.empty:
         return None
     diag = alt.Chart(pd.DataFrame({"x": [0, 1], "y": [0, 1]})).mark_line(
-        strokeDash=[4, 4], color="#6e7781").encode(x="x:Q", y="y:Q")
+        strokeDash=[4, 4], color="var(--faint)").encode(x="x:Q", y="y:Q")
     base = alt.Chart(curve)
-    line = base.mark_line(color="#22d3ee").encode(
+    line = base.mark_line(color="var(--acc2)").encode(
         x=alt.X("predicted:Q", title="Model predicted win %",
                 scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")),
         y=alt.Y("empirical:Q", title="Actual win %",
                 scale=alt.Scale(domain=[0, 1]), axis=alt.Axis(format="%")))
-    pts = base.mark_circle(color="#00e676").encode(
+    pts = base.mark_circle(color="var(--good)").encode(
         x="predicted:Q", y="empirical:Q",
         size=alt.Size("n:Q", title="games"),
         tooltip=[alt.Tooltip("predicted:Q", format=".0%"),
