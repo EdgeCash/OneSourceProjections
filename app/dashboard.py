@@ -42,9 +42,9 @@ _PALETTES = {
     "light": dict(acc="#00a352", acc2="#0e7490", bg="#f6f8fc", card="#ffffff",
                   line="#e4e9f2", neg="#e11d48", text="#0e1726",
                   sb1="#ffffff", sb2="#eef2f8", glow="0.06", shadow="0.10"),
-    "dark": dict(acc="#00e676", acc2="#22d3ee", bg="#080b12", card="#121826",
-                 line="#1e2636", neg="#ff4d6d", text="#e6edf3",
-                 sb1="#0b0f18", sb2="#070a11", glow="0.10", shadow="0.35"),
+    "dark": dict(acc="#00c46a", acc2="#22d3ee", bg="#0a0e16", card="#121927",
+                 line="#222c3d", neg="#ff5d63", text="#e7ecf3",
+                 sb1="#0d1320", sb2="#080b12", glow="0.10", shadow="0.45"),
 }
 
 _THEME_CSS = """
@@ -128,20 +128,21 @@ def _theme_css(theme: str) -> str:
     return f"<style>{root}{_THEME_CSS}</style>"
 
 
-st.markdown(_theme_css(st.session_state.get("theme", "light")),
+st.markdown(_theme_css(st.session_state.get("theme", "dark")),
             unsafe_allow_html=True)
 
 
 def _theme_toggle(key: str):
-    """Light/Dark master toggle. Both placements (sidebar + landing) stay in
-    sync via the shared ``theme`` state, re-seeded from it each render."""
-    st.session_state[key] = (st.session_state.get("theme", "light") == "dark")
+    """Dark/Light master toggle. Dark is the default premium look; both
+    placements (sidebar + landing) stay in sync via the shared ``theme``
+    state, re-seeded from it each render."""
+    st.session_state[key] = (st.session_state.get("theme", "dark") == "light")
 
     def _cb():
-        st.session_state.theme = "dark" if st.session_state[key] else "light"
+        st.session_state.theme = "light" if st.session_state[key] else "dark"
 
-    st.toggle("🌙 Night mode", key=key, on_change=_cb,
-              help="Light by day, dark by night — your call.")
+    st.toggle("☀️ Day mode", key=key, on_change=_cb,
+              help="Dark by default — flip to a light sheet if you prefer.")
 
 
 @st.cache_data(ttl=300)

@@ -1,11 +1,11 @@
-# Default theme is LIGHT (Project 54.7 default); a Night-mode toggle on the
-# landing page / sidebar swaps to the dark palette at runtime via injected CSS.
+# Default theme is DARK (Project 54.7 premium look); a Day-mode toggle on the
+# landing page / sidebar swaps to the light palette at runtime via injected CSS.
 [theme]
-base = "light"
-primaryColor = "#00a352"
-backgroundColor = "#f6f8fc"
-secondaryBackgroundColor = "#ffffff"
-textColor = "#0e1726"
+base = "dark"
+primaryColor = "#00c46a"
+backgroundColor = "#0a0e16"
+secondaryBackgroundColor = "#121927"
+textColor = "#e7ecf3"
 
 [browser]
 gatherUsageStats = false
