@@ -176,6 +176,34 @@ def section_header(text: str, icon: str = "", tag: str = "") -> None:
                 unsafe_allow_html=True)
 
 
+def _hr_color(v):
+    """Heatmap color for a 0-1 hit rate (green = hits the line, red = misses)."""
+    if v is None or pd.isna(v):
+        return ("#5d6878", "rgba(93,104,120,.12)")
+    if v >= 0.60:
+        return ("#2ee27a", "rgba(46,226,122,.14)")
+    if v >= 0.50:
+        return ("#f0b429", "rgba(240,180,41,.14)")
+    return ("#ff5d63", "rgba(255,93,99,.14)")
+
+
+def hit_rate_chips(chips: dict) -> None:
+    """Render L5/L10/... hit rates as green→red heatmap chips (matches the
+    props-table convention) instead of plain st.metric tiles."""
+    cells = []
+    for k, v in chips.items():
+        col, bg = _hr_color(v)
+        val = f"{v * 100:.0f}%" if (v is not None and pd.notna(v)) else "—"
+        cells.append(
+            f"<div style='flex:1;text-align:center;border-radius:10px;padding:8px 4px;"
+            f"background:{bg};border:1px solid {col}3a;'>"
+            f"<div style='font-size:.6rem;text-transform:uppercase;letter-spacing:.3px;"
+            f"opacity:.65;'>{k}</div>"
+            f"<div style='font-size:1.1rem;font-weight:700;color:{col};'>{val}</div></div>")
+    st.markdown("<div style='display:flex;gap:6px;margin:2px 0 6px;'>"
+                + "".join(cells) + "</div>", unsafe_allow_html=True)
+
+
 @st.cache_data(ttl=300)
 def load_data() -> dict | None:
     path = config.OUTPUT_DIR / "latest.json"
@@ -658,9 +686,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
             chips = {"L5": hr.get("l5"), "L10": hr.get("l10"),
                      "L20": hr.get("l20"), "Season": hr.get("season"),
                      "H2H": hr.get("h2h")}
-            cc = st.columns(len(chips))
-            for i, (k_, v) in enumerate(chips.items()):
-                cc[i].metric(k_, f"{v * 100:.0f}%" if v is not None else "—")
+            hit_rate_chips(chips)
         # model vs BettingPros read + market context
         bits = []
         bp_proj, bp_side = p.get("bp_projection"), p.get("bp_recommended_side")
@@ -1158,7 +1184,11 @@ def render_performance():
     equity = ui.cumulative_units(ledger)
     if not equity.empty:
         section_header("Cumulative units")
-        st.line_chart(equity, y="units", height=260)
+        eq = ui.equity_chart(equity)
+        if eq is not None:
+            st.altair_chart(eq, use_container_width=True)
+        else:
+            st.line_chart(equity, y="units", height=260)
 
     # Calibration: do our stated win-probabilities match reality?
     curve = ui.calibration_curve(ledger)
@@ -1643,14 +1673,19 @@ def render_home():
             st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
     with right:
         section_header("Slate at a glance", "🗓️")
-        any_rows = False
+        pills = []
         for sport in NAV_SPORTS:
             b = day.get(sport, {})
             ng, npr = len(b.get("games", []) or []), len(b.get("props", []) or [])
             if ng or npr:
-                any_rows = True
-                st.markdown(f"- **{sport}** — {ng} games · {npr} props")
-        if not any_rows:
+                pills.append(
+                    "<span class='osp-pill' style='background:var(--card);"
+                    "border:1px solid var(--line);color:var(--text);'>"
+                    f"<b>{sport}</b> · {ng}g · {npr}p</span>")
+        if pills:
+            st.markdown("<div style='display:flex;flex-wrap:wrap;gap:6px;'>"
+                        + "".join(pills) + "</div>", unsafe_allow_html=True)
+        else:
             st.caption("No games scheduled on this slate.")
         ready, _ = ai.available()
         chip = ("<span class='osp-pill live' style='background:rgba(0,230,118,0.18);"
