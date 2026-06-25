@@ -39,99 +39,97 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
 require_password()
 
 _PALETTES = {
-    "light": dict(acc="#00a352", acc2="#0e7490", bg="#f6f8fc", card="#ffffff",
-                  line="#e4e9f2", neg="#e11d48", text="#0e1726",
-                  sb1="#ffffff", sb2="#eef2f8", glow="0.06", shadow="0.10"),
-    "dark": dict(acc="#00c46a", acc2="#22d3ee", bg="#0a0e16", card="#121927",
-                 line="#222c3d", neg="#ff5d63", text="#e7ecf3",
-                 sb1="#0d1320", sb2="#080b12", glow="0.10", shadow="0.45"),
+    # Cream / vintage-white base, graphite type. Team colors are the only
+    # decorative accent (applied per-card); green/red are reserved for meaning.
+    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", bg="#f4ead0", card="#fbf5e6",
+                  card2="#efe2c2", line="#d8ccab", text="#1f2328",
+                  muted="#5a6066", faint="#9b937f", good="#2f7a4a",
+                  neg="#b03636", mid="#c8941a", sb1="#efe3c4", sb2="#f4ead0",
+                  glow="0.0", shadow="0.10"),
+    "dark": dict(acc="var(--good)", acc2="var(--acc2)", bg="var(--bg)", card="var(--card)",
+                 card2="var(--card2)", line="var(--line)", text="var(--text)",
+                 muted="var(--muted)", faint="var(--faint)", good="var(--good)",
+                 neg="var(--neg)", mid="var(--mid)", sb1="var(--card2)", sb2="#080b12",
+                 glow="0.10", shadow="0.45"),
 }
 
 _THEME_CSS = """
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-  .stApp, body { color: var(--text); }
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+  .stApp, body { color: var(--text); font-family: 'DM Sans', system-ui, sans-serif; }
   /* --- hide default Streamlit chrome (premium product, not scaffolding).
          Keep stHeader itself (transparent) so the mobile sidebar toggle lives. */
   [data-testid="stToolbar"], [data-testid="stDecoration"],
   [data-testid="stStatusWidget"], #MainMenu, footer,
   .stDeployButton { display: none !important; }
   [data-testid="stHeader"] { background: transparent !important; }
-  /* --- one section-header system (uppercase kicker + accent rule) --- */
-  .osp-sec { font-family: var(--disp); font-size: 0.82rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1.2px; color: var(--text);
+  .stApp { background: var(--bg); }
+  .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1180px; }
+  h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
+    letter-spacing: 0.02em; }
+  /* --- one section-header system (uppercase kicker + hairline rule) --- */
+  .osp-sec { font-family: var(--disp); font-size: 0.8rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--text);
     margin: 18px 0 8px; padding-bottom: 6px; display: flex; align-items: center;
-    gap: 8px; border-bottom: 1px solid var(--line); }
+    gap: 8px; border-bottom: 1.5px solid var(--text); }
   .osp-sec .ico { font-size: 0.95rem; }
   .osp-sec .tag { margin-left: auto; font-size: 0.66rem; font-weight: 600;
-    text-transform: none; letter-spacing: 0; color: var(--text); opacity: 0.5; }
-  .stApp { background:
-    radial-gradient(1100px 520px at 8% -10%, rgba(0,230,118,var(--glow)), transparent 55%),
-    radial-gradient(900px 480px at 100% -6%, rgba(34,211,238,var(--glow)), transparent 50%),
-    var(--bg); }
-  .block-container { padding-top: 1.1rem; padding-bottom: 2rem; max-width: 1340px; }
-  h1, h2, h3, h4, .osp-brand, .osp-title { font-family: var(--disp);
-    letter-spacing: -0.5px; }
+    text-transform: none; letter-spacing: 0; color: var(--muted); }
   section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,var(--sb1) 0%,var(--sb2) 100%);
-    border-right: 1px solid var(--line); }
+    background: var(--sb1); border-right: 1.5px solid var(--text); }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
-    border-radius: 10px; padding: 5px 10px; font-weight: 600;
-    transition: background .15s ease; }
+    border-radius: 8px; padding: 5px 10px; font-weight: 600;
+    font-family: var(--disp); letter-spacing: 0.02em; transition: background .15s ease; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
-    background: rgba(0,230,118,0.10); }
+    background: var(--card2); }
   [data-testid="stMetric"] { position: relative; overflow: hidden;
-    background: linear-gradient(160deg, rgba(0,230,118,0.08), rgba(34,211,238,0.04)),
-      var(--card);
-    border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,var(--shadow)); }
+    background: var(--card); border: 1.5px solid var(--line); border-radius: 8px;
+    padding: 13px 15px 11px 16px; box-shadow: none; }
   [data-testid="stMetric"]::before { content:""; position:absolute; left:0; top:0;
-    bottom:0; width:3px; background: linear-gradient(180deg,var(--acc),var(--acc2)); }
-  [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.74rem;
-    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
-  [data-testid="stMetricValue"] { font-family: var(--disp); font-weight: 700;
-    font-size: 1.85rem; letter-spacing: -1px; }
-  .osp-brand { font-size: 1.55rem; font-weight: 700; margin: 0 0 0.1rem 0;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    background: linear-gradient(90deg,var(--acc),var(--acc2)); -webkit-background-clip: text;
-    background-clip: text; -webkit-text-fill-color: transparent; }
-  .osp-title { font-size: 1.9rem; font-weight: 700; margin: 0; }
-  div[data-testid="stCaptionContainer"] { opacity: 0.62; }
+    bottom:0; width:3px; background: var(--text); }
+  [data-testid="stMetricLabel"] { opacity: 0.7; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+    font-family: var(--disp); }
+  [data-testid="stMetricValue"] { font-family: var(--disp); font-weight: 600;
+    font-size: 1.7rem; letter-spacing: 0; }
+  .osp-brand { font-family: var(--disp); font-size: 1.5rem; font-weight: 700;
+    margin: 0 0 0.1rem 0; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text); }
+  .osp-title { font-size: 1.9rem; font-weight: 600; margin: 0; }
+  div[data-testid="stCaptionContainer"] { opacity: 0.7; }
   /* tighter vertical rhythm + aligned numerals everywhere */
   [data-testid="stVerticalBlock"] { gap: 0.7rem; }
   [data-testid="stMetricValue"], [data-testid="stDataFrame"],
   .osp-sec .tag { font-variant-numeric: tabular-nums; }
-  /* tabs as segmented pills (premium, not the default underline) */
-  .stTabs [data-baseweb="tab-list"] { gap: 0.35rem; background: var(--card);
-    padding: 0.3rem; border-radius: 12px; border: 1px solid var(--line); }
+  /* tabs as segmented pills (graphite active on cream) */
+  .stTabs [data-baseweb="tab-list"] { gap: 0.35rem; background: var(--card2);
+    padding: 0.3rem; border-radius: 8px; border: 1.5px solid var(--line); }
   .stTabs [data-baseweb="tab"] { font-family: var(--disp); font-weight: 600;
-    font-size: 0.92rem; height: 34px; padding: 0 0.85rem; border-radius: 8px;
-    color: var(--text); }
-  .stTabs [aria-selected="true"] { background: var(--acc) !important;
-    color: #04130b !important; }
+    font-size: 0.9rem; height: 34px; padding: 0 0.9rem; border-radius: 6px;
+    color: var(--text); letter-spacing: 0.03em; }
+  .stTabs [aria-selected="true"] { background: var(--text) !important;
+    color: var(--bg) !important; }
   .stTabs [data-baseweb="tab-highlight"] { display: none; }
-  .stButton > button { border-radius: 10px; border: 1px solid var(--line);
-    font-weight: 700; transition: all .15s ease; }
-  .stButton > button:hover { border-color: var(--acc); color: var(--acc);
-    box-shadow: 0 0 0 1px var(--acc), 0 6px 18px rgba(0,230,118,0.18);
-    transform: translateY(-1px); }
+  .stButton > button { border-radius: 6px; border: 1.5px solid var(--text);
+    font-family: var(--disp); font-weight: 600; letter-spacing: 0.04em;
+    background: var(--card); color: var(--text); transition: all .15s ease; }
+  .stButton > button:hover { background: var(--text); color: var(--bg);
+    border-color: var(--text); transform: translateY(-1px); }
   .stButton > button:active { transform: translateY(0); }
-  /* form surfaces follow the palette so dark mode stays legible */
+  /* form surfaces follow the palette */
   [data-baseweb="select"] > div, .stTextInput input, .stNumberInput input,
   .stTextArea textarea { background: var(--card) !important; color: var(--text) !important;
     border-color: var(--line) !important; }
-  .osp-hero { background: linear-gradient(135deg, rgba(0,230,118,0.12),
-      rgba(34,211,238,0.06));
-    border: 1px solid rgba(0,230,118,0.25); border-radius: 18px; padding: 18px 22px;
-    margin-bottom: 14px; box-shadow: 0 8px 26px rgba(0,0,0,var(--shadow)); }
-  .osp-pill { display:inline-block; font-size:0.72rem; font-weight:700; padding:3px 10px;
-    border-radius:999px; margin-right:6px; }
+  .osp-hero { background: var(--card2); border: 1.5px solid var(--text);
+    border-radius: 10px; padding: 18px 22px; margin-bottom: 14px; }
+  .osp-pill { display:inline-block; font-size:0.7rem; font-weight:700; padding:3px 10px;
+    border-radius:999px; margin-right:6px; font-family: var(--disp);
+    letter-spacing: 0.03em; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
   a.osp-plink { color: var(--text) !important; text-decoration:none;
-    border-bottom:1px dashed rgba(0,230,118,0.0); transition: color .12s ease,
+    border-bottom:1px dashed transparent; transition: color .12s ease,
     border-color .12s ease; }
-  a.osp-plink:hover { color: var(--acc) !important;
-    border-bottom-color:rgba(0,230,118,0.7); }
+  a.osp-plink:hover { color: var(--acc2) !important; border-bottom-color: var(--acc2); }
   /* mobile: tighter padding, smaller display type, full-width buttons */
   @media (max-width: 640px) {
     .block-container { padding: 0.6rem 0.6rem 2rem; }
@@ -144,27 +142,27 @@ _THEME_CSS = """
 
 
 def _theme_css(theme: str) -> str:
-    p = _PALETTES.get(theme, _PALETTES["light"])
+    p = _PALETTES.get(theme, _PALETTES["cream"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
-            + "--disp:'Space Grotesk', system-ui, sans-serif; }")
+            + "--disp:'Oswald', system-ui, sans-serif; }")
     return f"<style>{root}{_THEME_CSS}</style>"
 
 
-st.markdown(_theme_css(st.session_state.get("theme", "dark")),
+st.markdown(_theme_css(st.session_state.get("theme", "cream")),
             unsafe_allow_html=True)
 
 
 def _theme_toggle(key: str):
-    """Dark/Light master toggle. Dark is the default premium look; both
+    """Cream/Dark master toggle. Cream (vintage) is the default look; both
     placements (sidebar + landing) stay in sync via the shared ``theme``
     state, re-seeded from it each render."""
-    st.session_state[key] = (st.session_state.get("theme", "dark") == "light")
+    st.session_state[key] = (st.session_state.get("theme", "cream") == "dark")
 
     def _cb():
-        st.session_state.theme = "light" if st.session_state[key] else "dark"
+        st.session_state.theme = "dark" if st.session_state[key] else "cream"
 
-    st.toggle("☀️ Day mode", key=key, on_change=_cb,
-              help="Dark by default — flip to a light sheet if you prefer.")
+    st.toggle("🌙 Night mode", key=key, on_change=_cb,
+              help="Vintage cream by default — flip to dark if you prefer.")
 
 
 def section_header(text: str, icon: str = "", tag: str = "") -> None:
@@ -179,12 +177,12 @@ def section_header(text: str, icon: str = "", tag: str = "") -> None:
 def _hr_color(v):
     """Heatmap color for a 0-1 hit rate (green = hits the line, red = misses)."""
     if v is None or pd.isna(v):
-        return ("#5d6878", "rgba(93,104,120,.12)")
+        return ("var(--faint)", "rgba(93,104,120,.12)")
     if v >= 0.60:
-        return ("#2ee27a", "rgba(46,226,122,.14)")
+        return ("var(--good)", "rgba(46,226,122,.14)")
     if v >= 0.50:
-        return ("#f0b429", "rgba(240,180,41,.14)")
-    return ("#ff5d63", "rgba(255,93,99,.14)")
+        return ("var(--mid)", "rgba(240,180,41,.14)")
+    return ("var(--neg)", "rgba(255,93,99,.14)")
 
 
 def hit_rate_chips(chips: dict) -> None:
@@ -648,7 +646,7 @@ def render_prop_detail(sport: str, p: dict, injuries: list | None = None):
     st.markdown(
         f"<div style='display:flex;align-items:center;margin:6px 0;'>{head}"
         f"<div><div style='font-size:1.15rem;font-weight:700;'>🔎 {title}</div>"
-        f"<div style='color:#8b949e;font-size:0.8rem;'>{sub}</div></div></div>",
+        f"<div style='color:var(--muted);font-size:0.8rem;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     c = st.columns(5)
@@ -948,7 +946,7 @@ def render_plays():
             cM, cP, cB = st.columns([5, 4, 2], vertical_alignment="center")
             cM.markdown(f"**{r['game']}**")
             price = ui.fmt_american(r["price"]) if pd.notna(r.get("price")) else ""
-            cP.markdown(f"<span style='color:#00e676;font-weight:600'>{r['bet']} "
+            cP.markdown(f"<span style='color:var(--good);font-weight:600'>{r['bet']} "
                         f"{price}</span>", unsafe_allow_html=True)
             if cB.button("📊 Sharp Sheet", key=f"ss_{sport}_{date_sel}_{i}",
                          width="stretch"):
@@ -1321,8 +1319,8 @@ def _score_ticker(games: list[dict]):
     live = [g for g in games if g.get("state") == "in"] or games
     chips = []
     for g in live[:40]:
-        color = ("#00e676" if g.get("state") == "in"
-                 else "#8b949e" if g.get("state") == "post" else "#22d3ee")
+        color = ("var(--good)" if g.get("state") == "in"
+                 else "var(--muted)" if g.get("state") == "post" else "var(--acc2)")
         chips.append(
             f"<span style='margin:0 18px;color:{color};font-weight:600;'>"
             f"{scores.ticker_text(g)}</span>")
@@ -1330,8 +1328,8 @@ def _score_ticker(games: list[dict]):
         return
     strip = "".join(chips)
     st.markdown(
-        "<div style='overflow:hidden;white-space:nowrap;border:1px solid #1e2636;"
-        "border-radius:8px;background:#0b0f18;padding:8px 0;margin-bottom:10px;'>"
+        "<div style='overflow:hidden;white-space:nowrap;border:1px solid var(--line);"
+        "border-radius:8px;background:var(--card2);padding:8px 0;margin-bottom:10px;'>"
         "<div style='display:inline-block;padding-left:100%;"
         "animation:osp-marquee 60s linear infinite;'>" + strip + strip + "</div></div>"
         "<style>@keyframes osp-marquee{0%{transform:translateX(0)}"
@@ -1349,12 +1347,12 @@ def _score_card(g: dict) -> str:
                (g.get(side, {}).get("score") or 0) >
                (g.get("home" if side == "away" else "away", {}).get("score") or 0))
         weight = "800" if win else "500"
-        rec = f"<span style='color:#6e7781;font-size:0.7rem;'> {s.get('record','')}</span>" if s.get("record") else ""
+        rec = f"<span style='color:var(--faint);font-size:0.7rem;'> {s.get('record','')}</span>" if s.get("record") else ""
         return (f"<div style='display:flex;justify-content:space-between;'>"
                 f"<span style='font-weight:{weight};'>{logo}{s.get('abbrev') or s.get('team') or '—'}{rec}</span>"
                 f"<span style='font-weight:{weight};font-size:1.05rem;'>{sc}</span></div>")
-    color = ("#00e676" if g.get("state") == "in" else "#8b949e")
-    return ("<div style='background:#121826;border:1px solid #1e2636;border-radius:10px;"
+    color = ("var(--good)" if g.get("state") == "in" else "var(--muted)")
+    return ("<div style='background:var(--card);border:1px solid var(--line);border-radius:10px;"
             "padding:10px 12px;'>"
             + row("away") + "<div style='height:4px;'></div>" + row("home")
             + f"<div style='color:{color};font-size:0.72rem;margin-top:6px;'>"
@@ -1556,30 +1554,29 @@ def ui_ev(prob: float, american) -> float:
 # ---------------------------------------------------------------------------
 
 def _hero_band(pct):
-    """Color + glow for a headline percentage against the 54.7 target:
-    under 54.7 = red, 54.7–56 = neon green, 56+ = electric blue."""
+    """Color for a headline percentage against the 54.7 target: under 54.7 =
+    red, 54.7–56 = green, 56+ = a deep editorial blue. Calm on cream, no glow."""
     if pct is None:
-        return ("#5d6878", "rgba(93,104,120,.25)")
+        return "var(--faint)"
     if pct < 54.7:
-        return ("#ff3b4e", "rgba(255,59,78,.55)")
+        return "var(--neg)"
     if pct < 56.0:
-        return ("#00e676", "rgba(0,230,118,.55)")
-    return ("#27baff", "rgba(39,186,255,.60)")
+        return "var(--good)"
+    return "#2b5f8a"
 
 
 def _hero_tile(label, pct, n, sub):
-    color, glow = _hero_band(pct)
+    color = _hero_band(pct)
     val = f"{pct:.1f}%" if pct is not None else "—"
     return (
-        f"<div style='flex:1;min-width:240px;text-align:center;border-radius:20px;"
-        f"padding:24px 18px 18px;background:linear-gradient(180deg,#141d2c,#0b111c);"
-        f"border:1.5px solid {color};box-shadow:0 0 0 1px {color},0 0 40px {glow},"
-        f"inset 0 0 46px rgba(0,0,0,.35);'>"
-        f"<div style='font-size:.74rem;font-weight:700;text-transform:uppercase;"
-        f"letter-spacing:2px;color:#9aa6b6;'>{label}</div>"
-        f"<div style='font-size:4.2rem;font-weight:800;line-height:1.02;margin:8px 0 2px;"
-        f"color:{color};text-shadow:0 0 28px {glow};'>{val}</div>"
-        f"<div style='font-size:.76rem;color:#8b97a8;'>{sub}"
+        f"<div style='flex:1;min-width:240px;text-align:center;border-radius:10px;"
+        f"padding:22px 18px 16px;background:var(--card);border:1.5px solid var(--text);'>"
+        f"<div style='font-family:var(--disp);font-size:.72rem;font-weight:600;"
+        f"text-transform:uppercase;letter-spacing:.14em;color:var(--muted);'>{label}</div>"
+        f"<div style='font-family:var(--disp);font-size:4rem;font-weight:700;"
+        f"line-height:1.05;margin:6px 0 2px;color:{color};'>{val}</div>"
+        f"<div style='height:3px;width:46px;margin:2px auto 8px;background:{color};'></div>"
+        f"<div style='font-size:.76rem;color:var(--muted);'>{sub}"
         f"{f' · {n} graded' if n else ''}</div></div>"
     )
 
@@ -1590,11 +1587,11 @@ def _heroes_html(m: dict) -> str:
              + _hero_tile("Curated Plays · 2–6% EV", m["curated_pct"],
                           m["curated_n"], "curated-band hit rate"))
     legend = (
-        "<div style='text-align:center;margin-top:10px;font-size:.72rem;color:#8b97a8;'>"
-        "Bar to clear: <b style='color:#e7ecf3;'>54.7%</b> &nbsp;·&nbsp; "
-        "<span style='color:#ff3b4e;'>● under 54.7</span> &nbsp; "
-        "<span style='color:#00e676;'>● 54.7–56</span> &nbsp; "
-        "<span style='color:#27baff;'>● 56+</span> &nbsp;·&nbsp; updated daily</div>")
+        "<div style='text-align:center;margin-top:10px;font-size:.72rem;color:var(--muted);'>"
+        "Bar to clear: <b style='color:var(--text);'>54.7%</b> &nbsp;·&nbsp; "
+        "<span style='color:var(--neg);'>● under 54.7</span> &nbsp; "
+        "<span style='color:var(--good);'>● 54.7–56</span> &nbsp; "
+        "<span style='color:#2b5f8a;'>● 56+</span> &nbsp;·&nbsp; updated daily</div>")
     return ("<div style='display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 2px;'>"
             + tiles + "</div>" + legend)
 
@@ -1689,9 +1686,9 @@ def render_home():
             st.caption("No games scheduled on this slate.")
         ready, _ = ai.available()
         chip = ("<span class='osp-pill live' style='background:rgba(0,230,118,0.18);"
-                "color:#00e676;'>● AI analyst on</span>" if ready else
+                "color:var(--good);'>● AI analyst on</span>" if ready else
                 "<span class='osp-pill' style='background:rgba(110,118,129,0.18);"
-                "color:#8b949e;'>○ AI analyst off</span>")
+                "color:var(--muted);'>○ AI analyst off</span>")
         st.markdown(chip, unsafe_allow_html=True)
         st.caption("Open any matchup, prop, or board and hit **✨ Analyze** for a "
                    "Claude read." if ready else
@@ -1884,19 +1881,21 @@ def player_dialog(player: str, game_pk, sport: str | None):
     initials = "".join(w[0] for w in str(player).split()[:2]).upper() or "?"
     sub = " · ".join(x for x in (team, f"vs {opp}" if opp else "") if x)
     shot = _player_headshot(player, game_pk, sport)
-    img = (f"<img src='{shot}' style='position:absolute;inset:0;width:56px;"
-           f"height:56px;border-radius:50%;object-fit:cover;border:2px solid "
-           f"#00e676;' onerror=\"this.style.display='none'\">" if shot else "")
+    img = (f"<img src='{shot}' style='position:absolute;inset:0;width:60px;"
+           f"height:60px;border-radius:50%;object-fit:cover;border:2px solid "
+           f"var(--text);' onerror=\"this.style.display='none'\">" if shot else "")
     st.markdown(
-        f"<div style='display:flex;align-items:center;gap:14px;margin-bottom:4px;'>"
-        f"<div style='position:relative;width:56px;height:56px;flex:0 0 auto;'>"
+        f"<div style='display:flex;align-items:center;gap:15px;margin-bottom:6px;"
+        f"padding-bottom:12px;border-bottom:1.5px solid var(--text);'>"
+        f"<div style='position:relative;width:60px;height:60px;flex:0 0 auto;'>"
         f"<div style='position:absolute;inset:0;border-radius:50%;display:flex;"
-        f"align-items:center;justify-content:center;font-weight:800;"
-        f"font-size:1.3rem;color:#06210f;"
-        f"background:linear-gradient(135deg,#00e676,#22d3ee);'>{initials}</div>"
-        f"{img}</div>"
-        f"<div><div style='font-size:1.5rem;font-weight:800;'>{player}</div>"
-        f"<div style='color:#8b949e;font-size:0.85rem;'>{sub}</div></div></div>",
+        f"align-items:center;justify-content:center;font-family:var(--disp);"
+        f"font-weight:600;font-size:1.3rem;color:var(--bg);background:var(--text);"
+        f"border:2px solid var(--text);'>{initials}</div>{img}</div>"
+        f"<div><div style='font-family:var(--disp);font-size:1.6rem;font-weight:600;"
+        f"letter-spacing:.03em;'>{player}</div>"
+        f"<div style='color:var(--muted);font-size:0.82rem;text-transform:uppercase;"
+        f"letter-spacing:.06em;'>{sub}</div></div></div>",
         unsafe_allow_html=True)
 
     if not rows:
@@ -1933,8 +1932,8 @@ def player_dialog(player: str, game_pk, sport: str | None):
         if not isinstance(v, (int, float)) or pd.isna(v):
             return ""
         if v >= min_edge * 100:
-            return "color:#00e676;font-weight:700;"
-        return "color:#ff6b6b;" if v < 0 else ""
+            return "color:var(--good);font-weight:700;"
+        return "color:var(--neg);" if v < 0 else ""
     sty = (view.style.map(_ev_color, subset=["EV %"])
            .format({"Line": "{:g}", "Proj": "{:.2f}", "Model Over %": "{:.0f}%",
                     "EV %": "{:+.1f}%"}, na_rep="—"))
@@ -1984,9 +1983,9 @@ def _run_backtest(sport: str, seasons: tuple) -> dict:
 def _replay_card_html(g: dict) -> str:
     def mark(hit):
         if hit is None:
-            return "<span style='color:#8b949e;'>— push</span>"
-        return ("<span style='color:#00e676;font-weight:700;'>✓</span>" if hit
-                else "<span style='color:#ff6b6b;font-weight:700;'>✗</span>")
+            return "<span style='color:var(--muted);'>— push</span>"
+        return ("<span style='color:var(--good);font-weight:700;'>✓</span>" if hit
+                else "<span style='color:var(--neg);font-weight:700;'>✗</span>")
     hm, aw = g["home"], g["away"]
     hwp = g["home_win_prob"]
     fav_pct = max(hwp, 1 - hwp) * 100
@@ -2003,16 +2002,16 @@ def _replay_card_html(g: dict) -> str:
     if "tot_hit" in g:
         res.append(f"Tot {mark(g['tot_hit'])} {g['tot_pick']}")
     clv = g.get("clv")
-    clv_s = (f" · CLV <b style='color:{'#00e676' if clv >= 0 else '#ff6b6b'};'>"
+    clv_s = (f" · CLV <b style='color:{'var(--good)' if clv >= 0 else 'var(--neg)'};'>"
              f"{clv:+.1%}</b>") if clv is not None else ""
     return (
-        "<div style='background:#121826;border:1px solid #1e2636;border-radius:12px;"
+        "<div style='background:var(--card);border:1px solid var(--line);border-radius:12px;"
         "padding:12px 14px;margin-bottom:10px;'>"
-        f"<div style='font-weight:700;'>{aw} <span style='color:#8b949e;'>@</span> {hm}"
+        f"<div style='font-weight:700;'>{aw} <span style='color:var(--muted);'>@</span> {hm}"
         f"<span style='float:right;'>{g['away_score']}–{g['home_score']}</span></div>"
-        f"<div style='color:#22d3ee;font-size:0.8rem;margin-top:4px;'>Model: "
+        f"<div style='color:var(--acc2);font-size:0.8rem;margin-top:4px;'>Model: "
         f"{g['ml_fav'].split()[-1]} {fav_pct:.0f}% · proj total {g['proj_total']:.0f}</div>"
-        f"<div style='color:#8b949e;font-size:0.8rem;'>Close: {' · '.join(close) or '—'}</div>"
+        f"<div style='color:var(--muted);font-size:0.8rem;'>Close: {' · '.join(close) or '—'}</div>"
         f"<div style='font-size:0.85rem;margin-top:6px;'>{' &nbsp; '.join(res)}{clv_s}</div>"
         "</div>")
 
@@ -2087,9 +2086,9 @@ def _render_prop_calibration():
         st.markdown(f"**{sport}**")
         df = pd.DataFrame(rows)
         sty = df.style.map(
-            lambda v: ("color:#00e676;" if isinstance(v, (int, float)) and abs(v) < 0.01
+            lambda v: ("color:var(--good);" if isinstance(v, (int, float)) and abs(v) < 0.01
                        else "color:#ffa657;" if isinstance(v, (int, float)) and abs(v) < 0.025
-                       else "color:#ff6b6b;" if isinstance(v, (int, float)) else ""),
+                       else "color:var(--neg);" if isinstance(v, (int, float)) else ""),
             subset=["Gap"]).format(
             {"MAE": "{:.3f}", "Pred over": "{:.3f}", "Actual over": "{:.3f}",
              "Gap": "{:+.4f}"}, na_rep="—")
@@ -2420,6 +2419,35 @@ def render_other_sports():
 # ---------------------------------------------------------------------------
 # Route
 # ---------------------------------------------------------------------------
+
+def render_ticker():
+    """The two brand numbers, pinned to the top of every page so the whole app
+    stands on the 54.7 promise — Model (engine) and Curated (2-6%) hit rates."""
+    m = results.hero_metrics(load_ledger())
+
+    def chip(label, pct):
+        col = _hero_band(pct)
+        val = f"{pct:.1f}%" if pct is not None else "—"
+        return (f"<span style='font-family:var(--disp);font-size:.64rem;"
+                f"letter-spacing:.08em;color:var(--muted);text-transform:uppercase;'>"
+                f"{label}</span> <b style='font-family:var(--disp);font-size:1.02rem;"
+                f"color:{col};'>{val}</b>")
+
+    st.markdown(
+        "<div style='display:flex;align-items:center;gap:22px;"
+        "border-bottom:1.5px solid var(--text);padding:4px 2px 8px;margin-bottom:10px;'>"
+        "<span style='margin-right:auto;font-family:var(--disp);font-weight:700;"
+        "letter-spacing:.06em;font-size:.92rem;'>PROJECT 54.7</span>"
+        f"{chip('Engine', m['engine_pct'])}"
+        "<span style='color:var(--line);'>|</span>"
+        f"{chip('Curated 2–6%', m['curated_pct'])}"
+        "<span style='font-size:.6rem;color:var(--faint);font-family:var(--disp);"
+        "letter-spacing:.06em;'>UPDATED DAILY</span></div>",
+        unsafe_allow_html=True)
+
+
+if section != "HOME":  # Home leads with the full glowing heroes already
+    render_ticker()
 
 if section == "HOME":
     render_home()
