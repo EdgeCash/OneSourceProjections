@@ -264,3 +264,35 @@ def _summarize(rows: list[dict]) -> dict:
         if clvs else None,
         "clv_bets": len(clvs),
     }
+
+
+# Curated-play band: the CLV-validated sweet spot the ledger shows clears the
+# 54.7% bar (the 6-10% band is the leak; 10%+ are separate "lotto" ROI plays).
+CURATED_EV_LO = 0.02
+CURATED_EV_HI = 0.06
+LOTTO_EV_MIN = 0.10
+
+
+def hero_metrics(rows: list[dict] | None = None) -> dict:
+    """The two landing-page headline numbers, both as hit-rate percentages:
+      - engine: how often the model's projected winner actually won (straight
+        up, across every graded game) — the raw engine-quality number.
+      - curated: hit rate of graded bets in the curated 2-6% EV band.
+    Returns percentages (0-100) plus sample sizes, or None pct when no data."""
+    rows = load_ledger() if rows is None else rows
+    games = [r for r in rows if r.get("market") == "model_winprob"
+             and r.get("home_won") is not None
+             and r.get("pred_home_wp") is not None]
+    eng_n = len(games)
+    eng_c = sum(1 for r in games
+                if (float(r["pred_home_wp"]) >= 0.5) == bool(r["home_won"]))
+    bets = [r for r in rows if "pnl" in r and r.get("won") is not None]
+    cur = [r for r in bets if r.get("ev") is not None
+           and CURATED_EV_LO <= float(r["ev"]) < CURATED_EV_HI]
+    cur_w = sum(1 for r in cur if r["won"])
+    return {
+        "engine_pct": round(100 * eng_c / eng_n, 1) if eng_n else None,
+        "engine_n": eng_n,
+        "curated_pct": round(100 * cur_w / len(cur), 1) if cur else None,
+        "curated_n": len(cur),
+    }

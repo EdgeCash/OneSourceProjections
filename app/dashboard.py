@@ -1494,6 +1494,50 @@ def ui_ev(prob: float, american) -> float:
 # HOME: command-center overview
 # ---------------------------------------------------------------------------
 
+def _hero_band(pct):
+    """Color + glow for a headline percentage against the 54.7 target:
+    under 54.7 = red, 54.7–56 = neon green, 56+ = electric blue."""
+    if pct is None:
+        return ("#5d6878", "rgba(93,104,120,.25)")
+    if pct < 54.7:
+        return ("#ff3b4e", "rgba(255,59,78,.55)")
+    if pct < 56.0:
+        return ("#00e676", "rgba(0,230,118,.55)")
+    return ("#27baff", "rgba(39,186,255,.60)")
+
+
+def _hero_tile(label, pct, n, sub):
+    color, glow = _hero_band(pct)
+    val = f"{pct:.1f}%" if pct is not None else "—"
+    return (
+        f"<div style='flex:1;min-width:240px;text-align:center;border-radius:20px;"
+        f"padding:24px 18px 18px;background:linear-gradient(180deg,#141d2c,#0b111c);"
+        f"border:1.5px solid {color};box-shadow:0 0 0 1px {color},0 0 40px {glow},"
+        f"inset 0 0 46px rgba(0,0,0,.35);'>"
+        f"<div style='font-size:.74rem;font-weight:700;text-transform:uppercase;"
+        f"letter-spacing:2px;color:#9aa6b6;'>{label}</div>"
+        f"<div style='font-size:4.2rem;font-weight:800;line-height:1.02;margin:8px 0 2px;"
+        f"color:{color};text-shadow:0 0 28px {glow};'>{val}</div>"
+        f"<div style='font-size:.76rem;color:#8b97a8;'>{sub}"
+        f"{f' · {n} graded' if n else ''}</div></div>"
+    )
+
+
+def _heroes_html(m: dict) -> str:
+    tiles = (_hero_tile("Overall Engine", m["engine_pct"], m["engine_n"],
+                        "model picks the winner, straight up")
+             + _hero_tile("Curated Plays · 2–6% EV", m["curated_pct"],
+                          m["curated_n"], "curated-band hit rate"))
+    legend = (
+        "<div style='text-align:center;margin-top:10px;font-size:.72rem;color:#8b97a8;'>"
+        "Bar to clear: <b style='color:#e7ecf3;'>54.7%</b> &nbsp;·&nbsp; "
+        "<span style='color:#ff3b4e;'>● under 54.7</span> &nbsp; "
+        "<span style='color:#00e676;'>● 54.7–56</span> &nbsp; "
+        "<span style='color:#27baff;'>● 56+</span> &nbsp;·&nbsp; updated daily</div>")
+    return ("<div style='display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 2px;'>"
+            + tiles + "</div>" + legend)
+
+
 def render_home():
     st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Project 54.7"
                 "</div></div>", unsafe_allow_html=True)
@@ -1502,6 +1546,12 @@ def render_home():
     _, _tg = st.columns([5, 1])
     with _tg:
         _theme_toggle("theme_home")
+
+    # --- The 54.7 heroes: front and center, glowing by where we stand -------
+    st.markdown(_heroes_html(results.hero_metrics(load_ledger())),
+                unsafe_allow_html=True)
+    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
     day = slates.get(default_date, {})
     board = ui.build_best_bets(day, min_edge)
     if hide_wild and not board.empty:
