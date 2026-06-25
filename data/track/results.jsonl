@@ -348,3 +348,5 @@
 {"date": "2026-06-25", "sport": "MLB", "game": "Kansas City Royals @ Tampa Bay Rays", "market": "moneyline", "side": "away", "line": null, "price": 134.0, "ev": 0.1924, "won": false, "pnl": -1.0, "clv": null}
 {"date": "2026-06-25", "sport": "MLB", "game": "Seattle Mariners @ Pittsburgh Pirates", "market": "model_winprob", "side": "", "pred_home_wp": 0.4864, "home_won": 1, "market_home_wp": 0.7299, "brier": 0.2638, "proj_total": 9.343, "actual_total": 6}
 {"date": "2026-06-25", "sport": "MLB", "game": "Seattle Mariners @ Pittsburgh Pirates", "market": "moneyline", "side": "home", "line": null, "price": 136.0, "ev": 0.0722, "won": true, "pnl": 1.36, "clv": 0.7226}
+{"date": "2026-06-25", "sport": "MLB", "game": "Athletics @ San Francisco Giants", "market": "model_winprob", "side": "", "pred_home_wp": 0.6993, "home_won": 0, "market_home_wp": 0.4844, "brier": 0.489, "proj_total": 9.847, "actual_total": 15}
+{"date": "2026-06-25", "sport": "MLB", "game": "Athletics @ San Francisco Giants", "market": "moneyline", "side": "home", "line": null, "price": -122.0, "ev": 0.1342, "won": false, "pnl": -1.0, "clv": -0.1186}
