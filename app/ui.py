@@ -4,6 +4,7 @@ shapes so they're testable without Streamlit."""
 
 from __future__ import annotations
 
+import math
 import urllib.parse
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -595,11 +596,47 @@ def _verdict_rows(g: dict) -> list[tuple]:
     line, mop = g.get("total_line"), g.get("model_over_prob")
     oe, ue = g.get("over_ev"), g.get("under_ev")
     if line is not None and pd.notna(line) and mop is not None and pd.notna(mop):
-        if (oe if oe is not None else -9) >= (ue if ue is not None else -9):
+        have_ev = (oe is not None and pd.notna(oe)) or (ue is not None and pd.notna(ue))
+        if have_ev:
+            over = (oe if (oe is not None and pd.notna(oe)) else -9) >= \
+                   (ue if (ue is not None and pd.notna(ue)) else -9)
+        else:
+            # no EV to lean on — show the side the model itself favors, so the
+            # gauge always points at the model's pick (never a sub-50% "pick")
+            over = mop >= 0.5
+        if over:
             rows.append(("Total", f"Over {line:g}", mop, oe))
         else:
             rows.append(("Total", f"Under {line:g}", 1 - mop, ue))
     return rows
+
+
+def _gauge_svg(prob, needle_color: str = "#e7ecf3") -> str:
+    """A semicircular speedometer: red→amber→green arc with a needle pointing
+    to ``prob`` (0–1). Right side (high probability) is green = strong pick."""
+    if prob is None or (isinstance(prob, float) and pd.isna(prob)):
+        prob = 0.0
+    prob = max(0.0, min(1.0, float(prob)))
+    cx, cy, R = 50.0, 47.0, 38.0
+
+    def pt(v, r=R):
+        a = math.radians(180.0 - v * 180.0)
+        return cx + r * math.cos(a), cy - r * math.sin(a)
+
+    def seg(v1, v2, col):
+        x1, y1 = pt(v1)
+        x2, y2 = pt(v2)
+        return (f"<path d='M {x1:.2f} {y1:.2f} A {R} {R} 0 0 1 {x2:.2f} {y2:.2f}' "
+                f"fill='none' stroke='{col}' stroke-width='8'/>")
+
+    arcs = (seg(0.0, 0.5, "#ff5d63") + seg(0.5, 0.62, "#f0b429")
+            + seg(0.62, 1.0, "#2ee27a"))
+    nx, ny = pt(prob, R - 7)
+    needle = (f"<line x1='{cx}' y1='{cy}' x2='{nx:.2f}' y2='{ny:.2f}' "
+              f"stroke='{needle_color}' stroke-width='2.6' stroke-linecap='round'/>"
+              f"<circle cx='{cx}' cy='{cy}' r='4' fill='{needle_color}'/>")
+    return (f"<svg viewBox='0 0 100 54' style='width:100%;max-width:124px;'>"
+            f"{arcs}{needle}</svg>")
 
 
 def _verdict_box(label: str, pick: str, prob, ev, min_edge: float, wm: str = "") -> str:
@@ -607,29 +644,27 @@ def _verdict_box(label: str, pick: str, prob, ev, min_edge: float, wm: str = "")
     play = ev is not None and pd.notna(ev) and ev >= min_edge
     dco, dbg = ("#2ee27a", "#0f2c1c") if play else ("#8b97a8", "#1a2230")
     decision = "PLAY" if play else "PASS"
-    pctc = ("#2ee27a" if (prob is not None and pd.notna(prob) and prob >= 0.6)
-            else "#e7ecf3")
+    pctc = ("#2ee27a" if (prob is not None and pd.notna(prob) and prob >= 0.62)
+            else ("#f0b429" if (prob is not None and pd.notna(prob) and prob >= 0.5)
+                  else "#e7ecf3"))
     evtxt = f"{ev * 100:+.1f}%" if (ev is not None and pd.notna(ev)) else "—"
     return (
-        "<div style='position:relative;border:1px solid #222c3d;border-radius:12px;"
-        "padding:11px 8px 9px;text-align:center;overflow:hidden;"
-        "background:linear-gradient(180deg,#161e2d,#0f1623);'>"
-        f"<div style='position:absolute;right:-6px;bottom:-12px;font-size:3rem;"
-        f"font-weight:800;color:rgba(255,255,255,0.04);line-height:1;'>{wm}</div>"
-        f"<div style='position:relative;font-size:0.62rem;text-transform:uppercase;"
-        f"letter-spacing:0.4px;color:#8b97a8;font-weight:700;'>{label}</div>"
-        f"<div style='position:relative;font-size:1.5rem;font-weight:700;color:{pctc};'>"
-        f"{_pct(prob)}</div>"
-        f"<div style='position:relative;font-size:0.76rem;font-weight:600;'>{pick}</div>"
-        f"<div style='position:relative;margin-top:5px;display:flex;gap:6px;"
-        f"justify-content:center;align-items:center;'>"
+        "<div style='border:1px solid #222c3d;border-radius:12px;padding:9px 8px 9px;"
+        "text-align:center;background:linear-gradient(180deg,#161e2d,#0f1623);'>"
+        f"<div style='font-size:0.62rem;text-transform:uppercase;letter-spacing:0.4px;"
+        f"color:#8b97a8;font-weight:700;margin-bottom:1px;'>{label}</div>"
+        f"<div style='position:relative;'>{_gauge_svg(prob, gc)}"
+        f"<div style='position:absolute;left:0;right:0;bottom:-2px;font-size:1.25rem;"
+        f"font-weight:700;color:{pctc};'>{_pct(prob)}</div></div>"
+        f"<div style='font-size:0.76rem;font-weight:600;margin-top:3px;'>{pick}</div>"
+        f"<div style='margin-top:4px;display:flex;gap:6px;justify-content:center;"
+        f"align-items:center;'>"
         f"<span style='display:inline-flex;width:20px;height:20px;border-radius:6px;"
         f"background:{gc};color:#04130b;font-size:0.72rem;font-weight:800;"
         f"align-items:center;justify-content:center;'>{gl}</span>"
         f"<span style='font-size:0.63rem;font-weight:700;padding:1px 6px;border-radius:5px;"
-        f"color:{dco};background:{dbg};'>{decision}</span></div>"
-        f"<div style='position:relative;font-size:0.66rem;color:#5d6878;margin-top:3px;'>"
-        f"EV {evtxt}</div></div>"
+        f"color:{dco};background:{dbg};'>{decision}</span>"
+        f"<span style='font-size:0.66rem;color:#5d6878;'>EV {evtxt}</span></div></div>"
     )
 
 
@@ -649,35 +684,38 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     # top odds/info strip (date · time · ML · total), bled to the card edges
     info = _info_bar_html(sport, g)
 
-    # header: bordered logo + form + probable starter on each side
+    # center context column — fills the header space with the game's facts
+    wx = _weather_txt(g).lstrip(" ·")
+    center_bits = [
+        f"<div style='font-size:0.8rem;font-weight:700;color:#e7ecf3;'>"
+        f"{fmt_time_et(g.get('game_time'))}</div>",
+        f"<div style='font-size:1.15rem;font-weight:700;margin-top:3px;'>"
+        f"{_num(_exp(g,'away'))} <span style='color:#5d6878;'>–</span> "
+        f"{_num(_exp(g,'home'))}</div>",
+        f"<div style='font-size:0.64rem;color:#8b97a8;text-transform:uppercase;"
+        f"letter-spacing:0.3px;'>proj · o/u "
+        f"{_num(g.get('total_line') or g.get('proj_total'))}</div>",
+    ]
+    if wx:
+        center_bits.append(f"<div style='font-size:0.72rem;color:#8b97a8;"
+                           f"margin-top:6px;'>{wx}</div>")
+    center_bits.append(f"<div style='font-size:0.72rem;margin-top:5px;'>"
+                       f"{_conf_chip(sport, g)}</div>")
+    center = ("<div style='flex:0 0 auto;text-align:center;min-width:150px;'>"
+              + "".join(center_bits) + "</div>")
+
+    # header: bordered logo + form + probable starter, facts down the middle
     header = (
-        "<div style='display:flex;align-items:flex-start;gap:14px;'>"
+        "<div style='display:flex;align-items:center;gap:14px;'>"
         + _form_html(a_badge, away, matchup.get("away_form") or {}, "right",
                      _sp(g.get("away_pitcher"), "right"))
-        + "<span style='color:#5d6878;font-size:0.85rem;padding-top:10px;"
-          "font-weight:600;'>@</span>"
+        + center
         + _form_html(h_badge, home, matchup.get("home_form") or {}, "left",
                      _sp(g.get("home_pitcher"), "left"))
         + "</div>"
     )
 
-    # projection + confidence strip
-    wx = _weather_txt(g).lstrip(" ·")
-    pstrip = (
-        "<div style='display:flex;justify-content:center;align-items:center;gap:18px;"
-        "flex-wrap:wrap;margin:12px -18px;padding:8px 14px;background:#0d1320;"
-        "border-top:1px solid #222c3d;border-bottom:1px solid #222c3d;"
-        "font-size:0.8rem;color:#8b97a8;'>"
-        f"<span>🕐 {fmt_time_et(g.get('game_time'))}</span>"
-        f"<span>Proj <b style='color:#e7ecf3;'>{_num(_exp(g,'away'))}–"
-        f"{_num(_exp(g,'home'))}</b> · O/U "
-        f"{_num(g.get('total_line') or g.get('proj_total'))}</span>"
-        f"<span>{_conf_chip(sport, g)}</span>"
-        + (f"<span>{wx}</span>" if wx else "")
-        + "</div>"
-    )
-
-    # letter-graded verdict boxes (model pick per market it has data for)
+    # speedometer verdict gauges (model pick per market it has data for)
     vrows = _verdict_rows(g)
     wm = {"Moneyline": (away.split()[-1] if away else ""),
           "Run Line": (home.split()[-1] if home else ""),
@@ -686,8 +724,13 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     if vrows:
         boxes = "".join(_verdict_box(lbl, pick, prob, ev, min_edge, wm.get(lbl, ""))
                         for lbl, pick, prob, ev in vrows)
-        dials = (f"<div style='display:grid;grid-template-columns:repeat({len(vrows)},"
-                 f"1fr);gap:9px;margin:4px 0;'>{boxes}</div>")
+        dials = (
+            "<div style='border-top:1px solid #222c3d;margin:12px -18px 0;"
+            "padding:12px 18px 2px;'>"
+            "<div style='font-size:0.68rem;font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.4px;color:#8b97a8;margin-bottom:8px;'>Model Verdict</div>"
+            f"<div style='display:grid;grid-template-columns:repeat({len(vrows)},"
+            f"1fr);gap:10px;'>{boxes}</div></div>")
 
     # advanced analytics (split tables + trends), collapsed to keep top scannable
     off_lbl = ("Batting vs Pitching" if sport == "MLB" else "Offense vs Defense")
@@ -727,7 +770,7 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
         "<div style='background:#121927;border:1px solid #222c3d;border-radius:16px;"
         "padding:16px 18px;margin-bottom:14px;overflow:hidden;"
         "box-shadow:0 1px 2px rgba(0,0,0,0.4),0 12px 34px rgba(0,0,0,0.45);'>"
-        f"{info}{header}{pstrip}{dials}{lineups}{analysis}{advanced}</div>"
+        f"{info}{header}{dials}{lineups}{analysis}{advanced}</div>"
     )
 
 
