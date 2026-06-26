@@ -8,3 +8,4 @@
 {"date": "2026-06-22", "model_acc": 0.7692, "model_n": 13, "played_acc": 0.5, "played_n": 2, "recorded_at": "2026-06-23T16:31:43+00:00"}
 {"date": "2026-06-23", "model_acc": 0.6875, "model_n": 16, "played_acc": 0.5, "played_n": 4, "recorded_at": "2026-06-24T16:18:31+00:00"}
 {"date": "2026-06-24", "model_acc": 0.35, "model_n": 20, "played_acc": null, "played_n": 0, "recorded_at": "2026-06-25T14:24:45+00:00"}
+{"date": "2026-06-25", "model_acc": 0.3, "model_n": 10, "played_acc": 1.0, "played_n": 1, "recorded_at": "2026-06-26T16:18:23+00:00"}
