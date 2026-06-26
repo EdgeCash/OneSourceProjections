@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98347,
+  "sr_id": "2db729bc-943f-4814-aac3-ec30bfa70aad",
+  "sport": "MLB",
+  "scheduled": "2026-06-27 17:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BOS",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/boston-red-sox-vs-new-york-yankees/?date=2026-06-27",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "46372",
+    "name": "Jake Bennett",
+    "link": "/mlb/props/jake-bennett/",
+    "player": {
+     "short_name": "J. Bennett",
+     "first_name": "Jake",
+     "last_name": "Bennett",
+     "image": "https://images.fantasypros.com/images/players/mlb/46372/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "slug": "jake-bennett",
+     "jersey_number": 64
+    }
+   },
+   "visitor_probable": {
+    "id": "4656",
+    "name": "Gerrit Cole",
+    "link": "/mlb/props/gerrit-cole/",
+    "player": {
+     "short_name": "G. Cole",
+     "first_name": "Gerrit",
+     "last_name": "Cole",
+     "image": "https://images.fantasypros.com/images/players/mlb/4656/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "gerrit-cole",
+     "jersey_number": 45
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BOS",
+   "season": "2025",
+   "split": "A",
+   "r": "1.093",
+   "1b": "1.087",
+   "2b": "1.168",
+   "3b": "1.504",
+   "hr": "0.956",
+   "name": "Fenway Park"
+  },
+  "venue": {
+   "name": "Fenway Park",
+   "address": "4 Yawkey Way",
+   "city": "Boston",
+   "state": "MA",
+   "country": "USA",
+   "zip": "02215",
+   "surface": "grass",
+   "capacity": 37755,
+   "stadium_type": "outdoor",
+   "id": "b27b0dc5-c2c5-401d-b8b9-a6a2dbc225e5"
+  },
+  "participants": [
+   {
+    "id": "BOS",
+    "name": "Red Sox",
+    "link": "/mlb/teams/boston-red-sox/",
+    "team": {
+     "city": "Boston",
+     "abbreviation": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 33,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "boston-red-sox",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 48,
+      "L": 32,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 77,
+   "forecast_wind_speed": 9,
+   "forecast_wind_direction": "E",
+   "forecast_wind_degree": 101,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.64
+  },
+  "broadcasts": [
+   {
+    "network": "ABC",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/abc-us.png"
+   }
+  ]
+ },
+ {
+  "id": 99552,
+  "sr_id": "af426d72-4f8b-414e-a4db-8326bdf5a543",
+  "sport": "MLB",
+  "scheduled": "2026-06-27 17:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DET",
+  "visitor": "HOU",
+  "link": "/mlb/matchups/detroit-tigers-vs-houston-astros/?date=2026-06-27",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7627",
+    "name": "Framber Valdez",
+    "link": "/mlb/props/framber-valdez/",
+    "player": {
+     "short_name": "F. Valdez",
+     "first_name": "Framber",
+     "last_name": "Valdez",
+     "image": "https://images.fantasypros.com/images/players/mlb/7627/headshot/210x210.webp",
+     "position": "SP",
+     "team": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "framber-valdez",
+     "jersey_number": 59
+    }
+   },
+   "visitor_probable": {
+    "id": "26945",
+    "name": "Kai-Wei Teng",
+    "link": "/mlb/props/kai-wei-teng/",
+    "player": {
+     "short_name": "K. Teng",
+     "first_name": "Kai-Wei",
+     "last_name": "Teng",
+     "image": "https://images.fantasypros.com/images/players/mlb/26945/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "slug": "kai-wei-teng",
+     "jersey_number": 17
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "DET",
+   "season": "2025",
+   "split": "A",
+   "r": "1.039",
+   "1b": "1.025",
+   "2b": "0.993",
+   "3b": "1.274",
+   "hr": "0.928",
+   "name": "Comerica Park"
+  },
+  "venue": {
+   "name": "Comerica Park",
+   "address": "2100 Woodward Avenue",
+   "city": "Detroit",
+   "state": "MI",
+   "country": "USA",
+   "zip": "48226",
+   "surface": "grass",
+   "capacity": 41083,
+   "stadium_type": "outdoor",
+   "id": "ef9a5eef-06c6-4963-ac70-7fd02c8c8d42"
+  },
+  "participants": [
+   {
+    "id": "DET",
+    "name": "Tigers",
+    "link": "/mlb/teams/detroit-tigers/",
+    "team": {
+     "city": "Detroit",
+     "abbreviation": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 34,
+      "L": 47,
+      "T": 0
+     },
+     "slug": "detroit-tigers",
+     "stadium_deg_offset": "150"
+    }
+   },
+   {
+    "id": "HOU",
+    "name": "Astros",
+    "link": "/mlb/teams/houston-astros/",
+    "team": {
+     "city": "Houston",
+     "abbreviation": "HOU",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 40,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "houston-astros",
+     "stadium_deg_offset": "-15"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 76,
+   "forecast_wind_speed": 13,
+   "forecast_wind_direction": "ENE",
+   "forecast_wind_degree": 60,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.58
+  },
+  "broadcasts": [
+   {
+    "network": "DSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

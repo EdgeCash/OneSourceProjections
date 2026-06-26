@@ -358,3 +358,6 @@
 {"date": "2026-06-25", "sport": "MLB", "game": "Chicago Cubs @ New York Mets", "market": "moneyline", "side": "away", "line": null, "price": 100.0, "ev": 0.0875, "won": true, "pnl": 1.0, "clv": null}
 {"date": "2026-06-25", "sport": "MLB", "game": "New York Yankees @ Boston Red Sox", "market": "model_winprob", "side": "", "pred_home_wp": 0.2889, "home_won": 1, "market_home_wp": 0.4575, "brier": 0.5057, "proj_total": 8.97, "actual_total": 9}
 {"date": "2026-06-25", "sport": "MLB", "game": "New York Yankees @ Boston Red Sox", "market": "moneyline", "side": "away", "line": null, "price": -132.0, "ev": 0.123, "won": false, "pnl": -1.0, "clv": -0.0465}
+{"date": "2026-06-25", "sport": "WNBA", "game": "Dallas Wings @ Las Vegas Aces", "market": "model_winprob", "side": "", "pred_home_wp": 0.615, "home_won": 1, "market_home_wp": 0.8672, "brier": 0.1482, "proj_total": 176.57, "actual_total": 183.0}
+{"date": "2026-06-25", "sport": "WNBA", "game": "Dallas Wings @ Las Vegas Aces", "market": "moneyline", "side": "away", "line": null, "price": 208, "ev": 0.0956, "won": false, "pnl": -1.0, "clv": -0.591}
+{"date": "2026-06-25", "sport": "WNBA", "game": "New York Liberty @ Seattle Storm", "market": "model_winprob", "side": "", "pred_home_wp": 0.2173, "home_won": 1, "market_home_wp": 0.528, "brier": 0.6126, "proj_total": 168.07, "actual_total": 187.0}

@@ -1,0 +1,1118 @@
+[
+ {
+  "id": "6654ea92e0ee034da9ff57d765be8320",
+  "market_id": 371,
+  "event_id": 2614,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "PHO",
+    "name": "Mercury",
+    "link": "/wnba/teams/phoenix-mercury/",
+    "team": {
+     "city": "Phoenix",
+     "abbreviation": "PHO",
+     "conference": "Western",
+     "division": "",
+     "slug": "phoenix-mercury"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Tempo",
+    "link": "/wnba/teams/toronto-tempo/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "toronto-tempo"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "PHO",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 136,
+     "book_id": 10,
+     "created": "2026-06-26 05:16:05"
+    },
+    "label": "Mercury",
+    "short_label": "PHO",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 130,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 10,
+      "lines": [
+       {
+        "id": "10_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:18",
+        "cost": 130,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://account.sportsbook.fanduel.com/sportsbook/addToBetslip?marketId=42.588013053&selectionId=1174350",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.07380881918072188,
+         "fair_probability": 0.4026918177475123,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 24,
+      "lines": [
+       {
+        "id": "24_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 135,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bet365.com/dl/sportsbookredirect?affiliate=365_00991566&bs=196928666-1577717642~27/20&bet=1",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 49,
+      "lines": [
+       {
+        "id": "49_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:09",
+        "cost": 135,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://app.hardrock.bet/?deep_link_value=betslip%2F6750822540689670450",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.051498244056602784,
+         "fair_probability": 0.4036177684865519,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 33,
+      "lines": [
+       {
+        "id": "33_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:51:23",
+        "cost": 135,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://thescore.bet/sport/basketball/organization/united-states/competition/wnba/event/3caa4285-1a8a-4454-b421-6ba52cb0c0f7",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.05259958012328654,
+         "fair_probability": 0.4031491148411546,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 14,
+      "lines": [
+       {
+        "id": "14_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:47:42",
+        "cost": 130,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224770446%22%2C%22marketId%22%3A%22628219179%22%2C%22selectionId%22%3A%221550971701%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 60,
+      "lines": [
+       {
+        "id": "60_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:48",
+        "cost": 141,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://novig.com/events/019f029e-925f-7ee0-b426-164f2d178a8a/bettingpros/?referralCode=BETTINGPROS",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.01825609008596934,
+         "fair_probability": 0.4073626182215895,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:52:17",
+        "cost": 213,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.26557845169296934,
+         "fair_probability": 0.4043381634801819,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:51:38",
+        "cost": 150,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jun27phxtor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.01937125817838504,
+         "fair_probability": 0.407748503271354,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 74,
+      "lines": [
+       {
+        "id": "74_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:53:02",
+        "cost": 127,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://predictions.draftkings.com/",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_1469ecc0eca687b568efcbdf97349bc9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 125,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.09582370135794634,
+         "fair_probability": 0.4018561327298016,
+         "pm_win_pct": 39.37
+        }
+       }
+      ]
+     }
+    ],
+    "id": "1469ecc0eca687b568efcbdf97349bc9"
+   },
+   {
+    "participant": "TOR",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -168,
+     "book_id": 10,
+     "created": "2026-06-26 05:16:05"
+    },
+    "label": "Tempo",
+    "short_label": "TOR",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -160,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 10,
+      "lines": [
+       {
+        "id": "10_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:18",
+        "cost": -160,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://account.sportsbook.fanduel.com/sportsbook/addToBetslip?marketId=42.588013053&selectionId=89767271",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.019682234179587678,
+         "fair_probability": 0.6032724712740999,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 24,
+      "lines": [
+       {
+        "id": "24_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -160,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bet365.com/dl/sportsbookredirect?affiliate=365_00991566&bs=196928666-1577717643~5/8&bet=1",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 49,
+      "lines": [
+       {
+        "id": "49_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:09",
+        "cost": -160,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://app.hardrock.bet/?deep_link_value=betslip%2F5181318070551052594",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.02080645695686413,
+         "fair_probability": 0.602580641872699,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 33,
+      "lines": [
+       {
+        "id": "33_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:51:23",
+        "cost": -155,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://thescore.bet/sport/basketball/organization/united-states/competition/wnba/event/3caa4285-1a8a-4454-b421-6ba52cb0c0f7",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.00879160138025641,
+         "fair_probability": 0.6024992226904323,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 14,
+      "lines": [
+       {
+        "id": "14_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:47:42",
+        "cost": -155,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224770446%22%2C%22marketId%22%3A%22628219179%22%2C%22selectionId%22%3A%221550971694%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 60,
+      "lines": [
+       {
+        "id": "60_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:48",
+        "cost": -182,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://novig.com/events/019f029e-925f-7ee0-b426-16341dc25053/bettingpros/?referralCode=BETTINGPROS",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.0704160920039514,
+         "fair_probability": 0.5999442243095064,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:17",
+        "cost": -156,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.02983389775842593,
+         "fair_probability": 0.5911949685534592,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:51:38",
+        "cost": -163,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jun27phxtor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.035469601544224565,
+         "fair_probability": 0.5977888020847583,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 74,
+      "lines": [
+       {
+        "id": "74_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:53:02",
+        "cost": -170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://predictions.draftkings.com/",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_482799f116f5e1e3cc30b62b28071740",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -165,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.025527848757668177,
+         "fair_probability": 0.6067468111508858,
+         "pm_win_pct": 62.6
+        }
+       }
+      ]
+     }
+    ],
+    "id": "482799f116f5e1e3cc30b62b28071740"
+   }
+  ]
+ },
+ {
+  "id": "c9dda8210ffa3bb355ac2a3a29f7ae11",
+  "market_id": 371,
+  "event_id": 2615,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "IND",
+    "name": "Fever",
+    "link": "/wnba/teams/indiana-fever/",
+    "team": {
+     "city": "Indiana",
+     "abbreviation": "IND",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "indiana-fever"
+    }
+   },
+   {
+    "id": "LAS",
+    "name": "Sparks",
+    "link": "/wnba/teams/los-angeles-sparks/",
+    "team": {
+     "city": "Los Angeles",
+     "abbreviation": "LAS",
+     "conference": "Western",
+     "division": "",
+     "slug": "los-angeles-sparks"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "IND",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -420,
+     "book_id": 10,
+     "created": "2026-06-26 05:16:05"
+    },
+    "label": "Fever",
+    "short_label": "IND",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -385,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 10,
+      "lines": [
+       {
+        "id": "10_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:18",
+        "cost": -385,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://account.sportsbook.fanduel.com/sportsbook/addToBetslip?marketId=42.588013056&selectionId=1519949",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 24,
+      "lines": [
+       {
+        "id": "24_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -380,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bet365.com/dl/sportsbookredirect?affiliate=365_00991566&bs=196846251-1567465957~5/19&bet=1",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 33,
+      "lines": [
+       {
+        "id": "33_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:51:24",
+        "cost": -400,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://thescore.bet/sport/basketball/organization/united-states/competition/wnba/event/1ee3acbb-7370-43a0-8952-7c09542c3514",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 49,
+      "lines": [
+       {
+        "id": "49_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:09",
+        "cost": -400,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://app.hardrock.bet/?deep_link_value=betslip%2F880510168784306499",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 14,
+      "lines": [
+       {
+        "id": "14_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:47:19",
+        "cost": -375,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224773369%22%2C%22marketId%22%3A%22628445017%22%2C%22selectionId%22%3A%221551517683%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:17",
+        "cost": -376,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:51:38",
+        "cost": -355,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jun27laind",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 74,
+      "lines": [
+       {
+        "id": "74_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:53:02",
+        "cost": -1329,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://predictions.draftkings.com/",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_651f9158ceed0dab6c7cca281b5a00c8",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": -400,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "651f9158ceed0dab6c7cca281b5a00c8"
+   },
+   {
+    "participant": "LAS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 310,
+     "book_id": 10,
+     "created": "2026-06-26 05:16:05"
+    },
+    "label": "Sparks",
+    "short_label": "LAS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 290,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 10,
+      "lines": [
+       {
+        "id": "10_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:18",
+        "cost": 290,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://account.sportsbook.fanduel.com/sportsbook/addToBetslip?marketId=42.588013056&selectionId=1519952",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 24,
+      "lines": [
+       {
+        "id": "24_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 300,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bet365.com/dl/sportsbookredirect?affiliate=365_00991566&bs=196846251-1567465955~3/1&bet=1",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 33,
+      "lines": [
+       {
+        "id": "33_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:51:24",
+        "cost": 300,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://thescore.bet/sport/basketball/organization/united-states/competition/wnba/event/1ee3acbb-7370-43a0-8952-7c09542c3514",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 49,
+      "lines": [
+       {
+        "id": "49_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:52:09",
+        "cost": 300,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://app.hardrock.bet/?deep_link_value=betslip%2F4495774769655972163",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 14,
+      "lines": [
+       {
+        "id": "14_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:47:19",
+        "cost": 290,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://betfanatics.com/sportsbook?af_force_deeplink=true&deep_link_value=consume-betslip&deep_link_sub1=%7B%22legs%22%3A%5B%7B%22eventId%22%3A%224773369%22%2C%22marketId%22%3A%22628445017%22%2C%22selectionId%22%3A%221551517697%22%7D%5D%7D&pid=inteliticstech_int&af_siteid=Raketech&c=bettingpros.com-US-SPO-Fanatics-A186782C&af_click_lookback=7d&source_caller=sdk",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:17",
+        "cost": 223,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-26 06:51:38",
+        "cost": 300,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jun27laind",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 74,
+      "lines": [
+       {
+        "id": "74_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:53:02",
+        "cost": 285,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://predictions.draftkings.com/",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_b98f5e27de20ec1b18d0ee325115b869",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-26 06:52:52",
+        "cost": 280,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://btng.pro/2OCbqT",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "b98f5e27de20ec1b18d0ee325115b869"
+   }
+  ]
+ }
+]
