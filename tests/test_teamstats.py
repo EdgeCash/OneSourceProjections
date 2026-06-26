@@ -37,7 +37,8 @@ def test_splits_and_ranks():
     df = ts.team_games("WNBA", (2025, 2026))
     sp = ts.splits("WNBA", df, "LV", "2026-06-04")
     assert "pts" in sp
-    assert set(sp["pts"]) == {"season", "home", "away", "l10", "l5"}
+    assert set(sp["pts"]) == {"season", "home", "away", "l5", "l10", "l15",
+                              "l20", "l30"}
     assert sp["pts"]["l5"] and sp["pts"]["l5"] > 50  # a real PPG
     ranks = ts.league_ranks("WNBA", df, "2026-06-04", "l5")
     assert "pts" in ranks
@@ -101,3 +102,33 @@ def test_default_slate_date_stays_on_today_during_evening():
     assert default_slate_date(dates, aft,
                               datetime(2026, 6, 12, 19, 22, tzinfo=et)) == "2026-06-13"
     assert default_slate_date([], {}) is None
+
+
+def test_matchup_window_extras_and_toggle():
+    m5 = ts.matchup("WNBA", "Las Vegas Aces", "Indiana Fever", "2026-06-02", window="l5")
+    m30 = ts.matchup("WNBA", "Las Vegas Aces", "Indiana Fever", "2026-06-02", window="l30")
+    assert m5 and m30
+    # header extras present
+    for m, lbl in ((m5, "L5"), (m30, "L30")):
+        assert m["window_label"] == lbl
+        assert isinstance(m["home_rest"], (int, type(None)))
+        assert m["home_power_rank"] is None or m["home_power_rank"] >= 1
+        assert m["home_sos_rank"] is None or m["home_sos_rank"] >= 1
+    # rows carry every recency window
+    r = m5["away_off_vs_home_def"][0]
+    for w in ("off_season", "off_l30", "off_l20", "off_l15", "off_l10", "off_l5"):
+        assert w in r
+    # the window genuinely changes the rank basis for at least one stat
+    ranks5 = {x["stat"]: x["off_rank"] for x in m5["away_off_vs_home_def"]}
+    ranks30 = {x["stat"]: x["off_rank"] for x in m30["away_off_vs_home_def"]}
+    assert ranks5 != ranks30
+
+
+def test_power_sos_rest_helpers():
+    df = ts.team_games("WNBA", (2025, 2026))
+    pr = ts.power_ranks("WNBA", df, "2026-06-02", "l10")
+    sos = ts.sos_ranks("WNBA", df, "2026-06-02", "l10")
+    assert pr and min(pr.values()) == 1
+    assert sos and min(sos.values()) == 1
+    rest = ts.days_rest(df, "LV", "2026-06-02")
+    assert rest is None or rest >= 0

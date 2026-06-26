@@ -215,8 +215,16 @@ def _window(df: pd.DataFrame, team: str, asof: str) -> pd.DataFrame:
     return d.sort_values("date")
 
 
+# Selectable recency windows for the research card (toggleable on the site so
+# people can weight recency how they like). "season" is the full current season.
+WINDOWS = ("l5", "l10", "l15", "l20", "l30", "season")
+WINDOW_LABELS = {"l5": "L5", "l10": "L10", "l15": "L15", "l20": "L20",
+                 "l30": "L30", "season": "Season"}
+
+
 def splits(sport: str, df: pd.DataFrame, team: str, asof: str) -> dict:
-    """{stat_col: {season, home, away, l10, l5}} for one team as of a date."""
+    """{stat_col: {season, home, away, l5, l10, l15, l20, l30}} for one team as
+    of a date. The lN windows let the card toggle how much recency to weight."""
     d = _window(df, team, asof)
     if d.empty:
         return {}
@@ -226,13 +234,12 @@ def splits(sport: str, df: pd.DataFrame, team: str, asof: str) -> dict:
     cols = [c for c in d.columns if d[c].dtype.kind in "fi"
             and c not in ("game_pk", "season")]
     for c in cols:
-        out[c] = {
-            "season": _mean(season[c]),
-            "home": _mean(season[season["is_home"]][c]),
-            "away": _mean(season[~season["is_home"]][c]),
-            "l10": _mean(d[c].tail(10)),
-            "l5": _mean(d[c].tail(5)),
-        }
+        rec = {"season": _mean(season[c]),
+               "home": _mean(season[season["is_home"]][c]),
+               "away": _mean(season[~season["is_home"]][c])}
+        for n in (5, 10, 15, 20, 30):
+            rec[f"l{n}"] = _mean(d[c].tail(n))
+        out[c] = rec
     return out
 
 
@@ -265,50 +272,143 @@ def _directions(sport: str) -> dict:
     return DIRECTIONS
 
 
+def _season_winpct(sport: str, df: pd.DataFrame, asof: str) -> dict:
+    """{team: current-season win%} as of a date — the input to strength of
+    schedule (how good were the teams you played)."""
+    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    cut = df[df["date"] <= asof] if "date" in df.columns else df
+    if fc not in cut.columns or oc not in cut.columns or cut.empty:
+        return {}
+    cur = cut[cut["season"] == cut["season"].max()]
+    out = {}
+    for t, g in cur.groupby("team"):
+        won = pd.to_numeric(g[fc], errors="coerce") > pd.to_numeric(g[oc], errors="coerce")
+        if len(won):
+            out[t] = round(float(won.mean()), 4)
+    return out
+
+
+def _rank_map(values: dict, higher_better: bool = True) -> dict:
+    """{team: value} -> {team: 1-based rank}."""
+    items = [(t, v) for t, v in values.items() if v is not None]
+    items.sort(key=lambda kv: kv[1], reverse=higher_better)
+    return {t: i + 1 for i, (t, _) in enumerate(items)}
+
+
+def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
+    """League power ranking by average scoring margin over the window
+    (a self-contained Elo-style proxy; rank 1 = strongest)."""
+    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    if fc not in df.columns or oc not in df.columns:
+        return {}
+    n = None if window == "season" else int(window[1:])
+    teams_ = [t for t in df["team"].dropna().unique() if not str(t).isdigit()]
+    margin = {}
+    for t in teams_:
+        d = _window(df, t, asof)
+        if window == "season":
+            d = d[d["season"] == d["season"].max()]
+        else:
+            d = d.tail(n)
+        diff = pd.to_numeric(d[fc], errors="coerce") - pd.to_numeric(d[oc], errors="coerce")
+        diff = diff.dropna()
+        if len(diff):
+            margin[t] = round(float(diff.mean()), 3)
+    return _rank_map(margin, higher_better=True)
+
+
+def sos_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
+    """Strength-of-schedule ranking by the average current-season win% of the
+    opponents faced over the window (rank 1 = toughest schedule). Toggleable
+    by window so recency can be weighted to taste."""
+    wp = _season_winpct(sport, df, asof)
+    if not wp or "opp" not in df.columns:
+        return {}
+    n = None if window == "season" else int(window[1:])
+    teams_ = [t for t in df["team"].dropna().unique() if not str(t).isdigit()]
+    sos = {}
+    for t in teams_:
+        d = _window(df, t, asof)
+        if window == "season":
+            d = d[d["season"] == d["season"].max()]
+        else:
+            d = d.tail(n)
+        opp_wp = [wp[o] for o in d.get("opp", []) if o in wp]
+        if opp_wp:
+            sos[t] = round(sum(opp_wp) / len(opp_wp), 4)
+    return _rank_map(sos, higher_better=True)
+
+
+def days_rest(df: pd.DataFrame, team: str, asof: str) -> int | None:
+    """Days since the team's previous game before ``asof`` (the game date)."""
+    if "date" not in df.columns:
+        return None
+    d = df[(df["team"] == team) & (df["date"] < asof)]
+    if d.empty:
+        return None
+    try:
+        last = pd.to_datetime(d["date"]).max()
+        return int((pd.to_datetime(asof) - last).days)
+    except Exception:
+        return None
+
+
 def matchup(sport: str, home: str, away: str, asof: str,
-            seasons: tuple[int, ...] | None = None) -> dict:
+            seasons: tuple[int, ...] | None = None,
+            window: str = "l5") -> dict:
     """Build the research-card comparison: each team's offense lines vs the
-    opponent's defense, with split values, league ranks, and an advantage
-    flag (1-3 stars by rank gap)."""
+    opponent's defense, with split values, league ranks at the chosen recency
+    ``window`` (l5/l10/l15/l20/l30/season), an advantage flag (1-3 stars by
+    rank gap), plus team power/SOS ranks and days rest for the header."""
+    window = window if window in WINDOWS else "l5"
     seasons = seasons or _default_seasons(asof)
     df = team_games(sport, seasons)
     if df.empty:
         return {}
     home_k, away_k = teams.canon(sport, home), teams.canon(sport, away)
-    ranks = league_ranks(sport, df, asof, "l5")
+    ranks = league_ranks(sport, df, asof, window)
     hs, as_ = splits(sport, df, home_k, asof), splits(sport, df, away_k, asof)
     specs = STAT_SPECS[sport]
+    win_cols = ["season", "l30", "l20", "l15", "l10", "l5"]
 
     def rows(off_team, off_split, off_home, def_team, def_split, def_home):
-        """One row per stat pair. Each side carries season / situational
-        (home or away, per where the team plays this game) / L10 / L5 / rank,
-        so the card can show the full split spread the way the mockups do."""
+        """One row per stat pair, each side carrying every recency window plus
+        the rank/advantage computed at the *selected* window."""
         off_situ = "home" if off_home else "away"
         def_situ = "home" if def_home else "away"
         out = []
         for label, col, dcol, _dir in specs["pairs"]:
             o = off_split.get(col, {})
             o_rank = ranks.get(col, {}).get(off_team)
-            row = {"stat": label,
-                   "off_season": o.get("season"), "off_situ": o.get(off_situ),
-                   "off_situ_label": off_situ.upper(), "off_l10": o.get("l10"),
-                   "off_l5": o.get("l5"), "off_rank": o_rank,
-                   "def_season": None, "def_situ": None, "def_situ_label": None,
-                   "def_l10": None, "def_l5": None, "def_rank": None, "adv": 0}
+            row = {"stat": label, "off_situ_label": off_situ.upper(),
+                   "off_situ": o.get(off_situ), "off_rank": o_rank,
+                   "def_situ_label": None, "def_situ": None, "def_rank": None,
+                   "adv": 0}
+            for w in win_cols:
+                row[f"off_{w}"] = o.get(w)
+                row[f"def_{w}"] = None
             if dcol:
                 d = def_split.get(dcol, {})
                 d_rank = ranks.get(dcol, {}).get(def_team)
-                row.update({"def_season": d.get("season"), "def_situ": d.get(def_situ),
-                            "def_situ_label": def_situ.upper(), "def_l10": d.get("l10"),
-                            "def_l5": d.get("l5"), "def_rank": d_rank,
+                row.update({"def_situ_label": def_situ.upper(),
+                            "def_situ": d.get(def_situ), "def_rank": d_rank,
                             "adv": _advantage(o_rank, d_rank)})
+                for w in win_cols:
+                    row[f"def_{w}"] = d.get(w)
             out.append(row)
         return out
 
+    pranks = power_ranks(sport, df, asof, window)
+    sranks = sos_ranks(sport, df, asof, window)
     return {
         "home": home, "away": away,
+        "window": window, "window_label": WINDOW_LABELS[window],
         "home_form": team_form(sport, df, home_k, asof),
         "away_form": team_form(sport, df, away_k, asof),
+        "home_rest": days_rest(df, home_k, asof),
+        "away_rest": days_rest(df, away_k, asof),
+        "home_power_rank": pranks.get(home_k), "away_power_rank": pranks.get(away_k),
+        "home_sos_rank": sranks.get(home_k), "away_sos_rank": sranks.get(away_k),
         "away_off_vs_home_def": rows(away_k, as_, False, home_k, hs, True),
         "home_off_vs_away_def": rows(home_k, hs, True, away_k, as_, False),
         "trends": _trends(sport, hs, as_),

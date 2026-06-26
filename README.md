@@ -191,6 +191,18 @@ reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
 `python scripts/make_preview.py --sport WNBA`.
 
+The **premium matchup card** (`app.ui.matchup_card_html`) is the full
+team-vs-team research graphic: team panels (record / streak / recent results /
+**power** & **strength-of-schedule** ranks), projected score, **ML / RL / Total
+confidence gauges**, per-side **top-advantage star panels**, and the mirrored
+offense-vs-defense tables with league-rank pills and an advantage column —
+driven by the model, so it tells you the *play*, not just that "stats are
+clustered." A **recency-window toggle** (L5 / L10 / L15 / L20 / L30 / Season)
+recomputes ranks, advantages, and SOS live. The same renderer is screenshotted
+by `project547/cardimage.py` (pre-installed Chromium) and embedded in the
+workbook's **Research Hub** — one matchup page per game — making the `.xlsx` a
+"website to go." See [`docs/WORKBOOK.md`](docs/WORKBOOK.md#research-hub-the-website-to-go).
+
 ## Daily wager workbook (bring-your-own-odds)
 
 A downloadable, **editable** Excel/Google-Sheets workbook of the day's slate

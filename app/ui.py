@@ -1433,3 +1433,351 @@ def recent_bets(ledger: list[dict], n: int = 25) -> pd.DataFrame:
         "date": "Date", "sport": "Sport", "game": "Game", "market": "Market",
         "side": "Side", "line": "Line", "price": "Price", "ev": "EV",
         "result": "Result", "pnl": "Units"})
+
+
+# ===========================================================================
+# Premium matchup card — the competitor-style team-vs-team research graphic.
+# Mirrored offense/defense tables (ADV column + recency-window ranks), a team
+# info bar (record/streak/results/rest/power/SOS), top-advantage star panels,
+# ML/RL/Total confidence gauges, and a model decision block. Window-aware so
+# the site can toggle L5/L10/L15/L20/L30/Season. Pure HTML over the matchup
+# dict from project547.teamstats — themed via CSS vars so the SAME markup
+# renders on the dashboard and (with concrete vars) screenshots for the
+# workbook. Reuses var(--text/-muted/-good/-neg/-mid/-card/-line/-disp).
+# ===========================================================================
+def _mcf(v):
+    """Finite float or None (collapses None and NaN)."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return None if math.isnan(f) else f
+
+
+def _last(name) -> str:
+    s = str(name or "").strip()
+    return s.split()[-1] if s else ""
+
+
+def _ord(n) -> str:
+    if n is None:
+        return "—"
+    n = int(n)
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suf}"
+
+
+def _rank_color(rank, n) -> str:
+    """Green for a top-third rank, red for bottom-third, muted middle."""
+    if rank is None or not n:
+        return "var(--muted)"
+    if rank <= n / 3:
+        return "var(--good)"
+    if rank > 2 * n / 3:
+        return "var(--neg)"
+    return "var(--mid)"
+
+
+def _stars(k: int, of: int = 3) -> str:
+    k = max(0, min(of, int(k or 0)))
+    return ("<span style='color:var(--mid);'>" + "★" * k + "</span>"
+            + "<span style='color:var(--line);'>" + "★" * (of - k) + "</span>")
+
+
+def _fmtv(stat: str, v) -> str:
+    v = _mcf(v)
+    if v is None:
+        return "—"
+    if "%" in stat:
+        return f"{v * 100:.1f}%" if v <= 1.5 else f"{v:.1f}%"
+    return f"{v:.1f}"
+
+
+def _mc_result_chips(last5) -> str:
+    out = []
+    for r in (last5 or [])[-5:]:
+        win = r.get("win")
+        bg = "var(--good)" if win else "var(--neg)"
+        out.append(f"<span style='display:inline-block;min-width:34px;padding:2px 4px;"
+                   f"margin:0 2px;border-radius:4px;background:{bg};color:#fff;"
+                   f"font-size:.58rem;font-weight:700;text-align:center;'>{r.get('score','')}</span>")
+    return "".join(out)
+
+
+def _mc_team_panel(sport, team, form, power_rank, sos_rank, win_label, align) -> str:
+    badge = assets.team_badge_html(sport, team, 40)
+    form = form or {}
+    rec = f"{form.get('w', 0)}-{form.get('l', 0)}"
+    streak = form.get("streak", "")
+    chips = _mc_result_chips(form.get("last5"))
+    meta = (f"<span style='color:var(--muted);'>{rec}</span>"
+            f"<span style='color:var(--faint);'> · </span>"
+            f"<span style='color:var(--text);font-weight:600;'>{streak}</span>"
+            f"<span style='color:var(--faint);'> · </span>"
+            f"<span style='color:var(--muted);'>PWR {_ord(power_rank)}</span>"
+            f"<span style='color:var(--faint);'> · </span>"
+            f"<span style='color:var(--muted);'>{win_label} SOS {_ord(sos_rank)}</span>")
+    name = (f"<div style='font-family:var(--disp);font-weight:700;font-size:1.15rem;"
+            f"line-height:1.1;'>{team}</div>"
+            f"<div style='font-size:.64rem;margin-top:3px;'>{meta}</div>"
+            f"<div style='margin-top:5px;'>{chips}</div>")
+    badge_html = (f"<div style='flex:0 0 auto;'>{badge}</div>")
+    inner = ([badge_html, f"<div style='text-align:{align};'>{name}</div>"]
+             if align == "left" else
+             [f"<div style='text-align:{align};'>{name}</div>", badge_html])
+    return (f"<div style='flex:1;display:flex;align-items:center;gap:11px;"
+            f"justify-content:{'flex-start' if align=='left' else 'flex-end'};'>"
+            + "".join(inner) + "</div>")
+
+
+def _mc_gauge(call) -> str:
+    color = {"PLAY": "var(--good)", "LEAN": "var(--mid)",
+             "PASS": "var(--faint)"}[call["decision"]]
+    pct = int(round(call["conf"] / 10 * 100))
+    return (
+        f"<div style='text-align:center;min-width:96px;'>"
+        f"<div style='width:78px;height:78px;border-radius:50%;margin:0 auto 6px;"
+        f"background:conic-gradient({color} {pct}%, var(--line) 0);display:flex;"
+        f"align-items:center;justify-content:center;'>"
+        f"<div style='width:60px;height:60px;border-radius:50%;background:var(--card);"
+        f"display:flex;align-items:center;justify-content:center;font-family:var(--disp);"
+        f"font-weight:700;font-size:1.3rem;color:{color};'>{call['conf']:.1f}</div></div>"
+        f"<div style='font-family:var(--disp);font-size:.6rem;letter-spacing:.09em;"
+        f"text-transform:uppercase;color:var(--muted);'>{call['label']}</div>"
+        f"<div style='font-size:.74rem;font-weight:600;line-height:1.15;'>{call['pick']}</div>"
+        f"<div style='font-size:.58rem;font-weight:800;color:{color};letter-spacing:.06em;'>"
+        f"{call['decision']}</div></div>")
+
+
+def _mc_market_calls(sport, g, min_edge) -> list:
+    calls = []
+
+    def add(label, an, ap, ae, bn, bp, be):
+        opts = [o for o in ((an, _mcf(ap), _mcf(ae)), (bn, _mcf(bp), _mcf(be)))
+                if o[1] is not None]
+        if not opts:
+            return
+        name, prob, ev = max(opts, key=lambda o: (o[2] if o[2] is not None else -9, o[1]))
+        decision = ("PLAY" if ev is not None and ev >= min_edge
+                    else "LEAN" if ev is not None and ev > 0 else "PASS")
+        conf = max(0.0, min(10.0, 5 + (ev * 60 if ev is not None else -3)))
+        calls.append({"label": label, "pick": name, "prob": prob, "ev": ev,
+                      "decision": decision, "conf": round(conf, 1)})
+
+    add("Moneyline", _last(g.get("away_team")), g.get("away_win_prob"), g.get("away_ml_ev"),
+        _last(g.get("home_team")), g.get("home_win_prob"), g.get("home_ml_ev"))
+    mover = _mcf(g.get("model_over_prob"))
+    if mover is not None:
+        tl = _mcf(g.get("total_line"))
+        ln = f" {tl:g}" if tl is not None else ""
+        add("Total", f"Over{ln}", mover, g.get("over_ev"),
+            f"Under{ln}", 1 - mover, g.get("under_ev"))
+    hc = _mcf(g.get("model_home_rl") if g.get("model_home_rl") is not None
+              else g.get("model_home_cover"))
+    if hc is not None:
+        sl = _mcf(g.get("rl_home_line") if g.get("rl_home_line") is not None
+                  else g.get("spread_home_line"))
+        h_ev = g.get("rl_home_ev") if g.get("rl_home_ev") is not None else g.get("spread_home_ev")
+        a_ev = g.get("rl_away_ev") if g.get("rl_away_ev") is not None else g.get("spread_away_ev")
+        hn = f"{_last(g.get('home_team'))} {sl:+g}" if sl is not None else _last(g.get("home_team"))
+        an = f"{_last(g.get('away_team'))} {-sl:+g}" if sl is not None else _last(g.get("away_team"))
+        add("Run Line" if sport == "MLB" else "Spread", hn, hc, h_ev, an, 1 - hc, a_ev)
+    return calls
+
+
+def _mc_stat_table(sport, n, window, win_label, title, rows, off_team,
+                   def_team) -> str:
+    extra = window if window in ("l15", "l20", "l30") else None
+    vcols = ["season", "l10", "l5"] + ([extra] if extra else [])
+    vheads = ["SEASON", "L10", "L5"] + ([win_label] if extra else [])
+    rank_h = f"{win_label} RANK"
+    off_logo = assets.team_badge_html(sport, off_team, 16)
+    def_logo = assets.team_badge_html(sport, def_team, 16)
+
+    th = ("padding:5px 7px;color:var(--muted);font-size:.58rem;font-weight:700;"
+          "text-transform:uppercase;letter-spacing:.03em;")
+    head = (f"<th style='{th}text-align:left;'>STAT</th>"
+            + "".join(f"<th style='{th}text-align:center;'>{h}</th>" for h in vheads)
+            + f"<th style='{th}text-align:center;'>{rank_h}</th>"
+            + f"<th style='{th}text-align:center;'>ADV</th>"
+            + f"<th style='{th}text-align:center;'>{rank_h}</th>"
+            + "".join(f"<th style='{th}text-align:center;'>{h}</th>" for h in reversed(vheads))
+            + f"<th style='{th}text-align:right;'>STAT</th>")
+
+    def num(stat, v, em=False):
+        w = "700" if em else "500"
+        return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
+                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+
+    def rank_pill(rank):
+        c = _rank_color(rank, n)
+        return (f"<td style='padding:5px 7px;text-align:center;'>"
+                f"<span style='color:{c};font-weight:700;font-size:.74rem;'>{_ord(rank)}</span></td>")
+
+    def adv_cell(r):
+        if not r.get("adv"):
+            return "<td style='text-align:center;color:var(--line);font-size:.7rem;'>–</td>"
+        logo = off_logo if (r.get("off_rank") or 99) <= (r.get("def_rank") or 99) else def_logo
+        return (f"<td style='text-align:center;white-space:nowrap;'>{logo}"
+                f"<div style='font-size:.6rem;'>{_stars(r['adv'])}</div></td>")
+
+    body = []
+    for r in rows:
+        cells = [f"<td style='padding:5px 7px;text-align:left;font-weight:700;"
+                 f"font-size:.72rem;'>{r['stat']}</td>"]
+        for c in vcols:
+            cells.append(num(r["stat"], r.get(f"off_{c}"), em=(c == window)))
+        cells.append(rank_pill(r.get("off_rank")))
+        cells.append(adv_cell(r))
+        cells.append(rank_pill(r.get("def_rank")))
+        for c in reversed(vcols):
+            cells.append(num(r["stat"], r.get(f"def_{c}"), em=(c == window)))
+        cells.append(f"<td style='padding:5px 7px;text-align:right;font-weight:700;"
+                     f"font-size:.72rem;color:var(--muted);'>Opp {r['stat']}</td>")
+        body.append("<tr style='border-top:1px solid var(--line);'>" + "".join(cells) + "</tr>")
+
+    return (f"<div style='font-family:var(--disp);font-size:.66rem;font-weight:700;"
+            f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
+            f"margin:14px 0 4px;'>{title}</div>"
+            f"<table style='width:100%;border-collapse:collapse;'>"
+            f"<tr>{head}</tr>{''.join(body)}</table>")
+
+
+def _mc_top_adv(title, rows, off_team, def_team, align) -> str:
+    adv = sorted([r for r in rows if r.get("adv")],
+                 key=lambda r: (-r["adv"], (r.get("def_rank") or 99) - (r.get("off_rank") or 0)),
+                 reverse=False)[:4]
+    items = []
+    for r in adv:
+        line = (f"<b>{r['stat']}</b>: {_last(off_team)} ({_ord(r['off_rank'])}) "
+                f"vs {_last(def_team)} ({_ord(r['def_rank'])})")
+        items.append(f"<div style='font-size:.68rem;margin:3px 0;'>"
+                     f"{_stars(r['adv'])} {line}</div>")
+    if not items:
+        items = ["<div style='font-size:.66rem;color:var(--muted);'>No standout edges.</div>"]
+    return (f"<div style='flex:1;text-align:{align};'>"
+            f"<div style='font-family:var(--disp);font-size:.62rem;font-weight:700;"
+            f"letter-spacing:.08em;text-transform:uppercase;color:var(--good);"
+            f"margin-bottom:4px;'>{title}</div>" + "".join(items) + "</div>")
+
+
+def _mc_trends(trends, away, home) -> str:
+    rows = [t for t in (trends or []) if _mcf(t.get("home")) is not None
+            or _mcf(t.get("away")) is not None]
+    if not rows:
+        return ""
+    th = ("padding:5px 7px;color:var(--muted);font-size:.58rem;font-weight:700;"
+          "text-transform:uppercase;letter-spacing:.03em;")
+
+    def cell(v):
+        v = _mcf(v)
+        if v is None:
+            s = "—"
+        else:
+            s = f"{v * 100:.0f}%" if abs(v) <= 1.5 else f"{v:.0f}%"
+        return f"<td style='padding:5px 7px;text-align:center;font-weight:600;font-size:.74rem;'>{s}</td>"
+
+    head = (f"<th style='{th}text-align:left;'>{_last(away)}</th>"
+            f"<th style='{th}text-align:center;'>Trend</th>"
+            f"<th style='{th}text-align:right;'>{_last(home)}</th>")
+    body = "".join("<tr style='border-top:1px solid var(--line);'>"
+                   + cell(t.get("away"))
+                   + f"<td style='padding:5px 7px;text-align:center;font-weight:700;"
+                   f"font-size:.7rem;'>{t['stat']}</td>"
+                   + cell(t.get("home")) + "</tr>" for t in rows)
+    return (f"<div style='font-family:var(--disp);font-size:.66rem;font-weight:700;"
+            f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
+            f"margin:14px 0 4px;'>Game trends</div>"
+            f"<table style='width:100%;max-width:420px;border-collapse:collapse;'>"
+            f"<tr>{head}</tr>{body}</table>")
+
+
+def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
+                      min_edge: float = 0.02, title: str | None = None) -> str:
+    """The full premium matchup graphic. ``matchup`` is teamstats.matchup(...,
+    window=window). Safe on an empty matchup (renders the header only)."""
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    n = matchup.get("n_teams", 30)
+    win_label = matchup.get("window_label", "L5")
+    hl = (title or f"{_last(away)} vs {_last(home)}").upper()
+    when = fmt_time_et(g.get("game_time"))
+
+    # info bar bits
+    bits = []
+    aml, hml = _mcf(g.get("away_ml")), _mcf(g.get("home_ml"))
+    if aml is not None and hml is not None:
+        bits.append(f"Line <b>{_last(away)} {fmt_american(aml)} / {_last(home)} {fmt_american(hml)}</b>")
+    tl = _mcf(g.get("total_line"))
+    if tl is not None:
+        bits.append(f"Total <b>{tl:g}</b>")
+    ar, hr = matchup.get("away_rest"), matchup.get("home_rest")
+    if ar is not None or hr is not None:
+        bits.append(f"Rest <b>{_last(away)} {ar if ar is not None else '–'} / "
+                    f"{_last(home)} {hr if hr is not None else '–'}</b>")
+    bits.append(f"Window <b>{win_label}</b>")
+
+    header = (
+        "<div style='display:flex;align-items:center;gap:10px;'>"
+        + _mc_team_panel(sport, away, matchup.get("away_form"),
+                         matchup.get("away_power_rank"), matchup.get("away_sos_rank"),
+                         win_label, "right")
+        + (f"<div style='flex:0 0 auto;text-align:center;padding:0 6px;'>"
+           f"<div style='font-family:var(--disp);font-size:.56rem;letter-spacing:.1em;"
+           f"color:var(--faint);'>PROJECTED</div>"
+           f"<div style='font-family:var(--disp);font-weight:700;font-size:1.4rem;'>"
+           f"{_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</div>"
+           f"<div style='font-size:.6rem;color:var(--muted);'>{when}</div></div>")
+        + _mc_team_panel(sport, home, matchup.get("home_form"),
+                         matchup.get("home_power_rank"), matchup.get("home_sos_rank"),
+                         win_label, "left")
+        + "</div>"
+        + (f"<div style='display:flex;flex-wrap:wrap;gap:16px;justify-content:center;"
+           f"margin-top:10px;padding-top:9px;border-top:1px solid var(--line);"
+           f"font-size:.66rem;color:var(--muted);'>"
+           + "".join(f"<span>{b}</span>" for b in bits) + "</div>"))
+
+    calls = _mc_market_calls(sport, g, min_edge)
+    gauges = (f"<div style='display:flex;justify-content:center;gap:18px;margin:14px 0;'>"
+              + "".join(_mc_gauge(c) for c in calls) + "</div>") if calls else ""
+
+    a_rows = matchup.get("away_off_vs_home_def") or []
+    h_rows = matchup.get("home_off_vs_away_def") or []
+    top_adv = ("<div style='display:flex;gap:20px;margin:10px 0 4px;'>"
+               + _mc_top_adv(f"{_last(away)} top advantages", a_rows, away, home, "left")
+               + _mc_top_adv(f"{_last(home)} top advantages", h_rows, home, away, "right")
+               + "</div>") if (a_rows or h_rows) else ""
+
+    tables = ""
+    if a_rows:
+        tables += _mc_stat_table(sport, n, window, win_label,
+                                 f"{away} offense vs {home} defense", a_rows, away, home)
+    if h_rows:
+        tables += _mc_stat_table(sport, n, window, win_label,
+                                 f"{home} offense vs {away} defense", h_rows, home, away)
+    tables += _mc_trends(matchup.get("trends"), away, home)
+
+    # decision block
+    dec_bits = []
+    for c in calls:
+        col = {"PLAY": "var(--good)", "LEAN": "var(--mid)", "PASS": "var(--faint)"}[c["decision"]]
+        ev = f"{c['ev']*100:+.1f}% EV" if c["ev"] is not None else "no priced edge"
+        dec_bits.append(f"<div style='margin:2px 0;font-size:.72rem;'>"
+                        f"<b>{c['label']}:</b> {c['pick']} — "
+                        f"<span style='color:{col};font-weight:700;'>{c['decision']}</span> "
+                        f"<span style='color:var(--muted);'>({ev}, conf {c['conf']:.1f}/10)</span></div>")
+    decision = (f"<div style='margin-top:12px;padding-top:9px;border-top:1px solid var(--line);'>"
+                f"<div style='font-family:var(--disp);font-size:.64rem;font-weight:700;"
+                f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
+                f"margin-bottom:4px;'>Model read</div>" + "".join(dec_bits)
+                + "<div style='font-size:.58rem;color:var(--faint);margin-top:6px;'>"
+                "Personal research · not financial advice · the trigger is always yours."
+                "</div></div>") if dec_bits else ""
+
+    return (
+        f"<div style='background:var(--card);border:1.5px solid var(--line);"
+        f"border-radius:14px;padding:18px 20px;color:var(--text);"
+        f"font-family:var(--font, DM Sans, system-ui, sans-serif);max-width:1120px;'>"
+        f"<div style='font-family:var(--disp);font-weight:700;font-size:1rem;"
+        f"letter-spacing:.04em;color:var(--text);margin-bottom:10px;'>{hl}"
+        f"<span style='color:var(--faint);font-weight:400;'> · {win_label} window</span></div>"
+        f"{header}{gauges}{top_adv}{tables}{decision}</div>")

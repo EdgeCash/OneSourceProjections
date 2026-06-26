@@ -68,9 +68,40 @@ money):
 - **Read Me** — how it works, what each Verdict means, the disclaimer + responsible-gambling line.
 - **Settings** — bankroll, Kelly fraction, min edge, max stake. Edit once; every tab reprices.
 - **Top Plays** — the biggest engine-priced edges, glanceable on a phone. Nothing's a lock.
+- **Research Hub** — an index plus one premium matchup *page* per game (see below).
 - **`<SPORT>` Games** — moneyline / total / spread, every game, bring your own odds.
 - **`<SPORT>` Props** — priced player props (Over side off the model).
 - **Track Record** — the performance summary (Brier, units, ROI, CLV beat-rate), losses included.
+
+## Research Hub (the "website to go")
+
+Each game gets its own page: a **premium matchup card** (the same graphic the
+dashboard renders — team panels with records/streak/recent results/power & SOS
+ranks, projected score, ML/RL/Total confidence gauges, per-side top-advantage
+star panels, and the mirrored offense-vs-defense tables with rank pills + an
+advantage column) rendered to a crisp PNG and embedded, followed by a native
+**all-windows** table (Season / L30 / L20 / L15 / L10 / L5 + league ranks,
+rank-shaded) so every recency window is readable offline.
+
+The shared renderer lives in `app.ui.matchup_card_html`; `project547.cardimage`
+wraps it in the brand cream/graphite theme and screenshots it with the
+pre-installed **Chromium** binary (no Playwright). Data — splits, league ranks,
+the advantage flag, power rank, strength-of-schedule rank, and days rest — comes
+from `project547.teamstats.matchup(..., window=...)`, computed from our own
+box-score logs.
+
+**Recency window.** On the website the matchup view has a live
+**L5 / L10 / L15 / L20 / L30 / Season** toggle that recomputes ranks,
+advantages, and strength of schedule (people weight recency differently). The
+static workbook image is rendered at one window, but the native table carries
+*all* of them, so nothing is lost offline.
+
+The Hub is **best-effort**: it needs box-score logs (and a browser for the
+images), so the on-demand dashboard build skips it for speed and the hourly job
+bakes the full version into `data/output/workbook/latest.xlsx`. The download
+button serves that pre-built file when present and falls back to a fast,
+hub-less build otherwise. A missing browser or a single bad game is skipped,
+never fatal.
 
 ## Design constraints (from research)
 

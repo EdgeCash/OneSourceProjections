@@ -533,6 +533,186 @@ def build_track_record(wb, data):
 
 
 # ---------------------------------------------------------------------------
+# Research Hub — premium matchup pages (image card + all-windows table)
+# ---------------------------------------------------------------------------
+RANK_GOOD = PatternFill("solid", fgColor="D6EAD9")
+RANK_BAD = PatternFill("solid", fgColor="F1D6D6")
+RANK_MID = PatternFill("solid", fgColor="F3E7C8")
+HUB_WINDOWS = ["season", "l30", "l20", "l15", "l10", "l5"]
+HUB_WIN_LABELS = {"season": "Season", "l30": "L30", "l20": "L20", "l15": "L15",
+                  "l10": "L10", "l5": "L5"}
+
+
+def _safe_sheet_name(name: str, used: set) -> str:
+    bad = set(r'[]:*?/\\')
+    s = "".join(c for c in name if c not in bad)[:28].strip() or "Game"
+    base, i = s, 2
+    while s in used:
+        s = f"{base[:25]} {i}"
+        i += 1
+    used.add(s)
+    return s
+
+
+def _rank_fill(rank, n):
+    if rank is None or not n:
+        return None
+    if rank <= n / 3:
+        return RANK_GOOD
+    if rank > 2 * n / 3:
+        return RANK_BAD
+    return RANK_MID
+
+
+def _native_matchup_table(ws, start_row, title, rows, n):
+    """All-windows offense-vs-defense table (Season..L5 + rank), conditionally
+    shaded by rank so any recency window is readable in the static file."""
+    tcell = ws.cell(row=start_row, column=1, value=title)
+    tcell.font = Font(name="Oswald", bold=True, size=11, color=INK)
+    hdr = start_row + 1
+    labels = [HUB_WIN_LABELS[w] for w in HUB_WINDOWS]
+    headers = (["Stat"] + [f"A {l}" for l in labels] + ["A Rk", "Adv", "H Rk"]
+               + [f"H {l}" for l in reversed(labels)] + ["Opp stat"])
+    for c, h in enumerate(headers, start=1):
+        cell = ws.cell(row=hdr, column=c, value=h)
+        cell.font = HEAD_FONT
+        cell.fill = HEAD_FILL
+        cell.alignment = Alignment(horizontal="center")
+        cell.border = BORDER
+    r = hdr + 1
+    for row in rows:
+        c = 1
+
+        def put(val, fill=None, bold=False):
+            nonlocal c
+            cell = ws.cell(row=r, column=c, value=val)
+            cell.font = Font(name="DM Sans", size=9, bold=bold, color=INK)
+            cell.border = BORDER
+            cell.alignment = Alignment(horizontal="center")
+            if fill:
+                cell.fill = fill
+            c += 1
+
+        put(row["stat"], bold=True)
+        for w in HUB_WINDOWS:
+            put(_round(row.get(f"off_{w}")))
+        put(_ord_txt(row.get("off_rank")), _rank_fill(row.get("off_rank"), n), bold=True)
+        put("★" * int(row.get("adv") or 0))
+        put(_ord_txt(row.get("def_rank")), _rank_fill(row.get("def_rank"), n), bold=True)
+        for w in reversed(HUB_WINDOWS):
+            put(_round(row.get(f"def_{w}")))
+        put(f"Opp {row['stat']}", bold=True)
+        ws.cell(row=r, column=1).alignment = Alignment(horizontal="left")
+        r += 1
+    return r + 1
+
+
+def _round(v):
+    f = _num(v)
+    return round(f, 3) if f is not None else "—"
+
+
+def _ord_txt(n):
+    if n is None:
+        return "—"
+    n = int(n)
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suf}"
+
+
+def build_research_hub(wb, data, render_cards=False, window="l5", max_games=10):
+    """Add the Research Hub: an index + one premium matchup page per game
+    (embedded card image when a browser is available, plus an all-windows
+    table). Fully best-effort — a missing dependency or a single bad game is
+    skipped, never fatal. Returns the number of game pages added."""
+    try:
+        from . import teamstats
+    except Exception:  # noqa: BLE001 — pandas/history not available
+        return 0
+    try:
+        from . import cardimage
+    except Exception:  # noqa: BLE001
+        cardimage = None
+
+    slates = data.get("slates") or {}
+    primary = data.get("primary_date") or (data.get("dates") or [None])[0]
+    blob = slates.get(primary) or {}
+    games = []
+    for sport, sb in blob.items():
+        for g in (sb.get("games") or []):
+            if g.get("home_team") and g.get("away_team"):
+                games.append((sport, g))
+    if not games:
+        return 0
+    games = games[:max_games]
+
+    index = wb.create_sheet("Research Hub")
+    index.sheet_view.showGridLines = False
+    _title(index, "🔬 Research Hub", f"Premium matchup breakdowns · {primary} · "
+           f"{teamstats.WINDOW_LABELS.get(window, window)} window. Each game has "
+           "its own tab.")
+    idx_r = 4
+    used = {ws.title for ws in wb.worksheets}
+    added = 0
+    for sport, g in games:
+        home, away = g["home_team"], g["away_team"]
+        try:
+            m = teamstats.matchup(sport, home, away, primary, window=window)
+        except Exception:  # noqa: BLE001
+            m = {}
+        if not m:
+            continue
+        title = f"{away.split()[-1]} @ {home.split()[-1]}"
+        name = _safe_sheet_name(f"{sport} {title}", used)
+        ws = wb.create_sheet(name)
+        ws.sheet_view.showGridLines = False
+        _title(ws, f"{away} @ {home}",
+               f"{sport} · {primary} · {teamstats.WINDOW_LABELS.get(window, window)} window")
+        row = 4
+        if render_cards and cardimage is not None:
+            try:
+                png = cardimage.render_matchup_png(sport, g, m, window=window)
+            except Exception:  # noqa: BLE001
+                png = None
+            if png:
+                from openpyxl.drawing.image import Image as XLImage
+                # openpyxl reads the image lazily at save(), so a BytesIO/closed
+                # PIL stream fails. Write each PNG to a temp file (kept alive on
+                # the workbook until save) and pass the path.
+                tmpdir = getattr(wb, "_osp_card_dir", None)
+                if tmpdir is None:
+                    import tempfile
+                    tmpdir = tempfile.TemporaryDirectory(prefix="osp_cards_")
+                    wb._osp_card_dir = tmpdir  # survives until wb is GC'd
+                fp = Path(tmpdir.name) / f"{name}.png".replace(" ", "_")
+                fp.write_bytes(png)
+                img = XLImage(str(fp))
+                scale = 0.5 * 0.92  # back out the 2x device scale, fit the page
+                img.width = int(img.width * scale)
+                img.height = int(img.height * scale)
+                ws.add_image(img, f"A{row}")
+                row += max(20, int(img.height / 18)) + 2
+        n = m.get("n_teams", 30)
+        row = _native_matchup_table(ws, row, f"{away} offense vs {home} defense",
+                                    m.get("away_off_vs_home_def") or [], n)
+        row = _native_matchup_table(ws, row, f"{home} offense vs {away} defense",
+                                    m.get("home_off_vs_away_def") or [], n)
+        ws.protection.sheet = True
+        # index link
+        ic = index.cell(row=idx_r, column=1, value=f"{sport}: {away} @ {home}")
+        ic.hyperlink = f"#'{name}'!A1"
+        ic.font = Font(name="DM Sans", size=10, color="1F6FEB", underline="single")
+        idx_r += 1
+        added += 1
+    index.cell(row=idx_r + 1, column=1,
+               value="Tip: the website's research view lets you flip the L5/L10/"
+                     "L15/L20/L30/Season window live; here every window is in the "
+                     "table so you can read any of them.").font = MUTED_FONT
+    _autosize(index, {"A": 60})
+    return added
+
+
+# ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
 def collect_rows(data):
@@ -554,8 +734,15 @@ def collect_rows(data):
     return games_by_sport, props_by_sport, all_game_rows
 
 
-def build_workbook(data: dict) -> Workbook:
-    """Build the full editable workbook from a loaded ``latest.json`` dict."""
+def build_workbook(data: dict, render_cards: bool = False,
+                   include_hub: bool = False, window: str = "l5") -> Workbook:
+    """Build the full editable workbook from a loaded ``latest.json`` dict.
+
+    ``include_hub`` adds the Research Hub (matchup pages; needs box-score logs
+    via teamstats, so it's off for the hermetic on-demand/test path and on for
+    disk builds). ``render_cards`` additionally embeds the premium card images
+    (needs a browser; slow, so the hourly job sets it). ``window`` picks the
+    recency window for the card images / rank coloring."""
     wb = Workbook()
     games_by_sport, props_by_sport, all_game_rows = collect_rows(data)
 
@@ -570,13 +757,19 @@ def build_workbook(data: dict) -> Workbook:
         build_sport_sheets(wb, sport, games_by_sport.get(sport, []),
                            props_by_sport.get(sport, []))
     build_track_record(wb, data)
+    if include_hub or render_cards:
+        try:
+            build_research_hub(wb, data, render_cards=render_cards, window=window)
+        except Exception:  # noqa: BLE001 — the hub is a bonus, never block the build
+            pass
     return wb
 
 
-def build_workbook_bytes(data: dict) -> bytes:
+def build_workbook_bytes(data: dict, render_cards: bool = False,
+                         include_hub: bool = False) -> bytes:
     """In-memory .xlsx bytes — what the dashboard download button serves."""
     buf = io.BytesIO()
-    build_workbook(data).save(buf)
+    build_workbook(data, render_cards=render_cards, include_hub=include_hub).save(buf)
     return buf.getvalue()
 
 
@@ -585,12 +778,14 @@ def default_paths():
     return out / "latest.xlsx", out
 
 
-def build_to_disk(data: dict, primary_date: str | None = None) -> Path:
+def build_to_disk(data: dict, primary_date: str | None = None,
+                  render_cards: bool = True) -> Path:
     """Write latest.xlsx (and a dated archive) under data/output/workbook/.
-    Returns the latest.xlsx path. Never raises on a missing date."""
+    Returns the latest.xlsx path. Never raises on a missing date. The hourly
+    job calls this with ``render_cards=True`` to bake in the card images."""
     latest, out = default_paths()
     out.mkdir(parents=True, exist_ok=True)
-    wb = build_workbook(data)
+    wb = build_workbook(data, render_cards=render_cards)
     wb.save(latest)
     date = primary_date or data.get("primary_date")
     if date:

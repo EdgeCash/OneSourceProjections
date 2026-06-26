@@ -473,9 +473,9 @@ def render_sport(sport: str):
 
 
 @st.cache_data(ttl=900, show_spinner=False)
-def _matchup(sport: str, home: str, away: str, asof: str) -> dict:
+def _matchup(sport: str, home: str, away: str, asof: str, window: str = "l5") -> dict:
     try:
-        return teamstats.matchup(sport, home, away, asof)
+        return teamstats.matchup(sport, home, away, asof, window=window)
     except Exception:
         return {}
 
@@ -518,20 +518,29 @@ def _bp_validator(sport: str, g: dict, date_sel: str):
 
 
 def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = True):
-    m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    wkey = f"win_{sport}_{date_sel}_{away}_{home}"
+    window = st.radio(
+        "Recency window", list(teamstats.WINDOWS), index=0, horizontal=True,
+        format_func=lambda w: teamstats.WINDOW_LABELS[w], key=wkey,
+        help="How much recency to weight — ranks, advantages and strength of "
+             "schedule all recompute for the window you pick.")
+    m = _matchup(sport, home, away, date_sel, window)
     if not m:
         st.info("Team stat splits aren't available for this matchup yet.")
         st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         return
-    st.markdown(ui.research_card_html(sport, g, m, min_edge), unsafe_allow_html=True)
+    st.markdown(ui.matchup_card_html(sport, g, m, window=window, min_edge=min_edge),
+                unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
     _bp_validator(sport, g, date_sel)
     ai_block(ui.ai_brief_game(sport, g, m, min_edge),
-             key=f"game_{sport}_{date_sel}_{g.get('away_team','')}_{g.get('home_team','')}")
+             key=f"game_{sport}_{date_sel}_{away}_{home}")
     if caption:
-        st.caption("Offense L5 vs the opponent's matching defense L5; small "
-                   "numbers are league ranks (green = top third). ★ = the "
-                   "offense out-ranks the defense it faces.")
+        st.caption(f"Offense {teamstats.WINDOW_LABELS[window]} vs the opponent's "
+                   "matching defense; rank pills are league ranks (green = top "
+                   "third). ★ = the offense out-ranks the defense it faces. PWR = "
+                   "power rank, SOS = strength-of-schedule rank.")
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -2451,8 +2460,8 @@ if section != "HOME":  # Home leads with the full glowing heroes already
     render_ticker()
 
 @st.cache_data(show_spinner=False)
-def _workbook_bytes(stamp: str) -> bytes:
-    # stamp = generated_at so the build refreshes only when the slate does
+def _workbook_lite_bytes(stamp: str) -> bytes:
+    # On-demand fallback: fast, no Research Hub images (stamp = generated_at).
     return workbook.build_workbook_bytes(data)
 
 
@@ -2466,8 +2475,16 @@ def render_workbook():
         "recompute in-cell — in Excel *or* Google Sheets, offline. The odds are "
         "the only thing that changes all day, so they're the only thing you edit.")
     stamp = str(data.get("generated_at", ""))
+    # Prefer the full pre-built file (Research Hub + premium card images, baked
+    # hourly); fall back to a fast on-demand lite build if it's missing.
+    prebuilt, _ = workbook.default_paths()
+    full = False
     try:
-        xlsx = _workbook_bytes(stamp)
+        if prebuilt.exists():
+            xlsx = prebuilt.read_bytes()
+            full = True
+        else:
+            xlsx = _workbook_lite_bytes(stamp)
     except Exception as e:  # never let a build error take down the page
         st.error(f"Couldn't build the workbook right now: {e}")
         return
@@ -2475,15 +2492,18 @@ def render_workbook():
     st.download_button("⬇ Download today's workbook", data=xlsx, file_name=fname,
                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                        type="primary", width="stretch")
+    hub = ("Research Hub (premium matchup cards) · " if full else "")
     st.caption(f"Built from the {stamp[:16].replace('T', ' ')} slate · "
                f"{len(xlsx) // 1024} KB · tabs: Read Me · Settings · Top Plays · "
-               "per-sport games & props · Track Record")
+               f"{hub}per-sport games & props · Track Record")
     with st.expander("What's inside & how to use it"):
         st.markdown(
             "- **Read Me** — how it works + what each Verdict means.\n"
             "- **Settings** — set your bankroll and Kelly fraction once; every "
             "tab reprices.\n"
             "- **Top Plays** — the biggest model edges today (nothing's a lock).\n"
+            "- **Research Hub** — a premium matchup card per game (offense-vs-"
+            "defense, ranks, advantages, gauges) plus an all-windows table.\n"
             "- **Per-sport Games & Props** — every market, bring your own odds.\n"
             "- **Track Record** — receipts, losses included.\n\n"
             "Tip: opening a protected `.xlsx` in Google Sheets drops cell "

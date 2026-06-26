@@ -196,3 +196,33 @@ def test_formulas_evaluate_correctly(tmp_path):
     assert math.isclose(cell("J5"), odds.expected_value(p_model, o), abs_tol=1e-9)
     assert math.isclose(cell("K5"), odds.kelly_stake(p_model, o, 0.25), abs_tol=1e-9)
     assert math.isclose(cell("L5"), round(min(cell("K5"), 0.05) * 1000, 2), abs_tol=1e-2)
+
+
+# --------------------------------------------------------------------------
+# Research Hub (uses real teamstats/box-score logs when available)
+# --------------------------------------------------------------------------
+def test_research_hub_native_tables(tmp_path):
+    pytest.importorskip("pandas")
+    import json as _json
+    from pathlib import Path
+    src = Path("data/output/latest.json")
+    if not src.exists():
+        pytest.skip("no latest.json in this checkout")
+    data = _json.loads(src.read_text())
+    wb = workbook.build_workbook(data, include_hub=True)  # native tables, no images
+    if "Research Hub" not in wb.sheetnames:
+        pytest.skip("no matchup data available (box-score logs missing)")
+    # at least one game page with the all-windows native table header
+    pages = [s for s in wb.sheetnames if "@" in s]
+    assert pages
+    ws = wb[pages[0]]
+    headers = [ws.cell(row=r, column=1).value for r in range(1, ws.max_row + 1)]
+    assert "Stat" in headers          # native matchup table rendered
+    assert any(v and "Opp" in str(v) for row in ws.iter_rows() for v in
+               [c.value for c in row])
+
+
+def test_build_workbook_default_is_hermetic():
+    # default build adds no hub (keeps the on-demand/test path light)
+    wb = workbook.build_workbook(_fixture())
+    assert "Research Hub" not in wb.sheetnames
