@@ -191,6 +191,24 @@ reference stats we don't capture (e.g. WNBA paint points, fast break) are
 omitted. Generate a static HTML preview of all the graphics with
 `python scripts/make_preview.py --sport WNBA`.
 
+## Daily wager workbook (bring-your-own-odds)
+
+A downloadable, **editable** Excel/Google-Sheets workbook of the day's slate
+(`project547/workbook.py`; **🎯 Projections → 📥 Daily workbook**). The model's
+win probability for every market is **locked**; you type the price *your*
+sportsbook is showing into the yellow cells, and the edge, EV, and ¼-Kelly stake
+recompute **in-cell** — in Excel *or* Google Sheets, offline. Odds are the only
+thing that changes all day, so they're the only thing you edit — which also
+sidesteps the stale-line problem that plagues every live +EV tool. Tabs: Read
+Me, Settings (bankroll / Kelly fraction reprice everything), Top Plays (biggest
+engine-priced edges), per-sport Games & Props, and Track Record (losses
+included). Every formula mirrors `project547/odds.py`, and where the engine
+stored an EV the sheet recovers the exact probability it bet on, so the workbook
+and the engine never disagree. The hourly job rebuilds it into
+`data/output/workbook/latest.xlsx` (best-effort; it can never sink the run), and
+the dashboard download button builds it fresh on demand. Build manually with
+`python scripts/build_workbook.py`. Full design notes: [`docs/WORKBOOK.md`](docs/WORKBOOK.md).
+
 ## Per-sport game models
 
 MLB has its own richer pipeline (Statcast, xFIP, park factors → Poisson Monte

@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
-from project547 import ai, config, dfs, edge, playerlogs, plays, results, teamstats  # noqa: E402
+from project547 import ai, config, dfs, edge, playerlogs, plays, results, teamstats, workbook  # noqa: E402
 from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
 st.set_page_config(page_title="Project 54.7", page_icon="🎯",
@@ -276,14 +276,15 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in S
 # live -> tools -> tracking.
 NAV_GROUPS = {
     "🏠 Home": ["HOME"],
-    "🎯 Projections": ["PLAYS"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
+    "🎯 Projections": ["PLAYS", "WORKBOOK"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
     "🛠️ Edge Builder": ["EDGE_BUILDER"],
     "🤖 Prompt Engine": ["PROMPT_ENGINE"],
     "📒 Ledger": ["PERFORMANCE"],
     "🔬 Research Hub": ["SHARPSHEET", "OTHER_SPORTS", "BACKTEST", "EXPERTS",
                         "TOOLS", "DOCS"],
 }
-_PAGE_LABELS = {"PLAYS": "Curated plays", "PLAYS_DETAIL": "Plays — full table",
+_PAGE_LABELS = {"PLAYS": "Curated plays", "WORKBOOK": "📥 Daily workbook",
+                "PLAYS_DETAIL": "Plays — full table",
                 "EDGES": "Edge scanner", "DFS": "DFS optimizer",
                 "SCORES": "Live scores", "PERFORMANCE": "Track record",
                 "SHARPSHEET": "Sharp Sheets", "OTHER_SPORTS": "Other sports",
@@ -2449,12 +2450,55 @@ def render_ticker():
 if section != "HOME":  # Home leads with the full glowing heroes already
     render_ticker()
 
+@st.cache_data(show_spinner=False)
+def _workbook_bytes(stamp: str) -> bytes:
+    # stamp = generated_at so the build refreshes only when the slate does
+    return workbook.build_workbook_bytes(data)
+
+
+def render_workbook():
+    topbar("Daily workbook", with_search=False)
+    section_header("Daily Wager Workbook", icon="📥")
+    st.markdown(
+        "An editable Excel/Google-Sheets workbook of today's slate. The model's "
+        "win probability is **locked**; you type the price **your** sportsbook is "
+        "showing into the yellow cells, and the edge, EV, and ¼-Kelly stake "
+        "recompute in-cell — in Excel *or* Google Sheets, offline. The odds are "
+        "the only thing that changes all day, so they're the only thing you edit.")
+    stamp = str(data.get("generated_at", ""))
+    try:
+        xlsx = _workbook_bytes(stamp)
+    except Exception as e:  # never let a build error take down the page
+        st.error(f"Couldn't build the workbook right now: {e}")
+        return
+    fname = f"project547_workbook_{(data.get('primary_date') or 'latest')}.xlsx"
+    st.download_button("⬇ Download today's workbook", data=xlsx, file_name=fname,
+                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                       type="primary", width="stretch")
+    st.caption(f"Built from the {stamp[:16].replace('T', ' ')} slate · "
+               f"{len(xlsx) // 1024} KB · tabs: Read Me · Settings · Top Plays · "
+               "per-sport games & props · Track Record")
+    with st.expander("What's inside & how to use it"):
+        st.markdown(
+            "- **Read Me** — how it works + what each Verdict means.\n"
+            "- **Settings** — set your bankroll and Kelly fraction once; every "
+            "tab reprices.\n"
+            "- **Top Plays** — the biggest model edges today (nothing's a lock).\n"
+            "- **Per-sport Games & Props** — every market, bring your own odds.\n"
+            "- **Track Record** — receipts, losses included.\n\n"
+            "Tip: opening a protected `.xlsx` in Google Sheets drops cell "
+            "protection, so just remember **yellow = the cells you edit**.")
+    st.caption(workbook.DISCLAIMER)
+
+
 if section == "HOME":
     render_home()
 elif section in NAV_SPORTS:
     render_sport(section)
 elif section == "SCORES":
     render_scores()
+elif section == "WORKBOOK":
+    render_workbook()
 elif section == "PLAYS":
     render_plays()
 elif section == "PLAYS_DETAIL":
