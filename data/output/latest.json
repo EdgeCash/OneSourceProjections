@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-26T06:26:56.124516-04:00",
+ "generated_at": "2026-06-26T09:15:08.797689-04:00",
  "primary_date": "2026-06-26",
  "dates": [
   "2026-06-26",
@@ -12,9 +12,9 @@
      {
       "weather": {
        "temp_f": 75,
-       "wind_mph": 7,
-       "wind_dir": "E",
-       "precip_pct": 4
+       "wind_mph": 8,
+       "wind_dir": "ENE",
+       "precip_pct": 3
       },
       "lineups": {
        "home": [],
@@ -48,29 +48,29 @@
        "-1.5": 0.3115,
        "1.5": 0.65955
       },
-      "home_ml": -108.0,
+      "home_ml": -104.0,
       "away_ml": 108.0,
-      "home_ml_ev": -0.032,
-      "away_ml_ev": 0.0346,
-      "total_line": 8.5,
-      "over_odds": 104.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.6582,
-      "over_ev": 0.1763,
-      "under_ev": -0.1532,
+      "home_ml_ev": -0.0186,
+      "away_ml_ev": 0.0393,
+      "total_line": 9.5,
+      "over_odds": 127.0,
+      "under_odds": 117.0,
+      "model_over_prob": 0.5032,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
-      "rl_away_odds": 178.0,
+      "rl_away_odds": 172.0,
       "model_home_rl": 0.3115,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 78,
-       "wind_mph": 2,
+       "temp_f": 80,
+       "wind_mph": 7,
        "wind_dir": "WSW",
-       "precip_pct": 6
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -104,29 +104,29 @@
        "-1.5": 0.5945,
        "1.5": 0.87725
       },
-      "home_ml": -186.0,
+      "home_ml": -182.0,
       "away_ml": 186.0,
-      "home_ml_ev": 0.0918,
-      "away_ml_ev": -0.1708,
-      "total_line": 7.5,
-      "over_odds": 100.0,
-      "under_odds": 108.0,
-      "model_over_prob": 0.744,
-      "over_ev": 0.2539,
-      "under_ev": -0.224,
+      "home_ml_ev": 0.0989,
+      "away_ml_ev": -0.1683,
+      "total_line": 8.0,
+      "over_odds": 113.0,
+      "under_odds": 104.0,
+      "model_over_prob": 0.6452,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 115.0,
-      "rl_away_odds": -113.0,
+      "rl_home_odds": 117.0,
+      "rl_away_odds": -117.0,
       "model_home_rl": 0.5945,
-      "rl_home_ev": 0.1413,
-      "rl_away_ev": -0.1156
+      "rl_home_ev": 0.145,
+      "rl_away_ev": -0.124
      },
      {
       "weather": {
-       "temp_f": 90,
+       "temp_f": 87,
        "wind_mph": 6,
-       "wind_dir": "WNW",
-       "precip_pct": 13
+       "wind_dir": "SSW",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -160,28 +160,28 @@
        "-1.5": 0.34025,
        "1.5": 0.6799
       },
-      "home_ml": -127.0,
-      "away_ml": 127.0,
-      "home_ml_ev": -0.0422,
-      "away_ml_ev": 0.0535,
+      "home_ml": -122.0,
+      "away_ml": 122.0,
+      "home_ml_ev": -0.0339,
+      "away_ml_ev": 0.0413,
       "total_line": 9.5,
       "over_odds": 120.0,
-      "under_odds": 117.0,
+      "under_odds": 122.0,
       "model_over_prob": 0.5443,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 156.0,
-      "rl_away_odds": -160.0,
+      "rl_away_odds": -163.0,
       "model_home_rl": 0.3402,
-      "rl_home_ev": -0.0675,
-      "rl_away_ev": 0.0331
+      "rl_home_ev": -0.0696,
+      "rl_away_ev": 0.0271
      },
      {
       "weather": {
-       "temp_f": 65,
-       "wind_mph": 5,
-       "wind_dir": "S",
+       "temp_f": 67,
+       "wind_mph": 4,
+       "wind_dir": "SSW",
        "precip_pct": 0
       },
       "lineups": {
@@ -216,10 +216,10 @@
        "-1.5": 0.3542,
        "1.5": 0.71865
       },
-      "home_ml": 104.0,
+      "home_ml": 101.0,
       "away_ml": -104.0,
-      "home_ml_ev": 0.0561,
-      "away_ml_ev": -0.0539,
+      "home_ml_ev": 0.0443,
+      "away_ml_ev": -0.0576,
       "total_line": 8.5,
       "over_odds": -104.0,
       "under_odds": 104.0,
@@ -227,18 +227,18 @@
       "over_ev": 0.0346,
       "under_ev": -0.036,
       "rl_home_line": 1.5,
-      "rl_home_odds": -162.0,
-      "rl_away_odds": 163.0,
+      "rl_home_odds": -163.0,
+      "rl_away_odds": 158.0,
       "model_home_rl": 0.7187,
-      "rl_home_ev": 0.0819,
-      "rl_away_ev": -0.1293
+      "rl_home_ev": 0.0761,
+      "rl_away_ev": -0.1407
      },
      {
       "weather": {
-       "temp_f": 72,
+       "temp_f": 71,
        "wind_mph": 5,
-       "wind_dir": "N",
-       "precip_pct": 5
+       "wind_dir": "NNE",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -272,16 +272,16 @@
        "-1.5": 0.234,
        "1.5": 0.6124
       },
-      "home_ml": -104.0,
+      "home_ml": -103.0,
       "away_ml": 104.0,
-      "home_ml_ev": -0.0997,
-      "away_ml_ev": 0.1037,
+      "home_ml_ev": -0.0966,
+      "away_ml_ev": 0.1049,
       "total_line": 7.5,
-      "over_odds": 106.0,
+      "over_odds": 104.0,
       "under_odds": -104.0,
       "model_over_prob": 0.5359,
-      "over_ev": 0.0544,
-      "under_ev": -0.0424,
+      "over_ev": 0.0466,
+      "under_ev": -0.0448,
       "rl_home_line": -1.5,
       "rl_home_odds": 180.0,
       "rl_away_odds": 172.0,
@@ -290,12 +290,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 88,
-       "wind_mph": 3,
-       "wind_dir": "NE",
-       "precip_pct": 8
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -329,29 +324,24 @@
        "1.5": 0.73375
       },
       "home_ml": -127.0,
-      "away_ml": 123.0,
-      "home_ml_ev": -0.0005,
-      "away_ml_ev": -0.017,
+      "away_ml": 125.0,
+      "home_ml_ev": 0.0015,
+      "away_ml_ev": -0.0107,
       "total_line": 8.5,
-      "over_odds": -104.0,
-      "under_odds": 106.0,
+      "over_odds": -108.0,
+      "under_odds": 126.0,
       "model_over_prob": 0.5369,
-      "over_ev": 0.029,
-      "under_ev": -0.0206,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 158.0,
+      "rl_home_odds": 160.0,
       "rl_away_odds": 170.0,
       "model_home_rl": 0.3753,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 83,
-       "wind_mph": 7,
-       "wind_dir": "S",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -389,24 +379,19 @@
       "away_ml_ev": -0.0083,
       "total_line": 8.5,
       "over_odds": 113.0,
-      "under_odds": 105.0,
+      "under_odds": 103.0,
       "model_over_prob": 0.4929,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -113.0,
-      "rl_away_odds": 115.0,
+      "rl_away_odds": 112.0,
       "model_home_rl": 0.6242,
-      "rl_home_ev": 0.0905,
-      "rl_away_ev": -0.0938
+      "rl_home_ev": 0.0872,
+      "rl_away_ev": -0.1028
      },
      {
-      "weather": {
-       "temp_f": 80,
-       "wind_mph": 9,
-       "wind_dir": "S",
-       "precip_pct": 17
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -439,19 +424,19 @@
        "-1.5": 0.2618,
        "1.5": 0.6163
       },
-      "home_ml": 106.0,
-      "away_ml": -108.0,
-      "home_ml_ev": -0.0563,
-      "away_ml_ev": 0.0437,
+      "home_ml": 105.0,
+      "away_ml": -104.0,
+      "home_ml_ev": -0.055,
+      "away_ml_ev": 0.0573,
       "total_line": 8.5,
-      "over_odds": 108.0,
-      "under_odds": 115.0,
+      "over_odds": 104.0,
+      "under_odds": 108.0,
       "model_over_prob": 0.5854,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 178.0,
-      "rl_away_odds": 150.0,
+      "rl_home_odds": 174.0,
+      "rl_away_odds": 152.0,
       "model_home_rl": 0.2618,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -487,18 +472,18 @@
        "-1.5": 0.3619,
        "1.5": 0.7031
       },
-      "home_ml": 106.0,
-      "away_ml": 122.0,
+      "home_ml": 105.0,
+      "away_ml": 117.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 8.5,
-      "over_odds": 108.0,
-      "under_odds": 115.0,
+      "over_odds": 104.0,
+      "under_odds": 108.0,
       "model_over_prob": 0.7107,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 178.0,
+      "rl_home_odds": 174.0,
       "rl_away_odds": 163.0,
       "model_home_rl": 0.3619,
       "rl_home_ev": NaN,
@@ -539,24 +524,29 @@
        "1.5": 0.88165
       },
       "home_ml": -245.0,
-      "away_ml": 251.0,
-      "home_ml_ev": 0.0458,
-      "away_ml_ev": -0.0967,
+      "away_ml": 245.0,
+      "home_ml_ev": 0.0433,
+      "away_ml_ev": -0.106,
       "total_line": 7.5,
       "over_odds": 113.0,
-      "under_odds": -108.0,
+      "under_odds": 111.0,
       "model_over_prob": 0.692,
-      "over_ev": 0.2427,
-      "under_ev": -0.1977,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": -113.0,
+      "rl_home_odds": -112.0,
       "rl_away_odds": 111.0,
       "model_home_rl": 0.592,
-      "rl_home_ev": 0.0557,
-      "rl_away_ev": -0.0718
+      "rl_home_ev": 0.0592,
+      "rl_away_ev": -0.0707
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 7,
+       "wind_dir": "SSE",
+       "precip_pct": 4
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -607,7 +597,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 75,
+       "wind_mph": 2,
+       "wind_dir": "NE",
+       "precip_pct": 46
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -658,7 +653,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 70,
+       "wind_mph": 9,
+       "wind_dir": "SW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -709,7 +709,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 68,
+       "wind_mph": 7,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -761,9 +766,9 @@
      },
      {
       "weather": {
-       "temp_f": 60,
+       "temp_f": 59,
        "wind_mph": 9,
-       "wind_dir": "W",
+       "wind_dir": "WNW",
        "precip_pct": 2
       },
       "lineups": {
@@ -5369,6 +5374,54 @@
     ],
     "news": [
      {
+      "title": "Aroldis Chapman records 15th save",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 13:10:36"
+     },
+     {
+      "title": "Connelly Early strikes out season-high nine in win",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 13:08:00"
+     },
+     {
+      "title": "Cade Cavalli solid, but Nats bullpen turns it into a rout",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:20:01"
+     },
+     {
+      "title": "Jacob Young chips in, but Nats still drown in Philly",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:17:38"
+     },
+     {
+      "title": "Curtis Mead Homers in Loss",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:16:24"
+     },
+     {
+      "title": "Dylan Crews swipes bag in three-hit loss to Phillies",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:14:31"
+     },
+     {
+      "title": "Carter Jensen swats solo shot in ugly loss to Rays",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 11:50:43"
+     },
+     {
+      "title": "Seth Lugo shelled early as Rays rout Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 11:47:49"
+     },
+     {
       "title": "Luis Robert Jr. (back) runs bases Thursday",
       "body": "",
       "player": "",
@@ -5409,54 +5462,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-26 07:13:00"
-     },
-     {
-      "title": "Jonathan Aranda records three-hit game Thuesday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:09:08"
-     },
-     {
-      "title": "Victor Mesa Jr. logs homer in blowout win Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:05:21"
-     },
-     {
-      "title": "Ian Seymour dominates with 6.2 hitless innings Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:01:51"
-     },
-     {
-      "title": "Junior Caminero goes yard three times Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:56:47"
-     },
-     {
-      "title": "Brandon Lowe goes deep Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:29:50"
-     },
-     {
-      "title": "Henry Davis hits home run Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:28:20"
-     },
-     {
-      "title": "Bubba Chandler earns win Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:26:31"
-     },
-     {
-      "title": "Bryce Miller strikes out 11 in loss Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:24:09"
      }
     ],
     "injuries": [
@@ -6875,16 +6880,16 @@
       "home_win_prob": 0.3827,
       "away_win_prob": 0.6173,
       "home_ml": 178,
-      "away_ml": -174,
-      "home_ml_ev": 0.0346,
-      "away_ml_ev": -0.0113,
+      "away_ml": -170,
+      "home_ml_ev": 0.0373,
+      "away_ml_ev": -0.0044,
       "total_line": 164.5,
       "over_odds": 100.0,
       "model_over_prob": 0.6039,
       "over_ev": 0.2077,
       "spread_home_line": 3.5,
-      "spread_home_odds": 127.0,
-      "spread_away_odds": -108.0,
+      "spread_home_odds": 122.0,
+      "spread_away_odds": 115.0,
       "model_home_cover": 0.6229,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
@@ -6899,14 +6904,14 @@
       "proj_total": 172.66,
       "home_win_prob": 0.5178,
       "away_win_prob": 0.4822,
-      "home_ml": -170,
-      "away_ml": 170,
-      "home_ml_ev": -0.0888,
-      "away_ml_ev": 0.151,
-      "total_line": 173.5,
-      "over_odds": 112.0,
-      "model_over_prob": 0.4777,
-      "over_ev": 0.0127,
+      "home_ml": -178,
+      "away_ml": 174,
+      "home_ml_ev": -0.0983,
+      "away_ml_ev": 0.158,
+      "total_line": 174.0,
+      "over_odds": 110.0,
+      "model_over_prob": 0.4644,
+      "over_ev": -0.0247,
       "spread_home_line": -6.5,
       "spread_home_odds": 122.0,
       "spread_away_odds": 170.0,
@@ -6925,13 +6930,13 @@
       "home_win_prob": 0.5322,
       "away_win_prob": 0.4678,
       "home_ml": 109,
-      "away_ml": -108,
-      "home_ml_ev": 0.0573,
-      "away_ml_ev": -0.0484,
+      "away_ml": -110,
+      "home_ml_ev": 0.055,
+      "away_ml_ev": -0.0546,
       "total_line": 165.0,
-      "over_odds": 100.0,
+      "over_odds": 107.0,
       "model_over_prob": 0.5404,
-      "over_ev": 0.0807,
+      "over_ev": 0.1185,
       "spread_home_line": -1.5,
       "spread_home_odds": 108.0,
       "spread_away_odds": 100.0,
@@ -6948,6 +6953,12 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Jalen Duren planning to explore sign-and-trade options",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:33:36"
+     },
      {
       "title": "Kevin Porter Jr. picks up player option with Bucks ",
       "body": "",
@@ -7031,12 +7042,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-25 15:23:01"
-     },
-     {
-      "title": "Josh Green traded to Minnesota Timberwolves",
-      "body": "",
-      "player": "",
-      "when": "2026-06-25 13:50:42"
      }
     ],
     "injuries": [
@@ -9945,7 +9950,12 @@
    "MLB": {
     "games": [
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 73,
+       "wind_mph": 9,
+       "wind_dir": "E",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10033,10 +10043,10 @@
        "-1.5": 0.272,
        "1.5": 0.6343
       },
-      "home_ml": 104.0,
+      "home_ml": 108.0,
       "away_ml": -113.0,
-      "home_ml_ev": -0.053,
-      "away_ml_ev": 0.0099,
+      "home_ml_ev": -0.0395,
+      "away_ml_ev": 0.0145,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10051,12 +10061,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 75,
-       "wind_mph": 7,
-       "wind_dir": "E",
-       "precip_pct": 1
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10089,9 +10094,9 @@
        "1.5": 0.781
       },
       "home_ml": -138.0,
-      "away_ml": 138.0,
-      "home_ml_ev": 0.0302,
-      "away_ml_ev": -0.0417,
+      "away_ml": 133.0,
+      "home_ml_ev": 0.0258,
+      "away_ml_ev": -0.0558,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10106,12 +10111,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 71,
-       "wind_mph": 4,
-       "wind_dir": "WSW",
-       "precip_pct": 32
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10162,12 +10162,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 76,
-       "wind_mph": 5,
-       "wind_dir": "SSW",
-       "precip_pct": 14
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10217,12 +10212,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 70,
-       "wind_mph": 11,
-       "wind_dir": "NE",
-       "precip_pct": 1
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10255,7 +10245,7 @@
        "-1.5": 0.39985,
        "1.5": 0.7445
       },
-      "home_ml": 104.0,
+      "home_ml": 108.0,
       "away_ml": 178.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
@@ -10273,12 +10263,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 83,
-       "wind_mph": 8,
-       "wind_dir": "E",
-       "precip_pct": 35
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10310,10 +10295,10 @@
        "-1.5": 0.2852,
        "1.5": 0.66275
       },
-      "home_ml": -163.0,
+      "home_ml": -178.0,
       "away_ml": 163.0,
-      "home_ml_ev": -0.1243,
-      "away_ml_ev": 0.2026,
+      "home_ml_ev": -0.1464,
+      "away_ml_ev": 0.1926,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10332,7 +10317,7 @@
        "temp_f": 75,
        "wind_mph": 6,
        "wind_dir": "NE",
-       "precip_pct": 48
+       "precip_pct": 30
       },
       "lineups": {
        "home": [],
@@ -10384,12 +10369,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 72,
-       "wind_mph": 6,
-       "wind_dir": "E",
-       "precip_pct": 8
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10440,7 +10420,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 81,
+       "wind_mph": 13,
+       "wind_dir": "SE",
+       "precip_pct": 2
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10522,10 +10507,10 @@
        "-1.5": 0.50265,
        "1.5": 0.82255
       },
-      "home_ml": -150.0,
+      "home_ml": -144.0,
       "away_ml": 150.0,
-      "home_ml_ev": 0.0719,
-      "away_ml_ev": -0.1079,
+      "home_ml_ev": 0.0864,
+      "away_ml_ev": -0.1029,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10540,7 +10525,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 84,
+       "wind_mph": 2,
+       "wind_dir": "N",
+       "precip_pct": 5
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10588,7 +10578,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 69,
+       "wind_mph": 8,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10639,7 +10634,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 63,
+       "wind_mph": 19,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10689,7 +10689,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 72,
+       "wind_mph": 8,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -14419,6 +14424,54 @@
     ],
     "news": [
      {
+      "title": "Aroldis Chapman records 15th save",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 13:10:36"
+     },
+     {
+      "title": "Connelly Early strikes out season-high nine in win",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 13:08:00"
+     },
+     {
+      "title": "Cade Cavalli solid, but Nats bullpen turns it into a rout",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:20:01"
+     },
+     {
+      "title": "Jacob Young chips in, but Nats still drown in Philly",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:17:38"
+     },
+     {
+      "title": "Curtis Mead Homers in Loss",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:16:24"
+     },
+     {
+      "title": "Dylan Crews swipes bag in three-hit loss to Phillies",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:14:31"
+     },
+     {
+      "title": "Carter Jensen swats solo shot in ugly loss to Rays",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 11:50:43"
+     },
+     {
+      "title": "Seth Lugo shelled early as Rays rout Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 11:47:49"
+     },
+     {
       "title": "Luis Robert Jr. (back) runs bases Thursday",
       "body": "",
       "player": "",
@@ -14459,54 +14512,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-26 07:13:00"
-     },
-     {
-      "title": "Jonathan Aranda records three-hit game Thuesday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:09:08"
-     },
-     {
-      "title": "Victor Mesa Jr. logs homer in blowout win Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:05:21"
-     },
-     {
-      "title": "Ian Seymour dominates with 6.2 hitless innings Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 07:01:51"
-     },
-     {
-      "title": "Junior Caminero goes yard three times Thursday",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:56:47"
-     },
-     {
-      "title": "Brandon Lowe goes deep Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:29:50"
-     },
-     {
-      "title": "Henry Davis hits home run Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:28:20"
-     },
-     {
-      "title": "Bubba Chandler earns win Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:26:31"
-     },
-     {
-      "title": "Bryce Miller strikes out 11 in loss Thursday ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 06:24:09"
      }
     ],
     "injuries": [
@@ -15929,15 +15934,15 @@
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 174.5,
-      "over_odds": -108.0,
+      "over_odds": -110.0,
       "model_over_prob": 0.7251,
-      "over_ev": 0.3965,
+      "over_ev": 0.3842,
       "spread_home_line": -3.5,
-      "spread_home_odds": -104.0,
+      "spread_home_odds": 104.0,
       "spread_away_odds": -105.0,
       "model_home_cover": 0.5738,
-      "spread_home_ev": 0.052,
-      "spread_away_ev": -0.0947
+      "spread_home_ev": 0.0841,
+      "spread_away_ev": -0.0852
      },
      {
       "game_id": "401857028",
@@ -15949,10 +15954,10 @@
       "proj_total": 188.02,
       "home_win_prob": 0.7073,
       "away_win_prob": 0.2927,
-      "home_ml": -355,
-      "away_ml": 340,
-      "home_ml_ev": -0.0504,
-      "away_ml_ev": 0.1402,
+      "home_ml": -376,
+      "away_ml": 355,
+      "home_ml_ev": -0.0571,
+      "away_ml_ev": 0.1611,
       "total_line": 178.5,
       "over_odds": -105.0,
       "model_over_prob": 0.7372,
@@ -15974,14 +15979,14 @@
       "proj_total": 170.71,
       "home_win_prob": 0.2158,
       "away_win_prob": 0.7842,
-      "home_ml": 355,
-      "away_ml": -376,
-      "home_ml_ev": -0.0139,
-      "away_ml_ev": -0.0084,
+      "home_ml": 335,
+      "away_ml": -300,
+      "home_ml_ev": NaN,
+      "away_ml_ev": NaN,
       "total_line": 174.5,
-      "over_odds": -108.0,
+      "over_odds": -110.0,
       "model_over_prob": 0.4003,
-      "over_ev": -0.2291,
+      "over_ev": -0.2359,
       "spread_home_line": NaN,
       "spread_home_odds": NaN,
       "spread_away_odds": NaN,
@@ -15998,6 +16003,12 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Jalen Duren planning to explore sign-and-trade options",
+      "body": "",
+      "player": "",
+      "when": "2026-06-26 12:33:36"
+     },
      {
       "title": "Kevin Porter Jr. picks up player option with Bucks ",
       "body": "",
@@ -16081,12 +16092,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-25 15:23:01"
-     },
-     {
-      "title": "Josh Green traded to Minnesota Timberwolves",
-      "body": "",
-      "player": "",
-      "when": "2026-06-25 13:50:42"
      }
     ],
     "injuries": [
@@ -19044,5 +19049,5 @@
    }
   }
  },
- "odds_api_credits": 24757
+ "odds_api_credits": 24749
 }
