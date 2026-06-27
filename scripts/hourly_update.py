@@ -252,6 +252,15 @@ def main():
     (OUTPUT_DIR / "latest.json").write_text(json.dumps(out, indent=1, default=str))
     log.info("wrote latest.json | primary=%s | in-season=%s | perf=%s",
              primary, active_sports(primary), perf["overall"])
+
+    # Rebuild the downloadable daily workbook from the slate we just wrote.
+    # Best-effort: a workbook failure must never sink the hourly run.
+    try:
+        from project547 import workbook
+        wb_path = workbook.build_to_disk(out, primary_date=primary)
+        log.info("wrote daily workbook -> %s", wb_path)
+    except Exception:  # noqa: BLE001
+        log.exception("workbook build failed (continuing)")
     print(f"OK: slates {upcoming}, graded {graded}, "
           f"record {perf['overall']}")
 

@@ -216,3 +216,73 @@ def test_cumulative_units_and_recent():
     assert len(recent) == 2  # winprob rows excluded
     assert recent.iloc[0]["Date"] == "2026-06-13"
     assert recent.iloc[0]["Result"].endswith("Loss")
+
+
+# --------------------------------------------------------------------------
+# Premium matchup card (hermetic — synthetic matchup, no data deps)
+# --------------------------------------------------------------------------
+def _synthetic_matchup():
+    def row(stat, oa, ob, orank, drank, adv):
+        d = {"stat": stat, "off_rank": orank, "def_rank": drank, "adv": adv,
+             "off_situ_label": "AWAY", "def_situ_label": "HOME",
+             "off_situ": oa, "def_situ": ob}
+        for w in ("season", "l30", "l20", "l15", "l10", "l5"):
+            d[f"off_{w}"] = oa
+            d[f"def_{w}"] = ob
+        return d
+    rows_a = [row("PPG", 84.0, 80.0, 3, 14, 2), row("3PT%", 0.37, 0.34, 5, 12, 1)]
+    rows_h = [row("PPG", 88.0, 83.0, 1, 9, 3)]
+    form = {"w": 8, "l": 5, "streak": "W2",
+            "last5": [{"opp": "X", "win": True, "score": "88-80"},
+                      {"opp": "Y", "win": False, "score": "70-75"}]}
+    return {"home": "Las Vegas Aces", "away": "Indiana Fever",
+            "window": "l10", "window_label": "L10",
+            "home_form": form, "away_form": form,
+            "home_rest": 2, "away_rest": 3,
+            "home_power_rank": 4, "away_power_rank": 6,
+            "home_sos_rank": 3, "away_sos_rank": 9,
+            "away_off_vs_home_def": rows_a, "home_off_vs_away_def": rows_h,
+            "trends": [], "n_teams": 13}
+
+
+def _game():
+    return {"away_team": "Indiana Fever", "home_team": "Las Vegas Aces",
+            "game_time": "2026-06-02T23:00:00Z", "away_exp": 79.2, "home_exp": 86.0,
+            "home_win_prob": 0.70, "away_win_prob": 0.30, "home_ml": -260,
+            "home_ml_ev": 0.03, "away_ml": 215, "away_ml_ev": -0.07,
+            "total_line": 165.5, "model_over_prob": 0.49, "over_ev": -0.03,
+            "spread_home_line": -7.5, "spread_home_odds": -110, "spread_away_odds": -110,
+            "model_home_cover": 0.55, "spread_home_ev": 0.04, "spread_away_ev": -0.06}
+
+
+def test_matchup_card_html_structure():
+    html = ui.matchup_card_html("WNBA", _game(), _synthetic_matchup(), window="l10")
+    assert "Las Vegas Aces" in html and "Indiana Fever" in html
+    assert "L10 window" in html              # window reflected
+    assert "Model read" in html              # decision block
+    assert "top advantages" in html.lower()  # advantage panels
+    assert "★" in html                       # advantage stars
+    assert "offense vs" in html.lower()      # mirrored tables
+    assert "8-5" in html                     # record from form
+
+
+def test_card_market_calls_pick_best_ev_side():
+    calls = ui._mc_market_calls("WNBA", _game(), 0.02)
+    ml = next(c for c in calls if c["label"] == "Moneyline")
+    # home ML has +EV (0.03), away is -EV -> pick home (Aces), PLAY
+    assert ml["pick"] == "Aces" and ml["decision"] == "PLAY"
+    tot = next(c for c in calls if c["label"] == "Total")
+    assert tot["decision"] == "PASS"         # over_ev negative
+    assert 0 <= ml["conf"] <= 10
+
+
+def test_card_handles_empty_matchup():
+    html = ui.matchup_card_html("WNBA", _game(), {}, window="l5")
+    assert "Indiana Fever" in html and "Las Vegas Aces" in html  # header still renders
+
+
+def test_rank_color_buckets():
+    assert ui._rank_color(1, 30) == "var(--good)"
+    assert ui._rank_color(28, 30) == "var(--neg)"
+    assert ui._rank_color(15, 30) == "var(--mid)"
+    assert ui._rank_color(None, 30) == "var(--muted)"
