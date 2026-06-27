@@ -263,3 +263,14 @@
 {"date": "2026-06-28", "sport": "MLB", "event_id": "824744", "game": "New York Yankees @ Boston Red Sox", "source": "model", "home_wp": 0.4465, "away_wp": null, "draw_wp": null}
 {"date": "2026-06-28", "sport": "MLB", "event_id": "824744", "game": "New York Yankees @ Boston Red Sox", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
 {"date": "2026-06-28", "sport": "World Cup", "event_id": "760486", "game": "Canada @ South Africa", "source": "bettingpros", "home_wp": 0.2445, "away_wp": 0.7555, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857030", "game": "Minnesota Lynx @ Dallas Wings", "source": "model", "home_wp": 0.3608, "away_wp": null, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857030", "game": "Minnesota Lynx @ Dallas Wings", "source": "market", "home_wp": 0.3912, "away_wp": 0.6088, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857030", "game": "Minnesota Lynx @ Dallas Wings", "source": "bettingpros", "home_wp": 0.4087, "away_wp": 0.5913, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857031", "game": "Portland Fire @ Washington Mystics", "source": "model", "home_wp": 0.6914, "away_wp": null, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857031", "game": "Portland Fire @ Washington Mystics", "source": "market", "home_wp": 0.7003, "away_wp": 0.2997, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857031", "game": "Portland Fire @ Washington Mystics", "source": "bettingpros", "home_wp": 0.6604, "away_wp": 0.3396, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857032", "game": "Las Vegas Aces @ Chicago Sky", "source": "model", "home_wp": 0.2435, "away_wp": null, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857032", "game": "Las Vegas Aces @ Chicago Sky", "source": "market", "home_wp": 0.2423, "away_wp": 0.7577, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857033", "game": "New York Liberty @ Golden State Valkyries", "source": "model", "home_wp": 0.642, "away_wp": null, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857033", "game": "New York Liberty @ Golden State Valkyries", "source": "market", "home_wp": 0.4951, "away_wp": 0.5049, "draw_wp": null}
+{"date": "2026-06-28", "sport": "WNBA", "event_id": "401857033", "game": "New York Liberty @ Golden State Valkyries", "source": "bettingpros", "home_wp": 0.4913, "away_wp": 0.5087, "draw_wp": null}

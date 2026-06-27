@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-27T10:31:31.079072-04:00",
+ "generated_at": "2026-06-27T12:06:34.713682-04:00",
  "primary_date": "2026-06-27",
  "dates": [
   "2026-06-27",
@@ -11,10 +11,10 @@
     "games": [
      {
       "weather": {
-       "temp_f": 75,
+       "temp_f": 76,
        "wind_mph": 8,
        "wind_dir": "ENE",
-       "precip_pct": 1
+       "precip_pct": 0
       },
       "lineups": {
        "home": [
@@ -90,25 +90,25 @@
       "away_ml": 122.0,
       "home_ml_ev": 0.0051,
       "away_ml_ev": -0.0062,
-      "total_line": 9.0,
-      "over_odds": 120.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.5043,
-      "over_ev": null,
-      "under_ev": null,
+      "total_line": 8.5,
+      "over_odds": -106.0,
+      "under_odds": 108.0,
+      "model_over_prob": 0.6553,
+      "over_ev": 0.1391,
+      "under_ev": -0.1392,
       "rl_home_line": -1.5,
-      "rl_home_odds": 166.0,
+      "rl_home_odds": 167.0,
       "rl_away_odds": -170.0,
       "model_home_rl": 0.3762,
-      "rl_home_ev": -0.0024,
-      "rl_away_ev": -0.0074
+      "rl_home_ev": 0.0002,
+      "rl_away_ev": -0.0067
      },
      {
       "weather": {
-       "temp_f": 73,
+       "temp_f": 72,
        "wind_mph": 10,
        "wind_dir": "E",
-       "precip_pct": 1
+       "precip_pct": 0
       },
       "lineups": {
        "home": [
@@ -180,27 +180,27 @@
        "-1.5": 0.26865,
        "1.5": 0.6334
       },
-      "home_ml": 113.0,
-      "away_ml": -108.0,
-      "home_ml_ev": -0.0214,
-      "away_ml_ev": 0.0411,
+      "home_ml": 104.0,
+      "away_ml": -106.0,
+      "home_ml_ev": -0.0495,
+      "away_ml_ev": 0.0379,
       "total_line": 8.5,
       "over_odds": 117.0,
-      "under_odds": 111.0,
+      "under_odds": 105.0,
       "model_over_prob": 0.5877,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 160.0,
-      "rl_away_odds": 146.0,
+      "rl_home_odds": 178.0,
+      "rl_away_odds": 154.0,
       "model_home_rl": 0.2686,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 73,
-       "wind_mph": 6,
+       "temp_f": 75,
+       "wind_mph": 7,
        "wind_dir": "ESE",
        "precip_pct": 0
       },
@@ -240,24 +240,24 @@
       "away_ml": 170.0,
       "home_ml_ev": -0.0107,
       "away_ml_ev": 0.0181,
-      "total_line": 8.0,
-      "over_odds": 101.0,
+      "total_line": 8.5,
+      "over_odds": 119.0,
       "under_odds": 113.0,
       "model_over_prob": 0.4846,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 123.0,
+      "rl_home_odds": 120.0,
       "rl_away_odds": -122.0,
       "model_home_rl": 0.4176,
-      "rl_home_ev": -0.0334,
-      "rl_away_ev": 0.0309
+      "rl_home_ev": -0.0427,
+      "rl_away_ev": 0.0278
      },
      {
       "weather": {
-       "temp_f": 76,
-       "wind_mph": 4,
-       "wind_dir": "SW",
+       "temp_f": 79,
+       "wind_mph": 3,
+       "wind_dir": "ENE",
        "precip_pct": 21
       },
       "lineups": {
@@ -292,16 +292,16 @@
        "-1.5": 0.43505,
        "1.5": 0.77835
       },
-      "home_ml": 108.0,
-      "away_ml": -108.0,
-      "home_ml_ev": 0.1493,
-      "away_ml_ev": -0.1382,
-      "total_line": 8.0,
-      "over_odds": 102.0,
+      "home_ml": 111.0,
+      "away_ml": -111.0,
+      "home_ml_ev": 0.1586,
+      "away_ml_ev": -0.1429,
+      "total_line": 8.5,
+      "over_odds": 118.0,
       "under_odds": 113.0,
       "model_over_prob": 0.6534,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": 1.5,
       "rl_home_odds": -156.0,
       "rl_away_odds": 154.0,
@@ -311,10 +311,10 @@
      },
      {
       "weather": {
-       "temp_f": 77,
+       "temp_f": 70,
        "wind_mph": 3,
-       "wind_dir": "WSW",
-       "precip_pct": 38
+       "wind_dir": "NNE",
+       "precip_pct": 42
       },
       "lineups": {
        "home": [],
@@ -348,27 +348,27 @@
        "-1.5": 0.3071,
        "1.5": 0.68385
       },
-      "home_ml": -120.0,
-      "away_ml": 122.0,
-      "home_ml_ev": -0.041,
-      "away_ml_ev": 0.0587,
+      "home_ml": -122.0,
+      "away_ml": 120.0,
+      "home_ml_ev": -0.0485,
+      "away_ml_ev": 0.0496,
       "total_line": 9.0,
       "over_odds": 112.0,
       "under_odds": 115.0,
       "model_over_prob": 0.3286,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 170.0,
-      "rl_away_odds": -174.0,
+      "rl_away_odds": -172.0,
       "model_home_rl": 0.3071,
-      "rl_home_ev": -0.0881,
-      "rl_away_ev": 0.0429
+      "rl_home_ev": -0.0868,
+      "rl_away_ev": 0.0465
      },
      {
       "weather": {
-       "temp_f": 70,
-       "wind_mph": 12,
+       "temp_f": 71,
+       "wind_mph": 10,
        "wind_dir": "NE",
        "precip_pct": 1
       },
@@ -404,29 +404,29 @@
        "-1.5": 0.4649,
        "1.5": 0.7952
       },
-      "home_ml": 113.0,
-      "away_ml": 130.0,
+      "home_ml": 104.0,
+      "away_ml": 117.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 8.5,
       "over_odds": 117.0,
-      "under_odds": 111.0,
+      "under_odds": 105.0,
       "model_over_prob": 0.6626,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 160.0,
-      "rl_away_odds": -163.0,
+      "rl_home_odds": 178.0,
+      "rl_away_odds": 176.0,
       "model_home_rl": 0.4649,
-      "rl_home_ev": 0.1022,
-      "rl_away_ev": -0.0705
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 90,
        "wind_mph": 7,
-       "wind_dir": "W",
-       "precip_pct": 12
+       "wind_dir": "NW",
+       "precip_pct": 14
       },
       "lineups": {
        "home": [],
@@ -460,29 +460,29 @@
        "-1.5": 0.3008,
        "1.5": 0.6787
       },
-      "home_ml": -138.0,
-      "away_ml": 138.0,
-      "home_ml_ev": -0.0775,
-      "away_ml_ev": 0.1069,
+      "home_ml": -132.0,
+      "away_ml": 130.0,
+      "home_ml_ev": -0.0713,
+      "away_ml_ev": 0.0846,
       "total_line": 8.5,
-      "over_odds": 113.0,
-      "under_odds": -104.0,
+      "over_odds": 106.0,
+      "under_odds": 124.0,
       "model_over_prob": 0.5026,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 147.0,
-      "rl_away_odds": -150.0,
+      "rl_home_odds": 155.0,
+      "rl_away_odds": -156.0,
       "model_home_rl": 0.3008,
-      "rl_home_ev": -0.1309,
-      "rl_away_ev": 0.0802
+      "rl_home_ev": -0.1172,
+      "rl_away_ev": 0.0729
      },
      {
       "weather": {
-       "temp_f": 75,
-       "wind_mph": 9,
-       "wind_dir": "N",
-       "precip_pct": 28
+       "temp_f": 73,
+       "wind_mph": 4,
+       "wind_dir": "WSW",
+       "precip_pct": 44
       },
       "lineups": {
        "home": [],
@@ -516,29 +516,29 @@
        "-1.5": 0.4201,
        "1.5": 0.7475
       },
-      "home_ml": -108.0,
-      "away_ml": 108.0,
-      "home_ml_ev": 0.0728,
-      "away_ml_ev": -0.0786,
+      "home_ml": -104.0,
+      "away_ml": 104.0,
+      "home_ml_ev": 0.0834,
+      "away_ml_ev": -0.0867,
       "total_line": 9.5,
-      "over_odds": 133.0,
+      "over_odds": 127.0,
       "under_odds": 117.0,
       "model_over_prob": 0.593,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
-      "rl_away_odds": 178.0,
+      "rl_away_odds": 170.0,
       "model_home_rl": 0.4201,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 72,
-       "wind_mph": 5,
+       "temp_f": 71,
+       "wind_mph": 4,
        "wind_dir": "NE",
-       "precip_pct": 3
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -573,15 +573,15 @@
        "1.5": 0.54145
       },
       "home_ml": 133.0,
-      "away_ml": -133.0,
-      "home_ml_ev": -0.107,
-      "away_ml_ev": 0.0805,
-      "total_line": 8.0,
-      "over_odds": 130.0,
+      "away_ml": -134.0,
+      "home_ml_ev": -0.108,
+      "away_ml_ev": 0.0777,
+      "total_line": 7.5,
+      "over_odds": 112.0,
       "under_odds": -108.0,
-      "model_over_prob": 0.4363,
-      "over_ev": null,
-      "under_ev": null,
+      "model_over_prob": 0.5473,
+      "over_ev": 0.0847,
+      "under_ev": -0.0595,
       "rl_home_line": 1.5,
       "rl_home_odds": -127.0,
       "rl_away_odds": 126.0,
@@ -631,8 +631,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -674,25 +674,30 @@
        "-1.5": 0.4857,
        "1.5": 0.81115
       },
-      "home_ml": -147.0,
+      "home_ml": -146.0,
       "away_ml": 150.0,
-      "home_ml_ev": 0.0643,
-      "away_ml_ev": -0.0836,
+      "home_ml_ev": 0.0667,
+      "away_ml_ev": -0.0827,
       "total_line": 8.5,
       "over_odds": 117.0,
-      "under_odds": 111.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.6248,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 140.0,
+      "rl_home_odds": 138.0,
       "rl_away_odds": -138.0,
       "model_home_rl": 0.4857,
-      "rl_home_ev": 0.0846,
-      "rl_away_ev": -0.0548
+      "rl_home_ev": 0.078,
+      "rl_away_ev": -0.0565
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 83,
+       "wind_mph": 5,
+       "wind_dir": "WSW",
+       "precip_pct": 10
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -733,8 +738,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -784,8 +789,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -835,8 +840,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -845,7 +850,12 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 72,
+       "wind_mph": 9,
+       "wind_dir": "SW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -886,8 +896,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -1371,9 +1381,9 @@
       "team": "Detroit Tigers",
       "opponent": "Houston Astros",
       "market": "batter_hits",
-      "projection": 1.0,
+      "projection": 1.08,
       "dist": "binomial",
-      "param": 0.23302558139534885,
+      "param": 0.25163023255813954,
       "dispersion": NaN,
       "n": 4.3,
       "line": null,
@@ -1407,9 +1417,9 @@
       "team": "Detroit Tigers",
       "opponent": "Houston Astros",
       "market": "batter_total_bases",
-      "projection": 1.35,
+      "projection": 1.43,
       "dist": "negbinom",
-      "param": 1.354094,
+      "param": 1.434094,
       "dispersion": NaN,
       "n": NaN,
       "line": null,
@@ -2343,9 +2353,9 @@
       "team": "Houston Astros",
       "opponent": "Detroit Tigers",
       "market": "batter_hits",
-      "projection": 1.02,
+      "projection": 1.04,
       "dist": "binomial",
-      "param": 0.23760744186046512,
+      "param": 0.2410958139534884,
       "dispersion": NaN,
       "n": 4.3,
       "line": null,
@@ -2379,9 +2389,9 @@
       "team": "Houston Astros",
       "opponent": "Detroit Tigers",
       "market": "batter_total_bases",
-      "projection": 1.33,
+      "projection": 1.34,
       "dist": "negbinom",
-      "param": 1.3281299999999998,
+      "param": 1.34313,
       "dispersion": NaN,
       "n": NaN,
       "line": null,
@@ -4539,9 +4549,9 @@
       "team": "New York Yankees",
       "opponent": "Boston Red Sox",
       "market": "batter_hits",
-      "projection": 1.41,
+      "projection": 1.45,
       "dist": "binomial",
-      "param": 0.3205545454545454,
+      "param": 0.3296454545454545,
       "dispersion": NaN,
       "n": 4.4,
       "line": null,
@@ -4575,9 +4585,9 @@
       "team": "New York Yankees",
       "opponent": "Boston Red Sox",
       "market": "batter_total_bases",
-      "projection": 1.9,
+      "projection": 1.94,
       "dist": "negbinom",
-      "param": 1.9026240000000003,
+      "param": 1.9426240000000001,
       "dispersion": NaN,
       "n": NaN,
       "line": null,
@@ -4649,7 +4659,7 @@
       "market": "batter_hits",
       "projection": 1.17,
       "dist": "binomial",
-      "param": 0.27277534883720933,
+      "param": 0.2716125581395349,
       "dispersion": NaN,
       "n": 4.3,
       "line": null,
@@ -4685,7 +4695,7 @@
       "market": "batter_total_bases",
       "projection": 1.8,
       "dist": "negbinom",
-      "param": 1.802626,
+      "param": 1.797626,
       "dispersion": NaN,
       "n": NaN,
       "line": null,
@@ -10188,6 +10198,60 @@
     ],
     "news": [
      {
+      "title": "Michael McGreevy deals six scoreless in no-decision vs. Marlins",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:37:03"
+     },
+     {
+      "title": "Mookie Betts' lone blast can't prevent 7-1 loss to Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:34:46"
+     },
+     {
+      "title": "Roki Sasaki's command vanishes in short start vs. Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:32:05"
+     },
+     {
+      "title": "Steven Cruz fans three as opener as Royals take thrashing",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:11:52"
+     },
+     {
+      "title": "Jhoan Duran converts save chance Friday night ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:55:28"
+     },
+     {
+      "title": "Zack Wheeler shuts down Mets on Friday ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:51:23"
+     },
+     {
+      "title": "Ozzie Albies drives in two Friday night ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:43:07"
+     },
+     {
+      "title": "Mauricio Dubon scores twice in Friday's win ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:38:46"
+     },
+     {
+      "title": "Wyatt Langford racks up three hits, swipes base in loss to Blue Jays",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:30:44"
+     },
+     {
       "title": "Justin Foscue drives in three in win over Blue Jays",
       "body": "",
       "player": "",
@@ -10222,60 +10286,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-27 14:13:36"
-     },
-     {
-      "title": "Jarren Duran swipes base in win over Yankees",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:10:06"
-     },
-     {
-      "title": "Payton Tolle cruises on mound in win over Yankees",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:07:30"
-     },
-     {
-      "title": "Zach Thornton sharp on mound in no-decision",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:04:17"
-     },
-     {
-      "title": "Ryan Helsley Slams Door for Save in 3-1 Win",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:25:38"
-     },
-     {
-      "title": "Trevor Rogers sharp in 3-1 win despite season-long warts",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:23:39"
-     },
-     {
-      "title": "Taylor Ward Racks Up Three Hits in 3-1 Win",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:21:45"
-     },
-     {
-      "title": "Miguel Vargas drives in five in rout of Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:20:44"
-     },
-     {
-      "title": "Andrew Alvarez battles control, takes loss vs. Orioles ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:19:46"
-     },
-     {
-      "title": "Sam Antonacci collects three hits in rout of Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:16:21"
      }
     ],
     "injuries": [
@@ -11693,17 +11703,17 @@
       "proj_total": 183.47,
       "home_win_prob": 0.635,
       "away_win_prob": 0.365,
-      "home_ml": -213,
-      "away_ml": 213,
-      "home_ml_ev": -0.0334,
-      "away_ml_ev": 0.0712,
-      "total_line": 176.5,
-      "over_odds": -104.0,
-      "model_over_prob": 0.6789,
-      "over_ev": 0.3317,
+      "home_ml": -194,
+      "away_ml": 194,
+      "home_ml_ev": -0.0188,
+      "away_ml_ev": 0.0366,
+      "total_line": 178.0,
+      "over_odds": 102.0,
+      "model_over_prob": 0.6423,
+      "over_ev": 0.2975,
       "spread_home_line": -7.5,
-      "spread_home_odds": 113.0,
-      "spread_away_odds": 108.0,
+      "spread_home_odds": 122.0,
+      "spread_away_odds": 100.0,
       "model_home_cover": 0.4358,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
@@ -11719,19 +11729,19 @@
       "home_win_prob": 0.7073,
       "away_win_prob": 0.2927,
       "home_ml": -240,
-      "away_ml": 251,
-      "home_ml_ev": 0.0057,
-      "away_ml_ev": 0.0183,
+      "away_ml": 245,
+      "home_ml_ev": 0.0031,
+      "away_ml_ev": 0.007,
       "total_line": 179.5,
-      "over_odds": 104.0,
+      "over_odds": 100.0,
       "model_over_prob": 0.715,
-      "over_ev": 0.4586,
-      "spread_home_line": -7.5,
-      "spread_home_odds": 102.0,
-      "spread_away_odds": 102.0,
-      "model_home_cover": 0.4757,
-      "spread_home_ev": -0.0145,
-      "spread_away_ev": 0.0345
+      "over_ev": 0.43,
+      "spread_home_line": -6.5,
+      "spread_home_odds": -104.0,
+      "spread_away_odds": 104.0,
+      "model_home_cover": 0.5104,
+      "spread_home_ev": 0.0006,
+      "spread_away_ev": -0.0006
      },
      {
       "game_id": "401857029",
@@ -11743,18 +11753,18 @@
       "proj_total": 169.88,
       "home_win_prob": 0.2284,
       "away_win_prob": 0.7716,
-      "home_ml": 285,
-      "away_ml": -285,
-      "home_ml_ev": -0.0603,
-      "away_ml_ev": 0.0212,
-      "total_line": 176.5,
-      "over_odds": -104.0,
-      "model_over_prob": 0.3295,
-      "over_ev": -0.3537,
-      "spread_home_line": -4.0,
-      "spread_home_odds": 410.0,
-      "spread_away_odds": 113.0,
-      "model_home_cover": 0.1973,
+      "home_ml": 265,
+      "away_ml": -265,
+      "home_ml_ev": -0.0832,
+      "away_ml_ev": 0.0314,
+      "total_line": 178.0,
+      "over_odds": 102.0,
+      "model_over_prob": 0.2941,
+      "over_ev": -0.4058,
+      "spread_home_line": -4.5,
+      "spread_home_odds": 370.0,
+      "spread_away_odds": 123.0,
+      "model_home_cover": 0.1855,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      }
@@ -12665,6 +12675,20 @@
       "note": ""
      },
      {
+      "player": "Tamar Bates",
+      "norm": "tamar bates",
+      "team": "",
+      "status": "TWO-WAY",
+      "note": ""
+     },
+     {
+      "player": "Kylan Boswell",
+      "norm": "kylan boswell",
+      "team": "",
+      "status": "TWO-WAY",
+      "note": ""
+     },
+     {
       "player": "Kyle Filipowski",
       "norm": "kyle filipowski",
       "team": "",
@@ -13241,20 +13265,6 @@
      {
       "player": "Matas Buzelis",
       "norm": "matas buzelis",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Isaiah Collier",
-      "norm": "isaiah collier",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Alex Sarr",
-      "norm": "alex sarr",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -14765,10 +14775,10 @@
     "games": [
      {
       "weather": {
-       "temp_f": 78,
+       "temp_f": 75,
        "wind_mph": 7,
-       "wind_dir": "ESE",
-       "precip_pct": 15
+       "wind_dir": "NNE",
+       "precip_pct": 13
       },
       "lineups": {
        "home": [],
@@ -14821,10 +14831,10 @@
      },
      {
       "weather": {
-       "temp_f": 80,
+       "temp_f": 79,
        "wind_mph": 2,
-       "wind_dir": "N",
-       "precip_pct": 4
+       "wind_dir": "ENE",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -14876,12 +14886,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 75,
-       "wind_mph": 9,
-       "wind_dir": "ENE",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -14914,10 +14919,10 @@
        "-1.5": 0.3165,
        "1.5": 0.6769
       },
-      "home_ml": -138.0,
+      "home_ml": -133.0,
       "away_ml": 133.0,
-      "home_ml_ev": -0.0749,
-      "away_ml_ev": 0.0802,
+      "home_ml_ev": -0.0637,
+      "away_ml_ev": 0.0847,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -14932,17 +14937,13 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 81,
-       "wind_mph": 9,
-       "wind_dir": "ENE",
-       "precip_pct": 1
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
       },
       "player_ids": {
+       "jack flaherty": 656427,
        "hunter brown": 686613
       },
       "game_pk": 824256,
@@ -14950,29 +14951,29 @@
       "away_team": "Houston Astros",
       "home_team": "Detroit Tigers",
       "away_pitcher": "Hunter Brown",
-      "home_pitcher": NaN,
+      "home_pitcher": "Jack Flaherty",
       "away_pitcher_id": 686613.0,
-      "home_pitcher_id": NaN,
+      "home_pitcher_id": 656427.0,
       "home_exp_runs": 4.594,
-      "away_exp_runs": 4.683,
-      "proj_total": 9.277,
-      "home_win_prob": 0.4869,
-      "away_win_prob": 0.5131,
+      "away_exp_runs": 4.778,
+      "proj_total": 9.372,
+      "home_win_prob": 0.472,
+      "away_win_prob": 0.528,
       "over_probs": {
-       "7.5": 0.72175,
-       "8.0": 0.62865,
-       "8.5": 0.62865,
-       "9.0": 0.4688,
-       "9.5": 0.4688
+       "7.5": 0.7366,
+       "8.0": 0.64355,
+       "8.5": 0.64355,
+       "9.0": 0.48725,
+       "9.5": 0.48725
       },
       "home_rl_cover": {
-       "-1.5": 0.31435,
-       "1.5": 0.66985
+       "-1.5": 0.3018,
+       "1.5": 0.65205
       },
       "home_ml": 122.0,
-      "away_ml": -122.0,
-      "home_ml_ev": 0.0405,
-      "away_ml_ev": -0.0332,
+      "away_ml": -117.0,
+      "home_ml_ev": 0.0292,
+      "away_ml_ev": -0.0051,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -14987,12 +14988,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 78,
-       "wind_mph": 7,
-       "wind_dir": "N",
-       "precip_pct": 3
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -15025,10 +15021,10 @@
        "-1.5": 0.2056,
        "1.5": 0.6002
       },
-      "home_ml": 100.0,
+      "home_ml": -104.0,
       "away_ml": 100.0,
-      "home_ml_ev": -0.123,
-      "away_ml_ev": 0.123,
+      "home_ml_ev": -0.1351,
+      "away_ml_ev": 0.1181,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -15043,12 +15039,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 91,
-       "wind_mph": 4,
-       "wind_dir": "ENE",
-       "precip_pct": 11
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -15100,9 +15091,9 @@
      },
      {
       "weather": {
-       "temp_f": 75,
+       "temp_f": 73,
        "wind_mph": 5,
-       "wind_dir": "E",
+       "wind_dir": "N",
        "precip_pct": 2
       },
       "lineups": {
@@ -15137,9 +15128,9 @@
        "1.5": 0.58545
       },
       "home_ml": 127.0,
-      "away_ml": -117.0,
-      "home_ml_ev": NaN,
-      "away_ml_ev": NaN,
+      "away_ml": -122.0,
+      "home_ml_ev": -0.0623,
+      "away_ml_ev": 0.068,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -15155,8 +15146,8 @@
      },
      {
       "weather": {
-       "temp_f": 79,
-       "wind_mph": 16,
+       "temp_f": 82,
+       "wind_mph": 17,
        "wind_dir": "SE",
        "precip_pct": 11
       },
@@ -15193,9 +15184,9 @@
        "1.5": 0.7274
       },
       "home_ml": -138.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0085,
-      "away_ml_ev": -0.0095,
+      "away_ml": 138.0,
+      "home_ml_ev": -0.0041,
+      "away_ml_ev": 0.0056,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -15211,8 +15202,8 @@
      },
      {
       "weather": {
-       "temp_f": 75,
-       "wind_mph": 8,
+       "temp_f": 76,
+       "wind_mph": 10,
        "wind_dir": "E",
        "precip_pct": 0
       },
@@ -15267,9 +15258,9 @@
      },
      {
       "weather": {
-       "temp_f": 77,
-       "wind_mph": 9,
-       "wind_dir": "ESE",
+       "temp_f": 80,
+       "wind_mph": 12,
+       "wind_dir": "SE",
        "precip_pct": 0
       },
       "lineups": {
@@ -15304,9 +15295,9 @@
        "1.5": 0.7851
       },
       "home_ml": -150.0,
-      "away_ml": 144.0,
-      "home_ml_ev": 0.0291,
-      "away_ml_ev": -0.0666,
+      "away_ml": 150.0,
+      "home_ml_ev": 0.034,
+      "away_ml_ev": -0.051,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -15321,7 +15312,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 92,
+       "wind_mph": 8,
+       "wind_dir": "S",
+       "precip_pct": 3
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -15371,7 +15367,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 71,
+       "wind_mph": 10,
+       "wind_dir": "SSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -15421,7 +15422,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 75,
+       "wind_mph": 12,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -15472,7 +15478,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 70,
+       "wind_mph": 8,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -15523,7 +15534,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 68,
+       "wind_mph": 7,
+       "wind_dir": "NE",
+       "precip_pct": 4
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -16599,6 +16615,181 @@
       "projection": 1.5,
       "dist": "negbinom",
       "param": 1.503030303030303,
+      "dispersion": 4.0,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "ud_line": null,
+      "ud_over_odds": null,
+      "ud_under_odds": null,
+      "ud_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824256,
+      "player": "Jack Flaherty",
+      "team": "Detroit Tigers",
+      "opponent": "Houston Astros",
+      "market": "pitcher_strikeouts",
+      "projection": 4.55,
+      "dist": "poisson",
+      "param": 4.546843476878582,
+      "dispersion": NaN,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "ud_line": null,
+      "ud_over_odds": null,
+      "ud_under_odds": null,
+      "ud_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824256,
+      "player": "Jack Flaherty",
+      "team": "Detroit Tigers",
+      "opponent": "Houston Astros",
+      "market": "pitcher_outs",
+      "projection": 13.0,
+      "dist": "negbinom",
+      "param": 13.0,
+      "dispersion": 40.0,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "ud_line": null,
+      "ud_over_odds": null,
+      "ud_under_odds": null,
+      "ud_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824256,
+      "player": "Jack Flaherty",
+      "team": "Detroit Tigers",
+      "opponent": "Houston Astros",
+      "market": "pitcher_hits_allowed",
+      "projection": 3.99,
+      "dist": "negbinom",
+      "param": 3.9866666666666664,
+      "dispersion": 7.0,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "ud_line": null,
+      "ud_over_odds": null,
+      "ud_under_odds": null,
+      "ud_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824256,
+      "player": "Jack Flaherty",
+      "team": "Detroit Tigers",
+      "opponent": "Houston Astros",
+      "market": "pitcher_earned_runs",
+      "projection": 1.95,
+      "dist": "negbinom",
+      "param": 1.95,
+      "dispersion": 3.0,
+      "line": null,
+      "odds": null,
+      "book_id": null,
+      "model_over_prob": null,
+      "ev": null,
+      "kelly": null,
+      "bp_projection": null,
+      "bp_ev": null,
+      "bp_probability": null,
+      "bp_recommended_side": null,
+      "bp_bet_rating": null,
+      "pp_line": null,
+      "pp_over_odds": null,
+      "pp_under_odds": null,
+      "pp_model_over_prob": null,
+      "ud_line": null,
+      "ud_over_odds": null,
+      "ud_under_odds": null,
+      "ud_model_over_prob": null,
+      "hr_l5": NaN,
+      "hr_l10": NaN,
+      "hr_l20": NaN,
+      "hr_season": NaN,
+      "hr_h2h": NaN
+     },
+     {
+      "game_pk": 824256,
+      "player": "Jack Flaherty",
+      "team": "Detroit Tigers",
+      "opponent": "Houston Astros",
+      "market": "pitcher_walks",
+      "projection": 1.39,
+      "dist": "negbinom",
+      "param": 1.3866666666666665,
       "dispersion": 4.0,
       "line": null,
       "odds": null,
@@ -19953,6 +20144,60 @@
     ],
     "news": [
      {
+      "title": "Michael McGreevy deals six scoreless in no-decision vs. Marlins",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:37:03"
+     },
+     {
+      "title": "Mookie Betts' lone blast can't prevent 7-1 loss to Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:34:46"
+     },
+     {
+      "title": "Roki Sasaki's command vanishes in short start vs. Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:32:05"
+     },
+     {
+      "title": "Steven Cruz fans three as opener as Royals take thrashing",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 15:11:52"
+     },
+     {
+      "title": "Jhoan Duran converts save chance Friday night ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:55:28"
+     },
+     {
+      "title": "Zack Wheeler shuts down Mets on Friday ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:51:23"
+     },
+     {
+      "title": "Ozzie Albies drives in two Friday night ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:43:07"
+     },
+     {
+      "title": "Mauricio Dubon scores twice in Friday's win ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:38:46"
+     },
+     {
+      "title": "Wyatt Langford racks up three hits, swipes base in loss to Blue Jays",
+      "body": "",
+      "player": "",
+      "when": "2026-06-27 14:30:44"
+     },
+     {
       "title": "Justin Foscue drives in three in win over Blue Jays",
       "body": "",
       "player": "",
@@ -19987,60 +20232,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-27 14:13:36"
-     },
-     {
-      "title": "Jarren Duran swipes base in win over Yankees",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:10:06"
-     },
-     {
-      "title": "Payton Tolle cruises on mound in win over Yankees",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:07:30"
-     },
-     {
-      "title": "Zach Thornton sharp on mound in no-decision",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 14:04:17"
-     },
-     {
-      "title": "Ryan Helsley Slams Door for Save in 3-1 Win",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:25:38"
-     },
-     {
-      "title": "Trevor Rogers sharp in 3-1 win despite season-long warts",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:23:39"
-     },
-     {
-      "title": "Taylor Ward Racks Up Three Hits in 3-1 Win",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:21:45"
-     },
-     {
-      "title": "Miguel Vargas drives in five in rout of Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:20:44"
-     },
-     {
-      "title": "Andrew Alvarez battles control, takes loss vs. Orioles ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:19:46"
-     },
-     {
-      "title": "Sam Antonacci collects three hits in rout of Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 13:16:21"
      }
     ],
     "injuries": [
@@ -21447,9 +21638,109 @@
     ]
    },
    "WNBA": {
-    "games": [],
+    "games": [
+     {
+      "game_id": "401857030",
+      "game_time": "2026-06-28T18:00Z",
+      "away_team": "Minnesota Lynx",
+      "home_team": "Dallas Wings",
+      "away_exp": 88.73,
+      "home_exp": 85.36,
+      "proj_total": 174.09,
+      "home_win_prob": 0.3608,
+      "away_win_prob": 0.6392,
+      "home_ml": 156,
+      "away_ml": -155,
+      "home_ml_ev": -0.0374,
+      "away_ml_ev": 0.0266,
+      "total_line": 178.5,
+      "over_odds": -104.0,
+      "model_over_prob": 0.3844,
+      "over_ev": -0.246,
+      "spread_home_line": 3.5,
+      "spread_home_odds": -104.0,
+      "spread_away_odds": 122.0,
+      "model_home_cover": 0.5042,
+      "spread_home_ev": NaN,
+      "spread_away_ev": NaN
+     },
+     {
+      "game_id": "401857031",
+      "game_time": "2026-06-28T19:00Z",
+      "away_team": "Portland Fire",
+      "home_team": "Washington Mystics",
+      "away_exp": 82.12,
+      "home_exp": 87.31,
+      "proj_total": 169.43,
+      "home_win_prob": 0.6914,
+      "away_win_prob": 0.3086,
+      "home_ml": -210,
+      "away_ml": 245,
+      "home_ml_ev": NaN,
+      "away_ml_ev": NaN,
+      "total_line": 164.5,
+      "over_odds": -110.0,
+      "model_over_prob": 0.6288,
+      "over_ev": 0.2004,
+      "spread_home_line": -5.5,
+      "spread_home_odds": -110.0,
+      "spread_away_odds": -107.0,
+      "model_home_cover": 0.4896,
+      "spread_home_ev": -0.0522,
+      "spread_away_ev": -0.0259
+     },
+     {
+      "game_id": "401857032",
+      "game_time": "2026-06-28T20:00Z",
+      "away_team": "Las Vegas Aces",
+      "home_team": "Chicago Sky",
+      "away_exp": 91.69,
+      "home_exp": 88.8,
+      "proj_total": 180.49,
+      "home_win_prob": 0.2435,
+      "away_win_prob": 0.7565,
+      "home_ml": 317,
+      "away_ml": -300,
+      "home_ml_ev": 0.0128,
+      "away_ml_ev": 0.0095,
+      "total_line": 179.5,
+      "over_odds": -108.0,
+      "model_over_prob": 0.5263,
+      "over_ev": 0.0136,
+      "spread_home_line": 7.5,
+      "spread_home_odds": -108.0,
+      "spread_away_odds": -110.0,
+      "model_home_cover": 0.6557,
+      "spread_home_ev": 0.1108,
+      "spread_away_ev": -0.192
+     },
+     {
+      "game_id": "401857033",
+      "game_time": "2026-06-28T23:00Z",
+      "away_team": "New York Liberty",
+      "home_team": "Golden State Valkyries",
+      "away_exp": 81.77,
+      "home_exp": 84.64,
+      "proj_total": 166.41,
+      "home_win_prob": 0.642,
+      "away_win_prob": 0.358,
+      "home_ml": 100,
+      "away_ml": -104,
+      "home_ml_ev": 0.1371,
+      "away_ml_ev": -0.1537,
+      "total_line": 163.5,
+      "over_odds": -110.0,
+      "model_over_prob": 0.5769,
+      "over_ev": 0.1014,
+      "spread_home_line": 1.0,
+      "spread_home_odds": -115.0,
+      "spread_away_odds": 100.0,
+      "model_home_cover": 0.6318,
+      "spread_home_ev": 0.0737,
+      "spread_away_ev": -0.1486
+     }
+    ],
     "props": [],
-    "error": "games unavailable (TypeError: operation 'and_' not supported for dtype 'str' with dtype 'bool')",
     "news": [],
     "injuries": []
    },
@@ -22355,6 +22646,20 @@
       "note": ""
      },
      {
+      "player": "Tamar Bates",
+      "norm": "tamar bates",
+      "team": "",
+      "status": "TWO-WAY",
+      "note": ""
+     },
+     {
+      "player": "Kylan Boswell",
+      "norm": "kylan boswell",
+      "team": "",
+      "status": "TWO-WAY",
+      "note": ""
+     },
+     {
       "player": "Kyle Filipowski",
       "norm": "kyle filipowski",
       "team": "",
@@ -22931,20 +23236,6 @@
      {
       "player": "Matas Buzelis",
       "norm": "matas buzelis",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Isaiah Collier",
-      "norm": "isaiah collier",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Alex Sarr",
-      "norm": "alex sarr",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -24503,5 +24794,5 @@
    }
   }
  },
- "odds_api_credits": 24669
+ "odds_api_credits": 24661
 }
