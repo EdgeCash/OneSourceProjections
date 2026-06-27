@@ -226,3 +226,38 @@ def test_build_workbook_default_is_hermetic():
     # default build adds no hub (keeps the on-demand/test path light)
     wb = workbook.build_workbook(_fixture())
     assert "Research Hub" not in wb.sheetnames
+
+
+# --------------------------------------------------------------------------
+# Track B: CLV columns + calibration
+# --------------------------------------------------------------------------
+def test_clv_formula_references_both_cells():
+    f = workbook.clv_formula("$H$5", "$O$5")
+    assert f.startswith("=IF(OR($H$5") and "$O$5" in f
+
+
+def test_games_have_clv_columns():
+    wb = workbook.build_workbook(_fixture())
+    ws = wb["MLB Games"]
+    hdrs = [ws.cell(row=4, column=c).value for c in range(1, 17)]
+    assert "✏ Closing" in hdrs and "CLV %" in hdrs
+    # closing cell editable, CLV cell is a formula
+    assert ws["O5"].protection.locked is False
+    assert str(ws["P5"].value).startswith("=")
+    # props sheet stays narrow (no CLV columns)
+    assert wb["MLB Props"].cell(row=4, column=15).value in (None, "")
+
+
+def test_track_record_calibration_when_ledger_present():
+    pytest.importorskip("pandas")
+    from pathlib import Path
+    if not Path("data/track/results.jsonl").exists():
+        pytest.skip("no graded ledger in this checkout")
+    wb = workbook.build_workbook(_fixture())
+    ws = wb["Track Record"]
+    col1 = [ws.cell(row=r, column=1).value for r in range(1, ws.max_row + 1)]
+    # calibration section renders when there are graded games
+    from project547 import results, scorecard
+    if scorecard.reliability(results.load_ledger())["n"]:
+        assert any(str(v).startswith("Calibration") for v in col1)
+        assert "Model said" in col1

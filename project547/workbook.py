@@ -119,6 +119,14 @@ def stake_formula(kelly_cell: str, o: str) -> str:
             f"*{CELL_BANKROLL},2))")
 
 
+def clv_formula(taken: str, close: str) -> str:
+    """Closing-line value: how much better your taken price was than the close.
+    +ve = you beat the close (the earliest honest sign an edge is real). Blank
+    until both your price and the closing line are filled in."""
+    return (f'=IF(OR({taken}="",{close}=""),"",'
+            f"(1+{_profit(taken)})/(1+{_profit(close)})-1)")
+
+
 def verdict_formula(ev_cell: str) -> str:
     """Plain-language read of the EV cell, anti-guru and research-aware.
 
@@ -261,7 +269,8 @@ def _why(r: dict) -> str:
 # ---------------------------------------------------------------------------
 GAME_HEADERS = ["Date", "Matchup", "Start", "Market", "Selection",
                 "Model Win%", "Model Fair", "✏ Your Odds", "Implied%",
-                "Your Edge (EV)", "¼-Kelly %", "Stake $", "Verdict", "Model read"]
+                "Your Edge (EV)", "¼-Kelly %", "Stake $", "Verdict", "Model read",
+                "✏ Closing", "CLV %"]
 # column letters for the formula-bearing columns
 _C_PROB, _C_ODDS, _C_IMP, _C_EV, _C_KPCT, _C_STAKE, _C_VERD = "F", "H", "I", "J", "K", "L", "M"
 
@@ -319,13 +328,22 @@ def _write_market_table(ws, rows, start_row, show_player=False):
         ws[f"{k_col}{r}"] = kelly_pct_formula(P, O); ws[f"{k_col}{r}"].number_format = "0.00%"
         ws[f"{stake_col}{r}"] = stake_formula(K, O); ws[f"{stake_col}{r}"].number_format = "$#,##0.00"
         ws[f"{verd_col}{r}"] = verdict_formula(EV)
+        odds_idx = ws[f"{odds_col}{r}"].column
+        edit_cols = {odds_idx}
         if not show_player:
             wc = ws.cell(row=r, column=14, value=_why(row)); wc.font = MUTED_FONT
+            # CLV tracker: editable closing line (col 15) + CLV% formula (16)
+            cl = ws.cell(row=r, column=15, value=None)
+            cl.fill = EDIT_FILL; cl.border = EDIT_BOX; cl.protection = UNLOCKED
+            cl.number_format = "+0;-0"; cl.alignment = Alignment(horizontal="center")
+            clv = ws.cell(row=r, column=16, value=clv_formula(O, f"$O${r}"))
+            clv.number_format = "+0.0%;-0.0%"
+            edit_cols.add(15)
         # borders on every cell; default font on the computed (non-static) ones
         for c in range(1, len(headers) + 1):
             cell = ws.cell(row=r, column=c)
-            cell.border = EDIT_BOX if c == ws[f"{odds_col}{r}"].column else BORDER
-            if c > base and c != ws[f"{odds_col}{r}"].column and c != 14:
+            cell.border = EDIT_BOX if c in edit_cols else BORDER
+            if c > base and c not in edit_cols and c != 14:
                 cell.font = CELL_FONT
         r += 1
     # green->red scale on the EV column so edges read at a glance
@@ -346,7 +364,8 @@ def _autosize(ws, widths: dict):
 
 
 _GAME_WIDTHS = {"A": 11, "B": 30, "C": 7, "D": 11, "E": 22, "F": 10, "G": 9,
-                "H": 11, "I": 9, "J": 12, "K": 10, "L": 10, "M": 16, "N": 30}
+                "H": 11, "I": 9, "J": 12, "K": 10, "L": 10, "M": 16, "N": 28,
+                "O": 10, "P": 9}
 _PROP_WIDTHS = {"A": 11, "B": 20, "C": 8, "D": 8, "E": 18, "F": 14, "G": 11,
                 "H": 9, "I": 11, "J": 9, "K": 12, "L": 10, "M": 10, "N": 16}
 
@@ -371,6 +390,9 @@ def build_readme(wb, data):
                "recompute instantly — in Excel or Google Sheets, offline."),
         ("4.", "Set your Bankroll and Kelly fraction once on the Settings tab; "
                "every stake on every tab follows it."),
+        ("5.", "After a game, type the closing line into the ✏ Closing column on "
+               "the Games tab — CLV % shows whether you beat the close (the "
+               "earliest honest sign an edge is real)."),
         ("", ""),
         ("READING THE VERDICT", ""),
         ("Pass", "Model says there's no edge at your price — skip it."),
@@ -526,7 +548,44 @@ def build_track_record(wb, data):
     ws.cell(row=r + 1, column=1, value=note).font = MUTED_FONT
     ws.cell(row=r + 1, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     ws.merge_cells(start_row=r + 1, start_column=1, end_row=r + 2, end_column=9)
-    _autosize(ws, {"A": 14, "B": 13, "C": 11, "D": 8, "E": 9, "F": 9,
+    r += 4
+
+    # --- calibration: "when we said X%, it actually happened Y%" -------------
+    rel = None
+    try:
+        from . import results, scorecard
+        rel = scorecard.reliability(results.load_ledger())
+    except Exception:  # noqa: BLE001 — ledger optional; skip cleanly
+        rel = None
+    if rel and rel.get("n"):
+        tcell = ws.cell(row=r, column=1, value="Calibration — honesty check")
+        tcell.font = Font(name="Oswald", bold=True, size=12, color=GOOD)
+        ws.cell(row=r + 1, column=1,
+                value=f"When the model said X%, how often it actually happened "
+                      f"(n={rel['n']}, ECE {rel['ece']:.3f} — lower is better; "
+                      "a calibrated model's bars sit on the diagonal).").font = MUTED_FONT
+        ws.merge_cells(start_row=r + 1, start_column=1, end_row=r + 1, end_column=9)
+        ch = ["Model said", "Games", "We predicted", "Actually won", "Gap"]
+        _header_row(ws, r + 3, ch)
+        rr = r + 4
+        for b in rel["bins"]:
+            if not b["n"]:
+                continue
+            vals = [f"{int(b['lo']*100)}–{int(b['hi']*100)}%", b["n"],
+                    b["pred"], b["obs"], b["gap"]]
+            fmts = [None, "0", "0.0%", "0.0%", "+0.0%;-0.0%"]
+            for c, (v, f) in enumerate(zip(vals, fmts), start=1):
+                cell = ws.cell(row=rr, column=c, value=v)
+                cell.font = CELL_FONT
+                cell.border = BORDER
+                if f:
+                    cell.number_format = f
+                if c == 5 and b["gap"] is not None:  # shade the gap
+                    cell.fill = (RANK_GOOD if abs(b["gap"]) <= 0.05
+                                 else RANK_MID if abs(b["gap"]) <= 0.12 else RANK_BAD)
+            rr += 1
+
+    _autosize(ws, {"A": 16, "B": 13, "C": 12, "D": 11, "E": 9, "F": 9,
                    "G": 9, "H": 10, "I": 11})
     ws.protection.sheet = True
     return ws

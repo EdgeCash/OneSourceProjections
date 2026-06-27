@@ -69,9 +69,9 @@ money):
 - **Settings** — bankroll, Kelly fraction, min edge, max stake. Edit once; every tab reprices.
 - **Top Plays** — the biggest engine-priced edges, glanceable on a phone. Nothing's a lock.
 - **Research Hub** — an index plus one premium matchup *page* per game (see below).
-- **`<SPORT>` Games** — moneyline / total / spread, every game, bring your own odds.
+- **`<SPORT>` Games** — moneyline / total / spread, every game, bring your own odds. Two extra columns let you log the **closing line** and see **CLV %** (did you beat the close?).
 - **`<SPORT>` Props** — priced player props (Over side off the model).
-- **Track Record** — the performance summary (Brier, units, ROI, CLV beat-rate), losses included.
+- **Track Record** — the performance summary (Brier, units, ROI, CLV beat-rate), losses included, plus a **calibration table** ("when we said X%, it happened Y%", with an ECE) computed from the graded ledger — the honest read on whether the probabilities mean what they say.
 
 ## Research Hub (the "website to go")
 
