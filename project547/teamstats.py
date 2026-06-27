@@ -63,6 +63,20 @@ STAT_SPECS = {
     "NCAAF": {"pairs": FOOTBALL_PAIRS},
 }
 
+# Stat labels that belong in a separate "supporting" section (team-vs-team)
+# rather than the primary scoring offense-vs-defense table — mirrors the way
+# the reference cards split scoring from rebounding/ball-control rows.
+SUPPORTING_LABELS = {
+    "WNBA": {"REB", "AST", "BLK+STL", "TOV"},
+    "NFL": {"Pass TD/G", "Giveaways/G"},
+    "NCAAF": {"Pass TD/G", "Giveaways/G"},
+    "MLB": set(),  # MLB uses the game-trends section instead
+}
+
+
+def is_supporting(sport: str, label: str) -> bool:
+    return label in SUPPORTING_LABELS.get(sport, set())
+
 # ranking direction per column ("low" = lower is better)
 DIRECTIONS = {
     # offense (high good)

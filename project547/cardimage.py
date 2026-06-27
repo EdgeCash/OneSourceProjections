@@ -20,17 +20,24 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-# Brand cream/graphite palette (docs/BRAND.md) as concrete values, so the
-# var(--…)-themed card renders identically to the dashboard's light theme.
-THEME_CSS = """
-:root{
-  --text:#1f2328; --muted:#5a6066; --faint:#9b937f;
-  --good:#2f7a4a; --neg:#b03636; --mid:#c8941a;
-  --bg:#ece2c8; --card:#fbf5e6; --card2:#efe2c2; --line:#d8ccab;
-  --disp:'Oswald',system-ui,sans-serif;
-  --font:'DM Sans',system-ui,sans-serif;
+# Concrete palettes (docs/BRAND.md) so the var(--…)-themed card renders
+# standalone. "cream" is the brand default; "dark" matches the sleek look of
+# the competitor cards for anyone who prefers it.
+_FONT_VARS = ("  --disp:'Oswald',system-ui,sans-serif;\n"
+              "  --font:'DM Sans',system-ui,sans-serif;")
+THEMES = {
+    "cream": ("\n:root{\n"
+              "  --text:#1f2328; --muted:#5a6066; --faint:#9b937f;\n"
+              "  --good:#2f7a4a; --neg:#b03636; --mid:#c8941a;\n"
+              "  --bg:#ece2c8; --card:#fbf5e6; --card2:#efe2c2; --line:#d8ccab;\n"
+              + _FONT_VARS + "\n}\n"),
+    "dark": ("\n:root{\n"
+             "  --text:#e8ecf3; --muted:#9aa4b2; --faint:#5e6675;\n"
+             "  --good:#3fb950; --neg:#f0556b; --mid:#e3b341;\n"
+             "  --bg:#080b12; --card:#11161f; --card2:#161c27; --line:#232b38;\n"
+             + _FONT_VARS + "\n}\n"),
 }
-"""
+THEME_CSS = THEMES["cream"]  # back-compat default
 _FONTS = ("@import url('https://fonts.googleapis.com/css2?family=Oswald:"
           "wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');")
 
@@ -59,10 +66,11 @@ def available() -> bool:
     return chrome_path() is not None
 
 
-def wrap_html(card_html: str, width: int = 1140) -> str:
+def wrap_html(card_html: str, width: int = 1140, theme: str = "cream") -> str:
     """Self-contained document: brand theme vars + the card markup."""
+    css = THEMES.get(theme, THEMES["cream"])
     return (f"<!doctype html><html><head><meta charset='utf-8'>"
-            f"<style>{_FONTS}{THEME_CSS}"
+            f"<style>{_FONTS}{css}"
             f"body{{margin:0;background:var(--bg);padding:20px;"
             f"width:{width}px;}}</style></head>"
             f"<body>{card_html}</body></html>")
@@ -93,13 +101,14 @@ def _autocrop(png: bytes) -> bytes:
 
 
 def render_png(card_html: str, width: int = 1140, scale: int = 2,
-               max_height: int = 4000, timeout: float = 45.0) -> bytes | None:
+               max_height: int = 4000, timeout: float = 45.0,
+               theme: str = "cream") -> bytes | None:
     """Screenshot the card to PNG bytes, or None if no browser / on error."""
     chrome = chrome_path()
     if not chrome:
         log.info("no Chromium found — skipping card image")
         return None
-    html = wrap_html(card_html, width=width)
+    html = wrap_html(card_html, width=width, theme=theme)
     with tempfile.TemporaryDirectory() as td:
         src = Path(td) / "card.html"
         out = Path(td) / "card.png"
