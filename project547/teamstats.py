@@ -63,6 +63,20 @@ STAT_SPECS = {
     "NCAAF": {"pairs": FOOTBALL_PAIRS},
 }
 
+# Stat labels that belong in a separate "supporting" section (team-vs-team)
+# rather than the primary scoring offense-vs-defense table — mirrors the way
+# the reference cards split scoring from rebounding/ball-control rows.
+SUPPORTING_LABELS = {
+    "WNBA": {"REB", "AST", "BLK+STL", "TOV"},
+    "NFL": {"Pass TD/G", "Giveaways/G"},
+    "NCAAF": {"Pass TD/G", "Giveaways/G"},
+    "MLB": set(),  # MLB uses the game-trends section instead
+}
+
+
+def is_supporting(sport: str, label: str) -> bool:
+    return label in SUPPORTING_LABELS.get(sport, set())
+
 # ranking direction per column ("low" = lower is better)
 DIRECTIONS = {
     # offense (high good)
@@ -295,9 +309,39 @@ def _rank_map(values: dict, higher_better: bool = True) -> dict:
     return {t: i + 1 for i, (t, _) in enumerate(items)}
 
 
-def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
-    """League power ranking by average scoring margin over the window
-    (a self-contained Elo-style proxy; rank 1 = strongest)."""
+def elo_ratings(sport: str, df: pd.DataFrame, asof: str) -> dict:
+    """Walk-forward Elo ratings as of a date — the engine's own measure of
+    current team strength (replayed from results). {} on any failure so the
+    callers fall back to the self-contained proxies."""
+    try:
+        from .models.elo import Elo, EloConfig
+        from .sports import SPORTS
+        sp = SPORTS.get(sport)
+        cfg = (EloConfig(k=sp.elo_k, home_edge=sp.elo_home_edge,
+                         season_regress=sp.elo_regress) if sp else EloConfig())
+        elo = Elo(cfg)
+        fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+        if fc not in df.columns or "opp" not in df.columns:
+            return {}
+        home = df[(df["is_home"]) & (df["date"] <= asof)].sort_values("date")
+        for _, r in home.iterrows():
+            f, o = r.get(fc), r.get(oc)
+            if pd.isna(f) or pd.isna(o):
+                continue
+            elo.update(r["team"], r["opp"], float(f), float(o),
+                       int(str(r["date"])[:4]))
+        return dict(elo.ratings)
+    except Exception:  # noqa: BLE001 — Elo is an upgrade, never a hard dep
+        return {}
+
+
+def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str,
+                ratings: dict | None = None) -> dict:
+    """League power ranking (rank 1 = strongest). Uses the engine's Elo when
+    available (current strength, opponent-adjusted), else falls back to average
+    scoring margin over the window."""
+    if ratings:
+        return _rank_map(ratings, higher_better=True)
     fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
     if fc not in df.columns or oc not in df.columns:
         return {}
@@ -317,12 +361,13 @@ def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
     return _rank_map(margin, higher_better=True)
 
 
-def sos_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
-    """Strength-of-schedule ranking by the average current-season win% of the
-    opponents faced over the window (rank 1 = toughest schedule). Toggleable
-    by window so recency can be weighted to taste."""
-    wp = _season_winpct(sport, df, asof)
-    if not wp or "opp" not in df.columns:
+def sos_ranks(sport: str, df: pd.DataFrame, asof: str, window: str,
+              ratings: dict | None = None) -> dict:
+    """Strength-of-schedule ranking (rank 1 = toughest), over the window so
+    recency can be weighted to taste. Uses the average opponent Elo when
+    available (opponent *strength*), else opponents' current-season win%."""
+    by_team = ratings if ratings else _season_winpct(sport, df, asof)
+    if not by_team or "opp" not in df.columns:
         return {}
     n = None if window == "season" else int(window[1:])
     teams_ = [t for t in df["team"].dropna().unique() if not str(t).isdigit()]
@@ -333,9 +378,9 @@ def sos_ranks(sport: str, df: pd.DataFrame, asof: str, window: str) -> dict:
             d = d[d["season"] == d["season"].max()]
         else:
             d = d.tail(n)
-        opp_wp = [wp[o] for o in d.get("opp", []) if o in wp]
-        if opp_wp:
-            sos[t] = round(sum(opp_wp) / len(opp_wp), 4)
+        opp_vals = [by_team[o] for o in d.get("opp", []) if o in by_team]
+        if opp_vals:
+            sos[t] = round(sum(opp_vals) / len(opp_vals), 4)
     return _rank_map(sos, higher_better=True)
 
 
@@ -398,8 +443,9 @@ def matchup(sport: str, home: str, away: str, asof: str,
             out.append(row)
         return out
 
-    pranks = power_ranks(sport, df, asof, window)
-    sranks = sos_ranks(sport, df, asof, window)
+    elo = elo_ratings(sport, df, asof)  # current strength; {} -> proxy fallback
+    pranks = power_ranks(sport, df, asof, window, elo)
+    sranks = sos_ranks(sport, df, asof, window, elo)
     return {
         "home": home, "away": away,
         "window": window, "window_label": WINDOW_LABELS[window],

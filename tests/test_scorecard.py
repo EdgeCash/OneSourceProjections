@@ -97,3 +97,21 @@ def test_empty_inputs():
     assert scorecard.scorecard([])["disagree"]["n"] == 0
     assert scorecard.bet_scorecard([])["contrarian"]["n"] == 0
     assert scorecard.optimal_shrink([])["ready"] is False
+
+
+def test_reliability_calibration_table():
+    from project547 import scorecard
+    # perfectly calibrated synthetic set: prob p, fraction p win
+    rows = []
+    for p, won in [(0.8, 1)] * 8 + [(0.8, 0)] * 2 + [(0.3, 1)] * 3 + [(0.3, 0)] * 7:
+        rows.append({"market": "model_winprob", "pred_home_wp": p,
+                     "market_home_wp": 0.5, "home_won": won})
+    rel = scorecard.reliability(rows, n_bins=10)
+    assert rel["n"] == 20
+    b80 = next(b for b in rel["bins"] if b["lo"] == 0.8)
+    assert b80["n"] == 10 and abs(b80["obs"] - 0.8) < 1e-9   # 8/10 won
+    b30 = next(b for b in rel["bins"] if b["lo"] == 0.3)
+    assert abs(b30["obs"] - 0.3) < 1e-9                       # 3/10 won
+    assert rel["ece"] < 0.01                                  # well calibrated
+    # empty ledger is safe
+    assert scorecard.reliability([])["n"] == 0

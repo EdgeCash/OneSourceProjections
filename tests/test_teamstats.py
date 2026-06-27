@@ -132,3 +132,31 @@ def test_power_sos_rest_helpers():
     assert sos and min(sos.values()) == 1
     rest = ts.days_rest(df, "LV", "2026-06-02")
     assert rest is None or rest >= 0
+
+
+def test_elo_ratings_and_power_sos_source():
+    df = ts.team_games("WNBA", (2025, 2026))
+    elo = ts.elo_ratings("WNBA", df, "2026-06-02")
+    assert elo and len(elo) >= 10
+    assert all(isinstance(v, float) for v in elo.values())
+    # power uses Elo (current strength) -> window-independent
+    p5 = ts.power_ranks("WNBA", df, "2026-06-02", "l5", elo)
+    p30 = ts.power_ranks("WNBA", df, "2026-06-02", "l30", elo)
+    assert p5 == p30 and min(p5.values()) == 1
+    # sos uses opponent Elo over the window -> window-dependent
+    s5 = ts.sos_ranks("WNBA", df, "2026-06-02", "l5", elo)
+    s30 = ts.sos_ranks("WNBA", df, "2026-06-02", "l30", elo)
+    assert s5 and s30 and s5 != s30
+    # no-ratings path still works (proxy fallback)
+    assert ts.power_ranks("WNBA", df, "2026-06-02", "l10")  # margin proxy
+    assert ts.sos_ranks("WNBA", df, "2026-06-02", "l10")    # opp win% proxy
+
+
+def test_football_matchup_ready():
+    df = ts.team_games("NFL", (2024, 2025))
+    assert len(df) > 500
+    last = str(df["date"].max())
+    m = ts.matchup("NFL", "Kansas City Chiefs", "Buffalo Bills", last, window="l5")
+    assert m and {r["stat"] for r in m["away_off_vs_home_def"]} >= {
+        "Points/G", "Total Yds/G", "Pass Yds/G", "Rush Yds/G"}
+    assert m["home_power_rank"] and m["home_sos_rank"]

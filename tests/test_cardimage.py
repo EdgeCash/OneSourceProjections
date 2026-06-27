@@ -23,3 +23,13 @@ def test_render_png_when_browser_present():
     png = cardimage.render_png("<div style='padding:20px;font-size:30px;'>"
                                "Project 54.7</div>", width=400)
     assert png is not None and png[:8] == b"\x89PNG\r\n\x1a\n"  # real PNG header
+
+
+def test_themes_available():
+    assert set(cardimage.THEMES) >= {"cream", "dark"}
+    cream = cardimage.wrap_html("<div>x</div>", theme="cream")
+    dark = cardimage.wrap_html("<div>x</div>", theme="dark")
+    assert "#ece2c8" in cream          # cream bg
+    assert "#080b12" in dark           # dark bg
+    # unknown theme falls back to cream, never errors
+    assert cardimage.wrap_html("<div>x</div>", theme="nope")

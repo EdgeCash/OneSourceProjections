@@ -1109,10 +1109,12 @@ def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
     Robust to a missing/partial matchup dict so it works off the slate alone."""
     matchup = matchup or {}
     away, home = g.get("away_team", ""), g.get("home_team", "")
+    wlbl = matchup.get("window_label")  # ranks/advantages reflect this window
     head = (f"# {sport} — {away} @ {home}\n"
             f"*{fmt_time_et(g.get('game_time'))} ET · "
             f"O/U {_num(g.get('total_line') or g.get('proj_total'))} · "
-            f"proj {_num(_exp(g, 'away'))}–{_num(_exp(g, 'home'))}*")
+            f"proj {_num(_exp(g, 'away'))}–{_num(_exp(g, 'home'))}"
+            + (f" · stats over the **{wlbl}** window" if wlbl else "") + "*")
 
     conv = {k.upper(): c for k, c in market_convictions(g).items()}
     reads = ["## Model read"]
@@ -1140,7 +1142,8 @@ def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
                 stars.append(f"- {team} {r['stat']} (#{r.get('off_rank')} "
                              f"offense vs #{r.get('def_rank')} defense)")
     if stars:
-        parts.append("## Biggest stat mismatches\n" + "\n".join(stars[:6]))
+        hdr = f"## Biggest stat mismatches{f' ({wlbl})' if wlbl else ''}"
+        parts.append(hdr + "\n" + "\n".join(stars[:6]))
 
     parts.append("_Project 54.7 — model estimates, not financial "
                  "advice._")
@@ -1692,6 +1695,65 @@ def _mc_trends(trends, away, home) -> str:
             f"<tr>{head}</tr>{body}</table>")
 
 
+def _supporting_set(sport):
+    try:
+        from project547 import teamstats
+        return teamstats.SUPPORTING_LABELS.get(sport, set())
+    except Exception:  # noqa: BLE001 — degrade to no split if data layer absent
+        return set()
+
+
+def _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp) -> str:
+    """Team-vs-team supporting stats (rebounding / ball control), shaded by
+    league rank — the reference card's separate 'Supporting Statistics' block."""
+    labels = [l for l in a_supp if l in h_supp]
+    if not labels:
+        return ""
+    extra = window if window in ("l15", "l20", "l30") else None
+    vcols = ["season", "l10", "l5"] + ([extra] if extra else [])
+    vheads = ["SEASON", "L10", "L5"] + ([win_label] if extra else [])
+    rank_h = f"{win_label} RANK"
+    th = ("padding:5px 7px;color:var(--muted);font-size:.58rem;font-weight:700;"
+          "text-transform:uppercase;letter-spacing:.03em;")
+    head = (f"<th style='{th}text-align:left;'>{_last(away)}</th>"
+            + "".join(f"<th style='{th}text-align:center;'>{h}</th>" for h in vheads)
+            + f"<th style='{th}text-align:center;'>{rank_h}</th>"
+            + f"<th style='{th}text-align:center;'>STAT</th>"
+            + f"<th style='{th}text-align:center;'>{rank_h}</th>"
+            + "".join(f"<th style='{th}text-align:center;'>{h}</th>" for h in reversed(vheads))
+            + f"<th style='{th}text-align:right;'>{_last(home)}</th>")
+
+    def num(stat, v, em=False):
+        w = "700" if em else "500"
+        return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
+                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+
+    def pill(rank, better):
+        c = _rank_color(rank, n)
+        return (f"<td style='padding:5px 7px;text-align:center;'>"
+                f"<span style='color:{c};font-weight:700;font-size:.74rem;'>"
+                f"{_ord(rank)}{' ▲' if better else ''}</span></td>")
+
+    body = []
+    for lab in labels:
+        ar, hr = a_supp[lab], h_supp[lab]
+        a_rk, h_rk = ar.get("off_rank"), hr.get("off_rank")
+        a_better = (a_rk or 99) < (h_rk or 99)
+        cells = [num(lab, ar.get(f"off_{c}"), em=(c == window)) for c in vcols]
+        cells.append(pill(a_rk, a_better))
+        cells.append(f"<td style='padding:5px 7px;text-align:center;font-weight:700;"
+                     f"font-size:.72rem;'>{lab}</td>")
+        cells.append(pill(h_rk, (not a_better) and h_rk is not None))
+        cells += [num(lab, hr.get(f"off_{c}"), em=(c == window)) for c in reversed(vcols)]
+        body.append("<tr style='border-top:1px solid var(--line);'>"
+                    + "".join(cells) + "</tr>")
+    return (f"<div style='font-family:var(--disp);font-size:.66rem;font-weight:700;"
+            f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
+            f"margin:14px 0 4px;'>Supporting statistics</div>"
+            f"<table style='width:100%;border-collapse:collapse;'>"
+            f"<tr>{head}</tr>{''.join(body)}</table>")
+
+
 def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
                       min_edge: float = 0.02, title: str | None = None) -> str:
     """The full premium matchup graphic. ``matchup`` is teamstats.matchup(...,
@@ -1742,18 +1804,25 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
 
     a_rows = matchup.get("away_off_vs_home_def") or []
     h_rows = matchup.get("home_off_vs_away_def") or []
+    # split scoring (primary) from supporting (rebounding / ball control)
+    supp = _supporting_set(sport)
+    a_prim = [r for r in a_rows if r["stat"] not in supp]
+    h_prim = [r for r in h_rows if r["stat"] not in supp]
+    a_supp = {r["stat"]: r for r in a_rows if r["stat"] in supp}
+    h_supp = {r["stat"]: r for r in h_rows if r["stat"] in supp}
     top_adv = ("<div style='display:flex;gap:20px;margin:10px 0 4px;'>"
                + _mc_top_adv(f"{_last(away)} top advantages", a_rows, away, home, "left")
                + _mc_top_adv(f"{_last(home)} top advantages", h_rows, home, away, "right")
                + "</div>") if (a_rows or h_rows) else ""
 
     tables = ""
-    if a_rows:
+    if a_prim:
         tables += _mc_stat_table(sport, n, window, win_label,
-                                 f"{away} offense vs {home} defense", a_rows, away, home)
-    if h_rows:
+                                 f"{away} offense vs {home} defense", a_prim, away, home)
+    if h_prim:
         tables += _mc_stat_table(sport, n, window, win_label,
-                                 f"{home} offense vs {away} defense", h_rows, home, away)
+                                 f"{home} offense vs {away} defense", h_prim, home, away)
+    tables += _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp)
     tables += _mc_trends(matchup.get("trends"), away, home)
 
     # decision block

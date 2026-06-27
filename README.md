@@ -193,15 +193,19 @@ omitted. Generate a static HTML preview of all the graphics with
 
 The **premium matchup card** (`app.ui.matchup_card_html`) is the full
 team-vs-team research graphic: team panels (record / streak / recent results /
-**power** & **strength-of-schedule** ranks), projected score, **ML / RL / Total
-confidence gauges**, per-side **top-advantage star panels**, and the mirrored
-offense-vs-defense tables with league-rank pills and an advantage column —
+**Elo power** & **strength-of-schedule** ranks), projected score, **ML / RL /
+Total confidence gauges**, per-side **top-advantage star panels**, the mirrored
+offense-vs-defense tables (with a separate **Supporting Statistics** section)
+carrying league-rank pills and an advantage column, and MLB **game trends** —
 driven by the model, so it tells you the *play*, not just that "stats are
 clustered." A **recency-window toggle** (L5 / L10 / L15 / L20 / L30 / Season)
-recomputes ranks, advantages, and SOS live. The same renderer is screenshotted
-by `project547/cardimage.py` (pre-installed Chromium) and embedded in the
-workbook's **Research Hub** — one matchup page per game — making the `.xlsx` a
-"website to go." See [`docs/WORKBOOK.md`](docs/WORKBOOK.md#research-hub-the-website-to-go).
+recomputes ranks, advantages, and SOS live (power is the engine's current Elo;
+SOS averages opponent Elo over the window). The same renderer is screenshotted
+by `project547/cardimage.py` (pre-installed Chromium, **cream or dark** theme)
+and embedded in the workbook's **Research Hub** — one matchup page per game —
+making the `.xlsx` a "website to go." Football (NFL/NCAAF) cards are wired and
+validated, ready to light up at season open. See
+[`docs/WORKBOOK.md`](docs/WORKBOOK.md#research-hub-the-website-to-go).
 
 ## Daily wager workbook (bring-your-own-odds)
 

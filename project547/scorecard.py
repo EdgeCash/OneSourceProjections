@@ -131,6 +131,39 @@ def optimal_shrink(rows: list[dict], current: float | None = None,
     return out
 
 
+def reliability(rows: list[dict], n_bins: int = 10) -> dict:
+    """Calibration table: bin graded games by the model's home win prob and
+    compare predicted vs observed — the honest "when we said 55%, it hit X%"
+    view. Returns per-bin {lo, hi, n, pred, obs, gap}, the expected calibration
+    error (ECE, lower = better calibrated), and overall Brier. Pure over the
+    graded ledger, so it unit-tests with synthetic rows."""
+    games = classified_games(rows)
+    n = len(games)
+    edges = [round(i / n_bins, 4) for i in range(n_bins + 1)]
+    out = {"n": n, "n_bins": n_bins, "bins": [], "ece": None, "brier": None}
+    if not n:
+        return out
+    buckets: list[list] = [[] for _ in range(n_bins)]
+    for g in games:
+        p = min(max(g["model_wp"], 0.0), 0.999999)
+        buckets[min(int(p * n_bins), n_bins - 1)].append(g)
+    ece = 0.0
+    for i, b in enumerate(buckets):
+        if not b:
+            out["bins"].append({"lo": edges[i], "hi": edges[i + 1], "n": 0,
+                                "pred": None, "obs": None, "gap": None})
+            continue
+        pred = sum(x["model_wp"] for x in b) / len(b)
+        obs = sum(x["home_won"] for x in b) / len(b)
+        out["bins"].append({"lo": edges[i], "hi": edges[i + 1], "n": len(b),
+                            "pred": round(pred, 4), "obs": round(obs, 4),
+                            "gap": round(obs - pred, 4)})
+        ece += len(b) / n * abs(obs - pred)
+    out["ece"] = round(ece, 4)
+    out["brier"] = round(sum(g["model_brier"] for g in games) / n, 4)
+    return out
+
+
 def bet_scorecard(rows: list[dict]) -> dict:
     """ROI / win-rate / CLV on the model's *bets*, split by whether the model
     disagreed with the market on that game (joined by date+game)."""

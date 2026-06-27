@@ -286,3 +286,28 @@ def test_rank_color_buckets():
     assert ui._rank_color(28, 30) == "var(--neg)"
     assert ui._rank_color(15, 30) == "var(--mid)"
     assert ui._rank_color(None, 30) == "var(--muted)"
+
+
+def test_supporting_section_splits_out():
+    m = _synthetic_matchup()
+    # add a supporting stat (REB) to both sides
+    def rrow(stat, oa, orank, drank):
+        d = {"stat": stat, "off_rank": orank, "def_rank": drank, "adv": 0,
+             "off_situ_label": "AWAY", "off_situ": oa}
+        for w in ("season", "l30", "l20", "l15", "l10", "l5"):
+            d[f"off_{w}"] = oa
+            d[f"def_{w}"] = None
+        return d
+    m["away_off_vs_home_def"].append(rrow("REB", 34.0, 5, None))
+    m["home_off_vs_away_def"].append(rrow("REB", 36.0, 2, None))
+    html = ui.matchup_card_html("WNBA", _game(), m, window="l10")
+    assert "Supporting statistics" in html
+    assert "REB" in html
+    # primary scoring table still present, supporting pulled out of it
+    assert "offense vs" in html.lower()
+
+
+def test_ai_brief_labels_window():
+    m = _synthetic_matchup()  # window_label L10
+    brief = ui.ai_brief_game("WNBA", _game(), m, 0.02)
+    assert "L10" in brief and "window" in brief.lower()

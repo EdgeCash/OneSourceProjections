@@ -1134,6 +1134,37 @@ def render_performance():
         st.caption("CLV is measured against our own captured BettingPros "
                    "closing line; it sharpens as more books are added.")
 
+    # Calibration — the honesty check: when we said X%, did it happen X%?
+    from project547 import scorecard as _scorecard
+    rel = _scorecard.reliability(ledger)
+    if rel.get("n"):
+        section_header("Calibration — honesty check")
+        st.caption(f"When the model said X%, how often it actually happened "
+                   f"({rel['n']} graded games · ECE {rel['ece']:.3f} — lower is "
+                   "better). A calibrated model tracks the dotted line; points "
+                   "below it mean we were overconfident there.")
+        rdf = pd.DataFrame([{"Model said": f"{int(b['lo']*100)}–{int(b['hi']*100)}%",
+                             "mid": (b["lo"] + b["hi"]) / 2, "Predicted": b["pred"],
+                             "Actually won": b["obs"], "Games": b["n"],
+                             "Gap": b["gap"]}
+                            for b in rel["bins"] if b["n"]])
+        try:
+            import altair as alt
+            diag = (alt.Chart(pd.DataFrame({"x": [0, 1]}))
+                    .mark_line(strokeDash=[4, 4], color="#9b937f")
+                    .encode(x=alt.X("x:Q", title="Model said (predicted win %)"),
+                            y=alt.Y("x:Q", title="Actually won")))
+            pts = alt.Chart(rdf).mark_circle(color="#2f7a4a").encode(
+                x="mid:Q", y="Actually won:Q",
+                size=alt.Size("Games:Q", legend=None),
+                tooltip=["Model said", "Predicted", "Actually won", "Games", "Gap"])
+            st.altair_chart((diag + pts).properties(height=300), width="stretch")
+        except Exception:  # noqa: BLE001 — chart optional, table always shows
+            pass
+        st.dataframe(rdf.drop(columns=["mid"]).style.format(
+            {"Predicted": "{:.0%}", "Actually won": "{:.0%}", "Gap": "{:+.0%}"}),
+            hide_index=True, width="stretch")
+
     # DFS (PrizePicks/Underdog) played-card track record.
     dfs_perf = plays.summary()
     if dfs_perf.get("legs_logged"):
