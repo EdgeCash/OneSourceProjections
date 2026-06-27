@@ -392,3 +392,6 @@
 {"date": "2026-06-26", "sport": "WNBA", "game": "Atlanta Dream @ Golden State Valkyries", "market": "moneyline", "side": "home", "line": null, "price": 117, "ev": 0.0818, "won": true, "pnl": 1.17, "clv": 0.0156}
 {"date": "2026-06-26", "sport": "WNBA", "game": "Atlanta Dream @ Golden State Valkyries", "market": "total", "side": "over", "line": 164.5, "price": 113.0, "ev": 0.1791, "won": false, "pnl": -1.0, "clv": 0.065}
 {"date": "2026-06-26", "sport": "MLB", "game": "Atlanta Braves @ San Francisco Giants", "market": "model_winprob", "side": "", "pred_home_wp": 0.6315, "home_won": 0, "market_home_wp": 0.5109, "brier": 0.3988, "proj_total": 9.092, "actual_total": 4}
+{"date": "2026-06-27", "sport": "MLB", "game": "Houston Astros @ Detroit Tigers", "market": "model_winprob", "side": "", "pred_home_wp": 0.5653, "home_won": 0, "market_home_wp": 0.7359, "brier": 0.3196, "proj_total": 9.592, "actual_total": 14}
+{"date": "2026-06-27", "sport": "MLB", "game": "New York Yankees @ Boston Red Sox", "market": "model_winprob", "side": "", "pred_home_wp": 0.4523, "home_won": 1, "market_home_wp": 0.8048, "brier": 0.3, "proj_total": 9.002, "actual_total": 5}
+{"date": "2026-06-27", "sport": "MLB", "game": "New York Yankees @ Boston Red Sox", "market": "moneyline", "side": "away", "line": null, "price": -104.0, "ev": 0.0372, "won": false, "pnl": -1.0, "clv": -0.6171}
