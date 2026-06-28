@@ -54,6 +54,36 @@ def test_total_and_cover_probabilities():
     assert proj.home_cover_prob(-10, nba) < proj.home_cover_prob(10, nba)
 
 
+def test_with_consistent_margin_aligns_moneyline_and_spread():
+    """After an external win-prob adjustment (Elo/rest), the rebuilt projection's
+    pick'em spread cover must equal the published win prob — the two can never
+    disagree. Totals must be untouched."""
+    import scipy.stats as st
+    wnba = SPORTS["WNBA"]
+    a, b = _ratings(82, 82, 82, 82, wnba.league_ppg)
+    proj = generic.project_game(wnba, a, b)
+    # simulate an Elo blend pushing the home win prob up to 0.68
+    adj = generic.with_consistent_margin(proj, 0.68, wnba)
+    assert abs(adj.home_win_prob - 0.68) < 1e-3
+    # P(margin + 0 > 0) == win prob when the margin is back-solved from it
+    assert abs(adj.home_cover_prob(0, wnba) - 0.68) < 1e-3
+    # implied margin mean = sigma * z(0.68)
+    assert abs(adj.margin_mean - wnba.sigma_margin * st.norm.ppf(0.68)) < 0.05
+    # totals are independent of the margin adjustment
+    assert adj.total_mean == proj.total_mean
+
+
+def test_with_consistent_margin_noop_for_poisson():
+    """Poisson sports (NHL) carry no margin mean; the helper only refreshes the
+    win prob and leaves cover lambda-driven."""
+    nhl = SPORTS["NHL"]
+    good, bad = _ratings(3.8, 2.4, 2.4, 3.8, nhl.league_ppg)
+    proj = generic.project_game(nhl, good, bad)
+    adj = generic.with_consistent_margin(proj, 0.72, nhl)
+    assert abs(adj.home_win_prob - 0.72) < 1e-3
+    assert adj.margin_mean == proj.margin_mean  # unchanged (None)
+
+
 def test_prop_distributions():
     # overdispersed count -> negative binomial, P(>= ~mean) a bit under 0.5
     p = generic.prop_prob_over(1.2, 0.5, "Goals")

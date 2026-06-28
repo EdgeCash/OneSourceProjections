@@ -70,6 +70,21 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
     return max(base, 1.5)
 
 
+def draw_runs(rng, mu: float, n: int, dispersion: float | None = None) -> np.ndarray:
+    """Draw ``n`` game run totals with mean ``mu``. Real MLB runs are
+    overdispersed (var/mean ≈ 2.3), so when ``dispersion`` > 1 we sample from a
+    negative binomial via its gamma-Poisson mixture: Poisson(λ) with
+    λ ~ Gamma(shape=size, scale=mu/size), size = mu/(d-1), giving mean ``mu``
+    and variance ``mu·d``. ``dispersion`` ≤ 1 (or non-positive mean) falls back
+    to the exact Poisson behavior."""
+    d = config.RUN_DISPERSION if dispersion is None else dispersion
+    if d <= 1.0 or mu <= 0:
+        return rng.poisson(mu, n).astype(float)
+    size = mu / (d - 1.0)
+    lam = rng.gamma(shape=size, scale=mu / size, size=n)
+    return rng.poisson(lam).astype(float)
+
+
 def simulate(
     home: TeamInputs,
     away: TeamInputs,
@@ -83,11 +98,13 @@ def simulate(
 
     rng = np.random.default_rng(seed)
     n = draws or config.SIM_DRAWS
-    h = rng.poisson(h_mu, n).astype(float)
-    a = rng.poisson(a_mu, n).astype(float)
+    h = draw_runs(rng, h_mu, n)
+    a = draw_runs(rng, a_mu, n)
 
-    # Resolve ties like extra innings: repeatedly add one-inning Poisson
-    # runs for both sides until the tie breaks (vectorized, few passes).
+    # Resolve ties like extra innings: repeatedly add one-inning runs for both
+    # sides until the tie breaks (vectorized, few passes). Extra frames are
+    # single innings, so Poisson is appropriate here regardless of the
+    # full-game dispersion.
     ties = h == a
     while ties.any():
         h[ties] += rng.poisson(h_mu / 9.0, int(ties.sum()))

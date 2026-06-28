@@ -76,6 +76,48 @@ def final_scores(date: str) -> list[dict]:
     return out
 
 
+def final_linescores(date: str) -> list[dict]:
+    """Completed games for a date with first-inning and first-5 runs derived
+    from the linescore innings array — the fields the NRFI/F5 models and the
+    daily backfill assembly need. Mirrors :func:`final_scores` but keeps the
+    per-inning detail. Production-only (the sandbox proxy blocks statsapi)."""
+    data = cached_json(
+        f"statsapi:finals_ls:{date}",
+        _TTL_SCHEDULE,
+        lambda: _get("schedule", {"sportId": 1, "date": date, "hydrate": "linescore"}),
+    )
+    out = []
+    for day in data.get("dates", []):
+        for g in day.get("games", []):
+            if g.get("status", {}).get("codedGameState") != "F":
+                continue
+            innings = (g.get("linescore", {}) or {}).get("innings", []) or []
+            if not innings:
+                continue
+
+            def _runs(half, upto=None):
+                tot = 0
+                for inn in innings:
+                    if upto is not None and inn.get("num", 0) > upto:
+                        break
+                    tot += (inn.get(half, {}) or {}).get("runs", 0) or 0
+                return tot
+
+            home, away = g["teams"]["home"], g["teams"]["away"]
+            f1_away = (innings[0].get("away", {}) or {}).get("runs", 0) or 0
+            f1_home = (innings[0].get("home", {}) or {}).get("runs", 0) or 0
+            out.append({
+                "game_pk": g["gamePk"], "date": date,
+                "home_team": home["team"]["name"],
+                "away_team": away["team"]["name"],
+                "home_score": home.get("score"), "away_score": away.get("score"),
+                "f1_away": f1_away, "f1_home": f1_home,
+                "f5_away": _runs("away", upto=5), "f5_home": _runs("home", upto=5),
+                "nrfi": (f1_away == 0) and (f1_home == 0),
+            })
+    return out
+
+
 _TTL_LIVE = 45  # seconds
 
 

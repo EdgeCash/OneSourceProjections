@@ -18,6 +18,36 @@ def test_game_sim_symmetry():
     assert vals == sorted(vals, reverse=True)
 
 
+def test_draw_runs_dispersion():
+    """draw_runs hits the target mean and the requested var/mean ratio, and
+    reduces exactly to Poisson at dispersion 1.0."""
+    import numpy as np
+    rng = np.random.default_rng(0)
+    mu = 4.5
+    nb = game.draw_runs(rng, mu, 200_000, dispersion=2.3)
+    assert abs(nb.mean() - mu) < 0.1
+    assert abs(nb.var() / nb.mean() - 2.3) < 0.15      # var/mean ≈ dispersion
+    po = game.draw_runs(rng, mu, 200_000, dispersion=1.0)
+    assert abs(po.var() / po.mean() - 1.0) < 0.05      # Poisson: var ≈ mean
+
+
+def test_overdispersion_widens_total_tails():
+    """A negative-binomial run model puts more mass in the total's tails than
+    Poisson — the whole point of the fix (Poisson under-prices extreme totals)."""
+    a = game.TeamInputs("A", runs_per_game=4.5, opp_starter_xfip=4.10)
+    b = game.TeamInputs("B", runs_per_game=4.5, opp_starter_xfip=4.10)
+    nb = game.simulate(a, b, total_lines=[12.5], draws=80_000)
+    import project547.config as cfg
+    old = cfg.RUN_DISPERSION
+    cfg.RUN_DISPERSION = 1.0
+    try:
+        po = game.simulate(a, b, total_lines=[12.5], draws=80_000)
+    finally:
+        cfg.RUN_DISPERSION = old
+    # more probability of a high total (12.5+) under overdispersion
+    assert nb.over_probs[12.5] > po.over_probs[12.5]
+
+
 def test_better_team_favored():
     good = game.TeamInputs("G", runs_per_game=5.6, opp_starter_xfip=4.8)
     bad = game.TeamInputs("B", runs_per_game=3.8, opp_starter_xfip=3.2)

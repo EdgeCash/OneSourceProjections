@@ -89,6 +89,22 @@ PARK_WEIGHT = 1.0
 # Monte Carlo draws for the game simulation.
 SIM_DRAWS = 20_000
 
+# Run-distribution dispersion for the MLB game simulation. Real per-team runs
+# are heavily overdispersed relative to Poisson: measured var/mean ≈ 2.3 on
+# 2025-26 game logs (≈2.3 even within-team, i.e. conditional on the team's own
+# mean), because innings aren't independent and scoring is bursty. A raw Poisson
+# (var = mean) is therefore overconfident in the tails — it mis-prices totals at
+# the edges and is slightly overconfident on moneylines. We draw runs from a
+# negative binomial (gamma-Poisson mixture) with var = mean × RUN_DISPERSION.
+# 1.0 reduces exactly to the old Poisson behavior. Tuned on the walk-forward
+# backtest (MLB 2024-26): as dispersion rises 1.0 -> 2.3 the totals-bet ROI vs
+# closing climbs -9.1% -> +1.9% (win rate 44.7% -> 50.4%) and moneyline log-loss
+# falls 0.6853 -> 0.6840; it then degrades past 2.3. The backtest optimum (2.3)
+# coincides with the directly-measured run dispersion (var/mean 2.33), so this
+# is empirically grounded, not curve-fit. (The audit suggested 1.3, which the
+# data shows is far too low.)
+RUN_DISPERSION = 2.3
+
 # Weight given to FantasyPros projections when blending with our own rates.
 FP_BLEND_WEIGHT = 0.5
 
@@ -136,6 +152,14 @@ def props_window_open(hour_et: int) -> bool:
 #   MARKET_SHRINK: weight on the market's fair prob vs the model (0 = pure
 #     model, 1 = pure market). 0.5 roughly halved a losing backtest's bet
 #     volume and flipped moneyline ROI positive; tune via run_backtest.
+#     Re-derived after the 2026 model upgrades (consistent-margin + negative-
+#     binomial runs): the MLB betting sweep still peaks in the 0.5-0.65 band
+#     (ML ROI 3.5% -> 15.4% -> 19.9% across shrink 0.0/0.5/0.65, but 0.5->0.65
+#     is a ~145-bet noise margin), so 0.5 is unchanged. Note the *calibration*-
+#     optimal blend is ~1.0 (MLB moneylines are efficient — the de-vigged close
+#     out-predicts the model), but shrink is a bet-SELECTION knob, not a
+#     calibration one: at 1.0 nothing clears MIN_EDGE. 0.5 keeps only the model
+#     disagreements large enough to survive, and those carry the positive ROI.
 MARKET_SHRINK = 0.5
 #   A two-way market's raw implied probs must sum within this band to count
 #   as a coherent quote; outside it the prices are stale/mismatched/alt-line.

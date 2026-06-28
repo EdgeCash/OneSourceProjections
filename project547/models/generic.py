@@ -170,6 +170,36 @@ def with_epa_margin(proj: GenericGameProjection, epa_margin: float,
     )
 
 
+def with_consistent_margin(proj: GenericGameProjection, win_prob: float,
+                           sport: Sport) -> GenericGameProjection:
+    """Rebuild a normal-model projection so its margin — and therefore its
+    spread cover probability — agrees with an *externally adjusted* home win
+    prob (e.g. after an Elo blend and/or a rest-days nudge).
+
+    The adjusted win prob is the source of truth: back-solve the implied
+    home-margin mean through ``sigma_margin`` (the same inversion
+    :func:`shift_win_prob` uses), so the moneyline and the spread can never
+    disagree. Without this, ``home_win_prob`` reflects the Elo/rest blend while
+    ``home_cover_prob`` still reads the raw points-model margin — a silent
+    inconsistency on every spread. Totals are untouched (Elo/rest move the
+    margin, not the combined score). No-op for Poisson sports, whose cover is
+    simulated from the score lambdas rather than a margin mean."""
+    p = min(max(float(win_prob), 1e-6), 1 - 1e-6)
+    if sport.model != "normal" or sport.sigma_margin <= 0:
+        # Keep the win prob current; cover stays lambda-driven for Poisson.
+        return GenericGameProjection(
+            home_exp=proj.home_exp, away_exp=proj.away_exp,
+            home_win_prob=round(p, 4), total_mean=proj.total_mean,
+            margin_mean=proj.margin_mean,
+        )
+    margin = sport.sigma_margin * stats.norm.ppf(p)
+    return GenericGameProjection(
+        home_exp=proj.home_exp, away_exp=proj.away_exp,
+        home_win_prob=round(p, 4), total_mean=proj.total_mean,
+        margin_mean=round(margin, 2),
+    )
+
+
 def _poisson_draws(lam_h: float, lam_a: float, n: int = 20_000, seed: int = 7):
     rng = np.random.default_rng(seed)
     h = rng.poisson(lam_h, n).astype(float)
