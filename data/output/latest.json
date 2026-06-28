@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-27T20:01:57.073775-04:00",
- "primary_date": "2026-06-27",
+ "generated_at": "2026-06-28T00:04:40.724350-04:00",
+ "primary_date": "2026-06-28",
  "dates": [
   "2026-06-27",
   "2026-06-28"
@@ -11,8 +11,8 @@
     "games": [
      {
       "weather": {
-       "temp_f": 74,
-       "wind_mph": 6,
+       "temp_f": 75,
+       "wind_mph": 7,
        "wind_dir": "ENE",
        "precip_pct": 0
       },
@@ -105,10 +105,10 @@
      },
      {
       "weather": {
-       "temp_f": 74,
-       "wind_mph": 8,
-       "wind_dir": "ENE",
-       "precip_pct": 0
+       "temp_f": 67,
+       "wind_mph": 4,
+       "wind_dir": "E",
+       "precip_pct": 25
       },
       "lineups": {
        "home": [
@@ -199,9 +199,9 @@
      },
      {
       "weather": {
-       "temp_f": 76,
-       "wind_mph": 6,
-       "wind_dir": "E",
+       "temp_f": 71,
+       "wind_mph": 5,
+       "wind_dir": "ENE",
        "precip_pct": 0
       },
       "lineups": {
@@ -258,45 +258,45 @@
       "home_pitcher": "Dylan Cease",
       "away_pitcher_id": 615698,
       "home_pitcher_id": 656302,
-      "home_exp_runs": 4.556,
-      "away_exp_runs": 3.816,
-      "proj_total": 8.372,
-      "home_win_prob": 0.6073,
-      "away_win_prob": 0.3927,
+      "home_exp_runs": 4.436,
+      "away_exp_runs": 3.794,
+      "proj_total": 8.23,
+      "home_win_prob": 0.5948,
+      "away_win_prob": 0.4052,
       "over_probs": {
-       "7.5": 0.61565,
-       "8.0": 0.5125,
-       "8.5": 0.5125,
-       "9.0": 0.3493,
-       "9.5": 0.3493
+       "7.5": 0.59595,
+       "8.0": 0.49155,
+       "8.5": 0.49155,
+       "9.0": 0.3339,
+       "9.5": 0.3339
       },
       "home_rl_cover": {
-       "-1.5": 0.40115,
-       "1.5": 0.7745
+       "-1.5": 0.3971,
+       "1.5": 0.76445
       },
       "home_ml": -178.0,
       "away_ml": 178.0,
-      "home_ml_ev": -0.0258,
-      "away_ml_ev": 0.0459,
+      "home_ml_ev": -0.0355,
+      "away_ml_ev": 0.0632,
       "total_line": 8.0,
       "over_odds": 105.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.5125,
+      "model_over_prob": 0.4915,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 117.0,
       "rl_away_odds": 126.0,
-      "model_home_rl": 0.4012,
+      "model_home_rl": 0.3971,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 72,
-       "wind_mph": 2,
-       "wind_dir": "NE",
-       "precip_pct": 22
+       "temp_f": 70,
+       "wind_mph": 3,
+       "wind_dir": "E",
+       "precip_pct": 28
       },
       "lineups": {
        "home": [
@@ -352,30 +352,30 @@
       "home_pitcher": "Jared Jones",
       "away_pitcher_id": 695505,
       "home_pitcher_id": 683003,
-      "home_exp_runs": 5.247,
-      "away_exp_runs": 4.462,
-      "proj_total": 9.709,
-      "home_win_prob": 0.6058,
-      "away_win_prob": 0.3942,
+      "home_exp_runs": 5.204,
+      "away_exp_runs": 4.482,
+      "proj_total": 9.687,
+      "home_win_prob": 0.5978,
+      "away_win_prob": 0.4022,
       "over_probs": {
-       "7.5": 0.7708,
-       "8.0": 0.6786,
-       "8.5": 0.6786,
-       "9.0": 0.5304,
-       "9.5": 0.5304
+       "7.5": 0.7666,
+       "8.0": 0.6742,
+       "8.5": 0.6742,
+       "9.0": 0.5222,
+       "9.5": 0.5222
       },
       "home_rl_cover": {
-       "-1.5": 0.42415,
-       "1.5": 0.7597
+       "-1.5": 0.41825,
+       "1.5": 0.75215
       },
       "home_ml": 106.0,
       "away_ml": -104.0,
-      "home_ml_ev": 0.1264,
-      "away_ml_ev": -0.111,
+      "home_ml_ev": 0.1181,
+      "away_ml_ev": -0.1031,
       "total_line": 8.5,
       "over_odds": 117.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.6786,
+      "model_over_prob": 0.6742,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.0,
@@ -388,9 +388,9 @@
      {
       "weather": {
        "temp_f": 72,
-       "wind_mph": 4,
-       "wind_dir": "NW",
-       "precip_pct": 55
+       "wind_mph": 2,
+       "wind_dir": "ESE",
+       "precip_pct": 13
       },
       "lineups": {
        "home": [
@@ -446,43 +446,43 @@
       "home_pitcher": "Christian Scott",
       "away_pitcher_id": 641835,
       "home_pitcher_id": 681035,
-      "home_exp_runs": 4.0,
-      "away_exp_runs": 4.11,
-      "proj_total": 8.11,
-      "home_win_prob": 0.4812,
-      "away_win_prob": 0.5188,
+      "home_exp_runs": 4.121,
+      "away_exp_runs": 4.128,
+      "proj_total": 8.249,
+      "home_win_prob": 0.4975,
+      "away_win_prob": 0.5025,
       "over_probs": {
-       "7.5": 0.58265,
-       "8.0": 0.47335,
-       "8.5": 0.47335,
-       "9.0": 0.3159,
-       "9.5": 0.3159
+       "7.5": 0.5985,
+       "8.0": 0.4926,
+       "8.5": 0.4926,
+       "9.0": 0.33505,
+       "9.5": 0.33505
       },
       "home_rl_cover": {
-       "-1.5": 0.2942,
-       "1.5": 0.6758
+       "-1.5": 0.3091,
+       "1.5": 0.68335
       },
       "home_ml": -122.0,
       "away_ml": 120.0,
-      "home_ml_ev": -0.0642,
-      "away_ml_ev": 0.0686,
+      "home_ml_ev": -0.0494,
+      "away_ml_ev": 0.0507,
       "total_line": 9.0,
       "over_odds": 104.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.3159,
+      "model_over_prob": 0.3351,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 167.0,
       "rl_away_odds": -129.0,
-      "model_home_rl": 0.2942,
+      "model_home_rl": 0.3091,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 69,
-       "wind_mph": 11,
+       "temp_f": 66,
+       "wind_mph": 9,
        "wind_dir": "NNE",
        "precip_pct": 1
       },
@@ -540,21 +540,21 @@
       "home_pitcher": "Davis Martin",
       "away_pitcher_id": 608379,
       "home_pitcher_id": 663436,
-      "home_exp_runs": 5.32,
-      "away_exp_runs": 4.192,
-      "proj_total": 9.513,
-      "home_win_prob": 0.6494,
-      "away_win_prob": 0.3506,
+      "home_exp_runs": 5.233,
+      "away_exp_runs": 4.159,
+      "proj_total": 9.392,
+      "home_win_prob": 0.6472,
+      "away_win_prob": 0.3528,
       "over_probs": {
-       "7.5": 0.7521,
-       "8.0": 0.6567,
-       "8.5": 0.6567,
-       "9.0": 0.50235,
-       "9.5": 0.50235
+       "7.5": 0.74015,
+       "8.0": 0.64605,
+       "8.5": 0.64605,
+       "9.0": 0.48695,
+       "9.5": 0.48695
       },
       "home_rl_cover": {
-       "-1.5": 0.46575,
-       "1.5": 0.79645
+       "-1.5": 0.45705,
+       "1.5": 0.79305
       },
       "home_ml": 104.0,
       "away_ml": 115.0,
@@ -563,18 +563,23 @@
       "total_line": 8.5,
       "over_odds": 117.0,
       "under_odds": 111.0,
-      "model_over_prob": 0.6567,
+      "model_over_prob": 0.6461,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 172.0,
       "rl_away_odds": -130.0,
-      "model_home_rl": 0.4657,
+      "model_home_rl": 0.4571,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 87,
+       "wind_mph": 3,
+       "wind_dir": "NW",
+       "precip_pct": 15
+      },
       "lineups": {
        "home": [
         "Yandy D\u00edaz",
@@ -629,41 +634,46 @@
       "home_pitcher": "Cole Sulser",
       "away_pitcher_id": 703615,
       "home_pitcher_id": 642121,
-      "home_exp_runs": 4.128,
-      "away_exp_runs": 4.185,
-      "proj_total": 8.313,
-      "home_win_prob": 0.49,
-      "away_win_prob": 0.51,
+      "home_exp_runs": 4.212,
+      "away_exp_runs": 4.028,
+      "proj_total": 8.24,
+      "home_win_prob": 0.5261,
+      "away_win_prob": 0.4739,
       "over_probs": {
-       "7.5": 0.6082,
-       "8.0": 0.50255,
-       "8.5": 0.50255,
-       "9.0": 0.3465,
-       "9.5": 0.3465
+       "7.5": 0.5975,
+       "8.0": 0.4909,
+       "8.5": 0.4909,
+       "9.0": 0.33685,
+       "9.5": 0.33685
       },
       "home_rl_cover": {
-       "-1.5": 0.3008,
-       "1.5": 0.6787
+       "-1.5": 0.3339,
+       "1.5": 0.71115
       },
       "home_ml": -127.0,
       "away_ml": 125.0,
-      "home_ml_ev": -0.064,
-      "away_ml_ev": 0.0718,
+      "home_ml_ev": -0.0318,
+      "away_ml_ev": 0.0312,
       "total_line": 8.5,
       "over_odds": -102.0,
       "under_odds": 104.0,
-      "model_over_prob": 0.5026,
-      "over_ev": 0.0001,
-      "under_ev": 0.0098,
+      "model_over_prob": 0.4909,
+      "over_ev": -0.0115,
+      "under_ev": 0.0217,
       "rl_home_line": -1.5,
       "rl_home_odds": 156.0,
       "rl_away_odds": -117.0,
-      "model_home_rl": 0.3008,
+      "model_home_rl": 0.3339,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 74,
+       "wind_mph": 5,
+       "wind_dir": "ENE",
+       "precip_pct": 21
+      },
       "lineups": {
        "home": [
         "Taylor Ward",
@@ -718,41 +728,46 @@
       "home_pitcher": "Brandon Young",
       "away_pitcher_id": 656492,
       "home_pitcher_id": 687064,
-      "home_exp_runs": 5.494,
-      "away_exp_runs": 4.765,
-      "proj_total": 10.26,
-      "home_win_prob": 0.5948,
-      "away_win_prob": 0.4052,
+      "home_exp_runs": 5.353,
+      "away_exp_runs": 4.808,
+      "proj_total": 10.161,
+      "home_win_prob": 0.5702,
+      "away_win_prob": 0.4298,
       "over_probs": {
-       "7.5": 0.8099,
-       "8.0": 0.7325,
-       "8.5": 0.7325,
-       "9.0": 0.59305,
-       "9.5": 0.59305
+       "7.5": 0.8062,
+       "8.0": 0.7226,
+       "8.5": 0.7226,
+       "9.0": 0.58515,
+       "9.5": 0.58515
       },
       "home_rl_cover": {
-       "-1.5": 0.4201,
-       "1.5": 0.7475
+       "-1.5": 0.39775,
+       "1.5": 0.72935
       },
       "home_ml": -104.0,
       "away_ml": 102.0,
-      "home_ml_ev": 0.0809,
-      "away_ml_ev": -0.0932,
+      "home_ml_ev": 0.0568,
+      "away_ml_ev": -0.0683,
       "total_line": 9.5,
       "over_odds": 122.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.593,
+      "model_over_prob": 0.5851,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 178.0,
       "rl_away_odds": 170.0,
-      "model_home_rl": 0.4201,
+      "model_home_rl": 0.3977,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 73,
+       "wind_mph": 5,
+       "wind_dir": "NE",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [
         "Steven Kwan",
@@ -807,30 +822,30 @@
       "home_pitcher": "Slade Cecconi",
       "away_pitcher_id": 669302,
       "home_pitcher_id": 677944,
-      "home_exp_runs": 3.376,
-      "away_exp_runs": 4.476,
-      "proj_total": 7.852,
-      "home_win_prob": 0.3373,
-      "away_win_prob": 0.6627,
+      "home_exp_runs": 3.436,
+      "away_exp_runs": 4.406,
+      "proj_total": 7.842,
+      "home_win_prob": 0.3537,
+      "away_win_prob": 0.6463,
       "over_probs": {
-       "7.5": 0.5473,
-       "8.0": 0.43625,
-       "8.5": 0.43625,
-       "9.0": 0.2827,
-       "9.5": 0.2827
+       "7.5": 0.5445,
+       "8.0": 0.43535,
+       "8.5": 0.43535,
+       "9.0": 0.2814,
+       "9.5": 0.2814
       },
       "home_rl_cover": {
-       "-1.5": 0.17955,
-       "1.5": 0.54145
+       "-1.5": 0.1941,
+       "1.5": 0.56085
       },
       "home_ml": 138.0,
       "away_ml": -138.0,
-      "home_ml_ev": -0.0986,
-      "away_ml_ev": 0.0715,
+      "home_ml_ev": -0.0791,
+      "away_ml_ev": 0.0573,
       "total_line": 8.0,
       "over_odds": 129.0,
       "under_odds": -108.0,
-      "model_over_prob": 0.4363,
+      "model_over_prob": 0.4354,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.0,
@@ -842,9 +857,9 @@
      },
      {
       "weather": {
-       "temp_f": 81,
+       "temp_f": 78,
        "wind_mph": 12,
-       "wind_dir": "SSE",
+       "wind_dir": "SE",
        "precip_pct": 0
       },
       "lineups": {
@@ -901,21 +916,21 @@
       "home_pitcher": "Mike Paredes",
       "away_pitcher_id": 547179,
       "home_pitcher_id": 702474,
-      "home_exp_runs": 5.448,
-      "away_exp_runs": 4.834,
-      "proj_total": 10.282,
-      "home_win_prob": 0.5787,
-      "away_win_prob": 0.4213,
+      "home_exp_runs": 5.543,
+      "away_exp_runs": 4.917,
+      "proj_total": 10.459,
+      "home_win_prob": 0.5812,
+      "away_win_prob": 0.4188,
       "over_probs": {
-       "7.5": 0.8163,
-       "8.0": 0.73525,
-       "8.5": 0.73525,
-       "9.0": 0.59435,
-       "9.5": 0.59435
+       "7.5": 0.82475,
+       "8.0": 0.7501,
+       "8.5": 0.7501,
+       "9.0": 0.6146,
+       "9.5": 0.6146
       },
       "home_rl_cover": {
-       "-1.5": 0.4062,
-       "1.5": 0.7325
+       "-1.5": 0.41005,
+       "1.5": 0.73235
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -990,46 +1005,41 @@
       "home_pitcher": "Kyle Harrison",
       "away_pitcher_id": 656849,
       "home_pitcher_id": 690986,
-      "home_exp_runs": 5.254,
-      "away_exp_runs": 3.982,
-      "proj_total": 9.236,
-      "home_win_prob": 0.6688,
-      "away_win_prob": 0.3312,
+      "home_exp_runs": 5.276,
+      "away_exp_runs": 4.036,
+      "proj_total": 9.311,
+      "home_win_prob": 0.6695,
+      "away_win_prob": 0.3305,
       "over_probs": {
-       "7.5": 0.72555,
-       "8.0": 0.62475,
-       "8.5": 0.62475,
-       "9.0": 0.4699,
-       "9.5": 0.4699
+       "7.5": 0.72925,
+       "8.0": 0.6293,
+       "8.5": 0.6293,
+       "9.0": 0.47365,
+       "9.5": 0.47365
       },
       "home_rl_cover": {
-       "-1.5": 0.4857,
-       "1.5": 0.81115
+       "-1.5": 0.4827,
+       "1.5": 0.8114
       },
       "home_ml": -141.0,
       "away_ml": 144.0,
-      "home_ml_ev": 0.0741,
-      "away_ml_ev": -0.0934,
+      "home_ml_ev": 0.0747,
+      "away_ml_ev": -0.0942,
       "total_line": 8.5,
       "over_odds": 122.0,
       "under_odds": 108.0,
-      "model_over_prob": 0.6248,
+      "model_over_prob": 0.6293,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 140.0,
       "rl_away_odds": -102.0,
-      "model_home_rl": 0.4857,
+      "model_home_rl": 0.4827,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 80,
-       "wind_mph": 3,
-       "wind_dir": "W",
-       "precip_pct": 24
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "JJ Wetherholt",
@@ -1084,21 +1094,21 @@
       "home_pitcher": "Andre Pallante",
       "away_pitcher_id": 687473,
       "home_pitcher_id": 669467,
-      "home_exp_runs": 4.637,
-      "away_exp_runs": 4.274,
-      "proj_total": 8.911,
-      "home_win_prob": 0.5497,
-      "away_win_prob": 0.4503,
+      "home_exp_runs": 4.486,
+      "away_exp_runs": 4.296,
+      "proj_total": 8.782,
+      "home_win_prob": 0.5275,
+      "away_win_prob": 0.4725,
       "over_probs": {
-       "7.5": 0.6849,
-       "8.0": 0.5823,
-       "8.5": 0.5823,
-       "9.0": 0.42555,
-       "9.5": 0.42555
+       "7.5": 0.66705,
+       "8.0": 0.5638,
+       "8.5": 0.5638,
+       "9.0": 0.4062,
+       "9.5": 0.4062
       },
       "home_rl_cover": {
-       "-1.5": 0.36625,
-       "1.5": 0.72135
+       "-1.5": 0.3428,
+       "1.5": 0.70625
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -1118,12 +1128,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 69,
-       "wind_mph": 9,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Fernando Tatis Jr.",
@@ -1178,21 +1183,21 @@
       "home_pitcher": "Kyle Hart",
       "away_pitcher_id": 808967,
       "home_pitcher_id": 606996,
-      "home_exp_runs": 3.475,
-      "away_exp_runs": 4.32,
-      "proj_total": 7.796,
-      "home_win_prob": 0.3718,
-      "away_win_prob": 0.6282,
+      "home_exp_runs": 3.494,
+      "away_exp_runs": 4.512,
+      "proj_total": 8.007,
+      "home_win_prob": 0.3494,
+      "away_win_prob": 0.6505,
       "over_probs": {
-       "7.5": 0.5389,
-       "8.0": 0.4277,
-       "8.5": 0.4277,
-       "9.0": 0.2773,
-       "9.5": 0.2773
+       "7.5": 0.56915,
+       "8.0": 0.45925,
+       "8.5": 0.45925,
+       "9.0": 0.30515,
+       "9.5": 0.30515
       },
       "home_rl_cover": {
-       "-1.5": 0.20605,
-       "1.5": 0.58475
+       "-1.5": 0.19035,
+       "1.5": 0.55545
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -1212,12 +1217,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 64,
-       "wind_mph": 16,
-       "wind_dir": "WNW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Luis Arraez",
@@ -1272,21 +1272,21 @@
       "home_pitcher": "Logan Webb",
       "away_pitcher_id": 693821,
       "home_pitcher_id": 657277,
-      "home_exp_runs": 4.412,
-      "away_exp_runs": 3.737,
-      "proj_total": 8.149,
-      "home_win_prob": 0.5999,
-      "away_win_prob": 0.4001,
+      "home_exp_runs": 4.353,
+      "away_exp_runs": 3.635,
+      "proj_total": 7.988,
+      "home_win_prob": 0.6044,
+      "away_win_prob": 0.3956,
       "over_probs": {
-       "7.5": 0.5875,
-       "8.0": 0.47775,
-       "8.5": 0.47775,
-       "9.0": 0.32035,
-       "9.5": 0.32035
+       "7.5": 0.55945,
+       "8.0": 0.4518,
+       "8.5": 0.4518,
+       "9.0": 0.30385,
+       "9.5": 0.30385
       },
       "home_rl_cover": {
-       "-1.5": 0.3995,
-       "1.5": 0.77255
+       "-1.5": 0.3998,
+       "1.5": 0.77295
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -1306,12 +1306,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 71,
-       "wind_mph": 9,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Zach Neto",
@@ -35964,94 +35959,94 @@
     ],
     "news": [
      {
-      "title": "Teoscar Hernandez (hamstring) to be activated Monday",
+      "title": "Javier Sanoja swipes two bags Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 23:02:47"
+      "when": "2026-06-28 03:48:31"
      },
      {
-      "title": "Nick Loftin leaves game early Saturday ",
+      "title": "Xavier Edwards records three hits Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 23:00:35"
+      "when": "2026-06-28 03:43:46"
      },
      {
-      "title": "Heliot Ramos (quad) to be activated Sunday ",
+      "title": "Bryan Baker records save Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:59:07"
+      "when": "2026-06-28 03:38:47"
      },
      {
-      "title": "Jacob Wilson (shoulder) remains out of lineup Saturday ",
+      "title": "Jonathan Aranda connects for homer Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:41:56"
+      "when": "2026-06-28 03:35:21"
      },
      {
-      "title": "Jose Siri activated from paternity list",
+      "title": "Junior Caminero homers again Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:24:44"
+      "when": "2026-06-28 03:31:04"
      },
      {
-      "title": "Christian Moore optioned to Triple-A ",
+      "title": "Seiya Suzuki goes yard Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:23:43"
+      "when": "2026-06-28 03:26:08"
      },
      {
-      "title": "Kai-Wei Teng expected to be optioned by Astros ",
+      "title": "Ian Happ sends one out Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:58:15"
+      "when": "2026-06-28 03:23:45"
      },
      {
-      "title": "Miguel Ullola to be called up by Astros ",
+      "title": "Michael Conforto goes deep in lone at-bat Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:55:24"
+      "when": "2026-06-28 03:20:17"
      },
      {
-      "title": "Randy Vasquez to pitch in bulk relief role Saturday ",
+      "title": "David Peterson solid in Cubs debut Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:51:42"
+      "when": "2026-06-28 03:16:59"
      },
      {
-      "title": "Kyle Hart to open game Saturday ",
+      "title": "Jacob Wilson (shoulder) hopeful to return to lineup Sunday ",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:50:31"
+      "when": "2026-06-28 02:26:27"
      },
      {
-      "title": "Tyler Ferguson recalled from Triple-A ",
+      "title": "Jose Altuve expected to be fine",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:49:01"
+      "when": "2026-06-28 02:25:00"
      },
      {
-      "title": "Hoby Milner (appendicitis) placed on IL",
+      "title": "Grant Holmes available out of bullpen this weekend ",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:48:03"
+      "when": "2026-06-28 02:23:40"
      },
      {
-      "title": "Bryse Wilson activated by Cubs",
+      "title": "Ty France dealing with wrist injury",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:18:50"
+      "when": "2026-06-28 02:22:25"
      },
      {
-      "title": "Jose Altuve makes early exit Saturday ",
+      "title": "Sammy Peralta signs minor league deal with Angels",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:16:25"
+      "when": "2026-06-28 02:20:46"
      },
      {
-      "title": "Carlos Carrasco re-signs with Braves on minor league deal ",
+      "title": "Josh Hader shuts door for another save in win over Tigers",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:15:29"
+      "when": "2026-06-28 01:24:41"
      }
     ],
     "injuries": [
@@ -37001,6 +36996,13 @@
       "note": ""
      },
      {
+      "player": "Brett Harris",
+      "norm": "brett harris",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Kyle Nicolas",
       "norm": "kyle nicolas",
       "team": "",
@@ -37022,15 +37024,15 @@
       "note": ""
      },
      {
-      "player": "Simeon Woods Richardson",
-      "norm": "simeon woods richardson",
+      "player": "Wilkin Ramos",
+      "norm": "wilkin ramos",
       "team": "",
       "status": "DFA",
       "note": ""
      },
      {
-      "player": "Wilkin Ramos",
-      "norm": "wilkin ramos",
+      "player": "Simeon Woods Richardson",
+      "norm": "simeon woods richardson",
       "team": "",
       "status": "DFA",
       "note": ""
@@ -37068,13 +37070,6 @@
       "norm": "lazaro-dup estrada-dup",
       "team": "",
       "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Hayden Juenger",
-      "norm": "hayden juenger",
-      "team": "",
-      "status": "DFA",
       "note": ""
      },
      {
@@ -37145,13 +37140,6 @@
       "norm": "jaxon jelkin",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zack Short",
-      "norm": "zack short",
-      "team": "",
-      "status": "DFA",
       "note": ""
      },
      {
@@ -37454,62 +37442,18 @@
       "team": "",
       "status": "IL15",
       "note": ""
+     },
+     {
+      "player": "Brad Keller",
+      "norm": "brad keller",
+      "team": "",
+      "status": "IL15",
+      "note": ""
      }
     ]
    },
    "WNBA": {
-    "games": [
-     {
-      "game_id": "401857028",
-      "game_time": "2026-06-28T00:00Z",
-      "away_team": "Los Angeles Sparks",
-      "home_team": "Indiana Fever",
-      "away_exp": 90.61,
-      "home_exp": 97.41,
-      "proj_total": 188.02,
-      "home_win_prob": 0.7228,
-      "away_win_prob": 0.2772,
-      "home_ml": -235,
-      "away_ml": 245,
-      "home_ml_ev": 0.0196,
-      "away_ml_ev": -0.0175,
-      "total_line": 183.0,
-      "over_odds": 101.0,
-      "model_over_prob": 0.6311,
-      "over_ev": 0.2684,
-      "spread_home_line": -7.5,
-      "spread_home_odds": 111.0,
-      "spread_away_odds": 108.0,
-      "model_home_cover": 0.4757,
-      "spread_home_ev": NaN,
-      "spread_away_ev": NaN
-     },
-     {
-      "game_id": "401857029",
-      "game_time": "2026-06-28T01:00Z",
-      "away_team": "Atlanta Dream",
-      "home_team": "Seattle Storm",
-      "away_exp": 87.84,
-      "home_exp": 82.05,
-      "proj_total": 169.88,
-      "home_win_prob": 0.3074,
-      "away_win_prob": 0.6926,
-      "home_ml": 317,
-      "away_ml": -326,
-      "home_ml_ev": 0.1384,
-      "away_ml_ev": -0.05,
-      "total_line": 179.5,
-      "over_odds": 108.0,
-      "model_over_prob": 0.2607,
-      "over_ev": -0.4578,
-      "spread_home_line": -4.0,
-      "spread_home_odds": 430.0,
-      "spread_away_odds": 100.0,
-      "model_home_cover": 0.1973,
-      "spread_home_ev": NaN,
-      "spread_away_ev": NaN
-     }
-    ],
+    "games": [],
     "props": [],
     "news": [],
     "injuries": []
@@ -39354,6 +39298,41 @@
       "note": ""
      },
      {
+      "player": "Marcus Nordmark",
+      "norm": "marcus nordmark",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Rian Chudzinski",
+      "norm": "rian chudzinski",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nikita Klepov",
+      "norm": "nikita klepov",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mathis Preston",
+      "norm": "mathis preston",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jayden Kurtz",
+      "norm": "jayden kurtz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Marc Michaelis",
       "norm": "marc michaelis",
       "team": "",
@@ -40472,41 +40451,6 @@
       "team": "",
       "status": "RET",
       "note": ""
-     },
-     {
-      "player": "Patrice Bergeron",
-      "norm": "patrice bergeron",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Ryan Miller",
-      "norm": "ryan miller",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Semyon Varlamov",
-      "norm": "semyon varlamov",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Saku Maenalanen",
-      "norm": "saku maenalanen",
-      "team": "",
-      "status": "NWT",
-      "note": ""
-     },
-     {
-      "player": "Phil Kessel",
-      "norm": "phil kessel",
-      "team": "",
-      "status": "NWT",
-      "note": ""
      }
     ]
    }
@@ -40515,12 +40459,7 @@
    "MLB": {
     "games": [
      {
-      "weather": {
-       "temp_f": 77,
-       "wind_mph": 4,
-       "wind_dir": "NE",
-       "precip_pct": 5
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -40535,47 +40474,47 @@
       "home_team": "Baltimore Orioles",
       "away_pitcher": "Zack Littell",
       "home_pitcher": "Kyle Bradish",
-      "away_pitcher_id": 641793.0,
-      "home_pitcher_id": 680694.0,
-      "home_exp_runs": 6.573,
-      "away_exp_runs": 4.478,
-      "proj_total": 11.051,
-      "home_win_prob": 0.7449,
-      "away_win_prob": 0.2551,
+      "away_pitcher_id": 641793,
+      "home_pitcher_id": 680694,
+      "home_exp_runs": 6.403,
+      "away_exp_runs": 4.518,
+      "proj_total": 10.921,
+      "home_win_prob": 0.7257,
+      "away_win_prob": 0.2743,
       "over_probs": {
-       "7.5": 0.8714,
-       "8.0": 0.80595,
-       "8.5": 0.80595,
-       "9.0": 0.6837,
-       "9.5": 0.6837
+       "7.5": 0.8606,
+       "8.0": 0.7928,
+       "8.5": 0.7928,
+       "9.0": 0.66565,
+       "9.5": 0.66565
       },
       "home_rl_cover": {
-       "-1.5": 0.5887,
-       "1.5": 0.85575
+       "-1.5": 0.56325,
+       "1.5": 0.83915
       },
       "home_ml": -178.0,
-      "away_ml": 174.0,
-      "home_ml_ev": 0.0791,
-      "away_ml_ev": -0.1531,
+      "away_ml": 178.0,
+      "home_ml_ev": 0.0667,
+      "away_ml_ev": -0.1187,
       "total_line": 9.5,
-      "over_odds": 127.0,
+      "over_odds": 133.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.6837,
+      "model_over_prob": 0.6656,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 117.0,
-      "rl_away_odds": -120.0,
-      "model_home_rl": 0.5887,
-      "rl_home_ev": 0.1356,
-      "rl_away_ev": -0.1261
+      "rl_home_odds": 113.0,
+      "rl_away_odds": 126.0,
+      "model_home_rl": 0.5633,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 78,
-       "wind_mph": 2,
-       "wind_dir": "N",
-       "precip_pct": 16
+       "temp_f": 79,
+       "wind_mph": 3,
+       "wind_dir": "E",
+       "precip_pct": 13
       },
       "lineups": {
        "home": [],
@@ -40591,45 +40530,45 @@
       "home_team": "Pittsburgh Pirates",
       "away_pitcher": "Brady Singer",
       "home_pitcher": "Mitch Keller",
-      "away_pitcher_id": 663903.0,
-      "home_pitcher_id": 656605.0,
-      "home_exp_runs": 6.389,
-      "away_exp_runs": 4.034,
-      "proj_total": 10.423,
-      "home_win_prob": 0.7775,
-      "away_win_prob": 0.2225,
+      "away_pitcher_id": 663903,
+      "home_pitcher_id": 656605,
+      "home_exp_runs": 6.407,
+      "away_exp_runs": 4.045,
+      "proj_total": 10.452,
+      "home_win_prob": 0.7773,
+      "away_win_prob": 0.2227,
       "over_probs": {
-       "7.5": 0.8273,
-       "8.0": 0.74825,
-       "8.5": 0.74825,
-       "9.0": 0.6131,
-       "9.5": 0.6131
+       "7.5": 0.8289,
+       "8.0": 0.7453,
+       "8.5": 0.7453,
+       "9.0": 0.61265,
+       "9.5": 0.61265
       },
       "home_rl_cover": {
-       "-1.5": 0.6168,
-       "1.5": 0.8795
+       "-1.5": 0.6209,
+       "1.5": 0.879
       },
       "home_ml": -122.0,
-      "away_ml": 117.0,
-      "home_ml_ev": 0.2023,
-      "away_ml_ev": -0.2637,
-      "total_line": 9.0,
-      "over_odds": 102.0,
-      "under_odds": 110.0,
-      "model_over_prob": 0.6131,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "away_ml": 120.0,
+      "home_ml_ev": 0.2052,
+      "away_ml_ev": -0.2571,
+      "total_line": 8.5,
+      "over_odds": -113.0,
+      "under_odds": 113.0,
+      "model_over_prob": 0.7453,
+      "over_ev": 0.2024,
+      "under_ev": -0.2287,
       "rl_home_line": -1.5,
-      "rl_home_odds": 168.0,
-      "rl_away_odds": -170.0,
-      "model_home_rl": 0.6168,
-      "rl_home_ev": 0.3251,
-      "rl_away_ev": -0.1971
+      "rl_home_odds": 165.0,
+      "rl_away_odds": -123.0,
+      "model_home_rl": 0.6209,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 78,
-       "wind_mph": 9,
+       "temp_f": 79,
+       "wind_mph": 8,
        "wind_dir": "E",
        "precip_pct": 0
       },
@@ -40647,45 +40586,45 @@
       "home_team": "Toronto Blue Jays",
       "away_pitcher": "Kumar Rocker",
       "home_pitcher": "Shane Bieber",
-      "away_pitcher_id": 677958.0,
-      "home_pitcher_id": 669456.0,
-      "home_exp_runs": 4.665,
-      "away_exp_runs": 4.785,
-      "proj_total": 9.45,
-      "home_win_prob": 0.4871,
-      "away_win_prob": 0.5129,
+      "away_pitcher_id": 677958,
+      "home_pitcher_id": 669456,
+      "home_exp_runs": 4.674,
+      "away_exp_runs": 4.791,
+      "proj_total": 9.465,
+      "home_win_prob": 0.4843,
+      "away_win_prob": 0.5157,
       "over_probs": {
-       "7.5": 0.7427,
-       "8.0": 0.65105,
-       "8.5": 0.65105,
-       "9.0": 0.49435,
-       "9.5": 0.49435
+       "7.5": 0.74345,
+       "8.0": 0.6506,
+       "8.5": 0.6506,
+       "9.0": 0.49405,
+       "9.5": 0.49405
       },
       "home_rl_cover": {
-       "-1.5": 0.3101,
-       "1.5": 0.66295
+       "-1.5": 0.3151,
+       "1.5": 0.66195
       },
-      "home_ml": -122.0,
+      "home_ml": -121.0,
       "away_ml": 117.0,
-      "home_ml_ev": -0.062,
-      "away_ml_ev": 0.0514,
-      "total_line": 8.5,
-      "over_odds": 108.0,
-      "under_odds": -108.0,
-      "model_over_prob": 0.6511,
-      "over_ev": 0.1771,
-      "under_ev": -0.164,
+      "home_ml_ev": -0.0619,
+      "away_ml_ev": 0.0554,
+      "total_line": 9.0,
+      "over_odds": 128.0,
+      "under_odds": -104.0,
+      "model_over_prob": 0.494,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 178.0,
-      "rl_away_odds": -180.0,
-      "model_home_rl": 0.3101,
-      "rl_home_ev": -0.0702,
-      "rl_away_ev": 0.0353
+      "rl_home_odds": 170.0,
+      "rl_away_odds": -129.0,
+      "model_home_rl": 0.3151,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 77,
-       "wind_mph": 7,
+       "temp_f": 81,
+       "wind_mph": 8,
        "wind_dir": "ENE",
        "precip_pct": 1
       },
@@ -40703,8 +40642,8 @@
       "home_team": "Detroit Tigers",
       "away_pitcher": "Hunter Brown",
       "home_pitcher": "Jack Flaherty",
-      "away_pitcher_id": 686613.0,
-      "home_pitcher_id": 656427.0,
+      "away_pitcher_id": 686613,
+      "home_pitcher_id": 656427,
       "home_exp_runs": 4.661,
       "away_exp_runs": 4.752,
       "proj_total": 9.412,
@@ -40726,24 +40665,24 @@
       "home_ml_ev": 0.0256,
       "away_ml_ev": -0.0331,
       "total_line": 8.5,
-      "over_odds": 108.0,
-      "under_odds": 105.0,
+      "over_odds": 113.0,
+      "under_odds": 120.0,
       "model_over_prob": 0.6437,
       "over_ev": NaN,
       "under_ev": NaN,
-      "rl_home_line": 1.5,
-      "rl_home_odds": -150.0,
+      "rl_home_line": 1.0,
+      "rl_home_odds": -113.0,
       "rl_away_odds": 144.0,
-      "model_home_rl": 0.664,
-      "rl_home_ev": 0.0485,
-      "rl_away_ev": -0.095
+      "model_home_rl": NaN,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 76,
-       "wind_mph": 7,
-       "wind_dir": "N",
-       "precip_pct": 8
+       "temp_f": 80,
+       "wind_mph": 9,
+       "wind_dir": "NNW",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -40759,47 +40698,47 @@
       "home_team": "Cleveland Guardians",
       "away_pitcher": "Emerson Hancock",
       "home_pitcher": "Gavin Williams",
-      "away_pitcher_id": 676106.0,
-      "home_pitcher_id": 668909.0,
-      "home_exp_runs": 3.372,
-      "away_exp_runs": 4.005,
-      "proj_total": 7.377,
-      "home_win_prob": 0.4027,
-      "away_win_prob": 0.5973,
+      "away_pitcher_id": 676106,
+      "home_pitcher_id": 668909,
+      "home_exp_runs": 3.432,
+      "away_exp_runs": 3.943,
+      "proj_total": 7.375,
+      "home_win_prob": 0.4228,
+      "away_win_prob": 0.5772,
       "over_probs": {
-       "7.5": 0.48335,
-       "8.0": 0.3738,
-       "8.5": 0.3738,
-       "9.0": 0.2279,
-       "9.5": 0.2279
+       "7.5": 0.47535,
+       "8.0": 0.37045,
+       "8.5": 0.37045,
+       "9.0": 0.2289,
+       "9.5": 0.2289
       },
       "home_rl_cover": {
-       "-1.5": 0.2262,
-       "1.5": 0.6094
+       "-1.5": 0.237,
+       "1.5": 0.63155
       },
       "home_ml": 100.0,
-      "away_ml": 100.0,
-      "home_ml_ev": -0.0973,
-      "away_ml_ev": 0.0973,
+      "away_ml": 101.0,
+      "home_ml_ev": -0.076,
+      "away_ml_ev": 0.0813,
       "total_line": 7.5,
-      "over_odds": 104.0,
+      "over_odds": 106.0,
       "under_odds": -104.0,
-      "model_over_prob": 0.4834,
-      "over_ev": -0.007,
-      "under_ev": 0.0067,
+      "model_over_prob": 0.4753,
+      "over_ev": -0.008,
+      "under_ev": 0.017,
       "rl_home_line": -1.5,
-      "rl_home_odds": 165.0,
+      "rl_home_odds": 180.0,
       "rl_away_odds": 170.0,
-      "model_home_rl": 0.2262,
+      "model_home_rl": 0.237,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 92,
-       "wind_mph": 4,
-       "wind_dir": "E",
-       "precip_pct": 8
+       "temp_f": 79,
+       "wind_mph": 19,
+       "wind_dir": "W",
+       "precip_pct": 7
       },
       "lineups": {
        "home": [],
@@ -40815,53 +40754,54 @@
       "home_team": "Tampa Bay Rays",
       "away_pitcher": "Merrill Kelly",
       "home_pitcher": "Drew Rasmussen",
-      "away_pitcher_id": 518876.0,
-      "home_pitcher_id": 656876.0,
-      "home_exp_runs": 4.708,
-      "away_exp_runs": 3.984,
-      "proj_total": 8.692,
-      "home_win_prob": 0.5994,
-      "away_win_prob": 0.4006,
+      "away_pitcher_id": 518876,
+      "home_pitcher_id": 656876,
+      "home_exp_runs": 4.804,
+      "away_exp_runs": 3.835,
+      "proj_total": 8.639,
+      "home_win_prob": 0.6322,
+      "away_win_prob": 0.3678,
       "over_probs": {
-       "7.5": 0.6591,
-       "8.0": 0.5542,
-       "8.5": 0.5542,
-       "9.0": 0.39395,
-       "9.5": 0.39395
+       "7.5": 0.65045,
+       "8.0": 0.54495,
+       "8.5": 0.54495,
+       "9.0": 0.38315,
+       "9.5": 0.38315
       },
       "home_rl_cover": {
-       "-1.5": 0.41055,
-       "1.5": 0.7638
+       "-1.5": 0.4398,
+       "1.5": 0.79125
       },
-      "home_ml": -163.0,
-      "away_ml": 167.0,
-      "home_ml_ev": -0.0136,
-      "away_ml_ev": 0.0377,
-      "total_line": 7.5,
-      "over_odds": -108.0,
+      "home_ml": -170.0,
+      "away_ml": 170.0,
+      "home_ml_ev": 0.002,
+      "away_ml_ev": -0.0035,
+      "total_line": 8.5,
+      "over_odds": 112.0,
       "under_odds": 104.0,
-      "model_over_prob": 0.6591,
-      "over_ev": 0.13,
-      "under_ev": -0.157,
+      "model_over_prob": 0.545,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 122.0,
-      "rl_away_odds": -127.0,
-      "model_home_rl": 0.4106,
-      "rl_home_ev": -0.0492,
-      "rl_away_ev": 0.0219
+      "rl_home_odds": 125.0,
+      "rl_away_odds": 119.0,
+      "model_home_rl": 0.4398,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 81,
+       "temp_f": 83,
        "wind_mph": 4,
-       "wind_dir": "NE",
-       "precip_pct": 8
+       "wind_dir": "NNE",
+       "precip_pct": 6
       },
       "lineups": {
        "home": [],
        "away": []
       },
       "player_ids": {
+       "cionel perez": 672335,
        "jesus luzardo": 666200
       },
       "game_pk": 823608,
@@ -40869,48 +40809,48 @@
       "away_team": "Philadelphia Phillies",
       "home_team": "New York Mets",
       "away_pitcher": "Jes\u00fas Luzardo",
-      "home_pitcher": NaN,
-      "away_pitcher_id": 666200.0,
-      "home_pitcher_id": NaN,
-      "home_exp_runs": 3.547,
-      "away_exp_runs": 4.358,
-      "proj_total": 7.905,
-      "home_win_prob": 0.3812,
-      "away_win_prob": 0.6188,
+      "home_pitcher": "Cionel P\u00e9rez",
+      "away_pitcher_id": 666200,
+      "home_pitcher_id": 672335,
+      "home_exp_runs": 3.654,
+      "away_exp_runs": 4.378,
+      "proj_total": 8.032,
+      "home_win_prob": 0.3966,
+      "away_win_prob": 0.6035,
       "over_probs": {
-       "7.5": 0.55165,
-       "8.0": 0.44325,
-       "8.5": 0.44325,
-       "9.0": 0.2905,
-       "9.5": 0.2905
+       "7.5": 0.56975,
+       "8.0": 0.46335,
+       "8.5": 0.46335,
+       "9.0": 0.30855,
+       "9.5": 0.30855
       },
       "home_rl_cover": {
-       "-1.5": 0.212,
-       "1.5": 0.58545
+       "-1.5": 0.2213,
+       "1.5": 0.6015
       },
-      "home_ml": 127.0,
-      "away_ml": -122.0,
-      "home_ml_ev": -0.0623,
-      "away_ml_ev": 0.068,
-      "total_line": NaN,
-      "over_odds": NaN,
-      "under_odds": NaN,
-      "model_over_prob": NaN,
+      "home_ml": 133.0,
+      "away_ml": -133.0,
+      "home_ml_ev": -0.038,
+      "away_ml_ev": 0.0285,
+      "total_line": 8.5,
+      "over_odds": 113.0,
+      "under_odds": 110.0,
+      "model_over_prob": 0.4633,
       "over_ev": NaN,
       "under_ev": NaN,
-      "rl_home_line": NaN,
-      "rl_home_odds": NaN,
-      "rl_away_odds": NaN,
-      "model_home_rl": NaN,
-      "rl_home_ev": NaN,
-      "rl_away_ev": NaN
+      "rl_home_line": 1.5,
+      "rl_home_odds": -130.0,
+      "rl_away_odds": 125.0,
+      "model_home_rl": 0.6015,
+      "rl_home_ev": 0.0273,
+      "rl_away_ev": -0.0565
      },
      {
       "weather": {
-       "temp_f": 68,
-       "wind_mph": 12,
-       "wind_dir": "SE",
-       "precip_pct": 10
+       "temp_f": 74,
+       "wind_mph": 19,
+       "wind_dir": "SSE",
+       "precip_pct": 11
       },
       "lineups": {
        "home": [],
@@ -40926,40 +40866,40 @@
       "home_team": "Minnesota Twins",
       "away_pitcher": "Ryan Feltner",
       "home_pitcher": "Connor Prielipp",
-      "away_pitcher_id": 663372.0,
-      "home_pitcher_id": 687570.0,
-      "home_exp_runs": 5.341,
-      "away_exp_runs": 4.767,
-      "proj_total": 10.108,
-      "home_win_prob": 0.5751,
-      "away_win_prob": 0.4249,
+      "away_pitcher_id": 663372,
+      "home_pitcher_id": 687570,
+      "home_exp_runs": 5.434,
+      "away_exp_runs": 4.849,
+      "proj_total": 10.282,
+      "home_win_prob": 0.5753,
+      "away_win_prob": 0.4247,
       "over_probs": {
-       "7.5": 0.80255,
-       "8.0": 0.72025,
-       "8.5": 0.72025,
-       "9.0": 0.57655,
-       "9.5": 0.57655
+       "7.5": 0.81425,
+       "8.0": 0.7372,
+       "8.5": 0.7372,
+       "9.0": 0.59885,
+       "9.5": 0.59885
       },
       "home_rl_cover": {
-       "-1.5": 0.39905,
-       "1.5": 0.7274
+       "-1.5": 0.4021,
+       "1.5": 0.73135
       },
-      "home_ml": -138.0,
-      "away_ml": 144.0,
-      "home_ml_ev": 0.0011,
-      "away_ml_ev": 0.0236,
+      "home_ml": -144.0,
+      "away_ml": 138.0,
+      "home_ml_ev": -0.0177,
+      "away_ml_ev": 0.0003,
       "total_line": 9.5,
-      "over_odds": 117.0,
-      "under_odds": -120.0,
-      "model_over_prob": 0.5766,
-      "over_ev": 0.1224,
-      "under_ev": -0.115,
+      "over_odds": 122.0,
+      "under_odds": 120.0,
+      "model_over_prob": 0.5988,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 130.0,
-      "rl_away_odds": -155.0,
-      "model_home_rl": 0.3991,
-      "rl_home_ev": -0.0615,
-      "rl_away_ev": -0.0261
+      "rl_home_odds": 146.0,
+      "rl_away_odds": -150.0,
+      "model_home_rl": 0.4021,
+      "rl_home_ev": -0.0086,
+      "rl_away_ev": -0.005
      },
      {
       "weather": {
@@ -40982,133 +40922,125 @@
       "home_team": "Chicago White Sox",
       "away_pitcher": "Luinder Avila",
       "home_pitcher": "Anthony Kay",
-      "away_pitcher_id": 679883.0,
-      "home_pitcher_id": 641743.0,
-      "home_exp_runs": 5.92,
-      "away_exp_runs": 4.842,
-      "proj_total": 10.762,
-      "home_win_prob": 0.6332,
-      "away_win_prob": 0.3668,
+      "away_pitcher_id": 679883,
+      "home_pitcher_id": 641743,
+      "home_exp_runs": 5.916,
+      "away_exp_runs": 4.831,
+      "proj_total": 10.747,
+      "home_win_prob": 0.6376,
+      "away_win_prob": 0.3624,
       "over_probs": {
-       "7.5": 0.85025,
-       "8.0": 0.77865,
-       "8.5": 0.77865,
-       "9.0": 0.6517,
-       "9.5": 0.6517
+       "7.5": 0.8498,
+       "8.0": 0.7766,
+       "8.5": 0.7766,
+       "9.0": 0.64415,
+       "9.5": 0.64415
       },
       "home_rl_cover": {
-       "-1.5": 0.46365,
-       "1.5": 0.77055
+       "-1.5": 0.4656,
+       "1.5": 0.7756
       },
       "home_ml": -127.0,
-      "away_ml": 127.0,
+      "away_ml": 123.0,
       "home_ml_ev": 0.0659,
-      "away_ml_ev": -0.0837,
+      "away_ml_ev": -0.0998,
       "total_line": 9.0,
-      "over_odds": -103.0,
+      "over_odds": 100.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.6517,
+      "model_over_prob": 0.6442,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 156.0,
-      "rl_away_odds": -167.0,
-      "model_home_rl": 0.4637,
-      "rl_home_ev": 0.0856,
-      "rl_away_ev": -0.0792
+      "rl_away_odds": -120.0,
+      "model_home_rl": 0.4656,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 78,
-       "wind_mph": 10,
-       "wind_dir": "ESE",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
       },
       "player_ids": {
-       "brandon woodruff": 605540
+       "brandon woodruff": 605540,
+       "ryan rolison": 669020
       },
       "game_pk": 823769,
       "game_time": "2026-06-28T18:10:00Z",
       "away_team": "Chicago Cubs",
       "home_team": "Milwaukee Brewers",
-      "away_pitcher": NaN,
+      "away_pitcher": "Ryan Rolison",
       "home_pitcher": "Brandon Woodruff",
-      "away_pitcher_id": NaN,
-      "home_pitcher_id": 605540.0,
-      "home_exp_runs": 5.435,
-      "away_exp_runs": 4.388,
-      "proj_total": 9.823,
-      "home_win_prob": 0.6408,
-      "away_win_prob": 0.3592,
+      "away_pitcher_id": 669020,
+      "home_pitcher_id": 605540,
+      "home_exp_runs": 5.438,
+      "away_exp_runs": 4.447,
+      "proj_total": 9.885,
+      "home_win_prob": 0.6318,
+      "away_win_prob": 0.3682,
       "over_probs": {
-       "7.5": 0.7729,
-       "8.0": 0.68385,
-       "8.5": 0.68385,
-       "9.0": 0.54285,
-       "9.5": 0.54285
+       "7.5": 0.78545,
+       "8.0": 0.6967,
+       "8.5": 0.6967,
+       "9.0": 0.54725,
+       "9.5": 0.54725
       },
       "home_rl_cover": {
-       "-1.5": 0.46145,
-       "1.5": 0.7851
+       "-1.5": 0.45385,
+       "1.5": 0.77445
       },
-      "home_ml": -150.0,
-      "away_ml": 144.0,
-      "home_ml_ev": 0.0291,
-      "away_ml_ev": -0.0666,
-      "total_line": NaN,
-      "over_odds": NaN,
-      "under_odds": NaN,
-      "model_over_prob": NaN,
+      "home_ml": -194.0,
+      "away_ml": 186.0,
+      "home_ml_ev": -0.026,
+      "away_ml_ev": 0.0218,
+      "total_line": 8.5,
+      "over_odds": 104.0,
+      "under_odds": 105.0,
+      "model_over_prob": 0.6967,
       "over_ev": NaN,
       "under_ev": NaN,
-      "rl_home_line": NaN,
-      "rl_home_odds": NaN,
-      "rl_away_odds": NaN,
-      "model_home_rl": NaN,
-      "rl_home_ev": NaN,
-      "rl_away_ev": NaN
+      "rl_home_line": -1.5,
+      "rl_home_odds": 112.0,
+      "rl_away_odds": -113.0,
+      "model_home_rl": 0.4538,
+      "rl_home_ev": -0.02,
+      "rl_away_ev": 0.0136
      },
      {
-      "weather": {
-       "temp_f": 89,
-       "wind_mph": 8,
-       "wind_dir": "SSW",
-       "precip_pct": 2
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
       },
       "player_ids": {
-       "kyle leahy": 681517
+       "kyle leahy": 681517,
+       "tyler phillips": 663969
       },
       "game_pk": 823037,
       "game_time": "2026-06-28T18:15:00Z",
       "away_team": "Miami Marlins",
       "home_team": "St. Louis Cardinals",
-      "away_pitcher": NaN,
+      "away_pitcher": "Tyler Phillips",
       "home_pitcher": "Kyle Leahy",
-      "away_pitcher_id": NaN,
-      "home_pitcher_id": 681517.0,
-      "home_exp_runs": 4.439,
-      "away_exp_runs": 4.337,
-      "proj_total": 8.775,
-      "home_win_prob": 0.5131,
-      "away_win_prob": 0.4869,
+      "away_pitcher_id": 663969,
+      "home_pitcher_id": 681517,
+      "home_exp_runs": 4.59,
+      "away_exp_runs": 4.359,
+      "proj_total": 8.949,
+      "home_win_prob": 0.5353,
+      "away_win_prob": 0.4647,
       "over_probs": {
-       "7.5": 0.66485,
-       "8.0": 0.56325,
-       "8.5": 0.56325,
-       "9.0": 0.4065,
-       "9.5": 0.4065
+       "7.5": 0.6845,
+       "8.0": 0.58455,
+       "8.5": 0.58455,
+       "9.0": 0.4279,
+       "9.5": 0.4279
       },
       "home_rl_cover": {
-       "-1.5": 0.33195,
-       "1.5": 0.697
+       "-1.5": 0.3486,
+       "1.5": 0.70925
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -41128,17 +41060,13 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 71,
-       "wind_mph": 10,
-       "wind_dir": "SSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
       },
       "player_ids": {
+       "sam aldegheri": 691951,
        "aaron civale": 650644
       },
       "game_pk": 824011,
@@ -41146,24 +41074,24 @@
       "away_team": "Athletics",
       "home_team": "Los Angeles Angels",
       "away_pitcher": "Aaron Civale",
-      "home_pitcher": NaN,
-      "away_pitcher_id": 650644.0,
-      "home_pitcher_id": NaN,
+      "home_pitcher": "Sam Aldegheri",
+      "away_pitcher_id": 650644,
+      "home_pitcher_id": 691951,
       "home_exp_runs": 5.881,
-      "away_exp_runs": 5.276,
-      "proj_total": 11.157,
-      "home_win_prob": 0.5735,
-      "away_win_prob": 0.4265,
+      "away_exp_runs": 5.672,
+      "proj_total": 11.554,
+      "home_win_prob": 0.5276,
+      "away_win_prob": 0.4724,
       "over_probs": {
-       "7.5": 0.87205,
-       "8.0": 0.80925,
-       "8.5": 0.80925,
-       "9.0": 0.695,
-       "9.5": 0.695
+       "7.5": 0.89825,
+       "8.0": 0.8427,
+       "8.5": 0.8427,
+       "9.0": 0.7324,
+       "9.5": 0.7324
       },
       "home_rl_cover": {
-       "-1.5": 0.4089,
-       "1.5": 0.7262
+       "-1.5": 0.3649,
+       "1.5": 0.67875
       },
       "home_ml": NaN,
       "away_ml": NaN,
@@ -41183,12 +41111,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 75,
-       "wind_mph": 11,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -41203,48 +41126,43 @@
       "home_team": "San Francisco Giants",
       "away_pitcher": "Chris Sale",
       "home_pitcher": "Robbie Ray",
-      "away_pitcher_id": 519242.0,
-      "home_pitcher_id": 592662.0,
-      "home_exp_runs": 4.047,
-      "away_exp_runs": 4.277,
-      "proj_total": 8.325,
-      "home_win_prob": 0.4612,
-      "away_win_prob": 0.5389,
+      "away_pitcher_id": 519242,
+      "home_pitcher_id": 592662,
+      "home_exp_runs": 3.993,
+      "away_exp_runs": 4.161,
+      "proj_total": 8.155,
+      "home_win_prob": 0.4749,
+      "away_win_prob": 0.5251,
       "over_probs": {
-       "7.5": 0.61155,
-       "8.0": 0.50505,
-       "8.5": 0.50505,
-       "9.0": 0.3467,
-       "9.5": 0.3467
+       "7.5": 0.58845,
+       "8.0": 0.48055,
+       "8.5": 0.48055,
+       "9.0": 0.32345,
+       "9.5": 0.32345
       },
       "home_rl_cover": {
-       "-1.5": 0.28015,
-       "1.5": 0.65885
+       "-1.5": 0.28915,
+       "1.5": 0.66795
       },
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
-      "total_line": 7.5,
-      "over_odds": 100.0,
-      "under_odds": -104.0,
-      "model_over_prob": 0.6116,
-      "over_ev": 0.1067,
-      "under_ev": -0.1239,
-      "rl_home_line": 1.5,
-      "rl_home_odds": -127.0,
-      "rl_away_odds": 120.0,
-      "model_home_rl": 0.6589,
-      "rl_home_ev": 0.0819,
-      "rl_away_ev": -0.1316
+      "total_line": NaN,
+      "over_odds": NaN,
+      "under_odds": NaN,
+      "model_over_prob": NaN,
+      "over_ev": NaN,
+      "under_ev": NaN,
+      "rl_home_line": NaN,
+      "rl_home_odds": NaN,
+      "rl_away_odds": NaN,
+      "model_home_rl": NaN,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 67,
-       "wind_mph": 8,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -41259,48 +41177,43 @@
       "home_team": "San Diego Padres",
       "away_pitcher": "Emmet Sheehan",
       "home_pitcher": "Michael King",
-      "away_pitcher_id": 686218.0,
-      "home_pitcher_id": 650633.0,
-      "home_exp_runs": 3.87,
-      "away_exp_runs": 4.168,
-      "proj_total": 8.038,
-      "home_win_prob": 0.4577,
-      "away_win_prob": 0.5423,
+      "away_pitcher_id": 686218,
+      "home_pitcher_id": 650633,
+      "home_exp_runs": 3.89,
+      "away_exp_runs": 4.354,
+      "proj_total": 8.245,
+      "home_win_prob": 0.4299,
+      "away_win_prob": 0.5701,
       "over_probs": {
-       "7.5": 0.5751,
-       "8.0": 0.47045,
-       "8.5": 0.47045,
-       "9.0": 0.3128,
-       "9.5": 0.3128
+       "7.5": 0.5999,
+       "8.0": 0.49495,
+       "8.5": 0.49495,
+       "9.0": 0.3384,
+       "9.5": 0.3384
       },
       "home_rl_cover": {
-       "-1.5": 0.27085,
-       "1.5": 0.6542
+       "-1.5": 0.2571,
+       "1.5": 0.6262
       },
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
-      "total_line": 8.5,
-      "over_odds": 113.0,
-      "under_odds": 113.0,
-      "model_over_prob": 0.4704,
+      "total_line": NaN,
+      "over_odds": NaN,
+      "under_odds": NaN,
+      "model_over_prob": NaN,
       "over_ev": NaN,
       "under_ev": NaN,
-      "rl_home_line": 1.5,
-      "rl_home_odds": -133.0,
-      "rl_away_odds": 127.0,
-      "model_home_rl": 0.6542,
-      "rl_home_ev": 0.0674,
-      "rl_away_ev": -0.1131
+      "rl_home_line": NaN,
+      "rl_home_odds": NaN,
+      "rl_away_odds": NaN,
+      "model_home_rl": NaN,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 71,
-       "wind_mph": 5,
-       "wind_dir": "E",
-       "precip_pct": 3
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -41315,8 +41228,8 @@
       "home_team": "Boston Red Sox",
       "away_pitcher": "Carlos Rod\u00f3n",
       "home_pitcher": "Sonny Gray",
-      "away_pitcher_id": 607074.0,
-      "home_pitcher_id": 543243.0,
+      "away_pitcher_id": 607074,
+      "home_pitcher_id": 543243,
       "home_exp_runs": 4.409,
       "away_exp_runs": 4.715,
       "proj_total": 9.124,
@@ -41338,7 +41251,7 @@
       "home_ml_ev": -0.1771,
       "away_ml_ev": NaN,
       "total_line": 9.0,
-      "over_odds": -103.0,
+      "over_odds": 100.0,
       "under_odds": 117.0,
       "model_over_prob": 0.4466,
       "over_ev": NaN,
@@ -45905,94 +45818,94 @@
     ],
     "news": [
      {
-      "title": "Teoscar Hernandez (hamstring) to be activated Monday",
+      "title": "Javier Sanoja swipes two bags Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 23:02:47"
+      "when": "2026-06-28 03:48:31"
      },
      {
-      "title": "Nick Loftin leaves game early Saturday ",
+      "title": "Xavier Edwards records three hits Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 23:00:35"
+      "when": "2026-06-28 03:43:46"
      },
      {
-      "title": "Heliot Ramos (quad) to be activated Sunday ",
+      "title": "Bryan Baker records save Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:59:07"
+      "when": "2026-06-28 03:38:47"
      },
      {
-      "title": "Jacob Wilson (shoulder) remains out of lineup Saturday ",
+      "title": "Jonathan Aranda connects for homer Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:41:56"
+      "when": "2026-06-28 03:35:21"
      },
      {
-      "title": "Jose Siri activated from paternity list",
+      "title": "Junior Caminero homers again Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:24:44"
+      "when": "2026-06-28 03:31:04"
      },
      {
-      "title": "Christian Moore optioned to Triple-A ",
+      "title": "Seiya Suzuki goes yard Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 22:23:43"
+      "when": "2026-06-28 03:26:08"
      },
      {
-      "title": "Kai-Wei Teng expected to be optioned by Astros ",
+      "title": "Ian Happ sends one out Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:58:15"
+      "when": "2026-06-28 03:23:45"
      },
      {
-      "title": "Miguel Ullola to be called up by Astros ",
+      "title": "Michael Conforto goes deep in lone at-bat Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:55:24"
+      "when": "2026-06-28 03:20:17"
      },
      {
-      "title": "Randy Vasquez to pitch in bulk relief role Saturday ",
+      "title": "David Peterson solid in Cubs debut Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:51:42"
+      "when": "2026-06-28 03:16:59"
      },
      {
-      "title": "Kyle Hart to open game Saturday ",
+      "title": "Jacob Wilson (shoulder) hopeful to return to lineup Sunday ",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:50:31"
+      "when": "2026-06-28 02:26:27"
      },
      {
-      "title": "Tyler Ferguson recalled from Triple-A ",
+      "title": "Jose Altuve expected to be fine",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:49:01"
+      "when": "2026-06-28 02:25:00"
      },
      {
-      "title": "Hoby Milner (appendicitis) placed on IL",
+      "title": "Grant Holmes available out of bullpen this weekend ",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:48:03"
+      "when": "2026-06-28 02:23:40"
      },
      {
-      "title": "Bryse Wilson activated by Cubs",
+      "title": "Ty France dealing with wrist injury",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:18:50"
+      "when": "2026-06-28 02:22:25"
      },
      {
-      "title": "Jose Altuve makes early exit Saturday ",
+      "title": "Sammy Peralta signs minor league deal with Angels",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:16:25"
+      "when": "2026-06-28 02:20:46"
      },
      {
-      "title": "Carlos Carrasco re-signs with Braves on minor league deal ",
+      "title": "Josh Hader shuts door for another save in win over Tigers",
       "body": "",
       "player": "",
-      "when": "2026-06-27 21:15:29"
+      "when": "2026-06-28 01:24:41"
      }
     ],
     "injuries": [
@@ -46942,6 +46855,13 @@
       "note": ""
      },
      {
+      "player": "Brett Harris",
+      "norm": "brett harris",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Kyle Nicolas",
       "norm": "kyle nicolas",
       "team": "",
@@ -46963,15 +46883,15 @@
       "note": ""
      },
      {
-      "player": "Simeon Woods Richardson",
-      "norm": "simeon woods richardson",
+      "player": "Wilkin Ramos",
+      "norm": "wilkin ramos",
       "team": "",
       "status": "DFA",
       "note": ""
      },
      {
-      "player": "Wilkin Ramos",
-      "norm": "wilkin ramos",
+      "player": "Simeon Woods Richardson",
+      "norm": "simeon woods richardson",
       "team": "",
       "status": "DFA",
       "note": ""
@@ -47009,13 +46929,6 @@
       "norm": "lazaro-dup estrada-dup",
       "team": "",
       "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Hayden Juenger",
-      "norm": "hayden juenger",
-      "team": "",
-      "status": "DFA",
       "note": ""
      },
      {
@@ -47086,13 +46999,6 @@
       "norm": "jaxon jelkin",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zack Short",
-      "norm": "zack short",
-      "team": "",
-      "status": "DFA",
       "note": ""
      },
      {
@@ -47395,6 +47301,13 @@
       "team": "",
       "status": "IL15",
       "note": ""
+     },
+     {
+      "player": "Brad Keller",
+      "norm": "brad keller",
+      "team": "",
+      "status": "IL15",
+      "note": ""
      }
     ]
    },
@@ -47410,20 +47323,20 @@
       "proj_total": 174.09,
       "home_win_prob": 0.3608,
       "away_win_prob": 0.6392,
-      "home_ml": 156,
+      "home_ml": 163,
       "away_ml": -156,
-      "home_ml_ev": -0.0382,
-      "away_ml_ev": 0.0245,
+      "home_ml_ev": -0.0203,
+      "away_ml_ev": 0.0297,
       "total_line": 177.5,
       "over_odds": 100.0,
       "model_over_prob": 0.4101,
       "over_ev": -0.1798,
-      "spread_home_line": 2.5,
-      "spread_home_odds": 113.0,
-      "spread_away_odds": 108.0,
-      "model_home_cover": 0.4695,
-      "spread_home_ev": NaN,
-      "spread_away_ev": NaN
+      "spread_home_line": 3.5,
+      "spread_home_odds": -105.0,
+      "spread_away_odds": 113.0,
+      "model_home_cover": 0.5042,
+      "spread_home_ev": 0.0015,
+      "spread_away_ev": 0.0374
      },
      {
       "game_id": "401857031",
@@ -47435,20 +47348,20 @@
       "proj_total": 169.43,
       "home_win_prob": 0.6914,
       "away_win_prob": 0.3086,
-      "home_ml": -245,
-      "away_ml": 233,
-      "home_ml_ev": -0.0184,
-      "away_ml_ev": 0.0087,
+      "home_ml": -233,
+      "away_ml": 223,
+      "home_ml_ev": -0.0105,
+      "away_ml_ev": -0.0062,
       "total_line": 166.5,
       "over_odds": 104.0,
       "model_over_prob": 0.5774,
       "over_ev": 0.178,
       "spread_home_line": -6.5,
-      "spread_home_odds": 100.0,
-      "spread_away_odds": -104.0,
+      "spread_home_odds": 108.0,
+      "spread_away_odds": 112.0,
       "model_home_cover": 0.455,
-      "spread_home_ev": -0.0499,
-      "spread_away_ev": 0.0297
+      "spread_home_ev": NaN,
+      "spread_away_ev": NaN
      },
      {
       "game_id": "401857032",
@@ -47461,19 +47374,19 @@
       "home_win_prob": 0.2435,
       "away_win_prob": 0.7565,
       "home_ml": 285,
-      "away_ml": -277,
-      "home_ml_ev": -0.0285,
-      "away_ml_ev": 0.0176,
+      "away_ml": -270,
+      "home_ml_ev": -0.0259,
+      "away_ml_ev": 0.0237,
       "total_line": 178.5,
       "over_odds": 100.0,
       "model_over_prob": 0.5528,
       "over_ev": 0.1055,
-      "spread_home_line": 6.5,
-      "spread_home_odds": 108.0,
-      "spread_away_odds": -108.0,
-      "model_home_cover": 0.6232,
-      "spread_home_ev": 0.1481,
-      "spread_away_ev": -0.1372
+      "spread_home_line": 5.5,
+      "spread_home_odds": 123.0,
+      "spread_away_odds": 100.0,
+      "model_home_cover": 0.5898,
+      "spread_home_ev": NaN,
+      "spread_away_ev": NaN
      },
      {
       "game_id": "401857033",
@@ -47485,20 +47398,20 @@
       "proj_total": 166.41,
       "home_win_prob": 0.642,
       "away_win_prob": 0.358,
-      "home_ml": -104,
+      "home_ml": -106,
       "away_ml": 108,
-      "home_ml_ev": 0.1344,
-      "away_ml_ev": -0.1229,
-      "total_line": 163.5,
-      "over_odds": -110.0,
-      "model_over_prob": 0.5769,
-      "over_ev": 0.1014,
+      "home_ml_ev": 0.1262,
+      "away_ml_ev": -0.1253,
+      "total_line": 165.5,
+      "over_odds": 117.0,
+      "model_over_prob": 0.5242,
+      "over_ev": 0.1375,
       "spread_home_line": -1.5,
-      "spread_home_odds": -102.0,
-      "spread_away_odds": 104.0,
+      "spread_home_odds": 108.0,
+      "spread_away_odds": 113.0,
       "model_home_cover": 0.5474,
-      "spread_home_ev": 0.0445,
-      "spread_away_ev": -0.0359
+      "spread_home_ev": NaN,
+      "spread_away_ev": NaN
      }
     ],
     "props": [],
@@ -49345,6 +49258,41 @@
       "note": ""
      },
      {
+      "player": "Marcus Nordmark",
+      "norm": "marcus nordmark",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Rian Chudzinski",
+      "norm": "rian chudzinski",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nikita Klepov",
+      "norm": "nikita klepov",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mathis Preston",
+      "norm": "mathis preston",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jayden Kurtz",
+      "norm": "jayden kurtz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Marc Michaelis",
       "norm": "marc michaelis",
       "team": "",
@@ -50463,41 +50411,6 @@
       "team": "",
       "status": "RET",
       "note": ""
-     },
-     {
-      "player": "Patrice Bergeron",
-      "norm": "patrice bergeron",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Ryan Miller",
-      "norm": "ryan miller",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Semyon Varlamov",
-      "norm": "semyon varlamov",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Saku Maenalanen",
-      "norm": "saku maenalanen",
-      "team": "",
-      "status": "NWT",
-      "note": ""
-     },
-     {
-      "player": "Phil Kessel",
-      "norm": "phil kessel",
-      "team": "",
-      "status": "NWT",
-      "note": ""
      }
     ]
    }
@@ -50505,29 +50418,29 @@
  },
  "performance": {
   "overall": {
-   "graded_games": 233,
-   "model_brier": 0.2513,
-   "model_log_loss": 0.6968,
-   "bets": 169,
-   "bet_win_rate": 0.4615,
-   "units": 0.31,
-   "roi_pct": 0.18,
-   "avg_clv_pct": 2.76,
-   "clv_beat_rate": 0.5034,
-   "clv_bets": 149
+   "graded_games": 242,
+   "model_brier": 0.2525,
+   "model_log_loss": 0.6993,
+   "bets": 174,
+   "bet_win_rate": 0.4483,
+   "units": -4.69,
+   "roi_pct": -2.69,
+   "avg_clv_pct": 2.74,
+   "clv_beat_rate": 0.5065,
+   "clv_bets": 154
   },
   "by_sport": {
    "MLB": {
-    "graded_games": 205,
-    "model_brier": 0.2518,
-    "model_log_loss": 0.6974,
-    "bets": 133,
-    "bet_win_rate": 0.4962,
-    "units": 5.56,
-    "roi_pct": 4.18,
-    "avg_clv_pct": 4.17,
-    "clv_beat_rate": 0.5289,
-    "clv_bets": 121
+    "graded_games": 214,
+    "model_brier": 0.2531,
+    "model_log_loss": 0.7003,
+    "bets": 138,
+    "bet_win_rate": 0.4783,
+    "units": 0.56,
+    "roi_pct": 0.41,
+    "avg_clv_pct": 4.1,
+    "clv_beat_rate": 0.5317,
+    "clv_bets": 126
    },
    "WNBA": {
     "graded_games": 27,
@@ -50555,5 +50468,5 @@
    }
   }
  },
- "odds_api_credits": 24621
+ "odds_api_credits": 24613
 }
