@@ -339,11 +339,11 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
         lam_h, lam_a = proj.home_exp_runs, proj.away_exp_runs
         return (proj.home_win_prob, proj.total_mean,
                 lambda line: float(1 - _poisson_cdf(int(line), lam_h + lam_a)),
-                lambda spread: _poisson_cover(lam_h, lam_a, spread, draws))
+                lambda spread: _poisson_cover(lam_h, lam_a, spread, draws), None)
     gp = generic.project_game(sport, h, a)
     return (gp.home_win_prob, gp.total_mean,
             lambda line: gp.prob_over(line, sport),
-            lambda spread: gp.home_cover_prob(spread, sport))
+            lambda spread: gp.home_cover_prob(spread, sport), gp)
 
 
 def _poisson_cdf(k: int, lam: float) -> float:
@@ -529,7 +529,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 home_pf, away_pf = pf_venue, parks.factor(g["away"])
             else:
                 pf_venue = home_pf = away_pf = 1.0
-            hwp, tmean, prob_over, cover_fn = _project(
+            hwp, tmean, prob_over, cover_fn, gp_obj = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
                 home_bp, away_bp, pf_venue, home_pf, away_pf)
             if elo is not None:
@@ -549,6 +549,12 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 a_dev = (qb_value.get(g["away_qb"], lg) - qb_base.get(g["away"], lg))
                 hwp = generic.shift_win_prob(hwp, qb_coeff * (h_dev - a_dev),
                                              sport.sigma_margin)
+            # Rebuild the spread cover from the fully-adjusted win prob so the
+            # backtest grades spreads with a margin consistent with the
+            # moneyline — mirroring the live pipeline's with_consistent_margin.
+            if gp_obj is not None and sport.model == "normal" and sport.sigma_margin > 0:
+                gp_obj = generic.with_consistent_margin(gp_obj, hwp, sport)
+                cover_fn = lambda spread, _g=gp_obj: _g.home_cover_prob(spread, sport)
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
@@ -768,9 +774,9 @@ def run_mlb_clv_open_close(seasons: list[int] | None = None, draws: int = 4000,
                                               parks.factor(g["away"]))
             else:
                 pf_venue = home_pf = away_pf = 1.0
-            hwp, _, prob_over, _ = _project("MLB", sport, h, a, draws,
-                                            home_opp, away_opp, home_bp, away_bp,
-                                            pf_venue, home_pf, away_pf)
+            hwp, _, prob_over, _, _ = _project("MLB", sport, h, a, draws,
+                                               home_opp, away_opp, home_bp, away_bp,
+                                               pf_venue, home_pf, away_pf)
             rec = bp.get((g["date"], normalize(g["home"]), normalize(g["away"])))
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]

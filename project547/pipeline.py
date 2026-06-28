@@ -834,7 +834,11 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
             rest_diff = _rest(g["home_team"]) - _rest(g["away_team"])
             hwp = generic.shift_win_prob(hwp, sport.rest_coeff * rest_diff,
                                          sport.sigma_margin)
-        hwp = round(hwp, 4)
+        # Fold the Elo/rest-adjusted win prob back into the projection's margin
+        # so the spread cover prob (which reads margin_mean) stays consistent
+        # with the published moneyline. Totals are unaffected by design.
+        proj = generic.with_consistent_margin(proj, hwp, sport)
+        hwp = proj.home_win_prob
         rows.append(
             {
                 "game_id": g["game_id"],
