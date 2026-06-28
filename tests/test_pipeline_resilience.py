@@ -82,9 +82,16 @@ def test_mlb_skips_props_when_no_games(monkeypatch):
     assert called["props"] == 0
 
 
+def _stub_snapshot_writes(monkeypatch, snapshots):
+    # keep tests from touching real data/history files
+    for fn in ("_persist_json", "_save_raw_sample", "_append"):
+        monkeypatch.setattr(snapshots, fn, lambda *a, **k: None)
+
+
 def test_snapshot_skips_bettingpros_when_no_events(monkeypatch):
     from project547 import snapshots
     from project547.clients import bettingpros
+    _stub_snapshot_writes(monkeypatch, snapshots)
     calls = {"props": 0, "offers": 0, "markets": 0}
     monkeypatch.setattr(bettingpros, "events", lambda sk, d: [])   # no games
     monkeypatch.setattr(bettingpros, "props",
@@ -128,6 +135,7 @@ def test_generic_skips_props_when_window_closed(monkeypatch):
 def test_snapshot_window_skips_props_keeps_games(monkeypatch):
     from project547 import snapshots
     from project547.clients import bettingpros, oddsapi
+    _stub_snapshot_writes(monkeypatch, snapshots)
     calls = {"props": 0}
     monkeypatch.setattr(bettingpros, "events", lambda sk, d: [{"id": "1"}])
     monkeypatch.setattr(bettingpros, "markets", lambda sk: [])
