@@ -1203,20 +1203,36 @@ def _bundle(games: list[dict], props: list[dict], *errs: str | None) -> dict:
     return out
 
 
-def _run_mlb(date: str) -> dict:
+def _skip_props(games, pull_props, sport_key, date, reason) -> bool:
+    """Whether to skip the (BettingPros-spending) prop pull this run."""
+    if not games:               # no games on the slate -> nothing to price
+        log.info("%s: no games on %s — skipping prop pulls", sport_key, date)
+        return True
+    if not pull_props:          # outside the prop-pull window (budget guard)
+        log.info("%s: %s — skipping prop pulls (games still built)",
+                 sport_key, reason)
+        return True
+    return False
+
+
+def _run_mlb(date: str, pull_props: bool = True) -> dict:
     games, ge = _safe_step(
         lambda: attach_game_edges(project_games(date), date), "games", "MLB")
+    if _skip_props(games, pull_props, "MLB", date, "prop window closed"):
+        return _bundle(games, [], ge, None)
     props, pe = _safe_step(
         lambda: attach_hit_rates(attach_prop_edges(project_props(date), date),
                                  "MLB", date), "props", "MLB")
     return _bundle(games, props, ge, pe)
 
 
-def _run_generic(sport_key: str, date: str) -> dict:
+def _run_generic(sport_key: str, date: str, pull_props: bool = True) -> dict:
     games, ge = _safe_step(
         lambda: attach_generic_game_edges(
             project_generic_games(sport_key, date), sport_key, date),
         "games", sport_key)
+    if _skip_props(games, pull_props, sport_key, date, "prop window closed"):
+        return _bundle(games, [], ge, None)
     props, pe = _safe_step(
         lambda: attach_hit_rates(project_generic_props(sport_key, date),
                                  sport_key, date), "props", sport_key)
@@ -1224,7 +1240,7 @@ def _run_generic(sport_key: str, date: str) -> dict:
 
 
 def run(date: str | None = None, sports: list[str] | None = None,
-        write: bool = True) -> dict:
+        write: bool = True, pull_props: bool = True) -> dict:
     date = date or _date.today().isoformat()
     sports = sports or active_sports(date)
 
@@ -1234,7 +1250,8 @@ def run(date: str | None = None, sports: list[str] | None = None,
             log.warning("unknown sport %s, skipping", key)
             continue
         try:
-            out_sports[key] = _run_mlb(date) if key == "MLB" else _run_generic(key, date)
+            out_sports[key] = (_run_mlb(date, pull_props) if key == "MLB"
+                               else _run_generic(key, date, pull_props))
             out_sports[key]["news"] = _sport_news(key)
             out_sports[key]["injuries"] = _sport_injuries(key)
             log.info("%s: %d games, %d props", key,

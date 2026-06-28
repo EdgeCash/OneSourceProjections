@@ -69,9 +69,12 @@ def _save_raw_sample(sport: str, date: str, kind: str, payload: list):
     path.write_text(json.dumps(payload[:2], indent=1, default=str))
 
 
-def snapshot(date: str, sports: list[str] | None = None) -> dict:
+def snapshot(date: str, sports: list[str] | None = None,
+             pull_props: bool = True) -> dict:
     """Capture and append current game + prop odds for a date. Returns a
-    per-sport count of rows written. Degrades gracefully per sport."""
+    per-sport count of rows written. Degrades gracefully per sport. When
+    ``pull_props`` is False (outside the prop-pull window), game odds are still
+    snapshotted hourly but the expensive prop calls are skipped."""
     sports = sports or active_sports(date)
     captured = datetime.now(timezone.utc).isoformat()
     counts: dict[str, int] = {}
@@ -79,13 +82,10 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
     for sk in sports:
         if sk not in SPORTS:
             continue
-        rows: list[dict] = []
-        try:
-            mkts = bettingpros.markets(sk)
-            _save_raw_sample(sk, date, "markets", mkts)
-            _persist_json(SNAP_DIR.parent / "markets" / f"{sk.lower()}.json", mkts)
-        except Exception as e:
-            log.warning("%s snapshot: markets unavailable: %s", sk, e)
+        # Probe events FIRST and skip every other BettingPros call for a sport
+        # with no games on this date (e.g. out-of-season NBA/NHL in June). Those
+        # wasted offer/prop calls were draining the daily request budget, so the
+        # in-season sports' props 429'd and ran dry by game time — no DFS slips.
         try:
             events = bettingpros.events(sk, date)
             event_ids = [e.get("id") for e in events if e.get("id")]
@@ -97,6 +97,19 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
             log.warning("%s snapshot: events unavailable: %s", sk, e)
             counts[sk] = 0
             continue
+        if not event_ids:
+            log.info("%s snapshot: no games on %s — skipping BettingPros calls",
+                     sk, date)
+            counts[sk] = 0
+            continue
+
+        rows: list[dict] = []
+        try:
+            mkts = bettingpros.markets(sk)
+            _save_raw_sample(sk, date, "markets", mkts)
+            _persist_json(SNAP_DIR.parent / "markets" / f"{sk.lower()}.json", mkts)
+        except Exception as e:
+            log.warning("%s snapshot: markets unavailable: %s", sk, e)
 
         # game markets (moneyline / total / spread)
         try:
@@ -122,16 +135,18 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
         except Exception as e:
             log.warning("%s snapshot: Odds API unavailable: %s", sk, e)
 
-        # player props (BettingPros consensus + premium projection/EV)
-        try:
-            raw_props = bettingpros.props(sk, date)
-            _save_raw_sample(sk, date, "props", raw_props)
-            for r in bettingpros.flatten_props(raw_props):
-                r.update({"captured_at": captured, "sport": sk, "date": date,
-                          "kind": "prop"})
-                rows.append(r)
-        except Exception as e:
-            log.warning("%s snapshot: props unavailable: %s", sk, e)
+        # player props (BettingPros consensus + premium projection/EV) — only
+        # inside the prop-pull window, to conserve the daily request budget.
+        if pull_props:
+            try:
+                raw_props = bettingpros.props(sk, date)
+                _save_raw_sample(sk, date, "props", raw_props)
+                for r in bettingpros.flatten_props(raw_props):
+                    r.update({"captured_at": captured, "sport": sk, "date": date,
+                              "kind": "prop"})
+                    rows.append(r)
+            except Exception as e:
+                log.warning("%s snapshot: props unavailable: %s", sk, e)
 
         if rows:
             _append(sk, date, rows)
