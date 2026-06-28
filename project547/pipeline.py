@@ -157,11 +157,67 @@ def _lookup_float(d: dict, *keys: str) -> float | None:
 # Game projections
 # ---------------------------------------------------------------------------
 
+# League batting anchors for the top-3 wOBA proxy (we store AVG/SLG, not wOBA).
+_LG_AVG, _LG_SLG = 0.248, 0.405
+
+
+def _batter_woba_map(batters: pd.DataFrame) -> dict:
+    """{norm_name: pseudo-wOBA} from AVG/SLG (run-production proxy for the top-3
+    first-inning signal; we don't store true wOBA)."""
+    from .models import nrfi as _nrfi
+    out: dict = {}
+    if batters is None or batters.empty:
+        return out
+    for _, b in batters.iterrows():
+        nm = b.get("norm_name")
+        avg, slg = _lookup_float(b.to_dict(), "AVG"), _lookup_float(b.to_dict(), "SLG")
+        if not nm or (avg is None and slg is None):
+            continue
+        a = (avg / _LG_AVG) if avg else 1.0
+        s = (slg / _LG_SLG) if slg else 1.0
+        out[nm] = _nrfi.LEAGUE_WOBA * (0.45 * a + 0.55 * s)
+    return out
+
+
+def _nrfi_game_fields(g: dict, fi_rates: dict, bq: dict, lineups: dict | None,
+                      starter_xfip_fn, park: float) -> dict:
+    """Forward P(NRFI/YRFI) for one game: log5 team first-inning rates refined
+    by the specific starter (xFIP) and confirmed top-3 hitters (wOBA proxy)."""
+    from .models import nrfi as _nrfi
+    rh = fi_rates.get(teams.canon("MLB", g.get("home_team", "")))
+    ra = fi_rates.get(teams.canon("MLB", g.get("away_team", "")))
+    if not rh or not ra:
+        return {}
+
+    def top3(side):
+        names = ((lineups or {}).get(side) or [])[:3]
+        ws = [bq[normalize(n)] for n in names if normalize(n) in bq]
+        return sum(ws) / len(ws) if ws else None
+
+    r = _nrfi.yrfi_prob(
+        off_away=ra["off"], allow_home=rh["allow"],
+        off_home=rh["off"], allow_away=ra["allow"], park=park or 1.0,
+        home_starter=starter_xfip_fn(g.get("home_pitcher")),
+        away_starter=starter_xfip_fn(g.get("away_pitcher")),
+        away_top3_woba=top3("away"), home_top3_woba=top3("home"))
+    return {"model_nrfi_prob": r["p_nrfi"], "model_yrfi_prob": r["p_yrfi"],
+            "nrfi_p_top": r["p_top"], "nrfi_p_bot": r["p_bot"]}
+
+
 def project_games(date: str) -> pd.DataFrame:
     season = _season(date)
     slate = mlb_statsapi.schedule(date)
     pitchers = _pitcher_table(season)
     bullpens = internal_stats.bullpen_fip(season)
+    # NRFI inputs: as-of first-inning team rates + a top-3 wOBA proxy
+    from . import teamstats as _ts
+    from .models import nrfi as _nrfi
+    try:
+        fi_rates = _nrfi.team_first_inning_rates(
+            _ts.team_games("MLB", (season - 1, season)), asof=date)
+    except Exception:
+        fi_rates = {}
+    bq = _batter_woba_map(_batter_table(season))
 
     def starter_xfip(name: str | None) -> float | None:
         if not name or pitchers.empty:
@@ -212,6 +268,8 @@ def project_games(date: str) -> pd.DataFrame:
             nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
             if nm and pid:
                 pids[normalize(nm)] = pid
+        nrfi_fields = _nrfi_game_fields(g, fi_rates, bq, lineups,
+                                        starter_xfip, pf_venue)
         rows.append(
             {
                 "weather": wx,
@@ -232,6 +290,7 @@ def project_games(date: str) -> pd.DataFrame:
                 "away_win_prob": round(1 - proj.home_win_prob, 4),
                 "over_probs": proj.over_probs,
                 "home_rl_cover": proj.home_runline_cover,
+                **nrfi_fields,
             }
         )
     return pd.DataFrame(rows)

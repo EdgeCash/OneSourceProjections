@@ -1126,6 +1126,11 @@ def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
         if c is not None and r["decision"] != "NOTE":
             tag += f", confidence {c['score']:g}/10"
         reads.append(f"- **{r['market'].title()}** — {tag}: {r['text']}")
+    nrfi = g.get("model_nrfi_prob")
+    if nrfi is not None and not (isinstance(nrfi, float) and pd.isna(nrfi)):
+        lean = "NRFI (no run)" if nrfi >= 0.5 else "YRFI (run scores)"
+        reads.append(f"- **First inning** — model leans **{lean}** "
+                     f"({max(nrfi, 1 - nrfi) * 100:.0f}%)")
     parts = [head, "\n".join(reads)]
 
     aform, hform = matchup.get("away_form"), matchup.get("home_form")
@@ -1776,6 +1781,10 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
     if ar is not None or hr is not None:
         bits.append(f"Rest <b>{_last(away)} {ar if ar is not None else '–'} / "
                     f"{_last(home)} {hr if hr is not None else '–'}</b>")
+    nrfi = _mcf(g.get("model_nrfi_prob"))
+    if nrfi is not None:
+        lean = "NRFI" if nrfi >= 0.5 else "YRFI"
+        bits.append(f"1st inning <b>{lean} {max(nrfi, 1 - nrfi) * 100:.0f}%</b>")
     bits.append(f"Window <b>{win_label}</b>")
 
     header = (

@@ -36,6 +36,16 @@ DEF_PRIOR_GAMES = 45
 # settled). A small bump to the batting side's score odds; tunable.
 TOP_OF_ORDER_MULT = 1.06
 
+# League anchors for the live-only quality signals (the specific starter and the
+# confirmed top-3 hitters — the signals the team rotation/lineup average can't
+# capture). Conservative blends, since these can't be backtested without
+# first-inning play-by-play; forward CLV is the judge.
+LEAGUE_XFIP = 4.20         # league-average starter xFIP/FIP/ERA scale
+LEAGUE_WOBA = 0.318        # league-average wOBA
+STARTER_BLEND = 0.65       # weight on starter-quality vs team allow-rate
+TOP3_BLEND = 0.55          # weight on top-3 quality vs team offense rate
+_QUAL_DAMP = 0.6           # damp the quality multiplier (first inning ≠ full game)
+
 _EPS = 1e-4
 
 
@@ -69,27 +79,59 @@ def regress(rate: float | None, n: int, prior: float, prior_games: int) -> float
     return (rate * n + prior * prior_games) / (n + prior_games)
 
 
+def starter_allow_rate(metric: float | None, team_allow: float,
+                       league: float = LEAGUE_XFIP) -> float:
+    """Refine a team's allow-in-1st rate with the *specific* starter's season
+    run-prevention (xFIP/FIP/ERA; lower = better). Blended with the team rate so
+    it degrades gracefully and never gets overconfident off one number."""
+    if metric is None or metric <= 0:
+        return team_allow
+    mult = (float(metric) / league) ** _QUAL_DAMP     # >1 worse, <1 better
+    starter_implied = scale_odds(LEAGUE_SCORE_RATE, mult)
+    return STARTER_BLEND * starter_implied + (1 - STARTER_BLEND) * team_allow
+
+
+def top3_off_rate(woba: float | None, team_off: float,
+                  league: float = LEAGUE_WOBA) -> float:
+    """Refine a team's score-in-1st rate with the confirmed top-3 hitters' wOBA
+    (the batters actually guaranteed to hit in the 1st). Blended with the team
+    rate; wOBA spread is small so it nudges, not dominates."""
+    if woba is None or woba <= 0:
+        return team_off
+    mult = (float(woba) / league) ** (1.0 / _QUAL_DAMP)   # amplify small wOBA gaps
+    top3_implied = scale_odds(LEAGUE_SCORE_RATE, mult)
+    return TOP3_BLEND * top3_implied + (1 - TOP3_BLEND) * team_off
+
+
 def half_inning_score_prob(off_rate: float, def_allow_rate: float,
                            park: float = 1.0, weather: float = 1.0,
-                           top_of_order: bool = True) -> float:
-    """P(the batting team scores ≥1 run in this half-inning)."""
-    p = log5(off_rate, def_allow_rate)
+                           top_of_order: bool = True,
+                           starter_metric: float | None = None,
+                           top3_woba: float | None = None) -> float:
+    """P(the batting team scores ≥1 run in this half-inning), refined by the
+    specific starter (def) and confirmed top-3 hitters (off) when available."""
+    off = top3_off_rate(top3_woba, off_rate)
+    dfn = starter_allow_rate(starter_metric, def_allow_rate)
+    p = log5(off, dfn)
     env = park * weather * (TOP_OF_ORDER_MULT if top_of_order else 1.0)
     return _clip(scale_odds(p, env), 0.02, 0.85)
 
 
 def yrfi_prob(off_away: float, allow_home: float,
               off_home: float, allow_away: float,
-              park: float = 1.0, weather: float = 1.0) -> dict:
-    """Model the two half-innings and combine into P(YRFI).
-
-    ``off_away``/``off_home`` are each team's score-in-1st rate; ``allow_home``/
-    ``allow_away`` are each team's pitching allow-in-1st rate. The visiting
-    offense bats the top half vs the home pitching; the home offense bats the
-    bottom half vs the away pitching.
-    """
-    p_top = half_inning_score_prob(off_away, allow_home, park, weather)   # visitor bats
-    p_bot = half_inning_score_prob(off_home, allow_away, park, weather)   # home bats
+              park: float = 1.0, weather: float = 1.0,
+              home_starter: float | None = None, away_starter: float | None = None,
+              away_top3_woba: float | None = None,
+              home_top3_woba: float | None = None) -> dict:
+    """Model the two half-innings and combine into P(YRFI). The visiting offense
+    bats the top half vs the HOME starter; the home offense bats the bottom half
+    vs the AWAY starter. Starter metrics / top-3 wOBA are optional refinements."""
+    p_top = half_inning_score_prob(off_away, allow_home, park, weather,
+                                   starter_metric=home_starter,
+                                   top3_woba=away_top3_woba)   # visitor bats vs home SP
+    p_bot = half_inning_score_prob(off_home, allow_away, park, weather,
+                                   starter_metric=away_starter,
+                                   top3_woba=home_top3_woba)   # home bats vs away SP
     p_yrfi = 1.0 - (1.0 - p_top) * (1.0 - p_bot)
     return {"p_yrfi": round(p_yrfi, 4), "p_nrfi": round(1 - p_yrfi, 4),
             "p_top": round(p_top, 4), "p_bot": round(p_bot, 4)}
