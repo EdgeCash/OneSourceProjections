@@ -117,6 +117,18 @@ DFS_SMASH_EDGE = 0.08
 # hour, with two numbers — overall model accuracy and personal played accuracy.
 RECAP_HOUR_ET = 10
 
+# Player props are only PULLED during these ET hours (inclusive). Props matter
+# near game time and BettingPros' daily request budget is finite, so there's no
+# point burning it overnight when no lines are posted. Games, snapshots and
+# grading still run every hour — only the (expensive) prop calls are windowed.
+PROPS_WINDOW_ET = (9, 21)  # 9am–9pm ET
+
+
+def props_window_open(hour_et: int) -> bool:
+    """True when prop pulls are allowed at this ET hour (24h clock)."""
+    lo, hi = PROPS_WINDOW_ET
+    return lo <= hour_et <= hi
+
 # Market-blend / price-sanity knobs. The raw model finds far too many fat
 # edges (a sign of over-confidence + stale price inputs, not alpha), so before
 # computing EV we (1) reject incoherent two-way prices and (2) shrink the

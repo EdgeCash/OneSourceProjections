@@ -131,11 +131,22 @@ def main():
     yesterday = today - timedelta(days=1)
     upcoming = [today.isoformat(), tomorrow.isoformat()]
 
+    # Player props are only PULLED inside the ET window (config.PROPS_WINDOW_ET)
+    # — games/snapshots/grading still run every hour, but the expensive prop
+    # calls are skipped overnight to stay under BettingPros' daily request cap.
+    # A manual --date run always attempts props.
+    hour_et = datetime.now(ET).hour
+    pull_props = bool(args.date) or config.props_window_open(hour_et)
+    if not pull_props:
+        log.info("prop-pull window closed (ET hour %d, window %s) — running "
+                 "games/snapshots/grading, skipping props this hour",
+                 hour_et, config.PROPS_WINDOW_ET)
+
     # 1) snapshot odds (closing-line history)
     if not args.no_snapshot:
         for d in upcoming:
             try:
-                counts = snapshots.snapshot(d)
+                counts = snapshots.snapshot(d, pull_props=pull_props)
                 log.info("snapshot %s: %s", d, counts)
             except Exception as e:
                 log.error("snapshot %s failed: %s", d, e)
@@ -151,12 +162,34 @@ def main():
     slates = {}
     for d in upcoming:
         try:
-            blob = pipeline.run(d, write=False)["sports"]
+            blob = pipeline.run(d, write=False, pull_props=pull_props)["sports"]
             slates[d] = blob
             results.archive_projections(d, blob)
         except Exception as e:
             log.error("projection %s failed: %s", d, e)
             slates[d] = {}
+
+    # When props weren't pulled this hour (window closed), carry forward the
+    # props from the previous run so late games keep their lines instead of
+    # going blank between the 9pm pull and game time. Fresh pulls resume at 9am.
+    if not pull_props:
+        try:
+            prev = json.loads((OUTPUT_DIR / "latest.json").read_text())
+            prev_slates = prev.get("slates", {}) or {}
+            carried = 0
+            for d, day in slates.items():
+                for sk, blob in (day or {}).items():
+                    if blob.get("props"):
+                        continue
+                    old = ((prev_slates.get(d, {}) or {}).get(sk, {}) or {})
+                    if old.get("props"):
+                        blob["props"] = old["props"]
+                        carried += len(old["props"])
+            if carried:
+                log.info("carried forward %d props from the prior run "
+                         "(prop window closed)", carried)
+        except Exception as e:
+            log.warning("prop carry-forward skipped: %s", e)
 
     # 2c) snapshot projection sources (our model / de-vigged market / BettingPros)
     #     for accuracy tracking across every sport — modeled and unmodeled.
