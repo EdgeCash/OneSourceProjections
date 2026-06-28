@@ -1206,6 +1206,10 @@ def _bundle(games: list[dict], props: list[dict], *errs: str | None) -> dict:
 def _run_mlb(date: str) -> dict:
     games, ge = _safe_step(
         lambda: attach_game_edges(project_games(date), date), "games", "MLB")
+    if not games:
+        # No games on the slate → don't spend BettingPros budget on props.
+        log.info("MLB: no games on %s — skipping prop pulls", date)
+        return _bundle(games, [], ge, None)
     props, pe = _safe_step(
         lambda: attach_hit_rates(attach_prop_edges(project_props(date), date),
                                  "MLB", date), "props", "MLB")
@@ -1217,6 +1221,10 @@ def _run_generic(sport_key: str, date: str) -> dict:
         lambda: attach_generic_game_edges(
             project_generic_games(sport_key, date), sport_key, date),
         "games", sport_key)
+    if not games:
+        # Out-of-season / no games → skip the BettingPros prop calls entirely.
+        log.info("%s: no games on %s — skipping prop pulls", sport_key, date)
+        return _bundle(games, [], ge, None)
     props, pe = _safe_step(
         lambda: attach_hit_rates(project_generic_props(sport_key, date),
                                  sport_key, date), "props", sport_key)

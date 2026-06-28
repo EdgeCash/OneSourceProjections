@@ -79,13 +79,10 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
     for sk in sports:
         if sk not in SPORTS:
             continue
-        rows: list[dict] = []
-        try:
-            mkts = bettingpros.markets(sk)
-            _save_raw_sample(sk, date, "markets", mkts)
-            _persist_json(SNAP_DIR.parent / "markets" / f"{sk.lower()}.json", mkts)
-        except Exception as e:
-            log.warning("%s snapshot: markets unavailable: %s", sk, e)
+        # Probe events FIRST and skip every other BettingPros call for a sport
+        # with no games on this date (e.g. out-of-season NBA/NHL in June). Those
+        # wasted offer/prop calls were draining the daily request budget, so the
+        # in-season sports' props 429'd and ran dry by game time — no DFS slips.
         try:
             events = bettingpros.events(sk, date)
             event_ids = [e.get("id") for e in events if e.get("id")]
@@ -97,6 +94,19 @@ def snapshot(date: str, sports: list[str] | None = None) -> dict:
             log.warning("%s snapshot: events unavailable: %s", sk, e)
             counts[sk] = 0
             continue
+        if not event_ids:
+            log.info("%s snapshot: no games on %s — skipping BettingPros calls",
+                     sk, date)
+            counts[sk] = 0
+            continue
+
+        rows: list[dict] = []
+        try:
+            mkts = bettingpros.markets(sk)
+            _save_raw_sample(sk, date, "markets", mkts)
+            _persist_json(SNAP_DIR.parent / "markets" / f"{sk.lower()}.json", mkts)
+        except Exception as e:
+            log.warning("%s snapshot: markets unavailable: %s", sk, e)
 
         # game markets (moneyline / total / spread)
         try:
