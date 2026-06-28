@@ -152,6 +152,14 @@ def props_window_open(hour_et: int) -> bool:
 #   MARKET_SHRINK: weight on the market's fair prob vs the model (0 = pure
 #     model, 1 = pure market). 0.5 roughly halved a losing backtest's bet
 #     volume and flipped moneyline ROI positive; tune via run_backtest.
+#     Re-derived after the 2026 model upgrades (consistent-margin + negative-
+#     binomial runs): the MLB betting sweep still peaks in the 0.5-0.65 band
+#     (ML ROI 3.5% -> 15.4% -> 19.9% across shrink 0.0/0.5/0.65, but 0.5->0.65
+#     is a ~145-bet noise margin), so 0.5 is unchanged. Note the *calibration*-
+#     optimal blend is ~1.0 (MLB moneylines are efficient — the de-vigged close
+#     out-predicts the model), but shrink is a bet-SELECTION knob, not a
+#     calibration one: at 1.0 nothing clears MIN_EDGE. 0.5 keeps only the model
+#     disagreements large enough to survive, and those carry the positive ROI.
 MARKET_SHRINK = 0.5
 #   A two-way market's raw implied probs must sum within this band to count
 #   as a coherent quote; outside it the prices are stale/mismatched/alt-line.
