@@ -51,6 +51,28 @@ def _finals(sport: str, date: str) -> list[dict]:
         return []
 
 
+def _first_inning(sport: str, date: str) -> dict:
+    """{game_pk: {'yrfi': 0/1, 'key': frozenset(team nicks)}} for MLB, from the
+    statsapi linescore. Used to grade the NRFI model's P(YRFI) forward. Never
+    raises; returns {} off-MLB or when statsapi is unavailable."""
+    if sport != "MLB":
+        return {}
+    try:
+        rows = mlb_statsapi.final_linescores(date)
+    except Exception as e:
+        log.warning("first-inning outcomes unavailable for %s: %s", date, e)
+        return {}
+    out = {}
+    for r in rows:
+        yrfi = 1 if ((r.get("f1_away") or 0) > 0 or (r.get("f1_home") or 0) > 0) else 0
+        out[r["game_pk"]] = {
+            "yrfi": yrfi,
+            "key": frozenset({normalize(r.get("home_team", "")),
+                              normalize(r.get("away_team", ""))}),
+        }
+    return out
+
+
 def _match(game: dict, finals: list[dict]) -> dict | None:
     gid = game.get("game_pk") or game.get("game_id")
     for f in finals:
@@ -99,6 +121,7 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
         if not finals:
             continue
         closes = _closing_lines(sport, date)
+        first_inning = _first_inning(sport, date)
         for g in games:
             fin = _match(g, finals)
             if not fin or fin.get("home_score") is None:
@@ -129,6 +152,28 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                     "brier": round((float(hwp) - home_won) ** 2, 4),
                     "proj_total": g.get("proj_total"), "actual_total": total,
                 })
+
+            # NRFI tracking (every MLB game, no bet — the model-vs-market test
+            # showed the first-inning market is efficient, so P(YRFI) is graded
+            # for calibration/honesty, not surfaced as a play). Brier on the
+            # actual first-inning outcome.
+            yrfi_p = g.get("model_yrfi_prob")
+            nkey = (date, label, "model_nrfi", "")
+            if yrfi_p is not None and first_inning and nkey not in seen:
+                gid = g.get("game_pk") or g.get("game_id")
+                fi = first_inning.get(gid)
+                if fi is None:
+                    tkey = frozenset({normalize(g.get("home_team", "")),
+                                      normalize(g.get("away_team", ""))})
+                    fi = next((v for v in first_inning.values()
+                               if v["key"] == tkey), None)
+                if fi is not None:
+                    new_rows.append({
+                        "date": date, "sport": sport, "game": label,
+                        "market": "model_nrfi", "side": "",
+                        "pred_yrfi": round(float(yrfi_p), 4), "yrfi": fi["yrfi"],
+                        "brier": round((float(yrfi_p) - fi["yrfi"]) ** 2, 4),
+                    })
 
             # moneyline bets recommended at projection time
             for side, won in (("home", home_won == 1), ("away", home_won == 0)):
@@ -221,6 +266,28 @@ def model_accuracy(dates=None) -> tuple[float | None, int]:
     correct = sum(1 for r in games
                   if (float(r["pred_home_wp"]) >= 0.5) == (r["home_won"] == 1))
     return round(correct / len(games), 4), len(games)
+
+
+def nrfi_calibration(dates=None) -> dict:
+    """Forward calibration of the NRFI model: Brier of P(YRFI) vs the actual
+    first-inning outcome, plus the base-rate Brier for context. Informational
+    (the market test showed no tradeable edge), tracked to keep the model honest
+    and visible. Returns {n, model_brier, base_brier, actual_yrfi} or n=0."""
+    if isinstance(dates, str):
+        dates = {dates}
+    rows = [r for r in load_ledger()
+            if r.get("market") == "model_nrfi" and r.get("yrfi") is not None
+            and r.get("pred_yrfi") is not None
+            and (dates is None or r.get("date") in dates)]
+    if not rows:
+        return {"n": 0, "model_brier": None, "base_brier": None,
+                "actual_yrfi": None}
+    y = [r["yrfi"] for r in rows]
+    base = sum(y) / len(y)
+    model_brier = sum((r["pred_yrfi"] - r["yrfi"]) ** 2 for r in rows) / len(rows)
+    base_brier = sum((base - yi) ** 2 for yi in y) / len(y)
+    return {"n": len(rows), "model_brier": round(model_brier, 4),
+            "base_brier": round(base_brier, 4), "actual_yrfi": round(base, 4)}
 
 
 def performance() -> dict:

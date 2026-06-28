@@ -38,6 +38,9 @@ def _wire(tmp_path, monkeypatch, closes=None):
     monkeypatch.setattr(results, "LEDGER", tmp_path / "results.jsonl")
     monkeypatch.setattr(results, "_finals", _finals)
     monkeypatch.setattr(results, "_closing_lines", lambda s, d: closes or {})
+    # default: no first-inning data (avoids a real statsapi call); the NRFI
+    # test overrides this with a stub.
+    monkeypatch.setattr(results, "_first_inning", lambda s, d: {})
 
 
 def test_grade_date_records_brier_and_bets(tmp_path, monkeypatch):
@@ -60,6 +63,28 @@ def test_grade_date_records_brier_and_bets(tmp_path, monkeypatch):
     # the home ML bet won; pnl is positive at -130
     ml = next(b for b in bets if b["market"] == "moneyline")
     assert ml["won"] is True and ml["pnl"] > 0
+
+
+def test_grade_date_records_nrfi_calibration(tmp_path, monkeypatch):
+    _wire(tmp_path, monkeypatch)
+    # game 1 carries a model P(YRFI); the first inning had a run -> yrfi=1
+    monkeypatch.setattr(results, "_first_inning", lambda s, d: {
+        1: {"yrfi": 1, "key": frozenset({"red sox", "yankees"})},
+        2: {"yrfi": 0, "key": frozenset({"cubs", "cardinals"})},
+    })
+    slate = _slate()
+    slate["MLB"]["games"][0]["model_yrfi_prob"] = 0.55
+    slate["MLB"]["games"][1]["model_yrfi_prob"] = 0.48
+    results.archive_projections("2026-06-12", slate)
+    results.grade_date("2026-06-12")
+
+    nrfi = [r for r in results.load_ledger() if r["market"] == "model_nrfi"]
+    assert len(nrfi) == 2
+    g1 = next(r for r in nrfi if r["game"].endswith("Red Sox"))
+    assert g1["yrfi"] == 1 and abs(g1["brier"] - (0.55 - 1) ** 2) < 1e-9
+    # calibration summary reads the ledger
+    cal = results.nrfi_calibration()
+    assert cal["n"] == 2 and cal["model_brier"] is not None
 
 
 def test_grade_date_is_idempotent(tmp_path, monkeypatch):

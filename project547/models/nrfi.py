@@ -15,6 +15,15 @@ first-inning samples are noisy, and computed walk-forward (no lookahead).
 
 Pure functions over rates, so the math unit-tests without any data; the as-of
 rate tables come from :func:`team_first_inning_rates`.
+
+Forward result (honest): graded against the real ``run-in-first-inning`` market
+on 2026 (scripts/backtest_nrfi_market.py, 544 games), this model is
+well-calibrated but does NOT beat the price — model Brier 0.251 vs the de-vigged
+market's 0.248, and betting its edge loses (-4% ROI, only +0.7% CLV). The
+first-inning market is efficient. So P(YRFI) is surfaced as *information* (the
+matchup card lean) and graded forward for calibration — it is deliberately NOT
+routed to plays/EV as a bet. The live starter/top-3 refinements can't be
+backtested without first-inning play-by-play; forward CLV remains the judge.
 """
 
 from __future__ import annotations

@@ -312,6 +312,7 @@ def main():
         "dates": upcoming,
         "slates": slates,
         "performance": perf,
+        "nrfi_calibration": results.nrfi_calibration(),
         "odds_api_credits": oddsapi.credits_remaining(),
     }
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
