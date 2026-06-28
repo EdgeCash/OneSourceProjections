@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-28T03:58:55.374695-04:00",
+ "generated_at": "2026-06-28T06:29:52.653330-04:00",
  "primary_date": "2026-06-28",
  "dates": [
   "2026-06-28",
@@ -13,8 +13,8 @@
       "weather": {
        "temp_f": 77,
        "wind_mph": 4,
-       "wind_dir": "NE",
-       "precip_pct": 7
+       "wind_dir": "ENE",
+       "precip_pct": 6
       },
       "lineups": {
        "home": [],
@@ -53,18 +53,18 @@
       "nrfi_p_top": 0.3048,
       "nrfi_p_bot": 0.2856,
       "home_ml": -178.0,
-      "away_ml": 178.0,
-      "home_ml_ev": 0.0172,
-      "away_ml_ev": -0.0306,
+      "away_ml": 176.0,
+      "home_ml_ev": 0.0159,
+      "away_ml_ev": -0.0353,
       "total_line": 9.5,
-      "over_odds": 127.0,
-      "under_odds": 113.0,
+      "over_odds": 133.0,
+      "under_odds": 117.0,
       "model_over_prob": 0.5766,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 115.0,
-      "rl_away_odds": 126.0,
+      "rl_away_odds": 123.0,
       "model_home_rl": 0.5374,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -72,9 +72,9 @@
      {
       "weather": {
        "temp_f": 78,
-       "wind_mph": 2,
+       "wind_mph": 3,
        "wind_dir": "NE",
-       "precip_pct": 16
+       "precip_pct": 15
       },
       "lineups": {
        "home": [],
@@ -112,28 +112,28 @@
       "model_yrfi_prob": 0.5039,
       "nrfi_p_top": 0.2734,
       "nrfi_p_bot": 0.3172,
-      "home_ml": -125.0,
-      "away_ml": 123.0,
-      "home_ml_ev": 0.1331,
-      "away_ml_ev": -0.1738,
-      "total_line": 8.5,
-      "over_odds": -115.0,
+      "home_ml": -124.0,
+      "away_ml": 122.0,
+      "home_ml_ev": 0.1354,
+      "away_ml_ev": -0.1753,
+      "total_line": 9.0,
+      "over_odds": 108.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.6357,
-      "over_ev": 0.0921,
-      "under_ev": -0.1142,
+      "model_over_prob": 0.5379,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 163.0,
-      "rl_away_odds": -122.0,
+      "rl_away_odds": -121.0,
       "model_home_rl": 0.577,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 78,
-       "wind_mph": 7,
-       "wind_dir": "ENE",
+       "temp_f": 77,
+       "wind_mph": 6,
+       "wind_dir": "E",
        "precip_pct": 0
       },
       "lineups": {
@@ -173,26 +173,26 @@
       "nrfi_p_top": 0.281,
       "nrfi_p_bot": 0.3147,
       "home_ml": -117.0,
-      "away_ml": 117.0,
-      "home_ml_ev": -0.053,
-      "away_ml_ev": 0.062,
+      "away_ml": 120.0,
+      "home_ml_ev": -0.0499,
+      "away_ml_ev": 0.073,
       "total_line": 8.5,
       "over_odds": 104.0,
-      "under_odds": 115.0,
+      "under_odds": 100.0,
       "model_over_prob": 0.5578,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": 0.074,
+      "under_ev": -0.0529,
       "rl_home_line": -1.5,
       "rl_home_odds": 170.0,
-      "rl_away_odds": -126.0,
+      "rl_away_odds": -124.0,
       "model_home_rl": 0.3575,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 81,
-       "wind_mph": 8,
+       "temp_f": 82,
+       "wind_mph": 7,
        "wind_dir": "ENE",
        "precip_pct": 1
       },
@@ -244,14 +244,14 @@
       "under_ev": NaN,
       "rl_home_line": 1.0,
       "rl_home_odds": -113.0,
-      "rl_away_odds": 138.0,
+      "rl_away_odds": 141.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 78,
+       "temp_f": 79,
        "wind_mph": 8,
        "wind_dir": "N",
        "precip_pct": 6
@@ -293,9 +293,9 @@
       "nrfi_p_top": 0.2785,
       "nrfi_p_bot": 0.2989,
       "home_ml": -104.0,
-      "away_ml": 101.0,
-      "home_ml_ev": -0.0746,
-      "away_ml_ev": 0.0618,
+      "away_ml": 100.0,
+      "home_ml_ev": -0.0759,
+      "away_ml_ev": 0.0577,
       "total_line": 7.5,
       "over_odds": 110.0,
       "under_odds": -108.0,
@@ -347,16 +347,16 @@
       "model_yrfi_prob": 0.573,
       "nrfi_p_top": 0.3587,
       "nrfi_p_bot": 0.3341,
-      "home_ml": -170.0,
+      "home_ml": -174.0,
       "away_ml": 170.0,
-      "home_ml_ev": -0.0245,
-      "away_ml_ev": 0.0416,
-      "total_line": 8.5,
-      "over_odds": 117.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.4802,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "home_ml_ev": -0.0312,
+      "away_ml_ev": 0.0389,
+      "total_line": 7.5,
+      "over_odds": -108.0,
+      "under_odds": 106.0,
+      "model_over_prob": 0.5614,
+      "over_ev": 0.0382,
+      "under_ev": -0.0505,
       "rl_home_line": -1.5,
       "rl_home_odds": 125.0,
       "rl_away_odds": 120.0,
@@ -403,21 +403,21 @@
       "nrfi_p_top": 0.2584,
       "nrfi_p_bot": 0.2747,
       "home_ml": 133.0,
-      "away_ml": -138.0,
-      "home_ml_ev": -0.0175,
-      "away_ml_ev": -0.0026,
+      "away_ml": -135.0,
+      "home_ml_ev": -0.0148,
+      "away_ml_ev": 0.0047,
       "total_line": 8.5,
-      "over_odds": 117.0,
+      "over_odds": 122.0,
       "under_odds": 105.0,
       "model_over_prob": 0.423,
       "over_ev": NaN,
       "under_ev": NaN,
-      "rl_home_line": 1.0,
-      "rl_home_odds": -105.0,
+      "rl_home_line": 1.5,
+      "rl_home_odds": -122.0,
       "rl_away_odds": 120.0,
-      "model_home_rl": NaN,
-      "rl_home_ev": NaN,
-      "rl_away_ev": NaN
+      "model_home_rl": 0.5747,
+      "rl_home_ev": 0.0209,
+      "rl_away_ev": -0.0343
      },
      {
       "weather": null,
@@ -457,10 +457,10 @@
       "model_yrfi_prob": 0.5037,
       "nrfi_p_top": 0.2542,
       "nrfi_p_bot": 0.3344,
-      "home_ml": -144.0,
+      "home_ml": -138.0,
       "away_ml": 138.0,
-      "home_ml_ev": -0.0419,
-      "away_ml_ev": 0.0342,
+      "home_ml_ev": -0.0285,
+      "away_ml_ev": 0.0393,
       "total_line": 9.5,
       "over_odds": 122.0,
       "under_odds": 120.0,
@@ -475,12 +475,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 76,
-       "wind_mph": 9,
-       "wind_dir": "E",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -522,20 +517,25 @@
       "home_ml_ev": 0.0311,
       "away_ml_ev": -0.048,
       "total_line": 9.0,
-      "over_odds": 105.0,
+      "over_odds": 102.0,
       "under_odds": 115.0,
       "model_over_prob": 0.5663,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 160.0,
-      "rl_away_odds": -119.0,
+      "rl_away_odds": -118.0,
       "model_home_rl": 0.4723,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 79,
+       "wind_mph": 10,
+       "wind_dir": "SE",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -573,24 +573,29 @@
       "nrfi_p_top": 0.2839,
       "nrfi_p_bot": 0.2657,
       "home_ml": -180.0,
-      "away_ml": 186.0,
-      "home_ml_ev": -0.0439,
-      "away_ml_ev": 0.1022,
+      "away_ml": 178.0,
+      "home_ml_ev": -0.049,
+      "away_ml_ev": 0.0804,
       "total_line": 8.5,
-      "over_odds": 108.0,
+      "over_odds": 113.0,
       "under_odds": 114.0,
       "model_over_prob": 0.5941,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 108.0,
-      "rl_away_odds": -110.0,
+      "rl_home_odds": 105.0,
+      "rl_away_odds": -108.0,
       "model_home_rl": 0.4523,
-      "rl_home_ev": -0.0319,
-      "rl_away_ev": 0.0205
+      "rl_home_ev": -0.0399,
+      "rl_away_ev": 0.0239
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 91,
+       "wind_mph": 6,
+       "wind_dir": "SSW",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -667,21 +672,21 @@
       "home_pitcher": "Sam Aldegheri",
       "away_pitcher_id": 650644,
       "home_pitcher_id": 691951,
-      "home_exp_runs": 5.956,
-      "away_exp_runs": 5.598,
-      "proj_total": 11.553,
-      "home_win_prob": 0.5343,
-      "away_win_prob": 0.4657,
+      "home_exp_runs": 5.947,
+      "away_exp_runs": 5.587,
+      "proj_total": 11.533,
+      "home_win_prob": 0.5351,
+      "away_win_prob": 0.4649,
       "over_probs": {
-       "7.5": 0.7818,
-       "8.0": 0.7162,
-       "8.5": 0.7162,
-       "9.0": 0.62505,
-       "9.5": 0.62505
+       "7.5": 0.7788,
+       "8.0": 0.71215,
+       "8.5": 0.71215,
+       "9.0": 0.62255,
+       "9.5": 0.62255
       },
       "home_rl_cover": {
-       "-1.5": 0.41765,
-       "1.5": 0.64205
+       "-1.5": 0.4154,
+       "1.5": 0.65245
       },
       "model_nrfi_prob": 0.4302,
       "model_yrfi_prob": 0.5698,
@@ -707,7 +712,7 @@
      {
       "weather": {
        "temp_f": 74,
-       "wind_mph": 13,
+       "wind_mph": 12,
        "wind_dir": "W",
        "precip_pct": 0
       },
@@ -766,9 +771,9 @@
      },
      {
       "weather": {
-       "temp_f": 71,
-       "wind_mph": 10,
-       "wind_dir": "WSW",
+       "temp_f": 68,
+       "wind_mph": 8,
+       "wind_dir": "SW",
        "precip_pct": 0
       },
       "lineups": {
@@ -826,10 +831,10 @@
      },
      {
       "weather": {
-       "temp_f": 68,
-       "wind_mph": 7,
-       "wind_dir": "E",
-       "precip_pct": 2
+       "temp_f": 75,
+       "wind_mph": 6,
+       "wind_dir": "ESE",
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -872,7 +877,7 @@
       "home_ml_ev": -0.1642,
       "away_ml_ev": NaN,
       "total_line": 9.0,
-      "over_odds": 105.0,
+      "over_odds": 102.0,
       "under_odds": 115.0,
       "model_over_prob": 0.428,
       "over_ev": NaN,
@@ -6945,17 +6950,17 @@
       "home_win_prob": 0.3608,
       "away_win_prob": 0.6392,
       "home_ml": 155,
-      "away_ml": -154,
-      "home_ml_ev": -0.0392,
-      "away_ml_ev": 0.0279,
-      "total_line": 177.5,
-      "over_odds": 100.0,
-      "model_over_prob": 0.4101,
-      "over_ev": -0.1798,
-      "spread_home_line": 2.5,
-      "spread_home_odds": 113.0,
+      "away_ml": -150,
+      "home_ml_ev": -0.036,
+      "away_ml_ev": 0.0366,
+      "total_line": 179.5,
+      "over_odds": 117.0,
+      "model_over_prob": 0.3592,
+      "over_ev": -0.2206,
+      "spread_home_line": 3.5,
+      "spread_home_odds": 101.0,
       "spread_away_odds": 113.0,
-      "model_home_cover": 0.4447,
+      "model_home_cover": 0.4792,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      },
@@ -6970,19 +6975,19 @@
       "home_win_prob": 0.6914,
       "away_win_prob": 0.3086,
       "home_ml": -233,
-      "away_ml": 225,
-      "home_ml_ev": -0.0096,
-      "away_ml_ev": -0.0022,
+      "away_ml": 223,
+      "home_ml_ev": -0.0105,
+      "away_ml_ev": -0.0062,
       "total_line": 166.5,
       "over_odds": -104.0,
       "model_over_prob": 0.5774,
       "over_ev": 0.1327,
-      "spread_home_line": -7.5,
-      "spread_home_odds": 117.0,
-      "spread_away_odds": -108.0,
-      "model_home_cover": 0.4395,
-      "spread_home_ev": -0.0129,
-      "spread_away_ev": 0.0499
+      "spread_home_line": -6.5,
+      "spread_home_odds": 108.0,
+      "spread_away_odds": -104.0,
+      "model_home_cover": 0.474,
+      "spread_home_ev": -0.0023,
+      "spread_away_ev": 0.0206
      },
      {
       "game_id": "401857032",
@@ -6995,17 +7000,17 @@
       "home_win_prob": 0.2435,
       "away_win_prob": 0.7565,
       "home_ml": 260,
-      "away_ml": -270,
-      "home_ml_ev": -0.0654,
-      "away_ml_ev": 0.0146,
+      "away_ml": -255,
+      "home_ml_ev": -0.0597,
+      "away_ml_ev": 0.0285,
       "total_line": 179.5,
       "over_odds": 104.0,
       "model_over_prob": 0.5263,
       "over_ev": 0.0737,
-      "spread_home_line": 5.5,
+      "spread_home_line": -1.5,
       "spread_home_odds": 117.0,
-      "spread_away_odds": 108.0,
-      "model_home_cover": 0.4143,
+      "spread_away_odds": 123.0,
+      "model_home_cover": 0.2046,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
      },
@@ -7024,12 +7029,12 @@
       "home_ml_ev": 0.1239,
       "away_ml_ev": -0.113,
       "total_line": 163.5,
-      "over_odds": -102.0,
+      "over_odds": 100.0,
       "model_over_prob": 0.5769,
-      "over_ev": 0.1425,
+      "over_ev": 0.1538,
       "spread_home_line": -1.5,
       "spread_home_odds": 104.0,
-      "spread_away_odds": 117.0,
+      "spread_away_odds": 122.0,
       "model_home_cover": 0.5921,
       "spread_home_ev": NaN,
       "spread_away_ev": NaN
@@ -7044,94 +7049,94 @@
     "props": [],
     "news": [
      {
+      "title": "Tyrese Haliburton (Achilles) says he can 'do everything'",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:16:56"
+     },
+     {
+      "title": "Alijah Martin tendered by Raptors ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:14:08"
+     },
+     {
+      "title": "Buddy Hield pushes back guaranteed deadline date on contract",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:12:26"
+     },
+     {
+      "title": "Bogdan Bogdanovic pushes option date back to June 29 with Clippers ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:10:45"
+     },
+     {
+      "title": "Yaxel Lendeborg (ankle/knee) expected to play in Summer League ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:09:33"
+     },
+     {
+      "title": "Tamar Bates signs two-way deal with Jazz ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:08:03"
+     },
+     {
+      "title": "Jahmir Young has team option declined by Heat ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:07:04"
+     },
+     {
+      "title": "Dereck Lively II (foot) not cleared to run",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:05:24"
+     },
+     {
+      "title": "Lachlan Olbrich to play for Warriors in Summer League ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:03:26"
+     },
+     {
+      "title": "Lonnie Walker IV could return to NBA",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:01:58"
+     },
+     {
+      "title": "Isaiah Crawford tendered by Rockets ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:00:42"
+     },
+     {
+      "title": "Chaney Johnson tendered by Nets",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:59:26"
+     },
+     {
+      "title": "Vladislav Goldin tendered by Heat ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:58:09"
+     },
+     {
+      "title": "Hunter Dickinson tendered by Pelicans ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:57:11"
+     },
+     {
       "title": "Rui Hachimura linked to Nets, Spurs ",
       "body": "",
       "player": "",
       "when": "2026-06-28 07:55:45"
-     },
-     {
-      "title": "Sandro Mamukelashvili to test open market in free agency ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:54:11"
-     },
-     {
-      "title": "Dean Wade to test open market",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:52:53"
-     },
-     {
-      "title": "Day'Ron Sharpe, Nets push back team option deadline",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:50:55"
-     },
-     {
-      "title": "Jonathan Isaac waived by Magic ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 21:29:06"
-     },
-     {
-      "title": "Kevon Looney expected to have team option declined by Pelicans ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:33:40"
-     },
-     {
-      "title": "Jaylen Clark returns to Timberwolves on three-year deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:31:50"
-     },
-     {
-      "title": "Leonard Miller has team option exercised by Bulls",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:30:10"
-     },
-     {
-      "title": "Ron Harper Jr. to sign a 3-year, $9 million deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:23:06"
-     },
-     {
-      "title": "Isaiah Hartenstein intends to sign 3-year, $75 million deal with OKC",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 03:05:20"
-     },
-     {
-      "title": "Gary Trent Jr. expected to decline $3.9-million player option",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 22:01:40"
-     },
-     {
-      "title": "Jose Alvarado returning to Knicks on three-year deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 21:33:34"
-     },
-     {
-      "title": "Isaiah Joe traded to the Detroit Pistons",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 15:20:16"
-     },
-     {
-      "title": "Nikola Topic undergoes surgery, expected to be ready for training camp ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 15:00:39"
-     },
-     {
-      "title": "Chucky Hepburn signs two-way qualifying offer to return to Raptors ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 14:49:36"
      }
     ],
     "injuries": [
@@ -10041,9 +10046,9 @@
     "games": [
      {
       "weather": {
-       "temp_f": 87,
-       "wind_mph": 7,
-       "wind_dir": "ESE",
+       "temp_f": 88,
+       "wind_mph": 8,
+       "wind_dir": "SE",
        "precip_pct": 0
       },
       "lineups": {
@@ -10080,9 +10085,9 @@
       "nrfi_p_top": 0.3602,
       "nrfi_p_bot": 0.2823,
       "home_ml": -127.0,
-      "away_ml": 144.0,
-      "home_ml_ev": NaN,
-      "away_ml_ev": NaN,
+      "away_ml": 127.0,
+      "home_ml_ev": -0.0487,
+      "away_ml_ev": 0.0618,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10097,7 +10102,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 85,
+       "wind_mph": 9,
+       "wind_dir": "S",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10131,10 +10141,10 @@
       "model_yrfi_prob": 0.4529,
       "nrfi_p_top": 0.2601,
       "nrfi_p_bot": 0.2606,
-      "home_ml": -108.0,
-      "away_ml": 117.0,
-      "home_ml_ev": -0.0102,
-      "away_ml_ev": 0.0547,
+      "home_ml": 100.0,
+      "away_ml": -104.0,
+      "home_ml_ev": -0.0068,
+      "away_ml_ev": -0.0126,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10185,10 +10195,10 @@
       "model_yrfi_prob": 0.4948,
       "nrfi_p_top": 0.2286,
       "nrfi_p_bot": 0.345,
-      "home_ml": -133.0,
+      "home_ml": -127.0,
       "away_ml": 138.0,
-      "home_ml_ev": -0.0474,
-      "away_ml_ev": 0.0859,
+      "home_ml_ev": NaN,
+      "away_ml_ev": NaN,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10238,9 +10248,9 @@
       "nrfi_p_top": 0.3212,
       "nrfi_p_bot": 0.2485,
       "home_ml": -104.0,
-      "away_ml": 113.0,
-      "home_ml_ev": NaN,
-      "away_ml_ev": NaN,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0163,
+      "away_ml_ev": 0.0369,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10289,7 +10299,7 @@
       "model_yrfi_prob": 0.5505,
       "nrfi_p_top": 0.3398,
       "nrfi_p_bot": 0.3192,
-      "home_ml": 144.0,
+      "home_ml": 127.0,
       "away_ml": 186.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
@@ -10307,12 +10317,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 83,
-       "wind_mph": 4,
-       "wind_dir": "ESE",
-       "precip_pct": 2
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10367,8 +10372,8 @@
      },
      {
       "weather": {
-       "temp_f": 91,
-       "wind_mph": 14,
+       "temp_f": 93,
+       "wind_mph": 17,
        "wind_dir": "SSW",
        "precip_pct": 0
       },
@@ -10427,8 +10432,8 @@
      },
      {
       "weather": {
-       "temp_f": 89,
-       "wind_mph": 13,
+       "temp_f": 91,
+       "wind_mph": 16,
        "wind_dir": "SSW",
        "precip_pct": 0
       },
@@ -10484,10 +10489,10 @@
      },
      {
       "weather": {
-       "temp_f": 89,
+       "temp_f": 88,
        "wind_mph": 11,
        "wind_dir": "SSE",
-       "precip_pct": 1
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -10525,9 +10530,9 @@
       "nrfi_p_top": 0.2734,
       "nrfi_p_bot": 0.3141,
       "home_ml": -122.0,
-      "away_ml": 113.0,
-      "home_ml_ev": -0.0843,
-      "away_ml_ev": 0.0581,
+      "away_ml": 117.0,
+      "home_ml_ev": -0.0801,
+      "away_ml_ev": 0.073,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10543,10 +10548,10 @@
      },
      {
       "weather": {
-       "temp_f": 90,
-       "wind_mph": 16,
-       "wind_dir": "WSW",
-       "precip_pct": 1
+       "temp_f": 87,
+       "wind_mph": 17,
+       "wind_dir": "SW",
+       "precip_pct": 0
       },
       "lineups": {
        "home": [],
@@ -10601,12 +10606,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 90,
-       "wind_mph": 14,
-       "wind_dir": "SW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10621,20 +10621,20 @@
       "away_pitcher_id": NaN,
       "home_pitcher_id": NaN,
       "home_exp_runs": 4.736,
-      "away_exp_runs": 5.256,
-      "proj_total": 9.991,
-      "home_win_prob": 0.4512,
-      "away_win_prob": 0.5488,
+      "away_exp_runs": 5.247,
+      "proj_total": 9.982,
+      "home_win_prob": 0.4538,
+      "away_win_prob": 0.5462,
       "over_probs": {
-       "7.5": 0.6773,
-       "8.0": 0.6,
-       "8.5": 0.6,
-       "9.0": 0.50425,
-       "9.5": 0.50425
+       "7.5": 0.6763,
+       "8.0": 0.6042,
+       "8.5": 0.6042,
+       "9.0": 0.50295,
+       "9.5": 0.50295
       },
       "home_rl_cover": {
-       "-1.5": 0.33285,
-       "1.5": 0.5792
+       "-1.5": 0.3287,
+       "1.5": 0.58305
       },
       "model_nrfi_prob": 0.4427,
       "model_yrfi_prob": 0.5573,
@@ -10658,12 +10658,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 68,
-       "wind_mph": 6,
-       "wind_dir": "S",
-       "precip_pct": 2
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -10679,21 +10674,21 @@
       "home_pitcher": "George Kirby",
       "away_pitcher_id": NaN,
       "home_pitcher_id": 669923.0,
-      "home_exp_runs": 4.2,
+      "home_exp_runs": 4.191,
       "away_exp_runs": 4.021,
-      "proj_total": 8.221,
-      "home_win_prob": 0.5155,
-      "away_win_prob": 0.4845,
+      "proj_total": 8.212,
+      "home_win_prob": 0.5181,
+      "away_win_prob": 0.4819,
       "over_probs": {
-       "7.5": 0.52385,
-       "8.0": 0.4428,
-       "8.5": 0.4428,
-       "9.0": 0.3478,
-       "9.5": 0.3478
+       "7.5": 0.5222,
+       "8.0": 0.4422,
+       "8.5": 0.4422,
+       "9.0": 0.3471,
+       "9.5": 0.3471
       },
       "home_rl_cover": {
-       "-1.5": 0.37205,
-       "1.5": 0.6538
+       "-1.5": 0.37035,
+       "1.5": 0.6544
       },
       "model_nrfi_prob": 0.4814,
       "model_yrfi_prob": 0.5186,
@@ -10717,12 +10712,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 100,
-       "wind_mph": 18,
-       "wind_dir": "SW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -12281,94 +12271,94 @@
     "props": [],
     "news": [
      {
+      "title": "Tyrese Haliburton (Achilles) says he can 'do everything'",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:16:56"
+     },
+     {
+      "title": "Alijah Martin tendered by Raptors ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:14:08"
+     },
+     {
+      "title": "Buddy Hield pushes back guaranteed deadline date on contract",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:12:26"
+     },
+     {
+      "title": "Bogdan Bogdanovic pushes option date back to June 29 with Clippers ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:10:45"
+     },
+     {
+      "title": "Yaxel Lendeborg (ankle/knee) expected to play in Summer League ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:09:33"
+     },
+     {
+      "title": "Tamar Bates signs two-way deal with Jazz ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:08:03"
+     },
+     {
+      "title": "Jahmir Young has team option declined by Heat ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:07:04"
+     },
+     {
+      "title": "Dereck Lively II (foot) not cleared to run",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:05:24"
+     },
+     {
+      "title": "Lachlan Olbrich to play for Warriors in Summer League ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:03:26"
+     },
+     {
+      "title": "Lonnie Walker IV could return to NBA",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:01:58"
+     },
+     {
+      "title": "Isaiah Crawford tendered by Rockets ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 08:00:42"
+     },
+     {
+      "title": "Chaney Johnson tendered by Nets",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:59:26"
+     },
+     {
+      "title": "Vladislav Goldin tendered by Heat ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:58:09"
+     },
+     {
+      "title": "Hunter Dickinson tendered by Pelicans ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-28 07:57:11"
+     },
+     {
       "title": "Rui Hachimura linked to Nets, Spurs ",
       "body": "",
       "player": "",
       "when": "2026-06-28 07:55:45"
-     },
-     {
-      "title": "Sandro Mamukelashvili to test open market in free agency ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:54:11"
-     },
-     {
-      "title": "Dean Wade to test open market",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:52:53"
-     },
-     {
-      "title": "Day'Ron Sharpe, Nets push back team option deadline",
-      "body": "",
-      "player": "",
-      "when": "2026-06-28 07:50:55"
-     },
-     {
-      "title": "Jonathan Isaac waived by Magic ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 21:29:06"
-     },
-     {
-      "title": "Kevon Looney expected to have team option declined by Pelicans ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:33:40"
-     },
-     {
-      "title": "Jaylen Clark returns to Timberwolves on three-year deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:31:50"
-     },
-     {
-      "title": "Leonard Miller has team option exercised by Bulls",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:30:10"
-     },
-     {
-      "title": "Ron Harper Jr. to sign a 3-year, $9 million deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 17:23:06"
-     },
-     {
-      "title": "Isaiah Hartenstein intends to sign 3-year, $75 million deal with OKC",
-      "body": "",
-      "player": "",
-      "when": "2026-06-27 03:05:20"
-     },
-     {
-      "title": "Gary Trent Jr. expected to decline $3.9-million player option",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 22:01:40"
-     },
-     {
-      "title": "Jose Alvarado returning to Knicks on three-year deal",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 21:33:34"
-     },
-     {
-      "title": "Isaiah Joe traded to the Detroit Pistons",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 15:20:16"
-     },
-     {
-      "title": "Nikola Topic undergoes surgery, expected to be ready for training camp ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 15:00:39"
-     },
-     {
-      "title": "Chucky Hepburn signs two-way qualifying offer to return to Raptors ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-26 14:49:36"
      }
     ],
     "injuries": [
@@ -15332,5 +15322,5 @@
   "base_brier": null,
   "actual_yrfi": null
  },
- "odds_api_credits": 24605
+ "odds_api_credits": 24597
 }
