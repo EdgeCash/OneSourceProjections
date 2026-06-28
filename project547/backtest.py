@@ -336,10 +336,17 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
                                  park_factor=park_venue, own_home_pf=away_own_pf)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
-        lam_h, lam_a = proj.home_exp_runs, proj.away_exp_runs
+        mu_h, mu_a = proj.home_exp_runs, proj.away_exp_runs
+        # Draw from the same (negative-binomial) run distribution the live
+        # simulate() uses, so the backtest grades totals/run-line on the real
+        # model, not a Poisson stand-in.
+        rng = np.random.default_rng(11)
+        hs = mlb_game.draw_runs(rng, mu_h, draws)
+        as_ = mlb_game.draw_runs(rng, mu_a, draws)
+        tot, mar = hs + as_, hs - as_
         return (proj.home_win_prob, proj.total_mean,
-                lambda line: float(1 - _poisson_cdf(int(line), lam_h + lam_a)),
-                lambda spread: _poisson_cover(lam_h, lam_a, spread, draws), None)
+                lambda line, _t=tot: float((_t > line).mean()),
+                lambda spread, _m=mar: float((_m + spread > 0).mean()), None)
     gp = generic.project_game(sport, h, a)
     return (gp.home_win_prob, gp.total_mean,
             lambda line: gp.prob_over(line, sport),
