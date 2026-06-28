@@ -74,6 +74,10 @@ SPORTS: dict[str, Sport] = {
         in_season_months=(5, 6, 7, 8, 9, 10), form_days=45,
         elo_blend=0.65,  # 0.35 off/def model + 0.65 Elo (backtested)
         score_method="multiplicative",
+        # opponent_adjust and rest were tested per the model audit (2021-26
+        # backtest): opponent_adjust is neutral (ML Brier 0.2162 either way) and
+        # any rest_coeff > 0 hurts (0.2162 -> 0.2180 at 0.5). Left off — Elo
+        # already carries strength-of-schedule for WNBA.
     ),
     "NBA": Sport(
         key="NBA", espn_path="basketball/nba", model="normal",

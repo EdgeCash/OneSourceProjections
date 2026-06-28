@@ -49,13 +49,22 @@ defines the calendar; override with `--sports`).
   the innings starters cover and opposing **bullpen** quality over the
   rest (each as FIP / league FIP); **park factors** applied to the venue
   after de-biasing each team's own home park; plus home field. 20k-draw
-  Poisson Monte Carlo (ties resolved as extra innings) → win prob,
-  over/under probs, run-line cover probs. Park factors are derived
+  **negative-binomial** Monte Carlo (ties resolved as extra innings) → win
+  prob, over/under probs, run-line cover probs. Runs are drawn from a negative
+  binomial, not a Poisson: real MLB runs are heavily overdispersed (measured
+  var/mean ≈ 2.3), so Poisson under-priced the totals tails and was overconfident
+  on moneylines. Tuning the dispersion on the 2024–26 backtest flips totals-bet
+  ROI vs closing from −9.1% (Poisson) to +1.9% and improves moneyline log-loss;
+  the optimum (2.3) matches the measured dispersion. Park factors are derived
   empirically (`scripts/compute_park_factors.py` →
   `data/history/park_factors.json`, loaded via `project547/parks.py`).
   Backtested 2024–2026, each component improves the model monotonically
   (Brier 0.2483→0.2463, total-runs MAE 3.60→3.55, favorite hit-rate
   0.540→0.552); open→close CLV is +12.8% moneyline ROI at opening prices.
+  The current season's game log is kept fresh by `scripts/build_mlb_backfill.py`
+  (assembles `backfill/mlb/<season>/games.json.gz` from results + linescores and
+  extends it daily from statsapi), so the model runs on the live season rather
+  than silently falling back to the prior year.
 - **Prop models** (`project547/models/props.py`): Poisson for Ks and total
   bases, binomial for hits, per-PA rate for HRs. Our Statcast-informed
   rates are blended 50/50 with FantasyPros projections when available.
@@ -71,7 +80,14 @@ defines the calendar; override with `--sports`).
   (`project547/models/elo.py`, maintained live from results) is blended
   into the moneyline win probability. WNBA uses 0.35 off/def + 0.65 Elo,
   which backtests to Brier 0.227 → **0.215** (favorite hit-rate
-  0.62 → 0.67), well-calibrated across a 0.2–0.9 range.
+  0.62 → 0.67), well-calibrated across a 0.2–0.9 range. The Elo (and rest)
+  adjustment is folded back into the projection's **margin** via
+  `with_consistent_margin`, so the spread cover probability always agrees with
+  the moneyline — previously the moneyline used Elo while the spread was priced
+  off the raw points-model margin, a silent inconsistency. (For the Poisson
+  sports — NHL — the cover is simulated from the score lambdas, so this
+  normal-model fix is a no-op there; that cover stays Elo-independent, a known
+  limitation.)
 - **Props**: BettingPros `/props` supplies every line plus their premium
   projection; FantasyPros daily projections blend in where they exist
   (NBA). Our distribution layer converts the blended projection into
@@ -184,7 +200,12 @@ Each game has a full matchup breakdown (`project547/teamstats.py` +
 matching defense across Season/L10/L5 with **league ranks** and a star
 **advantage** flag where the offense out-ranks the defense it faces, plus
 model gauges (moneyline / total with PLAY/PASS) and — for MLB — game
-trends (NRFI%, F5 win%, RL cover%, Over%, Pythagorean). Team identity is
+trends (NRFI%, F5 win%, RL cover%, Over%, Pythagorean). The **NRFI** model
+(`project547/models/nrfi.py`) is shown as *information*, not a bet: graded
+against the real first-inning market on 2026 it is well-calibrated but doesn't
+beat the price (model Brier 0.251 vs market 0.248, −4% ROI), so P(YRFI) is a
+research lean and is graded forward for calibration, never routed to plays/EV.
+Team identity is
 resolved through `project547/teams.py` so full names, cities, and
 abbreviations all join. Stats are derived from our box-score logs; a few
 reference stats we don't capture (e.g. WNBA paint points, fast break) are
