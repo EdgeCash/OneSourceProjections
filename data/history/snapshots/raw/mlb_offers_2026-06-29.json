@@ -1,0 +1,474 @@
+[
+ {
+  "id": "b74a39a8674c5bea1c95e4176d3f6a74",
+  "market_id": 122,
+  "event_id": 98959,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "baltimore-orioles"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "chicago-white-sox"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "BAL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-06-23 13:04:36"
+    },
+    "label": "Orioles",
+    "short_label": "BAL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": -140,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 57.48
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_6fc92a1556baeb2cd1733e59af83de5c",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": -144,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 57.48
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_6fc92a1556baeb2cd1733e59af83de5c",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-28 07:50:53",
+        "cost": -127,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun291835cwsbal",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.005530731948709899,
+         "fair_probability": 0.5563770794824399,
+         "pm_win_pct": 57.48
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_6fc92a1556baeb2cd1733e59af83de5c",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:15",
+        "cost": -140,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=386673_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 57.48
+        }
+       }
+      ]
+     }
+    ],
+    "id": "6fc92a1556baeb2cd1733e59af83de5c"
+   },
+   {
+    "participant": "CWS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-06-23 13:04:36"
+    },
+    "label": "White Sox",
+    "short_label": "CWS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": 122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 43.01
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_8fb485f5e8baa370e9f1f9950ae2f37b",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-28 07:53:54",
+        "cost": 144,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.0849665108237083,
+         "fair_probability": 0.44465840607529034,
+         "pm_win_pct": 43.01
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_8fb485f5e8baa370e9f1f9950ae2f37b",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:50:53",
+        "cost": 122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun291835cwsbal",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.015157116451016805,
+         "fair_probability": 0.44362292051756,
+         "pm_win_pct": 43.01
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_8fb485f5e8baa370e9f1f9950ae2f37b",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:15",
+        "cost": 115,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=386673_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": null,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.04104609580697138,
+         "fair_probability": 0.44602507171768774,
+         "pm_win_pct": 43.01
+        }
+       }
+      ]
+     }
+    ],
+    "id": "8fb485f5e8baa370e9f1f9950ae2f37b"
+   }
+  ]
+ },
+ {
+  "id": "97d7af0af4981c5eb31252a4f5fbc804",
+  "market_id": 122,
+  "event_id": 98170,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "pittsburgh-pirates"
+    }
+   },
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "philadelphia-phillies"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "PIT",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-06-23 13:04:36"
+    },
+    "label": "Pirates",
+    "short_label": "PIT",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_bd085197bdce2e15759f8e8d4f62b4a9",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-28 07:53:54",
+        "cost": 117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_bd085197bdce2e15759f8e8d4f62b4a9",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:50:53",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun291840pitphi",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "bd085197bdce2e15759f8e8d4f62b4a9"
+   },
+   {
+    "participant": "PHI",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-06-23 13:04:36"
+    },
+    "label": "Phillies",
+    "short_label": "PHI",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": -117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_f19cc3fd25e613b9fd718e9bede54e3b",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-28 07:53:54",
+        "cost": -117,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_f19cc3fd25e613b9fd718e9bede54e3b",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-06-28 07:50:53",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jun291840pitphi",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "f19cc3fd25e613b9fd718e9bede54e3b"
+   }
+  ]
+ }
+]

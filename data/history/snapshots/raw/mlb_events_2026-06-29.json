@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98959,
+  "sr_id": "6e618779-2a8b-4940-8461-7c1e8237bfec",
+  "sport": "MLB",
+  "scheduled": "2026-06-29 22:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/baltimore-orioles-vs-chicago-white-sox/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7158",
+    "name": "Shane Baz",
+    "link": "/mlb/props/shane-baz/",
+    "player": {
+     "short_name": "S. Baz",
+     "first_name": "Shane",
+     "last_name": "Baz",
+     "image": "https://images.fantasypros.com/images/players/mlb/7158/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "shane-baz",
+     "jersey_number": 34
+    }
+   },
+   "visitor_probable": {
+    "id": "44752",
+    "name": "Sean Burke",
+    "link": "/mlb/props/sean-burke/",
+    "player": {
+     "short_name": "S. Burke",
+     "first_name": "Sean",
+     "last_name": "Burke",
+     "image": "https://images.fantasypros.com/images/players/mlb/44752/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "sean-burke",
+     "jersey_number": 59
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 39,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 43,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 86,
+   "forecast_wind_speed": 9,
+   "forecast_wind_direction": "SE",
+   "forecast_wind_degree": 132,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1018,
+   "forecast_humidity": 0.52
+  },
+  "broadcasts": [
+   {
+    "network": "MASN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98170,
+  "sr_id": "1993ba14-6bf0-4490-87dd-0c171401406b",
+  "sport": "MLB",
+  "scheduled": "2026-06-29 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PHI",
+  "visitor": "PIT",
+  "link": "/mlb/matchups/philadelphia-phillies-vs-pittsburgh-pirates/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "5682",
+    "name": "Aaron Nola",
+    "link": "/mlb/props/aaron-nola/",
+    "player": {
+     "short_name": "A. Nola",
+     "first_name": "Aaron",
+     "last_name": "Nola",
+     "image": "https://images.fantasypros.com/images/players/mlb/5682/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "aaron-nola",
+     "jersey_number": 27
+    }
+   },
+   "visitor_probable": {
+    "id": "47807",
+    "name": "Braxton Ashcraft",
+    "link": "/mlb/props/braxton-ashcraft/",
+    "player": {
+     "short_name": "B. Ashcraft",
+     "first_name": "Braxton",
+     "last_name": "Ashcraft",
+     "image": "https://images.fantasypros.com/images/players/mlb/47807/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "braxton-ashcraft",
+     "jersey_number": 35
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PHI",
+   "season": "2025",
+   "split": "A",
+   "r": "1.017",
+   "1b": "0.955",
+   "2b": "0.929",
+   "3b": "1.009",
+   "hr": "1.131",
+   "name": "Citizens Bank Park"
+  },
+  "venue": {
+   "name": "Citizens Bank Park",
+   "address": "One Citizens Bank Way",
+   "city": "Philadelphia",
+   "state": "PA",
+   "country": "USA",
+   "zip": "19148",
+   "surface": "grass",
+   "capacity": 42901,
+   "stadium_type": "outdoor",
+   "id": "b4186004-b6d0-42e7-8dc1-82ef0d946ecc"
+  },
+  "participants": [
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 46,
+      "L": 37,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 41,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 86,
+   "forecast_wind_speed": 8,
+   "forecast_wind_direction": "SE",
+   "forecast_wind_degree": 144,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1018,
+   "forecast_humidity": 0.5
+  },
+  "broadcasts": [
+   {
+    "network": "SportsNet PT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
