@@ -42,6 +42,35 @@ ET = ZoneInfo("America/New_York")
 # new URL is a separate infra step — left functional until then).
 APP_URL = "https://onesourceprojections.streamlit.app"
 RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
+MLB_BACKFILL_STATE = OUTPUT_DIR.parent / "track" / "mlb_backfill_state.json"
+
+
+def _maybe_refresh_mlb_backfill(today_iso: str) -> None:
+    """Once per day, extend the current MLB season's backfill (games.json.gz)
+    with recent finals so team_games('MLB') stays current. Best-effort and
+    deduped by date; only advances in production where statsapi is reachable.
+    Without this the season's game log silently froze at the import cutoff and
+    the model fell back to the prior year (the staleness bug this guards)."""
+    try:
+        state = json.loads(MLB_BACKFILL_STATE.read_text()) \
+            if MLB_BACKFILL_STATE.exists() else {}
+    except Exception:
+        state = {}
+    if state.get("last") == today_iso:
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "build_mlb_backfill", Path(__file__).resolve().parent / "build_mlb_backfill.py")
+        bmb = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bmb)
+        season = int(today_iso[:4])
+        n = bmb.refresh_current_season(season)
+        MLB_BACKFILL_STATE.parent.mkdir(parents=True, exist_ok=True)
+        MLB_BACKFILL_STATE.write_text(json.dumps({"last": today_iso}))
+        log.info("refreshed MLB %s backfill: %d games", season, n)
+    except Exception as e:
+        log.error("MLB backfill refresh failed: %s", e)
 
 
 def _maybe_daily_recap(today_iso: str, yesterday_iso: str, hour_et: int) -> None:
@@ -260,6 +289,10 @@ def main():
             except Exception as e:
                 log.error("box-score ingest %s %s failed: %s", sport, d, e)
     log.info("graded %d new rows, ingested %d player logs", graded, ingested)
+
+    # 3a) once/day: extend the current MLB season's game-log backfill with
+    #     recent finals so team_games('MLB') (rates, NRFI, cards) stays current.
+    _maybe_refresh_mlb_backfill(today.isoformat())
 
     # 3b) daily recap push (once/day): YESTERDAY's model + played accuracy,
     #     logged to the daily record so the day-by-day history accrues.
