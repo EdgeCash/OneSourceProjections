@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-29T09:09:07.408304-04:00",
+ "generated_at": "2026-06-29T12:57:57.684388-04:00",
  "primary_date": "2026-06-29",
  "dates": [
   "2026-06-29",
@@ -12,9 +12,9 @@
      {
       "weather": {
        "temp_f": 90,
-       "wind_mph": 6,
+       "wind_mph": 5,
        "wind_dir": "ESE",
-       "precip_pct": 2
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -57,24 +57,24 @@
       "home_ml_ev": -0.0353,
       "away_ml_ev": 0.0357,
       "total_line": 9.5,
-      "over_odds": 122.0,
-      "under_odds": 117.0,
+      "over_odds": 113.0,
+      "under_odds": 100.0,
       "model_over_prob": 0.4763,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 156.0,
-      "rl_away_odds": 133.0,
+      "rl_home_odds": 160.0,
+      "rl_away_odds": 130.0,
       "model_home_rl": 0.3914,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 90,
-       "wind_mph": 1,
-       "wind_dir": "E",
-       "precip_pct": 5
+       "wind_mph": 6,
+       "wind_dir": "S",
+       "precip_pct": 4
       },
       "lineups": {
        "home": [],
@@ -112,29 +112,29 @@
       "model_yrfi_prob": 0.499,
       "nrfi_p_top": 0.3001,
       "nrfi_p_bot": 0.2842,
-      "home_ml": 102.0,
-      "away_ml": 100.0,
-      "home_ml_ev": -0.0991,
-      "away_ml_ev": 0.108,
-      "total_line": 8.5,
-      "over_odds": 100.0,
-      "under_odds": 118.0,
-      "model_over_prob": 0.5928,
-      "over_ev": null,
-      "under_ev": null,
+      "home_ml": -102.0,
+      "away_ml": 102.0,
+      "home_ml_ev": -0.1094,
+      "away_ml_ev": 0.1116,
+      "total_line": 9.0,
+      "over_odds": 110.0,
+      "under_odds": 113.0,
+      "model_over_prob": 0.4931,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 175.0,
       "rl_away_odds": 163.0,
       "model_home_rl": 0.2818,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 84,
-       "wind_mph": 9,
+       "wind_mph": 8,
        "wind_dir": "SSE",
-       "precip_pct": 1
+       "precip_pct": 0
       },
       "lineups": {
        "home": [],
@@ -172,29 +172,29 @@
       "model_yrfi_prob": 0.5086,
       "nrfi_p_top": 0.2497,
       "nrfi_p_bot": 0.345,
-      "home_ml": -133.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0415,
-      "away_ml_ev": 0.0552,
+      "home_ml": -122.0,
+      "away_ml": 127.0,
+      "home_ml_ev": -0.0188,
+      "away_ml_ev": 0.046,
       "total_line": 8.0,
-      "over_odds": 110.0,
-      "under_odds": 108.0,
+      "over_odds": 101.0,
+      "under_odds": 111.0,
       "model_over_prob": 0.486,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 160.0,
-      "rl_away_odds": -114.0,
+      "rl_home_odds": 167.0,
+      "rl_away_odds": -125.0,
       "model_home_rl": 0.3815,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 76,
-       "wind_mph": 9,
+       "wind_mph": 8,
        "wind_dir": "ENE",
-       "precip_pct": 1
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -232,26 +232,26 @@
       "model_yrfi_prob": 0.5031,
       "nrfi_p_top": 0.3118,
       "nrfi_p_bot": 0.278,
-      "home_ml": -116.0,
+      "home_ml": -117.0,
       "away_ml": 117.0,
-      "home_ml_ev": -0.0446,
-      "away_ml_ev": 0.0566,
-      "total_line": 8.5,
-      "over_odds": -104.0,
-      "under_odds": 126.0,
-      "model_over_prob": 0.4297,
-      "over_ev": null,
-      "under_ev": null,
+      "home_ml_ev": -0.0475,
+      "away_ml_ev": 0.0555,
+      "total_line": 9.0,
+      "over_odds": -101.0,
+      "under_odds": 108.0,
+      "model_over_prob": 0.3375,
+      "over_ev": -0.1557,
+      "under_ev": 0.1976,
       "rl_home_line": -1.5,
-      "rl_home_odds": 178.0,
+      "rl_home_odds": 170.0,
       "rl_away_odds": 178.0,
       "model_home_rl": 0.3483,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 69,
+       "temp_f": 70,
        "wind_mph": 7,
        "wind_dir": "E",
        "precip_pct": 0
@@ -293,28 +293,28 @@
       "nrfi_p_top": 0.3061,
       "nrfi_p_bot": 0.324,
       "home_ml": 125.0,
-      "away_ml": 156.0,
+      "away_ml": 160.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 9.5,
-      "over_odds": 122.0,
-      "under_odds": 117.0,
+      "over_odds": 113.0,
+      "under_odds": 100.0,
       "model_over_prob": 0.4783,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 133.0,
-      "rl_away_odds": 108.0,
+      "rl_home_odds": 130.0,
+      "rl_away_odds": -134.0,
       "model_home_rl": 0.4737,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": 0.0411,
+      "rl_away_ev": -0.0442
      },
      {
       "weather": {
-       "temp_f": 85,
-       "wind_mph": 7,
-       "wind_dir": "NNE",
-       "precip_pct": 2
+       "temp_f": 87,
+       "wind_mph": 6,
+       "wind_dir": "NE",
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -353,28 +353,28 @@
       "nrfi_p_top": 0.2447,
       "nrfi_p_bot": 0.3103,
       "home_ml": -133.0,
-      "away_ml": 135.0,
-      "home_ml_ev": -0.0553,
-      "away_ml_ev": 0.0828,
+      "away_ml": 136.0,
+      "home_ml_ev": -0.0544,
+      "away_ml_ev": 0.0861,
       "total_line": 8.0,
-      "over_odds": 110.0,
+      "over_odds": 111.0,
       "under_odds": 108.0,
       "model_over_prob": 0.3837,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 160.0,
+      "rl_home_odds": 156.0,
       "rl_away_odds": 150.0,
       "model_home_rl": 0.3579,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 93,
+       "temp_f": 92,
        "wind_mph": 14,
        "wind_dir": "SSW",
-       "precip_pct": 0
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -412,27 +412,27 @@
       "model_yrfi_prob": 0.4771,
       "nrfi_p_top": 0.2856,
       "nrfi_p_bot": 0.268,
-      "home_ml": -141.0,
+      "home_ml": -130.0,
       "away_ml": 138.0,
-      "home_ml_ev": 0.0996,
-      "away_ml_ev": -0.1511,
-      "total_line": 9.5,
-      "over_odds": 130.0,
+      "home_ml_ev": 0.1307,
+      "away_ml_ev": -0.1411,
+      "total_line": 9.0,
+      "over_odds": 100.0,
       "under_odds": 122.0,
       "model_over_prob": 0.4733,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 148.0,
-      "rl_away_odds": -105.0,
+      "rl_home_odds": 153.0,
+      "rl_away_odds": -112.0,
       "model_home_rl": 0.5699,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 90,
-       "wind_mph": 12,
+       "wind_mph": 11,
        "wind_dir": "SSW",
        "precip_pct": 1
       },
@@ -471,25 +471,30 @@
       "model_yrfi_prob": 0.4581,
       "nrfi_p_top": 0.2584,
       "nrfi_p_bot": 0.2693,
-      "home_ml": -138.0,
-      "away_ml": 138.0,
-      "home_ml_ev": -0.0247,
-      "away_ml_ev": 0.0341,
-      "total_line": 12.0,
-      "over_odds": 116.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.1153,
-      "over_ev": null,
-      "under_ev": null,
+      "home_ml": -144.0,
+      "away_ml": 144.0,
+      "home_ml_ev": -0.033,
+      "away_ml_ev": 0.0475,
+      "total_line": 11.5,
+      "over_odds": 117.0,
+      "under_odds": 122.0,
+      "model_over_prob": 0.185,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 135.0,
-      "rl_away_odds": 101.0,
+      "rl_away_odds": 105.0,
       "model_home_rl": 0.4092,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 87,
+       "wind_mph": 10,
+       "wind_dir": "SSE",
+       "precip_pct": 3
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -527,21 +532,21 @@
       "nrfi_p_top": 0.2763,
       "nrfi_p_bot": 0.3141,
       "home_ml": -127.0,
-      "away_ml": 127.0,
-      "home_ml_ev": -0.0713,
-      "away_ml_ev": 0.0905,
+      "away_ml": 130.0,
+      "home_ml_ev": -0.0684,
+      "away_ml_ev": 0.1012,
       "total_line": 9.0,
-      "over_odds": 107.0,
-      "under_odds": 117.0,
+      "over_odds": -101.0,
+      "under_odds": 122.0,
       "model_over_prob": 0.4838,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 163.0,
-      "rl_away_odds": -121.0,
+      "rl_home_odds": 160.0,
+      "rl_away_odds": -115.0,
       "model_home_rl": 0.3533,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": null,
@@ -580,22 +585,22 @@
       "model_yrfi_prob": 0.6135,
       "nrfi_p_top": 0.4524,
       "nrfi_p_bot": 0.2941,
-      "home_ml": 127.0,
-      "away_ml": -127.0,
-      "home_ml_ev": 0.1067,
-      "away_ml_ev": -0.084,
-      "total_line": 12.0,
-      "over_odds": 129.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.2727,
-      "over_ev": null,
-      "under_ev": null,
+      "home_ml": 130.0,
+      "away_ml": -130.0,
+      "home_ml_ev": 0.1147,
+      "away_ml_ev": -0.0882,
+      "total_line": 11.5,
+      "over_odds": -108.0,
+      "under_odds": 125.0,
+      "model_over_prob": 0.378,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 122.0,
-      "rl_away_odds": 115.0,
+      "rl_away_odds": 113.0,
       "model_home_rl": 0.4096,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": null,
@@ -643,17 +648,22 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
       "model_home_rl": NaN,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 68,
+       "wind_mph": 5,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -698,17 +708,22 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
       "model_home_rl": NaN,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 100,
+       "wind_mph": 12,
+       "wind_dir": "WSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -753,14 +768,14 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": null,
-      "under_ev": null,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
       "model_home_rl": NaN,
-      "rl_home_ev": null,
-      "rl_away_ev": null
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      }
     ],
     "props": [
@@ -4967,94 +4982,94 @@
     ],
     "news": [
      {
-      "title": "Emmet Sheehan grinds out five for win vs Padres",
+      "title": "Chris Paddack close to deal with Rangers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:52:56"
+      "when": "2026-06-29 15:25:03"
      },
      {
-      "title": "Riley O'Brien slams door for save No. 20",
+      "title": "Marcus Semien diagnosed with Grade 3 left hip flexor strain",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:50:40"
+      "when": "2026-06-29 15:23:02"
      },
      {
-      "title": "Kyle Leahy grinds out five for a narrow win",
+      "title": "Drew Pomeranz inks deal with Cubs",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:49:33"
+      "when": "2026-06-29 15:12:14"
      },
      {
-      "title": "JJ Wetherholt Chips In, Swipes Bag in 2-1 Win",
+      "title": "Brady Singer knocked around in loss to Pirates Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:47:46"
+      "when": "2026-06-29 14:04:43"
      },
      {
-      "title": "Bryan Torres plays hero despite shaky season line",
+      "title": "Jhoan Duran closes the door on Mets in Sunday's win ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:46:53"
+      "when": "2026-06-29 14:03:25"
      },
      {
-      "title": "Alex Lange locks down save as Royals edge White Sox",
+      "title": "Jesus Luzardo solid over five frames in Sunday's win",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:45:11"
+      "when": "2026-06-29 13:58:17"
      },
      {
-      "title": "Linder Avila labors through four in Royals' one-run win",
+      "title": "Shane Bieber takes no-decision Sunday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:42:45"
+      "when": "2026-06-29 13:57:27"
      },
      {
-      "title": "Kameron Misner swipes a bag despite quiet day at the plate",
+      "title": "Nathan Lukes slugs homer in loss to Rangers Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:41:05"
+      "when": "2026-06-29 13:54:16"
      },
      {
-      "title": "Starling Marte chips in two hits and a swipe in one-run win",
+      "title": "Kyle Schwarber reaches 30 homers in just 80 games",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:40:18"
+      "when": "2026-06-29 13:51:03"
      },
      {
-      "title": "Lane Thomas chips in two hits, swipes bag in tight win",
+      "title": "Jack Flaherty impresses in return from IL Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:39:15"
+      "when": "2026-06-29 13:50:57"
      },
      {
-      "title": "Carter Jensen racks up three hits, drives in two vs. White Sox",
+      "title": "Matt Vierling swipes a bag in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:38:09"
+      "when": "2026-06-29 13:46:32"
      },
      {
-      "title": "Kyle Bradish's wildness sinks Orioles in loss",
+      "title": "Zach McKinstry homers in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:32:09"
+      "when": "2026-06-29 13:44:03"
      },
      {
-      "title": "Colton Cowser chips in two hits and a swipe in loss",
+      "title": "Trea Turner steals a base, scores a run in Sunday's win ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:30:29"
+      "when": "2026-06-29 13:42:53"
      },
      {
-      "title": "Jackson Holliday Pops One, But O's Come Up Short",
+      "title": "Spencer Torkelson homers in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:29:08"
+      "when": "2026-06-29 13:41:14"
      },
      {
-      "title": "Pete Alonso goes yard, but O's fall 6-4",
+      "title": "Jose Caballero swipes base in loss to Red Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:27:15"
+      "when": "2026-06-29 13:33:26"
      }
     ],
     "injuries": [
@@ -6067,13 +6082,6 @@
       "note": ""
      },
      {
-      "player": "Buddy Kennedy",
-      "norm": "buddy kennedy",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
       "player": "Nik McClaughry",
       "norm": "nik mcclaughry",
       "team": "",
@@ -6457,6 +6465,13 @@
       "team": "",
       "status": "IL15",
       "note": ""
+     },
+     {
+      "player": "Jorge Polanco",
+      "norm": "jorge polanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
      }
     ]
    },
@@ -6471,101 +6486,100 @@
     "props": [],
     "news": [
      {
-      "title": "Yuki Kawamura to play for Pacers Summer League team",
+      "title": "Andrew Wiggins opts into player option with Heat",
       "body": "",
       "player": "",
-      "when": "2026-06-29 05:50:00"
+      "when": "2026-06-29 16:33:50"
      },
      {
-      "title": "Dru Smith to have salary fully guaranteed by Heat ",
+      "title": "Trendon Watford has team option declined by 76ers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 05:48:48"
+      "when": "2026-06-29 16:32:03"
      },
      {
-      "title": "Goga Bitadze drawing trade interest from Clippers ",
+      "title": "Dalen Terry has team option picked up by 76ers ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:16:25"
+      "when": "2026-06-29 16:30:32"
      },
      {
-      "title": "Robert Williams III linked to Celtics ",
+      "title": "Dominick Barlow has team option exercised by 76ers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:14:33"
+      "when": "2026-06-29 16:29:48"
      },
      {
-      "title": "Kevon Looney linked to Celtics, Knicks ",
+      "title": "Trayce Jackson-Davis has team option exercised by Raptors ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:12:28"
+      "when": "2026-06-29 16:00:49"
      },
      {
-      "title": "Marcus Smart expected to draw interest from Rockets ",
+      "title": "Malachi Smith has team option exercised by Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:10:38"
+      "when": "2026-06-29 15:55:31"
      },
      {
-      "title": "Ziaire Williams expected to draw interest from Lakers ",
+      "title": "Deandre Ayton opting into player option with Lakers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:08:06"
+      "when": "2026-06-29 15:11:03"
      },
      {
-      "title": "John Collins to draw interest from Magic, Spurs, Sixers",
+      "title": "Luguentz Dort has team option exercised by Thunder",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:28:13"
+      "when": "2026-06-29 15:07:26"
      },
      {
-      "title": "Buddy Hield to have salary fully guaranteed by Hawks",
+      "title": "Day'Ron Sharpe to sign new two-year deal with Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:22:27"
+      "when": "2026-06-29 14:51:30"
      },
      {
-      "title": "Chris Manon tendered by Lakers ",
+      "title": "Josh Minott to sign new two-year deal with Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:18:47"
+      "when": "2026-06-29 14:49:36"
      },
      {
-      "title": "Jordan Clarkson could re-sign with Knicks ",
+      "title": "Sandro Mamukelashvili declines player option with Raptors ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:15:16"
+      "when": "2026-06-29 14:47:54"
      },
      {
-      "title": "Kristaps Porzingis expected to reach new deal with Warriors soon",
+      "title": "Draymond Green declining player option to become free agent",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:13:42"
+      "when": "2026-06-29 14:17:43"
      },
      {
-      "title": "Collin Sexton linked to Warriors ",
+      "title": "Malik Beasley indicted on gambling charges",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:11:13"
+      "when": "2026-06-29 14:05:28"
      },
      {
-      "title": "Anfernee Simons linked to Warriors ",
+      "title": "James Harden declines player option, will work out deal with Cavs",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:09:08"
+      "when": "2026-06-29 13:59:13"
+     },
+     {
+      "title": "Fred VanVleet opting into $25 million player option",
+      "body": "",
+      "player": "",
+      "when": "2026-06-29 13:53:42"
      }
     ],
     "injuries": [
      {
       "player": "Taj Gibson",
       "norm": "taj gibson",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Nikola Vucevic",
-      "norm": "nikola vucevic",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -6592,29 +6606,8 @@
       "note": ""
      },
      {
-      "player": "Thanasis Antetokounmpo",
-      "norm": "thanasis antetokounmpo",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Joel Embiid",
       "norm": "joel embiid",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Kristaps Porzingis",
-      "norm": "kristaps porzingis",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Larry Nance Jr.",
-      "norm": "larry nance",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -6641,20 +6634,6 @@
       "note": ""
      },
      {
-      "player": "Luke Kennard",
-      "norm": "luke kennard",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Collin Sexton",
-      "norm": "collin sexton",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Donte DiVincenzo",
       "norm": "donte divincenzo",
       "team": "",
@@ -6662,22 +6641,8 @@
       "note": ""
      },
      {
-      "player": "Kevin Huerter",
-      "norm": "kevin huerter",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Jarred Vanderbilt",
       "norm": "jarred vanderbilt",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Bruce Brown Jr.",
-      "norm": "bruce brown",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -6746,22 +6711,8 @@
       "note": ""
      },
      {
-      "player": "Charles Bassey",
-      "norm": "charles bassey",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Sam Merrill",
       "norm": "sam merrill",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Anthony Gill",
-      "norm": "anthony gill",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -6825,13 +6776,6 @@
      {
       "player": "Moussa Diabate",
       "norm": "moussa diabate",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Simone Fontecchio",
-      "norm": "simone fontecchio",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -7131,13 +7075,6 @@
       "note": ""
      },
      {
-      "player": "Jusuf Nurkic",
-      "norm": "jusuf nurkic",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
       "player": "Zach LaVine",
       "norm": "zach lavine",
       "team": "",
@@ -7189,13 +7126,6 @@
      {
       "player": "Trae Young",
       "norm": "trae young",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Drew Eubanks",
-      "norm": "drew eubanks",
       "team": "",
       "status": "OUT",
       "note": ""
@@ -7345,6 +7275,111 @@
       "norm": "thomas sorber",
       "team": "",
       "status": "OUT",
+      "note": ""
+     },
+     {
+      "player": "Bruce Brown Jr.",
+      "norm": "bruce brown",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Larry Nance Jr.",
+      "norm": "larry nance",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Luke Kennard",
+      "norm": "luke kennard",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Nick Richards",
+      "norm": "nick richards",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Kevin Huerter",
+      "norm": "kevin huerter",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Collin Sexton",
+      "norm": "collin sexton",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Anfernee Simons",
+      "norm": "anfernee simons",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Marvin Bagley III",
+      "norm": "marvin bagley",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Charles Bassey",
+      "norm": "charles bassey",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Anthony Gill",
+      "norm": "anthony gill",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Nikola Vucevic",
+      "norm": "nikola vucevic",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Kristaps Porzingis",
+      "norm": "kristaps porzingis",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jock Landale",
+      "norm": "jock landale",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Simone Fontecchio",
+      "norm": "simone fontecchio",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Thanasis Antetokounmpo",
+      "norm": "thanasis antetokounmpo",
+      "team": "",
+      "status": "DTD",
       "note": ""
      },
      {
@@ -7523,13 +7558,6 @@
       "note": ""
      },
      {
-      "player": "Jock Landale",
-      "norm": "jock landale",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Bryce McGowens",
       "norm": "bryce mcgowens",
       "team": "",
@@ -7646,13 +7674,6 @@
       "norm": "joe ingles",
       "team": "",
       "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Marvin Bagley III",
-      "norm": "marvin bagley",
-      "team": "",
-      "status": "DTD",
       "note": ""
      },
      {
@@ -7775,13 +7796,6 @@
       "note": ""
      },
      {
-      "player": "Nick Richards",
-      "norm": "nick richards",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Yang Hansen",
       "norm": "yang hansen",
       "team": "",
@@ -7887,13 +7901,6 @@
       "note": ""
      },
      {
-      "player": "Anfernee Simons",
-      "norm": "anfernee simons",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "P.J. Washington Jr.",
       "norm": "pj washington",
       "team": "",
@@ -7954,6 +7961,20 @@
       "norm": "keyonte george",
       "team": "",
       "status": "OUT",
+      "note": ""
+     },
+     {
+      "player": "Matas Buzelis",
+      "norm": "matas buzelis",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Isaiah Collier",
+      "norm": "isaiah collier",
+      "team": "",
+      "status": "DTD",
       "note": ""
      }
     ]
@@ -9516,12 +9537,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 93,
-       "wind_mph": 11,
-       "wind_dir": "W",
-       "precip_pct": 1
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -9559,9 +9575,9 @@
       "nrfi_p_top": 0.2666,
       "nrfi_p_bot": 0.3062,
       "home_ml": 100.0,
-      "away_ml": 104.0,
-      "home_ml_ev": -0.0685,
-      "away_ml_ev": 0.0899,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0637,
+      "away_ml_ev": 0.1062,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -9576,12 +9592,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 91,
-       "wind_mph": 12,
-       "wind_dir": "SSW",
-       "precip_pct": 2
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -9618,10 +9629,10 @@
       "model_yrfi_prob": 0.4959,
       "nrfi_p_top": 0.2659,
       "nrfi_p_bot": 0.3134,
-      "home_ml": -178.0,
+      "home_ml": -163.0,
       "away_ml": 178.0,
-      "home_ml_ev": -0.0368,
-      "away_ml_ev": 0.0655,
+      "home_ml_ev": NaN,
+      "away_ml_ev": NaN,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -9637,8 +9648,8 @@
      },
      {
       "weather": {
-       "temp_f": 81,
-       "wind_mph": 12,
+       "temp_f": 82,
+       "wind_mph": 11,
        "wind_dir": "SSE",
        "precip_pct": 3
       },
@@ -9697,9 +9708,9 @@
      },
      {
       "weather": {
-       "temp_f": 70,
-       "wind_mph": 4,
-       "wind_dir": "S",
+       "temp_f": 84,
+       "wind_mph": 11,
+       "wind_dir": "SSW",
        "precip_pct": 1
       },
       "lineups": {
@@ -9738,7 +9749,7 @@
       "model_yrfi_prob": 0.5049,
       "nrfi_p_top": 0.3126,
       "nrfi_p_bot": 0.2797,
-      "home_ml": -111.0,
+      "home_ml": -108.0,
       "away_ml": 122.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
@@ -9757,8 +9768,8 @@
      },
      {
       "weather": {
-       "temp_f": 76,
-       "wind_mph": 12,
+       "temp_f": 80,
+       "wind_mph": 13,
        "wind_dir": "S",
        "precip_pct": 5
       },
@@ -9818,9 +9829,9 @@
      {
       "weather": {
        "temp_f": 96,
-       "wind_mph": 7,
+       "wind_mph": 6,
        "wind_dir": "ENE",
-       "precip_pct": 12
+       "precip_pct": 11
       },
       "lineups": {
        "home": [],
@@ -9877,8 +9888,8 @@
      },
      {
       "weather": {
-       "temp_f": 94,
-       "wind_mph": 20,
+       "temp_f": 95,
+       "wind_mph": 18,
        "wind_dir": "SSW",
        "precip_pct": 0
       },
@@ -9918,10 +9929,10 @@
       "model_yrfi_prob": 0.5013,
       "nrfi_p_top": 0.2936,
       "nrfi_p_bot": 0.2941,
-      "home_ml": 116.0,
-      "away_ml": -117.0,
-      "home_ml_ev": 0.0912,
-      "away_ml_ev": -0.0823,
+      "home_ml": 115.0,
+      "away_ml": -113.0,
+      "home_ml_ev": 0.0917,
+      "away_ml_ev": -0.0722,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -9939,7 +9950,7 @@
       "weather": {
        "temp_f": 95,
        "wind_mph": 17,
-       "wind_dir": "SSW",
+       "wind_dir": "SW",
        "precip_pct": 1
       },
       "lineups": {
@@ -9979,9 +9990,9 @@
       "nrfi_p_top": 0.2964,
       "nrfi_p_bot": 0.262,
       "home_ml": -170.0,
-      "away_ml": 170.0,
-      "home_ml_ev": 0.0221,
-      "away_ml_ev": -0.0376,
+      "away_ml": 163.0,
+      "home_ml_ev": 0.0173,
+      "away_ml_ev": -0.0545,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10271,7 +10282,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 97,
+       "wind_mph": 11,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -15404,94 +15420,94 @@
     ],
     "news": [
      {
-      "title": "Emmet Sheehan grinds out five for win vs Padres",
+      "title": "Chris Paddack close to deal with Rangers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:52:56"
+      "when": "2026-06-29 15:25:03"
      },
      {
-      "title": "Riley O'Brien slams door for save No. 20",
+      "title": "Marcus Semien diagnosed with Grade 3 left hip flexor strain",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:50:40"
+      "when": "2026-06-29 15:23:02"
      },
      {
-      "title": "Kyle Leahy grinds out five for a narrow win",
+      "title": "Drew Pomeranz inks deal with Cubs",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:49:33"
+      "when": "2026-06-29 15:12:14"
      },
      {
-      "title": "JJ Wetherholt Chips In, Swipes Bag in 2-1 Win",
+      "title": "Brady Singer knocked around in loss to Pirates Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:47:46"
+      "when": "2026-06-29 14:04:43"
      },
      {
-      "title": "Bryan Torres plays hero despite shaky season line",
+      "title": "Jhoan Duran closes the door on Mets in Sunday's win ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:46:53"
+      "when": "2026-06-29 14:03:25"
      },
      {
-      "title": "Alex Lange locks down save as Royals edge White Sox",
+      "title": "Jesus Luzardo solid over five frames in Sunday's win",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:45:11"
+      "when": "2026-06-29 13:58:17"
      },
      {
-      "title": "Linder Avila labors through four in Royals' one-run win",
+      "title": "Shane Bieber takes no-decision Sunday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:42:45"
+      "when": "2026-06-29 13:57:27"
      },
      {
-      "title": "Kameron Misner swipes a bag despite quiet day at the plate",
+      "title": "Nathan Lukes slugs homer in loss to Rangers Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:41:05"
+      "when": "2026-06-29 13:54:16"
      },
      {
-      "title": "Starling Marte chips in two hits and a swipe in one-run win",
+      "title": "Kyle Schwarber reaches 30 homers in just 80 games",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:40:18"
+      "when": "2026-06-29 13:51:03"
      },
      {
-      "title": "Lane Thomas chips in two hits, swipes bag in tight win",
+      "title": "Jack Flaherty impresses in return from IL Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:39:15"
+      "when": "2026-06-29 13:50:57"
      },
      {
-      "title": "Carter Jensen racks up three hits, drives in two vs. White Sox",
+      "title": "Matt Vierling swipes a bag in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:38:09"
+      "when": "2026-06-29 13:46:32"
      },
      {
-      "title": "Kyle Bradish's wildness sinks Orioles in loss",
+      "title": "Zach McKinstry homers in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:32:09"
+      "when": "2026-06-29 13:44:03"
      },
      {
-      "title": "Colton Cowser chips in two hits and a swipe in loss",
+      "title": "Trea Turner steals a base, scores a run in Sunday's win ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:30:29"
+      "when": "2026-06-29 13:42:53"
      },
      {
-      "title": "Jackson Holliday Pops One, But O's Come Up Short",
+      "title": "Spencer Torkelson homers in loss to Astros Sunday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:29:08"
+      "when": "2026-06-29 13:41:14"
      },
      {
-      "title": "Pete Alonso goes yard, but O's fall 6-4",
+      "title": "Jose Caballero swipes base in loss to Red Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-29 12:27:15"
+      "when": "2026-06-29 13:33:26"
      }
     ],
     "injuries": [
@@ -16504,13 +16520,6 @@
       "note": ""
      },
      {
-      "player": "Buddy Kennedy",
-      "norm": "buddy kennedy",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
       "player": "Nik McClaughry",
       "norm": "nik mcclaughry",
       "team": "",
@@ -16894,6 +16903,13 @@
       "team": "",
       "status": "IL15",
       "note": ""
+     },
+     {
+      "player": "Jorge Polanco",
+      "norm": "jorge polanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
      }
     ]
    },
@@ -16907,8 +16923,8 @@
       "away_exp": 86.51,
       "home_exp": 88.18,
       "proj_total": 174.69,
-      "home_win_prob": 0.4409,
-      "away_win_prob": 0.5591,
+      "home_win_prob": 0.5577,
+      "away_win_prob": 0.4423,
       "home_ml": null,
       "away_ml": null,
       "home_ml_ev": null,
@@ -16934,101 +16950,100 @@
     "props": [],
     "news": [
      {
-      "title": "Yuki Kawamura to play for Pacers Summer League team",
+      "title": "Andrew Wiggins opts into player option with Heat",
       "body": "",
       "player": "",
-      "when": "2026-06-29 05:50:00"
+      "when": "2026-06-29 16:33:50"
      },
      {
-      "title": "Dru Smith to have salary fully guaranteed by Heat ",
+      "title": "Trendon Watford has team option declined by 76ers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 05:48:48"
+      "when": "2026-06-29 16:32:03"
      },
      {
-      "title": "Goga Bitadze drawing trade interest from Clippers ",
+      "title": "Dalen Terry has team option picked up by 76ers ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:16:25"
+      "when": "2026-06-29 16:30:32"
      },
      {
-      "title": "Robert Williams III linked to Celtics ",
+      "title": "Dominick Barlow has team option exercised by 76ers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:14:33"
+      "when": "2026-06-29 16:29:48"
      },
      {
-      "title": "Kevon Looney linked to Celtics, Knicks ",
+      "title": "Trayce Jackson-Davis has team option exercised by Raptors ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:12:28"
+      "when": "2026-06-29 16:00:49"
      },
      {
-      "title": "Marcus Smart expected to draw interest from Rockets ",
+      "title": "Malachi Smith has team option exercised by Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:10:38"
+      "when": "2026-06-29 15:55:31"
      },
      {
-      "title": "Ziaire Williams expected to draw interest from Lakers ",
+      "title": "Deandre Ayton opting into player option with Lakers",
       "body": "",
       "player": "",
-      "when": "2026-06-29 04:08:06"
+      "when": "2026-06-29 15:11:03"
      },
      {
-      "title": "John Collins to draw interest from Magic, Spurs, Sixers",
+      "title": "Luguentz Dort has team option exercised by Thunder",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:28:13"
+      "when": "2026-06-29 15:07:26"
      },
      {
-      "title": "Buddy Hield to have salary fully guaranteed by Hawks",
+      "title": "Day'Ron Sharpe to sign new two-year deal with Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:22:27"
+      "when": "2026-06-29 14:51:30"
      },
      {
-      "title": "Chris Manon tendered by Lakers ",
+      "title": "Josh Minott to sign new two-year deal with Nets",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:18:47"
+      "when": "2026-06-29 14:49:36"
      },
      {
-      "title": "Jordan Clarkson could re-sign with Knicks ",
+      "title": "Sandro Mamukelashvili declines player option with Raptors ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:15:16"
+      "when": "2026-06-29 14:47:54"
      },
      {
-      "title": "Kristaps Porzingis expected to reach new deal with Warriors soon",
+      "title": "Draymond Green declining player option to become free agent",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:13:42"
+      "when": "2026-06-29 14:17:43"
      },
      {
-      "title": "Collin Sexton linked to Warriors ",
+      "title": "Malik Beasley indicted on gambling charges",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:11:13"
+      "when": "2026-06-29 14:05:28"
      },
      {
-      "title": "Anfernee Simons linked to Warriors ",
+      "title": "James Harden declines player option, will work out deal with Cavs",
       "body": "",
       "player": "",
-      "when": "2026-06-29 03:09:08"
+      "when": "2026-06-29 13:59:13"
+     },
+     {
+      "title": "Fred VanVleet opting into $25 million player option",
+      "body": "",
+      "player": "",
+      "when": "2026-06-29 13:53:42"
      }
     ],
     "injuries": [
      {
       "player": "Taj Gibson",
       "norm": "taj gibson",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Nikola Vucevic",
-      "norm": "nikola vucevic",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -17055,29 +17070,8 @@
       "note": ""
      },
      {
-      "player": "Thanasis Antetokounmpo",
-      "norm": "thanasis antetokounmpo",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Joel Embiid",
       "norm": "joel embiid",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Kristaps Porzingis",
-      "norm": "kristaps porzingis",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Larry Nance Jr.",
-      "norm": "larry nance",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -17104,20 +17098,6 @@
       "note": ""
      },
      {
-      "player": "Luke Kennard",
-      "norm": "luke kennard",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Collin Sexton",
-      "norm": "collin sexton",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Donte DiVincenzo",
       "norm": "donte divincenzo",
       "team": "",
@@ -17125,22 +17105,8 @@
       "note": ""
      },
      {
-      "player": "Kevin Huerter",
-      "norm": "kevin huerter",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Jarred Vanderbilt",
       "norm": "jarred vanderbilt",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Bruce Brown Jr.",
-      "norm": "bruce brown",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -17209,22 +17175,8 @@
       "note": ""
      },
      {
-      "player": "Charles Bassey",
-      "norm": "charles bassey",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Sam Merrill",
       "norm": "sam merrill",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Anthony Gill",
-      "norm": "anthony gill",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -17288,13 +17240,6 @@
      {
       "player": "Moussa Diabate",
       "norm": "moussa diabate",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Simone Fontecchio",
-      "norm": "simone fontecchio",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -17594,13 +17539,6 @@
       "note": ""
      },
      {
-      "player": "Jusuf Nurkic",
-      "norm": "jusuf nurkic",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
       "player": "Zach LaVine",
       "norm": "zach lavine",
       "team": "",
@@ -17652,13 +17590,6 @@
      {
       "player": "Trae Young",
       "norm": "trae young",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Drew Eubanks",
-      "norm": "drew eubanks",
       "team": "",
       "status": "OUT",
       "note": ""
@@ -17808,6 +17739,111 @@
       "norm": "thomas sorber",
       "team": "",
       "status": "OUT",
+      "note": ""
+     },
+     {
+      "player": "Bruce Brown Jr.",
+      "norm": "bruce brown",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Larry Nance Jr.",
+      "norm": "larry nance",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Luke Kennard",
+      "norm": "luke kennard",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Nick Richards",
+      "norm": "nick richards",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Kevin Huerter",
+      "norm": "kevin huerter",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Collin Sexton",
+      "norm": "collin sexton",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Anfernee Simons",
+      "norm": "anfernee simons",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Marvin Bagley III",
+      "norm": "marvin bagley",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Charles Bassey",
+      "norm": "charles bassey",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Anthony Gill",
+      "norm": "anthony gill",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Nikola Vucevic",
+      "norm": "nikola vucevic",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Kristaps Porzingis",
+      "norm": "kristaps porzingis",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jock Landale",
+      "norm": "jock landale",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Simone Fontecchio",
+      "norm": "simone fontecchio",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Thanasis Antetokounmpo",
+      "norm": "thanasis antetokounmpo",
+      "team": "",
+      "status": "DTD",
       "note": ""
      },
      {
@@ -17986,13 +18022,6 @@
       "note": ""
      },
      {
-      "player": "Jock Landale",
-      "norm": "jock landale",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Bryce McGowens",
       "norm": "bryce mcgowens",
       "team": "",
@@ -18109,13 +18138,6 @@
       "norm": "joe ingles",
       "team": "",
       "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Marvin Bagley III",
-      "norm": "marvin bagley",
-      "team": "",
-      "status": "DTD",
       "note": ""
      },
      {
@@ -18238,13 +18260,6 @@
       "note": ""
      },
      {
-      "player": "Nick Richards",
-      "norm": "nick richards",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "Yang Hansen",
       "norm": "yang hansen",
       "team": "",
@@ -18350,13 +18365,6 @@
       "note": ""
      },
      {
-      "player": "Anfernee Simons",
-      "norm": "anfernee simons",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
       "player": "P.J. Washington Jr.",
       "norm": "pj washington",
       "team": "",
@@ -18417,6 +18425,20 @@
       "norm": "keyonte george",
       "team": "",
       "status": "OUT",
+      "note": ""
+     },
+     {
+      "player": "Matas Buzelis",
+      "norm": "matas buzelis",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Isaiah Collier",
+      "norm": "isaiah collier",
+      "team": "",
+      "status": "DTD",
       "note": ""
      }
     ]
@@ -19979,5 +20001,5 @@
   "base_brier": 0.2222,
   "actual_yrfi": 0.3333
  },
- "odds_api_credits": 24525
+ "odds_api_credits": 24521
 }
