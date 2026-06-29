@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99505,
+  "sr_id": "ab1bf280-6953-4913-97fa-53298fb51e9d",
+  "sport": "MLB",
+  "scheduled": "2026-06-30 22:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/baltimore-orioles-vs-chicago-white-sox/?date=2026-06-30",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47827",
+    "name": "Trey Gibson",
+    "link": "/mlb/props/trey-gibson/",
+    "player": {
+     "short_name": "T. Gibson",
+     "first_name": "Trey",
+     "last_name": "Gibson",
+     "image": "https://images.fantasypros.com/images/players/mlb/47827/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "trey-gibson",
+     "jersey_number": 43
+    }
+   },
+   "visitor_probable": {
+    "id": "6029",
+    "name": "Erick Fedde",
+    "link": "/mlb/props/erick-fedde/",
+    "player": {
+     "short_name": "E. Fedde",
+     "first_name": "Erick",
+     "last_name": "Fedde",
+     "image": "https://images.fantasypros.com/images/players/mlb/6029/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "erick-fedde",
+     "jersey_number": 47
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 39,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 43,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 89,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "S",
+   "forecast_wind_degree": 173,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.46
+  },
+  "broadcasts": [
+   {
+    "network": "CHSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99243,
+  "sr_id": "8e6c05b8-0e47-4bf7-9b60-b76bcd3e5785",
+  "sport": "MLB",
+  "scheduled": "2026-06-30 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CLE",
+  "visitor": "TEX",
+  "link": "/mlb/matchups/cleveland-guardians-vs-texas-rangers/?date=2026-06-30",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "45056",
+    "name": "Tanner Bibee",
+    "link": "/mlb/props/tanner-bibee/",
+    "player": {
+     "short_name": "T. Bibee",
+     "first_name": "Tanner",
+     "last_name": "Bibee",
+     "image": "https://images.fantasypros.com/images/players/mlb/45056/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "tanner-bibee",
+     "jersey_number": 28
+    }
+   },
+   "visitor_probable": {
+    "id": "4850",
+    "name": "Jacob deGrom",
+    "link": "/mlb/props/jacob-degrom/",
+    "player": {
+     "short_name": "J. deGrom",
+     "first_name": "Jacob",
+     "last_name": "deGrom",
+     "image": "https://images.fantasypros.com/images/players/mlb/4850/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "slug": "jacob-degrom",
+     "jersey_number": 48
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CLE",
+   "season": "2025",
+   "split": "A",
+   "r": "0.972",
+   "1b": "0.981",
+   "2b": "1.045",
+   "3b": "0.674",
+   "hr": "0.924",
+   "name": "Progressive Field"
+  },
+  "venue": {
+   "name": "Progressive Field",
+   "address": "2401 Ontario Street",
+   "city": "Cleveland",
+   "state": "OH",
+   "country": "USA",
+   "zip": "44115",
+   "surface": "grass",
+   "capacity": 34788,
+   "stadium_type": "outdoor",
+   "id": "2b0ccd49-4d87-4996-ac4d-27ffc7ee4c16"
+  },
+  "participants": [
+   {
+    "id": "CLE",
+    "name": "Guardians",
+    "link": "/mlb/teams/cleveland-guardians/",
+    "team": {
+     "city": "Cleveland",
+     "abbreviation": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "cleveland-guardians",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 42,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "texas-rangers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 92,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "W",
+   "forecast_wind_degree": 263,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1013,
+   "forecast_humidity": 0.57
+  },
+  "broadcasts": [
+   {
+    "network": "CLEG",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
