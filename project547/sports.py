@@ -59,6 +59,12 @@ class Sport:
     # shows EPA ratings beat the points model walk-forward (roadmap Stage 1);
     # needs live play-by-play wired into the slate before it can run in prod.
     epa_blend: float = 0.0
+    # weight on the de-vigged market consensus vs the model when computing EV on
+    # two-way markets (the old global config.MARKET_SHRINK, now per-sport). 0 =
+    # pure model, 1 = pure market. Higher for efficient markets where the model's
+    # disagreements with the close are mostly noise. Defaults to the historical
+    # global (0.5); override per sport from the walk-forward backtest.
+    market_shrink: float = 0.5
 
 
 SPORTS: dict[str, Sport] = {
@@ -67,6 +73,13 @@ SPORTS: dict[str, Sport] = {
         league_ppg=4.5, hfa=0.12, sigma_margin=0.0, sigma_total=0.0,
         in_season_months=(3, 4, 5, 6, 7, 8, 9, 10, 11), form_days=75,
         fp_projections="daily",
+        # MLB moneylines/totals are efficient; the walk-forward backtest shows
+        # closing-line ROI rises monotonically with shrink (0.5->12%, 0.65->14%,
+        # 0.8->17% on the 2024-26 matched sample) as bet volume falls onto the
+        # model's largest, least-noisy disagreements. 0.65 sits in the validated
+        # 0.5-0.65 band. Other sports stay at the 0.5 default until their own
+        # backtests justify a move.
+        market_shrink=0.65,
     ),
     "WNBA": Sport(
         key="WNBA", espn_path="basketball/wnba", model="normal",

@@ -30,17 +30,24 @@ log = logging.getLogger(__name__)
 # Market evaluation: price sanity + de-vig + shrink toward market
 # ---------------------------------------------------------------------------
 
-def _market_eval(p_model_a: float, a_price, b_price) -> dict:
+def _market_eval(p_model_a: float, a_price, b_price,
+                 shrink: float | None = None) -> dict:
     """Evaluate a two-way market for both sides from one model probability.
 
     Rejects incoherent price pairs, shrinks the model probability toward the
     de-vigged market consensus, and returns shrunk EVs. Keeps the raw-price
     EV nowhere — only the blended, sanity-checked numbers reach the site.
 
+    ``shrink`` is the weight on the market consensus vs the model (per-sport,
+    via ``Sport.market_shrink``); falls back to the global ``config.MARKET_SHRINK``
+    when unset. Only the two-way branch uses it — a single quoted side is never
+    shrunk (a lone vig-inclusive price is not a clean consensus).
+
     Returns {p_used, p_fair, ev_a, ev_b}; ev_* are None where that side has
     no usable price. ``p_used`` falls back to the raw model prob when there's
     no market to anchor to.
     """
+    shrink = config.MARKET_SHRINK if shrink is None else shrink
     a_ok = a_price is not None and pd.notna(a_price)
     b_ok = b_price is not None and pd.notna(b_price)
     out = {"p_used": p_model_a, "p_fair": None, "ev_a": None, "ev_b": None}
@@ -51,7 +58,7 @@ def _market_eval(p_model_a: float, a_price, b_price) -> dict:
         if fair is None:
             return out  # incoherent pair -> no edge either side
         p_fair = fair[0]
-        p = odds.blend_toward_market(p_model_a, p_fair, config.MARKET_SHRINK)
+        p = odds.blend_toward_market(p_model_a, p_fair, shrink)
         out["p_fair"] = round(p_fair, 4)
     elif a_ok or b_ok:
         # single quoted side: the lone implied prob still carries the book's
@@ -730,7 +737,7 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     prices[side] = float(m["odds"].max())
                     out[f"{side}_ml"] = prices[side]
             ev = _market_eval(row["home_win_prob"], prices.get("home"),
-                              prices.get("away"))
+                              prices.get("away"), shrink=SPORTS["MLB"].market_shrink)
             if ev["ev_a"] is not None:
                 out["home_ml_ev"] = ev["ev_a"]
             if ev["ev_b"] is not None:
@@ -760,7 +767,8 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     best_u = unders.sort_values("odds", ascending=False).iloc[0]
                     under_price = float(best_u["odds"])
                     out["under_odds"] = under_price
-                ev = _market_eval(float(p), float(best_o["odds"]), under_price)
+                ev = _market_eval(float(p), float(best_o["odds"]), under_price,
+                                  shrink=SPORTS["MLB"].market_shrink)
                 if ev["ev_a"] is not None:
                     out["over_ev"] = ev["ev_a"]
                 if ev["ev_b"] is not None:
@@ -788,7 +796,8 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["rl_away_odds"] = away_price
                 if p_cover is not None:
                     out["model_home_rl"] = round(float(p_cover), 4)
-                    ev = _market_eval(float(p_cover), float(best_h["odds"]), away_price)
+                    ev = _market_eval(float(p_cover), float(best_h["odds"]), away_price,
+                                      shrink=SPORTS["MLB"].market_shrink)
                     if ev["ev_a"] is not None:
                         out["rl_home_ev"] = ev["ev_a"]
                     if ev["ev_b"] is not None:
@@ -923,7 +932,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                 lambda t: _best_price_for_team(t, pairs))
 
         def _ml_ev(r):
-            ev = _market_eval(r["home_win_prob"], r.get("home_ml"), r.get("away_ml"))
+            ev = _market_eval(r["home_win_prob"], r.get("home_ml"), r.get("away_ml"),
+                              shrink=sport.market_shrink)
             return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"]})
 
         games = pd.concat([games, games.apply(_ml_ev, axis=1)], axis=1)
@@ -986,7 +996,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                 & g["line"].notna()]
             away_price = (float(away_rows.sort_values("odds", ascending=False)
                                 .iloc[0]["odds"]) if not away_rows.empty else None)
-            ev = _market_eval(p, float(best_h["odds"]), away_price)
+            ev = _market_eval(p, float(best_h["odds"]), away_price,
+                              shrink=sport.market_shrink)
             out.update({"spread_home_line": spread,
                         "spread_home_odds": float(best_h["odds"]),
                         "model_home_cover": round(p, 4),
@@ -1184,7 +1195,8 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         if projection is not None and pd.notna(line):
             p_over = generic.prop_prob_over(float(projection), float(line), market_name)
             row["model_over_prob"] = round(p_over, 4)
-            ev = _market_eval(p_over, r.get("over_odds"), r.get("under_odds"))
+            ev = _market_eval(p_over, r.get("over_odds"), r.get("under_odds"),
+                              shrink=SPORTS[sport_key].market_shrink)
             row["ev_over"], row["ev_under"] = ev["ev_a"], ev["ev_b"]
             best_ev = max(
                 [v for v in (row["ev_over"], row["ev_under"]) if v is not None],
