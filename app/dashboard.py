@@ -271,25 +271,26 @@ slates = slates_by_date(data) if data else {}
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
 
-# Two-tier navigation: a top-level area, then (when an area has several pages) a
-# sub-page. Grouped logically: overview -> research by sport -> bet-finding ->
-# live -> tools -> tracking.
+# Two-tier navigation, collapsed to five verb-first areas: a top-level area,
+# then (when an area has several pages) a sub-page. Today -> find Plays ->
+# Research by sport/source -> the Ledger receipts -> the Lab (build & test).
+# Section codes are preserved so the downstream dispatch keeps working.
 NAV_GROUPS = {
-    "🏠 Home": ["HOME"],
-    "🎯 Projections": ["PLAYS", "WORKBOOK"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
-    "🛠️ Edge Builder": ["EDGE_BUILDER"],
-    "🤖 Prompt Engine": ["PROMPT_ENGINE"],
+    "🏠 Today": ["HOME"],
+    "🎯 Plays": ["PLAYS", "PLAYS_DETAIL", "EDGES"],
+    "🔬 Research": NAV_SPORTS + ["SHARPSHEET", "DFS", "SCORES", "OTHER_SPORTS"],
     "📒 Ledger": ["PERFORMANCE"],
-    "🔬 Research Hub": ["SHARPSHEET", "OTHER_SPORTS", "BACKTEST", "EXPERTS",
-                        "TOOLS", "DOCS"],
+    "🛠️ Lab": ["EDGE_BUILDER", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "EXPERTS",
+               "WORKBOOK", "DOCS"],
 }
-_PAGE_LABELS = {"PLAYS": "Curated plays", "WORKBOOK": "📥 Daily workbook",
-                "PLAYS_DETAIL": "Plays — full table",
-                "EDGES": "Edge scanner", "DFS": "DFS optimizer",
-                "SCORES": "Live scores", "PERFORMANCE": "Track record",
-                "SHARPSHEET": "Sharp Sheets", "OTHER_SPORTS": "Other sports",
-                "BACKTEST": "Backtest", "EXPERTS": "Expert consensus",
-                "TOOLS": "Calculators", "DOCS": "Methodology & docs"}
+_PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
+                "PLAYS_DETAIL": "Plays — full table", "EDGES": "Edge scanner",
+                "DFS": "DFS optimizer", "SCORES": "Live scores",
+                "PERFORMANCE": "Track record", "SHARPSHEET": "Sharp Sheets",
+                "OTHER_SPORTS": "Other sports", "BACKTEST": "Backtest",
+                "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
+                "DOCS": "Methodology & docs", "WORKBOOK": "📥 Daily workbook",
+                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine"}
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
@@ -1642,9 +1643,6 @@ def render_home():
                 "</div></div>", unsafe_allow_html=True)
     st.caption("52.4% pays the house. 54.7% pays you. · "
                f"Updated {gen} ET · model estimates, not financial advice")
-    _, _tg = st.columns([5, 1])
-    with _tg:
-        _theme_toggle("theme_home")
 
     # --- The 54.7 heroes: front and center, glowing by where we stand -------
     st.markdown(_heroes_html(results.hero_metrics(load_ledger())),
@@ -1658,7 +1656,7 @@ def render_home():
     perf = (data or {}).get("performance", {}).get("overall", {})
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
-    # --- The receipts (supporting the heroes; full ledger on the Ledger tab) -
+    # --- The receipts (CLV-first: skill shows up in CLV before the bankroll) -
     section_header("The receipts — every pick graded, wins and losses", "📒")
     roi = perf.get("roi_pct")
     clv = perf.get("avg_clv_pct")
@@ -1666,25 +1664,25 @@ def render_home():
     beat = perf.get("clv_beat_rate")
     nbets = perf.get("bets", 0)
     s = st.columns(4)
-    s[0].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
-                help=f"Profit ÷ amount staked, over {nbets} bets.")
-    s[1].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+    s[0].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
                 help="Edge vs the closing line — the truest early skill signal.")
-    s[2].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
-                help="Share of bets that beat the closing line.")
-    s[3].metric("Units", f"{units:+.1f}u" if units is not None else "—",
+    s[1].metric("Units", f"{units:+.1f}u" if units is not None else "—",
                 help=f"Net units across {nbets} graded bets "
                      f"(Brier {perf.get('model_brier') or '—'}).")
+    s[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help=f"Profit ÷ amount staked, over {nbets} bets.")
+    s[3].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
+                help="Share of bets that beat the closing line.")
     if not nbets:
-        st.caption("No graded bets yet — fills in as picks settle. "
-                   "Full history on the **Ledger** tab.")
+        st.caption("Every pick graded — wins and losses. No record yet; it fills "
+                   "in as picks settle. Full history on the **Ledger** tab.")
     else:
-        st.caption("Supporting receipts behind the two numbers above. "
+        st.caption("Every pick graded — wins and losses. "
                    "Full breakdown on the **Ledger** tab.")
     st.divider()
 
-    # --- Today's slate ------------------------------------------------------
-    section_header(f"Today — {default_date or '—'}", "🗓️")
+    # --- Tonight's slate ----------------------------------------------------
+    section_header(f"Tonight — {default_date or '—'}", "🗓️")
     c = st.columns(3)
     c[0].metric("Games", games_today)
     c[1].metric("Edges ≥ thresh", 0 if board.empty else len(board))
@@ -1692,23 +1690,29 @@ def render_home():
 
     left, right = st.columns([3, 2])
     with left:
-        section_header("Today's top edges", "🔥")
+        section_header("Tonight's top plays", "🔥")
         if board.empty:
-            st.info("No edges over the current threshold yet — lower **Min edge** "
-                    "in the sidebar, or check back as lineups post.")
+            # Pass-day honesty, brand voice — not a "lower the bar" nudge.
+            st.markdown(
+                "<div style='background:var(--card);border:1px solid var(--line);"
+                "border-radius:10px;padding:16px 18px;color:var(--muted);'>"
+                "<b style='color:var(--text);'>Passed the slate</b> — nothing "
+                "cleared the bar tonight. We'd rather sit than sell you a coin "
+                "flip. Check back as lineups post.</div>",
+                unsafe_allow_html=True)
         else:
-            view = board.head(8).copy()
-            view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
-            view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
-            view["price"] = view["price"].map(ui.fmt_american)
-            view = view[["sport", "bet", "ev", "price", "model_prob"]].rename(
-                columns={"sport": "Sport", "bet": "Bet", "ev": "EV %",
-                         "price": "Price", "model_prob": "Model %"})
-            st.dataframe(view, width="stretch", hide_index=True, column_config={
-                "EV %": st.column_config.NumberColumn(format="%+.1f%%"),
-                "Model %": st.column_config.ProgressColumn(
-                    "Model %", min_value=0, max_value=100, format="%.0f%%")})
-            st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
+            top = board.head(5).to_dict("records")
+            cols = st.columns(2)
+            for i, play in enumerate(top):
+                with cols[i % 2]:
+                    st.markdown(ui.play_card_html(play), unsafe_allow_html=True)
+            st.markdown(
+                "<div style='margin-top:4px;font-family:var(--disp);font-weight:600;"
+                "font-size:.82rem;letter-spacing:.04em;color:var(--good);'>"
+                "See all plays → <span style='color:var(--muted);font-weight:400;'>"
+                "open <b>Plays</b> for the full board, or <b>Edges</b> for "
+                "sharp/arb/middle markets.</span></div>",
+                unsafe_allow_html=True)
     with right:
         section_header("Slate at a glance", "🗓️")
         pills = []
