@@ -1,0 +1,56 @@
+name: Calibration drift monitor
+
+# Weekly per-sport calibration + MARKET_SHRINK drift report. Runs the
+# walk-forward backtest over committed history (no live API), writes a dated
+# report to reports/, and commits it. Recommendations are advisory — review the
+# drift alerts and apply shrink changes by hand (the job never edits config).
+on:
+  workflow_dispatch:
+    inputs:
+      seasons:
+        description: "Recent seasons per sport"
+        required: false
+        default: "4"
+      draws:
+        description: "Monte Carlo draws"
+        required: false
+        default: "1000"
+  schedule:
+    # Mondays 08:00 UTC. Scheduled runs only fire on the default branch.
+    - cron: "0 8 * * 1"
+
+concurrency:
+  group: calibration-monitor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run calibration drift monitor
+        run: |
+          python scripts/tune_calibration.py \
+            --seasons ${{ inputs.seasons || '4' }} \
+            --draws ${{ inputs.draws || '1000' }}
+
+      - name: Commit report
+        run: |
+          git config user.name "projections-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git add reports
+          git diff --cached --quiet || git commit -m "calibration: drift report $(date -u +'%F')"
+          git push
