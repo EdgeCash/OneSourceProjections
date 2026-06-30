@@ -290,7 +290,9 @@ def _season_winpct(sport: str, df: pd.DataFrame, asof: str) -> dict:
     """{team: current-season win%} as of a date — the input to strength of
     schedule (how good were the teams you played)."""
     fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
-    cut = df[df["date"] <= asof] if "date" in df.columns else df
+    # strict < asof: never let the as-of date's own games into the strength
+    # estimate (matches _window; avoids leaking same-day results when grading)
+    cut = df[df["date"] < asof] if "date" in df.columns else df
     if fc not in cut.columns or oc not in cut.columns or cut.empty:
         return {}
     cur = cut[cut["season"] == cut["season"].max()]
@@ -323,7 +325,7 @@ def elo_ratings(sport: str, df: pd.DataFrame, asof: str) -> dict:
         fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
         if fc not in df.columns or "opp" not in df.columns:
             return {}
-        home = df[(df["is_home"]) & (df["date"] <= asof)].sort_values("date")
+        home = df[(df["is_home"]) & (df["date"] < asof)].sort_values("date")
         for _, r in home.iterrows():
             f, o = r.get(fc), r.get(oc)
             if pd.isna(f) or pd.isna(o):

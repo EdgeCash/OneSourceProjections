@@ -70,6 +70,13 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
     return max(base, 1.5)
 
 
+# Every realistic MLB game total, at half-run granularity. simulate() prices
+# P(over) at each from the negative-binomial draws, so the pipeline can read the
+# probability for whatever line the book posts straight off the simulation —
+# never falling back to a different (Poisson) distribution than the one we drew.
+TOTAL_LINE_GRID = [x / 2 for x in range(12, 31)]  # 6.0, 6.5, ... 15.0
+
+
 def draw_runs(rng, mu: float, n: int, dispersion: float | None = None) -> np.ndarray:
     """Draw ``n`` game run totals with mean ``mu``. Real MLB runs are
     overdispersed (var/mean ≈ 2.3), so when ``dispersion`` > 1 we sample from a
@@ -115,7 +122,7 @@ def simulate(
     margin = h - a
 
     over_probs = {}
-    for line in total_lines or [7.5, 8.0, 8.5, 9.0, 9.5]:
+    for line in total_lines or TOTAL_LINE_GRID:
         over_probs[line] = float((total > line).mean())
 
     cover = {}

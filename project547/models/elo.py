@@ -9,6 +9,7 @@ tuned for WNBA; other leagues can override via EloConfig.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 
@@ -53,8 +54,16 @@ class Elo:
         mult = 1.0
         if self.cfg.mov:
             margin = abs(home_score - away_score)
-            # dampened log multiplier (a la 538), guarded for blowouts
-            mult = max(1.0, (margin + 1.0)) ** 0.5
+            # 538's margin-of-victory multiplier: log-dampened margin × an
+            # autocorrelation correction. The correction shrinks the update when
+            # the favorite wins (its pre-game rating edge over the loser is large
+            # and positive) and inflates it on upsets, so predictable blowouts by
+            # strong teams don't keep ratcheting their ratings up. ``diff`` is the
+            # home edge (incl. home_edge); the winner's signed edge is +diff when
+            # home wins, −diff when away wins.
+            diff = self._r(home) + self.cfg.home_edge - self._r(away)
+            winner_edge = diff if home_won else -diff
+            mult = math.log(margin + 1.0) * (2.2 / (0.001 * winner_edge + 2.2))
         delta = self.cfg.k * mult * (home_won - p_home)
         self.ratings[home] = self._r(home) + delta
         self.ratings[away] = self._r(away) - delta
