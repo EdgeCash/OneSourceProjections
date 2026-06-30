@@ -97,11 +97,21 @@ def _season(date: str) -> int:
 
 
 def _team_runs_per_game(team_id: int, date: str) -> float:
+    """Recent runs-scored rate, regressed toward the league mean exactly the way
+    the backtested model does (``generic._raw``): weight on the observed rate
+    ramps with sample size (``RATING_SHRINK × min(1, n/10)``) and the rest is the
+    league prior. The live path previously returned the *raw* last-30 mean with
+    no such shrinkage, so production projected off a less-regressed offense than
+    the model that was actually calibrated — over-weighting hot/cold streaks and
+    teams that happened to face soft pitching. expected_runs applies its own
+    TEAM_RATE_WEIGHT blend on top, matching the backtest's two-stage regression."""
     results = mlb_statsapi.team_recent_results(team_id, date, config.TEAM_FORM_GAMES)
     scored = [r["runs_scored"] for r in results if r["runs_scored"] is not None]
     if len(scored) < 5:
         return config.LEAGUE_RUNS_PER_GAME
-    return sum(scored) / len(scored)
+    n = len(scored)
+    w = generic.RATING_SHRINK * min(1.0, n / 10.0)
+    return w * (sum(scored) / n) + (1 - w) * config.LEAGUE_RUNS_PER_GAME
 
 
 def _pitcher_table(season: int) -> pd.DataFrame:
