@@ -244,7 +244,7 @@ def slates_by_date(data: dict) -> dict:
     return {}
 
 
-def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
+def ev_styler(df: pd.DataFrame, ev_cols: list[str], tier_col: str | None = None):
     def color(v):
         if not isinstance(v, (int, float)) or pd.isna(v):
             return ""
@@ -258,8 +258,20 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
     fmt.update({c: "{:.2f}" for c in ("Proj", "FP Proj", "BP Proj", "Away Proj",
                                       "Home Proj", "Proj Total", "Kelly")
                 if c in df.columns})
-    return df.style.map(color, subset=[c for c in ev_cols if c in df.columns]) \
-                   .format(fmt, na_rep="—")
+    sty = df.style.map(color, subset=[c for c in ev_cols if c in df.columns]) \
+                  .format(fmt, na_rep="—")
+    # Meaning-tint whole rows by tier: CORE PLAY faint green, VERIFY faint amber.
+    # Display-only (Styler), so the underlying frame stays numeric/sortable.
+    if tier_col and tier_col in df.columns:
+        tints = {"CORE PLAY": "background-color: rgba(0,230,118,0.10);",
+                 "VERIFY": "background-color: rgba(255,176,32,0.12);"}
+
+        def tint_row(row):
+            css = tints.get(str(row.get(tier_col, "")), "")
+            return [css] * len(row)
+
+        sty = sty.apply(tint_row, axis=1)
+    return sty
 
 
 # ---------------------------------------------------------------------------
@@ -277,7 +289,7 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in S
 # Section codes are preserved so the downstream dispatch keeps working.
 NAV_GROUPS = {
     "🏠 Today": ["HOME"],
-    "🎯 Plays": ["PLAYS", "PLAYS_DETAIL", "EDGES"],
+    "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
     "🔬 Research": NAV_SPORTS + ["SHARPSHEET", "DFS", "SCORES", "OTHER_SPORTS"],
     "📒 Ledger": ["PERFORMANCE"],
     "🛠️ Lab": ["EDGE_BUILDER", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "EXPERTS",
@@ -301,6 +313,12 @@ with st.sidebar:
     pages = NAV_GROUPS[area]
     if len(pages) == 1:
         section = pages[0]
+        # Legacy deep-links / smoke cases may still carry a sub-page code for a
+        # now-collapsed area (e.g. EDGES under Plays). Honour it as the in-page
+        # mode default so the right view opens, without showing a nav row.
+        _legacy = st.session_state.get(f"nav_{area}")
+        if _legacy in ("PLAYS_DETAIL", "EDGES") and section == "PLAYS":
+            st.session_state.setdefault("plays_mode_code", _legacy)
     else:
         section = st.radio(
             area, pages, label_visibility="collapsed", key=f"nav_{area}",
@@ -856,6 +874,10 @@ def render_plays_detail():
             if p is not None and pd.notna(p) else "—"
             for p, b in zip(view["_best_price"], view["_best_book"])]
 
+        # Tier label up front (CORE PLAY / VERIFY / …) from the same ladder the
+        # cards use — classify off the raw EV fraction before we rescale to %.
+        view["tier"] = [ui.play_tier(e, min_edge)["label"]
+                        for e in pd.to_numeric(sub["ev"], errors="coerce")]
         view["price"] = view["price"].map(ui.fmt_american)
         view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
         view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
@@ -864,26 +886,35 @@ def render_plays_detail():
         view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
                          .fillna(stake_ev) * bankroll).round(0)
         view["time"] = view["time"].map(ui.fmt_time_et)
-        cols = ["sport", "bet", "game", "time", "price"]
+        # Lead with the decision-relevant columns; secondary detail (matchup,
+        # tip-off, line-shop price, notes) hides behind a toggle to cut clutter.
+        more = st.checkbox("More columns", value=False, key=f"more_{key}",
+                           help="Show matchup, time, line-shop price and notes.")
+        lead = ["tier", "sport", "bet", "price", "model_prob", "ev", "stake"]
+        extra = ["game", "time"]
         if has_shop:
-            cols.append("best")
-        cols += ["model_prob", "ev", "stake"]
+            extra.append("best")
         if "flag" in view.columns and view["flag"].astype(bool).any():
-            cols.append("flag")
+            extra.append("flag")
+        cols = lead + (extra if more else [])
         view = view[cols].rename(columns={
-            "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
-            "price": "Price", "best": "Best (book)", "model_prob": "Model %",
-            "ev": "EV %", "stake": "Stake $", "flag": "Note"})
+            "tier": "Tier", "sport": "Sport", "bet": "Bet", "game": "Game",
+            "time": "Time", "price": "Price", "best": "Best (book)",
+            "model_prob": "Model %", "ev": "EV %", "stake": "Stake $",
+            "flag": "Note"})
         st.dataframe(
-            ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
+            ev_styler(view, ["EV %"], tier_col="Tier"), width="stretch",
+            hide_index=True, height=600,
             column_config={
                 "Model %": st.column_config.ProgressColumn(
                     "Model %", min_value=0, max_value=100, format="%.0f%%"),
                 "Stake $": st.column_config.NumberColumn(format="$%d")})
         shop_note = (" **Best (book)** is the top price across books — shopping "
                      "the best number is the most reliable edge there is."
-                     if has_shop else "")
-        st.caption("Sorted by EV. Stake = ¼-Kelly × bankroll." + shop_note)
+                     if (more and has_shop) else "")
+        st.caption("Sorted by EV (high → low). CORE-PLAY rows tint green, "
+                   "VERIFY (edge too big — market likely knows) amber. "
+                   "Stake = ¼-Kelly × bankroll." + shop_note)
         ai_block(ui.ai_brief_board(sub, date_sel), key=key)
 
     tab_g, tab_p = st.tabs([f"🏟️ Game plays ({len(games)})",
@@ -927,7 +958,31 @@ def _sharpsheet(sport: str, g: dict | None, date_sel: str):
     render_research_card(sport, g, date_sel)
 
 
+_PLAYS_MODES = ("◆ Board", "Full table", "Edge scanner")
+_PLAYS_MODE_BY_CODE = {"PLAYS": "◆ Board", "PLAYS_DETAIL": "Full table",
+                       "EDGES": "Edge scanner"}
+
+
 def render_plays():
+    """The single Plays page. One in-page mode toggle routes to the three
+    existing views — the curated board, the full sortable table, and the
+    multi-book edge scanner — so all three stay reachable without three nav
+    rows. 'Board' is the default."""
+    # Seed the toggle from a legacy section code (deep-link / collapsed nav).
+    code = st.session_state.pop("plays_mode_code", None)
+    if code and "plays_mode" not in st.session_state:
+        st.session_state["plays_mode"] = _PLAYS_MODE_BY_CODE.get(code, "◆ Board")
+    mode = st.radio("Plays view", _PLAYS_MODES, horizontal=True,
+                    label_visibility="collapsed", key="plays_mode")
+    if mode == "Full table":
+        render_plays_detail()
+    elif mode == "Edge scanner":
+        render_edges()
+    else:
+        render_plays_board()
+
+
+def render_plays_board():
     """Curated plays — simple and scannable (matchup | play), grouped by sport,
     with a Sharp Sheet chip on every row for the deep breakdown. Passes shown."""
     q = topbar("Curated plays")
@@ -1854,12 +1909,14 @@ def render_edges():
         section_header(sport)
         pev = scan["plus_ev"]
         if pev:
-            st.markdown("**➕ Positive EV vs consensus**")
+            st.markdown("**➕ Positive EV vs consensus**  ·  sorted EV high → low")
             df = pd.DataFrame([{
-                "Market": r["market"], "Game": r["game"], "Side": r["side"],
-                "Best": ui.fmt_american(r["price"]), "Book": _book(r["book"]),
-                "Fair %": r["fair_prob"] * 100, "EV %": r["ev"] * 100,
+                "Side": r["side"], "Best": ui.fmt_american(r["price"]),
+                "Book": _book(r["book"]), "Fair %": r["fair_prob"] * 100,
+                "EV %": r["ev"] * 100, "Game": r["game"], "Market": r["market"],
                 "#bk": r["n_books"]} for r in pev])
+            # Keep the raw EV numeric, sort desc, then format via column_config.
+            df = df.sort_values("EV %", ascending=False).reset_index(drop=True)
             st.dataframe(df, width="stretch", hide_index=True, column_config={
                 "Fair %": st.column_config.NumberColumn(format="%.0f%%"),
                 "EV %": st.column_config.NumberColumn(format="%+.1f%%")})
