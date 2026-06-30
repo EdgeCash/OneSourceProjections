@@ -49,6 +49,11 @@ jobs:
           git config user.name "projections-bot"
           git config user.email "actions@users.noreply.github.com"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
-          git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/track
+          # data/history/backfill carries the MLB season game log that the
+          # daily refresh (_maybe_refresh_mlb_backfill) extends from statsapi.
+          # It MUST be staged or the refreshed games.json.gz is discarded each
+          # run while the (committed) dedup state falsely records success — which
+          # silently froze the MLB game log at the import cutoff (staleness bug).
+          git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track
           git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"
           git push
