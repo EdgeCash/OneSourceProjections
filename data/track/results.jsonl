@@ -490,3 +490,7 @@
 {"date": "2026-06-29", "sport": "MLB", "game": "Miami Marlins @ Colorado Rockies", "market": "moneyline", "side": "home", "line": null, "price": 144.0, "ev": 0.1102, "won": false, "pnl": -1.0, "clv": 0.0319}
 {"date": "2026-06-29", "sport": "MLB", "game": "Los Angeles Angels @ Seattle Mariners", "market": "model_winprob", "side": "", "pred_home_wp": 0.5344, "home_won": 1, "market_home_wp": 0.6284, "brier": 0.2168, "proj_total": 8.181, "actual_total": 8}
 {"date": "2026-06-29", "sport": "MLB", "game": "Los Angeles Angels @ Seattle Mariners", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5157, "yrfi": 1, "brier": 0.2345}
+{"date": "2026-06-29", "sport": "MLB", "game": "Los Angeles Dodgers @ Athletics", "market": "model_winprob", "side": "", "pred_home_wp": 0.5733, "home_won": 0, "market_home_wp": 0.4481, "brier": 0.3287, "proj_total": 9.987, "actual_total": 13}
+{"date": "2026-06-29", "sport": "MLB", "game": "Los Angeles Dodgers @ Athletics", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5595, "yrfi": 0, "brier": 0.313}
+{"date": "2026-06-29", "sport": "MLB", "game": "San Francisco Giants @ Arizona Diamondbacks", "market": "model_winprob", "side": "", "pred_home_wp": 0.4459, "home_won": 1, "market_home_wp": 0.5512, "brier": 0.307, "proj_total": 8.726, "actual_total": 9}
+{"date": "2026-06-29", "sport": "MLB", "game": "San Francisco Giants @ Arizona Diamondbacks", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5641, "yrfi": 1, "brier": 0.19}

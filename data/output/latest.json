@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-30T00:14:46.784163-04:00",
+ "generated_at": "2026-06-30T04:32:05.433798-04:00",
  "primary_date": "2026-06-30",
  "dates": [
   "2026-06-30",
@@ -11,10 +11,10 @@
     "games": [
      {
       "weather": {
-       "temp_f": 92,
-       "wind_mph": 12,
-       "wind_dir": "SSE",
-       "precip_pct": 3
+       "temp_f": 93,
+       "wind_mph": 9,
+       "wind_dir": "SSW",
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -32,61 +32,61 @@
       "home_pitcher": "Trey Gibson",
       "away_pitcher_id": 607200,
       "home_pitcher_id": 694346.0,
-      "home_exp_runs": 5.411,
-      "away_exp_runs": 5.239,
-      "proj_total": 10.649,
-      "home_win_prob": 0.5181,
-      "away_win_prob": 0.4819,
+      "home_exp_runs": 5.4,
+      "away_exp_runs": 5.235,
+      "proj_total": 10.635,
+      "home_win_prob": 0.5153,
+      "away_win_prob": 0.4847,
       "over_probs": {
-       "6.0": 0.8151,
-       "6.5": 0.8151,
-       "7.0": 0.7253,
-       "7.5": 0.7253,
-       "8.0": 0.65335,
-       "8.5": 0.65335,
-       "9.0": 0.5534,
-       "9.5": 0.5534,
-       "10.0": 0.4794,
-       "10.5": 0.4794,
-       "11.0": 0.3898,
-       "11.5": 0.3898,
-       "12.0": 0.3293,
-       "12.5": 0.3293,
-       "13.0": 0.2588,
-       "13.5": 0.2588,
-       "14.0": 0.2111,
-       "14.5": 0.2111,
-       "15.0": 0.16085
+       "6.0": 0.8124,
+       "6.5": 0.8124,
+       "7.0": 0.72105,
+       "7.5": 0.72105,
+       "8.0": 0.64815,
+       "8.5": 0.64815,
+       "9.0": 0.5532,
+       "9.5": 0.5532,
+       "10.0": 0.4819,
+       "10.5": 0.4819,
+       "11.0": 0.3929,
+       "11.5": 0.3929,
+       "12.0": 0.3343,
+       "12.5": 0.3343,
+       "13.0": 0.26055,
+       "13.5": 0.26055,
+       "14.0": 0.21185,
+       "14.5": 0.21185,
+       "15.0": 0.1603
       },
       "home_rl_cover": {
-       "-1.5": 0.3943,
-       "1.5": 0.63895
+       "-1.5": 0.39205,
+       "1.5": 0.6368
       },
-      "model_nrfi_prob": 0.4656,
-      "model_yrfi_prob": 0.5344,
-      "nrfi_p_top": 0.3517,
-      "nrfi_p_bot": 0.2819,
-      "home_ml": -138.0,
-      "away_ml": 135.0,
-      "home_ml_ev": -0.0407,
-      "away_ml_ev": 0.0429,
+      "model_nrfi_prob": 0.4533,
+      "model_yrfi_prob": 0.5467,
+      "nrfi_p_top": 0.3548,
+      "nrfi_p_bot": 0.2975,
+      "home_ml": -127.0,
+      "away_ml": 127.0,
+      "home_ml_ev": -0.0276,
+      "away_ml_ev": 0.0351,
       "total_line": 11.0,
       "over_odds": 124.0,
-      "under_odds": -104.0,
-      "model_over_prob": 0.3898,
+      "under_odds": 119.0,
+      "model_over_prob": 0.3929,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 144.0,
+      "rl_home_odds": 150.0,
       "rl_away_odds": 156.0,
-      "model_home_rl": 0.3943,
+      "model_home_rl": 0.3921,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 7,
+       "temp_f": 93,
+       "wind_mph": 11,
        "wind_dir": "W",
        "precip_pct": 0
       },
@@ -106,53 +106,53 @@
       "home_pitcher": "Tanner Bibee",
       "away_pitcher_id": 594798,
       "home_pitcher_id": 676440.0,
-      "home_exp_runs": 4.012,
-      "away_exp_runs": 4.571,
-      "proj_total": 8.583,
-      "home_win_prob": 0.4404,
-      "away_win_prob": 0.5596,
+      "home_exp_runs": 4.013,
+      "away_exp_runs": 4.56,
+      "proj_total": 8.573,
+      "home_win_prob": 0.44,
+      "away_win_prob": 0.56,
       "over_probs": {
-       "6.0": 0.66795,
-       "6.5": 0.66795,
-       "7.0": 0.55485,
-       "7.5": 0.55485,
-       "8.0": 0.47415,
-       "8.5": 0.47415,
-       "9.0": 0.3751,
-       "9.5": 0.3751,
-       "10.0": 0.309,
-       "10.5": 0.309,
-       "11.0": 0.2366,
-       "11.5": 0.2366,
-       "12.0": 0.18665,
-       "12.5": 0.18665,
-       "13.0": 0.1365,
-       "13.5": 0.1365,
-       "14.0": 0.10595,
-       "14.5": 0.10595,
-       "15.0": 0.076
+       "6.0": 0.6692,
+       "6.5": 0.6692,
+       "7.0": 0.55645,
+       "7.5": 0.55645,
+       "8.0": 0.47765,
+       "8.5": 0.47765,
+       "9.0": 0.3773,
+       "9.5": 0.3773,
+       "10.0": 0.3092,
+       "10.5": 0.3092,
+       "11.0": 0.23415,
+       "11.5": 0.23415,
+       "12.0": 0.1855,
+       "12.5": 0.1855,
+       "13.0": 0.1392,
+       "13.5": 0.1392,
+       "14.0": 0.1073,
+       "14.5": 0.1073,
+       "15.0": 0.07645
       },
       "home_rl_cover": {
-       "-1.5": 0.309,
-       "1.5": 0.5848
+       "-1.5": 0.30895,
+       "1.5": 0.58245
       },
-      "model_nrfi_prob": 0.5089,
-      "model_yrfi_prob": 0.4911,
-      "nrfi_p_top": 0.2666,
-      "nrfi_p_bot": 0.3062,
-      "home_ml": 105.0,
-      "away_ml": -104.0,
-      "home_ml_ev": -0.0325,
-      "away_ml_ev": 0.0357,
-      "total_line": 7.5,
-      "over_odds": -104.0,
-      "under_odds": 106.0,
-      "model_over_prob": 0.5548,
-      "over_ev": 0.034,
-      "under_ev": -0.0259,
+      "model_nrfi_prob": 0.5058,
+      "model_yrfi_prob": 0.4942,
+      "nrfi_p_top": 0.2825,
+      "nrfi_p_bot": 0.295,
+      "home_ml": 107.0,
+      "away_ml": -108.0,
+      "home_ml_ev": -0.0327,
+      "away_ml_ev": 0.026,
+      "total_line": 8.0,
+      "over_odds": 111.0,
+      "under_odds": 104.0,
+      "model_over_prob": 0.4777,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": 1.0,
       "rl_home_odds": -130.0,
-      "rl_away_odds": 163.0,
+      "rl_away_odds": 156.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -160,9 +160,9 @@
      {
       "weather": {
        "temp_f": 91,
-       "wind_mph": 11,
-       "wind_dir": "SSW",
-       "precip_pct": 3
+       "wind_mph": 12,
+       "wind_dir": "SW",
+       "precip_pct": 2
       },
       "lineups": {
        "home": [],
@@ -180,61 +180,61 @@
       "home_pitcher": "Cristopher S\u00e1nchez",
       "away_pitcher_id": 696149,
       "home_pitcher_id": 650911.0,
-      "home_exp_runs": 5.235,
-      "away_exp_runs": 4.073,
-      "proj_total": 9.308,
-      "home_win_prob": 0.6122,
-      "away_win_prob": 0.3878,
+      "home_exp_runs": 5.245,
+      "away_exp_runs": 4.076,
+      "proj_total": 9.321,
+      "home_win_prob": 0.6138,
+      "away_win_prob": 0.3862,
       "over_probs": {
-       "6.0": 0.7243,
-       "6.5": 0.7243,
-       "7.0": 0.6189,
-       "7.5": 0.6189,
-       "8.0": 0.5423,
-       "8.5": 0.5423,
-       "9.0": 0.43835,
-       "9.5": 0.43835,
-       "10.0": 0.36755,
-       "10.5": 0.36755,
-       "11.0": 0.2876,
-       "11.5": 0.2876,
-       "12.0": 0.23235,
-       "12.5": 0.23235,
-       "13.0": 0.1748,
-       "13.5": 0.1748,
-       "14.0": 0.1384,
-       "14.5": 0.1384,
-       "15.0": 0.0995
+       "6.0": 0.72515,
+       "6.5": 0.72515,
+       "7.0": 0.61795,
+       "7.5": 0.61795,
+       "8.0": 0.5414,
+       "8.5": 0.5414,
+       "9.0": 0.44015,
+       "9.5": 0.44015,
+       "10.0": 0.3676,
+       "10.5": 0.3676,
+       "11.0": 0.28645,
+       "11.5": 0.28645,
+       "12.0": 0.23365,
+       "12.5": 0.23365,
+       "13.0": 0.1761,
+       "13.5": 0.1761,
+       "14.0": 0.13925,
+       "14.5": 0.13925,
+       "15.0": 0.1012
       },
       "home_rl_cover": {
-       "-1.5": 0.47515,
-       "1.5": 0.7296
+       "-1.5": 0.47255,
+       "1.5": 0.72895
       },
-      "model_nrfi_prob": 0.5041,
-      "model_yrfi_prob": 0.4959,
-      "nrfi_p_top": 0.2659,
-      "nrfi_p_bot": 0.3134,
+      "model_nrfi_prob": 0.4928,
+      "model_yrfi_prob": 0.5072,
+      "nrfi_p_top": 0.2731,
+      "nrfi_p_bot": 0.322,
       "home_ml": -212.0,
-      "away_ml": 203.0,
-      "home_ml_ev": -0.0408,
-      "away_ml_ev": 0.0551,
+      "away_ml": 210.0,
+      "home_ml_ev": -0.0352,
+      "away_ml_ev": 0.0677,
       "total_line": 8.5,
-      "over_odds": 106.0,
+      "over_odds": 104.0,
       "under_odds": -108.0,
-      "model_over_prob": 0.5423,
-      "over_ev": 0.038,
-      "under_ev": -0.0445,
-      "rl_home_line": -1.5,
-      "rl_home_odds": 104.0,
-      "rl_away_odds": -106.0,
-      "model_home_rl": 0.4752,
-      "rl_home_ev": -0.0138,
-      "rl_away_ev": 0.0039
+      "model_over_prob": 0.5414,
+      "over_ev": 0.0305,
+      "under_ev": -0.0469,
+      "rl_home_line": -2.0,
+      "rl_home_odds": 130.0,
+      "rl_away_odds": -102.0,
+      "model_home_rl": NaN,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
        "temp_f": 86,
-       "wind_mph": 12,
+       "wind_mph": 11,
        "wind_dir": "SSE",
        "precip_pct": 3
       },
@@ -254,61 +254,61 @@
       "home_pitcher": "Cam Schlittler",
       "away_pitcher_id": 669373,
       "home_pitcher_id": 693645.0,
-      "home_exp_runs": 4.452,
-      "away_exp_runs": 3.467,
-      "proj_total": 7.919,
-      "home_win_prob": 0.6047,
-      "away_win_prob": 0.3953,
+      "home_exp_runs": 4.461,
+      "away_exp_runs": 3.454,
+      "proj_total": 7.915,
+      "home_win_prob": 0.6099,
+      "away_win_prob": 0.3901,
       "over_probs": {
-       "6.0": 0.60735,
-       "6.5": 0.60735,
-       "7.0": 0.4931,
-       "7.5": 0.4931,
-       "8.0": 0.41465,
-       "8.5": 0.41465,
-       "9.0": 0.32095,
-       "9.5": 0.32095,
-       "10.0": 0.2591,
-       "10.5": 0.2591,
-       "11.0": 0.19115,
-       "11.5": 0.19115,
-       "12.0": 0.1495,
-       "12.5": 0.1495,
-       "13.0": 0.1068,
-       "13.5": 0.1068,
-       "14.0": 0.0822,
-       "14.5": 0.0822,
-       "15.0": 0.05785
+       "6.0": 0.60725,
+       "6.5": 0.60725,
+       "7.0": 0.49065,
+       "7.5": 0.49065,
+       "8.0": 0.4139,
+       "8.5": 0.4139,
+       "9.0": 0.3209,
+       "9.5": 0.3209,
+       "10.0": 0.2587,
+       "10.5": 0.2587,
+       "11.0": 0.19315,
+       "11.5": 0.19315,
+       "12.0": 0.1511,
+       "12.5": 0.1511,
+       "13.0": 0.10715,
+       "13.5": 0.10715,
+       "14.0": 0.0815,
+       "14.5": 0.0815,
+       "15.0": 0.05555
       },
       "home_rl_cover": {
-       "-1.5": 0.449,
-       "1.5": 0.72775
+       "-1.5": 0.4536,
+       "1.5": 0.73545
       },
-      "model_nrfi_prob": 0.5034,
-      "model_yrfi_prob": 0.4966,
-      "nrfi_p_top": 0.2256,
-      "nrfi_p_bot": 0.3499,
-      "home_ml": -126.0,
-      "away_ml": 123.0,
-      "home_ml_ev": 0.0258,
-      "away_ml_ev": -0.0453,
+      "model_nrfi_prob": 0.5049,
+      "model_yrfi_prob": 0.4951,
+      "nrfi_p_top": 0.2385,
+      "nrfi_p_bot": 0.3369,
+      "home_ml": -123.0,
+      "away_ml": 125.0,
+      "home_ml_ev": 0.0396,
+      "away_ml_ev": -0.0402,
       "total_line": 7.5,
       "over_odds": 115.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.4931,
+      "under_odds": 102.0,
+      "model_over_prob": 0.4906,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 170.0,
+      "rl_home_odds": 167.0,
       "rl_away_odds": -123.0,
-      "model_home_rl": 0.449,
+      "model_home_rl": 0.4536,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 86,
-       "wind_mph": 12,
+       "temp_f": 85,
+       "wind_mph": 13,
        "wind_dir": "SSW",
        "precip_pct": 1
       },
@@ -328,63 +328,63 @@
       "home_pitcher": "Kevin Gausman",
       "away_pitcher_id": 690997,
       "home_pitcher_id": 592332.0,
-      "home_exp_runs": 4.049,
+      "home_exp_runs": 4.046,
       "away_exp_runs": 4.152,
-      "proj_total": 8.201,
-      "home_win_prob": 0.4911,
-      "away_win_prob": 0.5089,
+      "proj_total": 8.198,
+      "home_win_prob": 0.4892,
+      "away_win_prob": 0.5108,
       "over_probs": {
-       "6.0": 0.63795,
-       "6.5": 0.63795,
-       "7.0": 0.52445,
-       "7.5": 0.52445,
-       "8.0": 0.44565,
-       "8.5": 0.44565,
-       "9.0": 0.34865,
-       "9.5": 0.34865,
-       "10.0": 0.284,
-       "10.5": 0.284,
-       "11.0": 0.2109,
-       "11.5": 0.2109,
-       "12.0": 0.16275,
-       "12.5": 0.16275,
-       "13.0": 0.11885,
-       "13.5": 0.11885,
-       "14.0": 0.09015,
-       "14.5": 0.09015,
-       "15.0": 0.0641
+       "6.0": 0.6414,
+       "6.5": 0.6414,
+       "7.0": 0.5263,
+       "7.5": 0.5263,
+       "8.0": 0.4456,
+       "8.5": 0.4456,
+       "9.0": 0.3464,
+       "9.5": 0.3464,
+       "10.0": 0.28265,
+       "10.5": 0.28265,
+       "11.0": 0.2111,
+       "11.5": 0.2111,
+       "12.0": 0.1644,
+       "12.5": 0.1644,
+       "13.0": 0.11845,
+       "13.5": 0.11845,
+       "14.0": 0.0903,
+       "14.5": 0.0903,
+       "15.0": 0.06355
       },
       "home_rl_cover": {
-       "-1.5": 0.34775,
-       "1.5": 0.6331
+       "-1.5": 0.347,
+       "1.5": 0.63445
       },
-      "model_nrfi_prob": 0.4951,
-      "model_yrfi_prob": 0.5049,
-      "nrfi_p_top": 0.3126,
-      "nrfi_p_bot": 0.2797,
-      "home_ml": -113.0,
-      "away_ml": 114.0,
-      "home_ml_ev": -0.0246,
-      "away_ml_ev": 0.0326,
+      "model_nrfi_prob": 0.4991,
+      "model_yrfi_prob": 0.5009,
+      "nrfi_p_top": 0.3131,
+      "nrfi_p_bot": 0.2734,
+      "home_ml": -109.0,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0232,
+      "away_ml_ev": 0.0204,
       "total_line": 8.0,
-      "over_odds": 103.0,
-      "under_odds": 117.0,
+      "over_odds": -104.0,
+      "under_odds": 115.0,
       "model_over_prob": 0.4456,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 178.0,
-      "rl_away_odds": 172.0,
-      "model_home_rl": 0.3478,
+      "rl_home_odds": 186.0,
+      "rl_away_odds": 186.0,
+      "model_home_rl": 0.347,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 82,
-       "wind_mph": 13,
+       "temp_f": 81,
+       "wind_mph": 9,
        "wind_dir": "S",
-       "precip_pct": 4
+       "precip_pct": 5
       },
       "lineups": {
        "home": [],
@@ -403,58 +403,63 @@
       "away_pitcher_id": 676917,
       "home_pitcher_id": 813349.0,
       "home_exp_runs": 4.604,
-      "away_exp_runs": 4.909,
-      "proj_total": 9.513,
-      "home_win_prob": 0.4682,
-      "away_win_prob": 0.5318,
+      "away_exp_runs": 4.9,
+      "proj_total": 9.504,
+      "home_win_prob": 0.4689,
+      "away_win_prob": 0.5311,
       "over_probs": {
-       "6.0": 0.7454,
-       "6.5": 0.7454,
-       "7.0": 0.6418,
-       "7.5": 0.6418,
-       "8.0": 0.56275,
-       "8.5": 0.56275,
-       "9.0": 0.4598,
-       "9.5": 0.4598,
-       "10.0": 0.38985,
-       "10.5": 0.38985,
-       "11.0": 0.3039,
-       "11.5": 0.3039,
-       "12.0": 0.24725,
-       "12.5": 0.24725,
-       "13.0": 0.18885,
-       "13.5": 0.18885,
-       "14.0": 0.14935,
-       "14.5": 0.14935,
-       "15.0": 0.1099
+       "6.0": 0.7431,
+       "6.5": 0.7431,
+       "7.0": 0.63945,
+       "7.5": 0.63945,
+       "8.0": 0.55935,
+       "8.5": 0.55935,
+       "9.0": 0.4622,
+       "9.5": 0.4622,
+       "10.0": 0.3908,
+       "10.5": 0.3908,
+       "11.0": 0.3057,
+       "11.5": 0.3057,
+       "12.0": 0.25125,
+       "12.5": 0.25125,
+       "13.0": 0.1881,
+       "13.5": 0.1881,
+       "14.0": 0.14905,
+       "14.5": 0.14905,
+       "15.0": 0.10785
       },
       "home_rl_cover": {
-       "-1.5": 0.3447,
-       "1.5": 0.60245
+       "-1.5": 0.34375,
+       "1.5": 0.60185
       },
-      "model_nrfi_prob": 0.4701,
-      "model_yrfi_prob": 0.5299,
-      "nrfi_p_top": 0.33,
-      "nrfi_p_bot": 0.2983,
-      "home_ml": 135.0,
+      "model_nrfi_prob": 0.467,
+      "model_yrfi_prob": 0.533,
+      "nrfi_p_top": 0.3354,
+      "nrfi_p_bot": 0.2973,
+      "home_ml": 127.0,
       "away_ml": 125.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 11.0,
       "over_odds": 124.0,
-      "under_odds": -104.0,
-      "model_over_prob": 0.3039,
+      "under_odds": 119.0,
+      "model_over_prob": 0.3057,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 156.0,
-      "rl_away_odds": -114.0,
-      "model_home_rl": 0.3447,
+      "rl_away_odds": -116.0,
+      "model_home_rl": 0.3438,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 95,
+       "wind_mph": 7,
+       "wind_dir": "E",
+       "precip_pct": 4
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -501,29 +506,34 @@
        "-1.5": 0.41345,
        "1.5": 0.683
       },
-      "model_nrfi_prob": 0.4998,
-      "model_yrfi_prob": 0.5002,
-      "nrfi_p_top": 0.2586,
-      "nrfi_p_bot": 0.3258,
-      "home_ml": -142.0,
+      "model_nrfi_prob": 0.493,
+      "model_yrfi_prob": 0.507,
+      "nrfi_p_top": 0.2697,
+      "nrfi_p_bot": 0.325,
+      "home_ml": -144.0,
       "away_ml": 144.0,
-      "home_ml_ev": -0.0193,
-      "away_ml_ev": 0.0358,
-      "total_line": 9.5,
-      "over_odds": 104.0,
-      "under_odds": 120.0,
-      "model_over_prob": 0.4017,
+      "home_ml_ev": -0.0233,
+      "away_ml_ev": 0.0336,
+      "total_line": 10.0,
+      "over_odds": 115.0,
+      "under_odds": -104.0,
+      "model_over_prob": 0.3333,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 136.0,
-      "rl_away_odds": 103.0,
+      "rl_home_odds": 135.0,
+      "rl_away_odds": 102.0,
       "model_home_rl": 0.4134,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 95,
+       "wind_mph": 17,
+       "wind_dir": "SSW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -570,22 +580,22 @@
        "-1.5": 0.3919,
        "1.5": 0.6515
       },
-      "model_nrfi_prob": 0.4987,
-      "model_yrfi_prob": 0.5013,
-      "nrfi_p_top": 0.2936,
-      "nrfi_p_bot": 0.2941,
-      "home_ml": 111.0,
-      "away_ml": -108.0,
-      "home_ml_ev": 0.0414,
-      "away_ml_ev": -0.0247,
+      "model_nrfi_prob": 0.4716,
+      "model_yrfi_prob": 0.5284,
+      "nrfi_p_top": 0.3222,
+      "nrfi_p_bot": 0.3042,
+      "home_ml": 113.0,
+      "away_ml": -114.0,
+      "home_ml_ev": 0.0392,
+      "away_ml_ev": -0.0387,
       "total_line": 10.5,
-      "over_odds": 104.0,
-      "under_odds": 110.0,
+      "over_odds": 108.0,
+      "under_odds": 103.0,
       "model_over_prob": 0.3925,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.0,
-      "rl_home_odds": -117.0,
+      "rl_home_odds": -112.0,
       "rl_away_odds": 138.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
@@ -609,54 +619,54 @@
       "home_pitcher": "Brandon Sproat",
       "away_pitcher_id": 695076,
       "home_pitcher_id": 687075.0,
-      "home_exp_runs": 5.482,
-      "away_exp_runs": 4.103,
-      "proj_total": 9.586,
-      "home_win_prob": 0.6281,
-      "away_win_prob": 0.3719,
+      "home_exp_runs": 5.509,
+      "away_exp_runs": 4.091,
+      "proj_total": 9.601,
+      "home_win_prob": 0.6294,
+      "away_win_prob": 0.3706,
       "over_probs": {
-       "6.0": 0.74535,
-       "6.5": 0.74535,
-       "7.0": 0.6447,
-       "7.5": 0.6447,
-       "8.0": 0.5666,
-       "8.5": 0.5666,
-       "9.0": 0.4672,
-       "9.5": 0.4672,
-       "10.0": 0.3929,
-       "10.5": 0.3929,
-       "11.0": 0.30975,
-       "11.5": 0.30975,
-       "12.0": 0.252,
-       "12.5": 0.252,
-       "13.0": 0.19225,
-       "13.5": 0.19225,
-       "14.0": 0.1522,
-       "14.5": 0.1522,
-       "15.0": 0.11375
+       "6.0": 0.7475,
+       "6.5": 0.7475,
+       "7.0": 0.643,
+       "7.5": 0.643,
+       "8.0": 0.569,
+       "8.5": 0.569,
+       "9.0": 0.46555,
+       "9.5": 0.46555,
+       "10.0": 0.39425,
+       "10.5": 0.39425,
+       "11.0": 0.31305,
+       "11.5": 0.31305,
+       "12.0": 0.2529,
+       "12.5": 0.2529,
+       "13.0": 0.19395,
+       "13.5": 0.19395,
+       "14.0": 0.152,
+       "14.5": 0.152,
+       "15.0": 0.1121
       },
       "home_rl_cover": {
-       "-1.5": 0.49355,
-       "1.5": 0.739
+       "-1.5": 0.4955,
+       "1.5": 0.7412
       },
-      "model_nrfi_prob": 0.5192,
-      "model_yrfi_prob": 0.4808,
-      "nrfi_p_top": 0.2964,
-      "nrfi_p_bot": 0.262,
+      "model_nrfi_prob": 0.5125,
+      "model_yrfi_prob": 0.4875,
+      "nrfi_p_top": 0.2925,
+      "nrfi_p_bot": 0.2755,
       "home_ml": -163.0,
-      "away_ml": 160.0,
-      "home_ml_ev": 0.0019,
-      "away_ml_ev": -0.0144,
+      "away_ml": 158.0,
+      "home_ml_ev": 0.0007,
+      "away_ml_ev": -0.0201,
       "total_line": 9.0,
-      "over_odds": 100.0,
-      "under_odds": 111.0,
-      "model_over_prob": 0.4672,
+      "over_odds": 109.0,
+      "under_odds": 113.0,
+      "model_over_prob": 0.4656,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 130.0,
-      "rl_away_odds": 111.0,
-      "model_home_rl": 0.4935,
+      "rl_home_odds": 128.0,
+      "rl_away_odds": 115.0,
+      "model_home_rl": 0.4955,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
@@ -678,56 +688,56 @@
       "home_pitcher": "Matthew Boyd",
       "away_pitcher_id": 676664,
       "home_pitcher_id": 571510.0,
-      "home_exp_runs": 4.61,
-      "away_exp_runs": 3.876,
-      "proj_total": 8.486,
-      "home_win_prob": 0.5709,
-      "away_win_prob": 0.4291,
+      "home_exp_runs": 4.601,
+      "away_exp_runs": 3.873,
+      "proj_total": 8.474,
+      "home_win_prob": 0.5703,
+      "away_win_prob": 0.4297,
       "over_probs": {
-       "6.0": 0.65995,
-       "6.5": 0.65995,
-       "7.0": 0.54865,
-       "7.5": 0.54865,
-       "8.0": 0.46955,
-       "8.5": 0.46955,
-       "9.0": 0.3766,
-       "9.5": 0.3766,
-       "10.0": 0.30675,
-       "10.5": 0.30675,
-       "11.0": 0.23345,
-       "11.5": 0.23345,
-       "12.0": 0.18375,
-       "12.5": 0.18375,
-       "13.0": 0.13515,
-       "13.5": 0.13515,
-       "14.0": 0.1034,
-       "14.5": 0.1034,
-       "15.0": 0.07515
+       "6.0": 0.66005,
+       "6.5": 0.66005,
+       "7.0": 0.54565,
+       "7.5": 0.54565,
+       "8.0": 0.4656,
+       "8.5": 0.4656,
+       "9.0": 0.3703,
+       "9.5": 0.3703,
+       "10.0": 0.3054,
+       "10.5": 0.3054,
+       "11.0": 0.2296,
+       "11.5": 0.2296,
+       "12.0": 0.1834,
+       "12.5": 0.1834,
+       "13.0": 0.1342,
+       "13.5": 0.1342,
+       "14.0": 0.1024,
+       "14.5": 0.1024,
+       "15.0": 0.0746
       },
       "home_rl_cover": {
-       "-1.5": 0.42765,
-       "1.5": 0.7031
+       "-1.5": 0.4285,
+       "1.5": 0.70015
       },
-      "model_nrfi_prob": 0.5427,
-      "model_yrfi_prob": 0.4573,
-      "nrfi_p_top": 0.2423,
-      "nrfi_p_bot": 0.2837,
+      "model_nrfi_prob": 0.5525,
+      "model_yrfi_prob": 0.4475,
+      "nrfi_p_top": 0.2379,
+      "nrfi_p_bot": 0.275,
       "home_ml": -138.0,
       "away_ml": 138.0,
-      "home_ml_ev": -0.0054,
-      "away_ml_ev": 0.0074,
+      "home_ml_ev": -0.0058,
+      "away_ml_ev": 0.0079,
       "total_line": 11.5,
-      "over_odds": 113.0,
-      "under_odds": -113.0,
-      "model_over_prob": 0.2334,
-      "over_ev": -0.176,
-      "under_ev": 0.1557,
+      "over_odds": 111.0,
+      "under_odds": 100.0,
+      "model_over_prob": 0.2296,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 133.0,
-      "rl_away_odds": -138.0,
-      "model_home_rl": 0.4276,
-      "rl_home_ev": -0.0071,
-      "rl_away_ev": -0.0103
+      "rl_away_odds": -133.0,
+      "model_home_rl": 0.4285,
+      "rl_home_ev": -0.0006,
+      "rl_away_ev": 0.0004
      },
      {
       "weather": null,
@@ -747,40 +757,40 @@
       "home_pitcher": "Mike Burrows",
       "away_pitcher_id": 657746,
       "home_pitcher_id": 681347.0,
-      "home_exp_runs": 4.127,
-      "away_exp_runs": 5.58,
-      "proj_total": 9.707,
-      "home_win_prob": 0.3659,
-      "away_win_prob": 0.6341,
+      "home_exp_runs": 4.158,
+      "away_exp_runs": 5.569,
+      "proj_total": 9.727,
+      "home_win_prob": 0.3669,
+      "away_win_prob": 0.6331,
       "over_probs": {
-       "6.0": 0.75725,
-       "6.5": 0.75725,
-       "7.0": 0.6554,
-       "7.5": 0.6554,
-       "8.0": 0.5779,
-       "8.5": 0.5779,
-       "9.0": 0.4796,
-       "9.5": 0.4796,
-       "10.0": 0.4075,
-       "10.5": 0.4075,
-       "11.0": 0.3226,
-       "11.5": 0.3226,
-       "12.0": 0.26245,
-       "12.5": 0.26245,
-       "13.0": 0.1994,
-       "13.5": 0.1994,
-       "14.0": 0.15985,
-       "14.5": 0.15985,
-       "15.0": 0.11805
+       "6.0": 0.7573,
+       "6.5": 0.7573,
+       "7.0": 0.6549,
+       "7.5": 0.6549,
+       "8.0": 0.5752,
+       "8.5": 0.5752,
+       "9.0": 0.47615,
+       "9.5": 0.47615,
+       "10.0": 0.4028,
+       "10.5": 0.4028,
+       "11.0": 0.3184,
+       "11.5": 0.3184,
+       "12.0": 0.2586,
+       "12.5": 0.2586,
+       "13.0": 0.19915,
+       "13.5": 0.19915,
+       "14.0": 0.15935,
+       "14.5": 0.15935,
+       "15.0": 0.1188
       },
       "home_rl_cover": {
-       "-1.5": 0.2549,
-       "1.5": 0.5008
+       "-1.5": 0.25695,
+       "1.5": 0.5005
       },
-      "model_nrfi_prob": 0.4987,
-      "model_yrfi_prob": 0.5013,
-      "nrfi_p_top": 0.2962,
-      "nrfi_p_bot": 0.2915,
+      "model_nrfi_prob": 0.4776,
+      "model_yrfi_prob": 0.5224,
+      "nrfi_p_top": 0.3191,
+      "nrfi_p_bot": 0.2986,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -799,12 +809,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 92,
-       "wind_mph": 19,
-       "wind_dir": "SSW",
-       "precip_pct": 4
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -821,40 +826,40 @@
       "home_pitcher": "Tanner Gordon",
       "away_pitcher_id": 691587,
       "home_pitcher_id": 685299.0,
-      "home_exp_runs": 5.601,
-      "away_exp_runs": 5.107,
-      "proj_total": 10.708,
-      "home_win_prob": 0.548,
-      "away_win_prob": 0.452,
+      "home_exp_runs": 5.61,
+      "away_exp_runs": 5.121,
+      "proj_total": 10.731,
+      "home_win_prob": 0.5411,
+      "away_win_prob": 0.4589,
       "over_probs": {
-       "6.0": 0.8181,
-       "6.5": 0.8181,
-       "7.0": 0.72875,
-       "7.5": 0.72875,
-       "8.0": 0.6562,
-       "8.5": 0.6562,
-       "9.0": 0.55945,
-       "9.5": 0.55945,
-       "10.0": 0.4862,
-       "10.5": 0.4862,
-       "11.0": 0.3981,
-       "11.5": 0.3981,
-       "12.0": 0.33665,
-       "12.5": 0.33665,
-       "13.0": 0.265,
-       "13.5": 0.265,
-       "14.0": 0.21575,
-       "14.5": 0.21575,
-       "15.0": 0.165
+       "6.0": 0.8151,
+       "6.5": 0.8151,
+       "7.0": 0.728,
+       "7.5": 0.728,
+       "8.0": 0.6607,
+       "8.5": 0.6607,
+       "9.0": 0.56235,
+       "9.5": 0.56235,
+       "10.0": 0.4897,
+       "10.5": 0.4897,
+       "11.0": 0.3992,
+       "11.5": 0.3992,
+       "12.0": 0.33805,
+       "12.5": 0.33805,
+       "13.0": 0.2665,
+       "13.5": 0.2665,
+       "14.0": 0.21675,
+       "14.5": 0.21675,
+       "15.0": 0.1661
       },
       "home_rl_cover": {
-       "-1.5": 0.42025,
+       "-1.5": 0.415,
        "1.5": 0.6609
       },
-      "model_nrfi_prob": 0.4393,
-      "model_yrfi_prob": 0.5607,
-      "nrfi_p_top": 0.3716,
-      "nrfi_p_bot": 0.301,
+      "model_nrfi_prob": 0.4388,
+      "model_yrfi_prob": 0.5612,
+      "nrfi_p_top": 0.369,
+      "nrfi_p_bot": 0.3046,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -873,12 +878,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 86,
-       "wind_mph": 11,
-       "wind_dir": "SW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -895,40 +895,40 @@
       "home_pitcher": "Jeffrey Springs",
       "away_pitcher_id": 680736,
       "home_pitcher_id": 605488.0,
-      "home_exp_runs": 4.315,
-      "away_exp_runs": 5.498,
-      "proj_total": 9.813,
-      "home_win_prob": 0.3871,
-      "away_win_prob": 0.6129,
+      "home_exp_runs": 4.353,
+      "away_exp_runs": 5.402,
+      "proj_total": 9.755,
+      "home_win_prob": 0.3973,
+      "away_win_prob": 0.6027,
       "over_probs": {
-       "6.0": 0.7625,
-       "6.5": 0.7625,
-       "7.0": 0.662,
-       "7.5": 0.662,
-       "8.0": 0.58425,
-       "8.5": 0.58425,
-       "9.0": 0.4834,
-       "9.5": 0.4834,
-       "10.0": 0.413,
-       "10.5": 0.413,
-       "11.0": 0.32735,
-       "11.5": 0.32735,
-       "12.0": 0.2718,
-       "12.5": 0.2718,
-       "13.0": 0.2071,
-       "13.5": 0.2071,
-       "14.0": 0.1643,
-       "14.5": 0.1643,
-       "15.0": 0.1219
+       "6.0": 0.75995,
+       "6.5": 0.75995,
+       "7.0": 0.6581,
+       "7.5": 0.6581,
+       "8.0": 0.58055,
+       "8.5": 0.58055,
+       "9.0": 0.4806,
+       "9.5": 0.4806,
+       "10.0": 0.4068,
+       "10.5": 0.4068,
+       "11.0": 0.32425,
+       "11.5": 0.32425,
+       "12.0": 0.26475,
+       "12.5": 0.26475,
+       "13.0": 0.2036,
+       "13.5": 0.2036,
+       "14.0": 0.16125,
+       "14.5": 0.16125,
+       "15.0": 0.1201
       },
       "home_rl_cover": {
-       "-1.5": 0.2736,
-       "1.5": 0.5209
+       "-1.5": 0.2834,
+       "1.5": 0.53185
       },
-      "model_nrfi_prob": 0.4612,
-      "model_yrfi_prob": 0.5388,
-      "nrfi_p_top": 0.3396,
-      "nrfi_p_bot": 0.3016,
+      "model_nrfi_prob": 0.4591,
+      "model_yrfi_prob": 0.5409,
+      "nrfi_p_top": 0.3403,
+      "nrfi_p_bot": 0.3041,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -947,12 +947,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 66,
-       "wind_mph": 10,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -969,40 +964,40 @@
       "home_pitcher": "Bryan Woo",
       "away_pitcher_id": 667755,
       "home_pitcher_id": 693433.0,
-      "home_exp_runs": 4.224,
-      "away_exp_runs": 3.55,
-      "proj_total": 7.775,
-      "home_win_prob": 0.5716,
-      "away_win_prob": 0.4284,
+      "home_exp_runs": 4.245,
+      "away_exp_runs": 3.551,
+      "proj_total": 7.796,
+      "home_win_prob": 0.5714,
+      "away_win_prob": 0.4286,
       "over_probs": {
-       "6.0": 0.59335,
-       "6.5": 0.59335,
-       "7.0": 0.4803,
-       "7.5": 0.4803,
-       "8.0": 0.40085,
-       "8.5": 0.40085,
-       "9.0": 0.30555,
-       "9.5": 0.30555,
-       "10.0": 0.2463,
-       "10.5": 0.2463,
-       "11.0": 0.18,
-       "11.5": 0.18,
-       "12.0": 0.14145,
-       "12.5": 0.14145,
-       "13.0": 0.1024,
-       "13.5": 0.1024,
-       "14.0": 0.07685,
-       "14.5": 0.07685,
-       "15.0": 0.0507
+       "6.0": 0.5945,
+       "6.5": 0.5945,
+       "7.0": 0.477,
+       "7.5": 0.477,
+       "8.0": 0.39835,
+       "8.5": 0.39835,
+       "9.0": 0.3066,
+       "9.5": 0.3066,
+       "10.0": 0.24935,
+       "10.5": 0.24935,
+       "11.0": 0.1834,
+       "11.5": 0.1834,
+       "12.0": 0.14285,
+       "12.5": 0.14285,
+       "13.0": 0.10135,
+       "13.5": 0.10135,
+       "14.0": 0.07535,
+       "14.5": 0.07535,
+       "15.0": 0.0535
       },
       "home_rl_cover": {
-       "-1.5": 0.41275,
-       "1.5": 0.7081
+       "-1.5": 0.4165,
+       "1.5": 0.7083
       },
-      "model_nrfi_prob": 0.5063,
-      "model_yrfi_prob": 0.4937,
-      "nrfi_p_top": 0.2892,
-      "nrfi_p_bot": 0.2877,
+      "model_nrfi_prob": 0.5096,
+      "model_yrfi_prob": 0.4904,
+      "nrfi_p_top": 0.2837,
+      "nrfi_p_bot": 0.2886,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -1022,9 +1017,9 @@
      },
      {
       "weather": {
-       "temp_f": 97,
-       "wind_mph": 13,
-       "wind_dir": "W",
+       "temp_f": 98,
+       "wind_mph": 12,
+       "wind_dir": "WSW",
        "precip_pct": 0
       },
       "lineups": {
@@ -1042,40 +1037,40 @@
       "home_pitcher": NaN,
       "away_pitcher_id": 694738,
       "home_pitcher_id": NaN,
-      "home_exp_runs": 3.687,
-      "away_exp_runs": 4.605,
-      "proj_total": 8.292,
-      "home_win_prob": 0.4048,
-      "away_win_prob": 0.5952,
+      "home_exp_runs": 3.662,
+      "away_exp_runs": 4.591,
+      "proj_total": 8.253,
+      "home_win_prob": 0.4058,
+      "away_win_prob": 0.5942,
       "over_probs": {
-       "6.0": 0.6414,
-       "6.5": 0.6414,
-       "7.0": 0.5291,
-       "7.5": 0.5291,
-       "8.0": 0.4459,
-       "8.5": 0.4459,
-       "9.0": 0.3516,
-       "9.5": 0.3516,
-       "10.0": 0.28805,
-       "10.5": 0.28805,
-       "11.0": 0.2194,
-       "11.5": 0.2194,
-       "12.0": 0.1759,
-       "12.5": 0.1759,
-       "13.0": 0.1276,
-       "13.5": 0.1276,
-       "14.0": 0.09525,
-       "14.5": 0.09525,
-       "15.0": 0.06705
+       "6.0": 0.64175,
+       "6.5": 0.64175,
+       "7.0": 0.52615,
+       "7.5": 0.52615,
+       "8.0": 0.44335,
+       "8.5": 0.44335,
+       "9.0": 0.3456,
+       "9.5": 0.3456,
+       "10.0": 0.28245,
+       "10.5": 0.28245,
+       "11.0": 0.212,
+       "11.5": 0.212,
+       "12.0": 0.16755,
+       "12.5": 0.16755,
+       "13.0": 0.11995,
+       "13.5": 0.11995,
+       "14.0": 0.0902,
+       "14.5": 0.0902,
+       "15.0": 0.0646
       },
       "home_rl_cover": {
-       "-1.5": 0.2769,
-       "1.5": 0.5537
+       "-1.5": 0.2766,
+       "1.5": 0.55145
       },
-      "model_nrfi_prob": 0.4386,
-      "model_yrfi_prob": 0.5614,
-      "nrfi_p_top": 0.3272,
-      "nrfi_p_bot": 0.348,
+      "model_nrfi_prob": 0.4423,
+      "model_yrfi_prob": 0.5577,
+      "nrfi_p_top": 0.336,
+      "nrfi_p_bot": 0.334,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -5998,94 +5993,94 @@
     ],
     "news": [
      {
-      "title": "Brandon Nimmo diagnosed with sprained AC joint in shoulder ",
+      "title": "Jaden Hill (shoulder) yet to begin throwing",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:40:19"
+      "when": "2026-06-30 08:25:55"
      },
      {
-      "title": "Tyler Glasnow (back) resumes throwing ",
+      "title": "Clay Holmes (fibula) to throw off mound this week",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:03:13"
+      "when": "2026-06-30 08:24:01"
      },
      {
-      "title": "Dane Myers leaves game early Monday ",
+      "title": "Blake Dunn (elbow) receives cortisone injection",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:55:16"
+      "when": "2026-06-30 08:19:37"
      },
      {
-      "title": "Keider Montero to be moved to bullpen ",
+      "title": "Patrick Sandoval (biceps) to make next rehab start Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:53:50"
+      "when": "2026-06-30 08:17:28"
      },
      {
-      "title": "Jazz Chisholm Jr. exits early Monday ",
+      "title": "Nick Pivetta (elbow) throws light bullpen session Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:52:36"
+      "when": "2026-06-30 08:14:46"
      },
      {
-      "title": "Tanner Gordon (hip) to be activated Tuesday ",
+      "title": "Willy Adames (back) MRI reveals no structural damage",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:51:16"
+      "when": "2026-06-30 08:11:44"
      },
      {
-      "title": "Tomoyuki Sugano (finger) to have start pushed back",
+      "title": "Keaton Winn (elbow) throws bullpen session Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:50:01"
+      "when": "2026-06-30 08:05:58"
      },
      {
-      "title": "Brandon Pfaadt likely to be recalled Tuesday ",
+      "title": "Joel Peguero (hamstring) throws bullpen session Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:48:37"
+      "when": "2026-06-30 08:04:02"
      },
      {
-      "title": "Josh Walker recalled from Triple-A ",
+      "title": "Jakob Junis (heat exhaustion) to avoid IL",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:46:27"
+      "when": "2026-06-30 08:01:13"
      },
      {
-      "title": "Keegan Akin (elbow) placed on IL",
+      "title": "Stefan Raeth released by Mariners ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:45:40"
+      "when": "2026-06-30 07:56:14"
      },
      {
-      "title": "Trent Grisham (hamstring) could begin rehab assignment Tuesday ",
+      "title": "Cooper Criswell (shoulder) to undergo MRI July 6",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:44:08"
+      "when": "2026-06-30 07:54:38"
      },
      {
-      "title": "Cody Laweryson recalled from Triple-A",
+      "title": "Matt Brash (lat) to undergo MRI July 6",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:38:55"
+      "when": "2026-06-30 07:53:58"
      },
      {
-      "title": "Anthony Banda (lat) placed on IL, out months",
+      "title": "Xavier Edwards records stolen base Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:36:38"
+      "when": "2026-06-30 07:39:16"
      },
      {
-      "title": "Cam Smith (foot) in lineup Monday ",
+      "title": "Javier Sanoja has three-hit game Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:07:17"
+      "when": "2026-06-30 07:35:51"
      },
      {
-      "title": "Buddy Kennedy activated by Mariners ",
+      "title": "Griffin Conine blasts one over fence Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:05:20"
+      "when": "2026-06-30 07:33:14"
      }
     ],
     "injuries": [
@@ -6100,7 +6095,7 @@
       "player": "Logan Evans",
       "norm": "logan evans",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -6114,28 +6109,28 @@
       "player": "Andrew Saalfrank",
       "norm": "andrew saalfrank",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Reese Olson",
       "norm": "reese olson",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Pablo Lopez",
       "norm": "pablo lopez",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Pierson Ohl",
       "norm": "pierson ohl",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -6149,903 +6144,217 @@
       "player": "Joey Wentz",
       "norm": "joey wentz",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Adam Mazur",
       "norm": "adam mazur",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Hayden Birdsong",
       "norm": "hayden birdsong",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Brooks Baldwin",
       "norm": "brooks baldwin",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Cody Ponce",
       "norm": "cody ponce",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Cade Horton",
       "norm": "cade horton",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Zach Eflin",
       "norm": "zach eflin",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Jonathan India",
       "norm": "jonathan india",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Angel Zerpa",
       "norm": "angel zerpa",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Carlos Correa",
       "norm": "carlos correa",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Jordan Westburg",
       "norm": "jordan westburg",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Mike Vasil",
       "norm": "mike vasil",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Brandon Walter",
       "norm": "brandon walter",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Robert Stephenson",
       "norm": "robert stephenson",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Ryan Pepiot",
       "norm": "ryan pepiot",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Bowden Francis",
       "norm": "bowden francis",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Shelby Miller",
       "norm": "shelby miller",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Porter Hodge",
       "norm": "porter hodge",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "RJ Petit",
       "norm": "rj petit",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Ronny Henriquez",
       "norm": "ronny henriquez",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Tylor Megill",
       "norm": "tylor megill",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Reed Garrett",
       "norm": "reed garrett",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Bryan Hoeing",
       "norm": "bryan hoeing",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Rowan Wick",
       "norm": "rowan wick",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Gunnar Hoglund",
       "norm": "gunnar hoglund",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Jose Berrios",
       "norm": "jose berrios",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Robby Snelling",
       "norm": "robby snelling",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Trey Sweeney",
       "norm": "trey sweeney",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Jack Kochanowicz",
       "norm": "jack kochanowicz",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Cristian Mena",
       "norm": "cristian mena",
       "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Roman Anthony",
-      "norm": "roman anthony",
-      "team": "",
       "status": "IL60",
       "note": ""
      },
      {
-      "player": "Wyatt Langford",
-      "norm": "wyatt langford",
+      "player": "Eugenio Suarez",
+      "norm": "eugenio suarez",
       "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Blake Dunn",
-      "norm": "blake dunn",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Hoby Milner",
-      "norm": "hoby milner",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jesus Sanchez",
-      "norm": "jesus sanchez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Phil Maton",
-      "norm": "phil maton",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Tony Santillan",
-      "norm": "tony santillan",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Marcelo Mayer",
-      "norm": "marcelo mayer",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Robert Suarez",
-      "norm": "robert suarez",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Daniel Susac",
-      "norm": "daniel susac",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Ryan McMahon",
-      "norm": "ryan mcmahon",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Ben Brown",
-      "norm": "ben brown",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Edward Cabrera",
-      "norm": "edward cabrera",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jaden Hill",
-      "norm": "jaden hill",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Lucas Giolito",
-      "norm": "lucas giolito",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Blake Treinen",
-      "norm": "blake treinen",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Michael Soroka",
-      "norm": "michael soroka",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Mark Leiter Jr.",
-      "norm": "mark leiter",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Isiah Kiner-Falefa",
-      "norm": "isiah kiner-falefa",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Jordan Lawlar",
-      "norm": "jordan lawlar",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Wenceel Perez",
-      "norm": "wenceel perez",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Michael Helman",
-      "norm": "michael helman",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Everson Pereira",
-      "norm": "everson pereira",
-      "team": "",
-      "status": "IL7",
-      "note": ""
-     },
-     {
-      "player": "Quinn Priester",
-      "norm": "quinn priester",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Will Wilson",
-      "norm": "will wilson",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jose Ramirez",
-      "norm": "jose ramirez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Coleman Crow",
-      "norm": "coleman crow",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Chase Dollander",
-      "norm": "chase dollander",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Adolis Garcia",
-      "norm": "adolis garcia",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ronald Acuna Jr.",
-      "norm": "ronald acuna",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Kyle Isbel",
-      "norm": "kyle isbel",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Tyler Gilbert",
-      "norm": "tyler gilbert",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Sebastian Rivero",
-      "norm": "sebastian rivero",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Oneil Cruz",
-      "norm": "oneil cruz",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Matt Brash",
-      "norm": "matt brash",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Yoan Moncada",
-      "norm": "yoan moncada",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jonathan Heasley",
-      "norm": "jonathan heasley",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Danny Jansen",
-      "norm": "danny jansen",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Jovani Moran",
-      "norm": "jovani moran",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Gustavo Campero",
-      "norm": "gustavo campero",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Trevor Story",
-      "norm": "trevor story",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Sean Murphy",
-      "norm": "sean murphy",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Nick Pivetta",
-      "norm": "nick pivetta",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Braden Shewmake",
-      "norm": "braden shewmake",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Brooks Kriske",
-      "norm": "brooks kriske",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Bailey Ober",
-      "norm": "bailey ober",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Blake Snell",
-      "norm": "blake snell",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Nick Mears",
-      "norm": "nick mears",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Graham Ashcraft",
-      "norm": "graham ashcraft",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Brant Hurter",
-      "norm": "brant hurter",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Enrique Hernandez",
-      "norm": "enrique hernandez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Gavin Lux",
-      "norm": "gavin lux",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Luis Campusano",
-      "norm": "luis campusano",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Max Kranick",
-      "norm": "max kranick",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Carter Baumler",
-      "norm": "carter baumler",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Brenton Doyle",
-      "norm": "brenton doyle",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Lance McCullers Jr.",
-      "norm": "lance mccullers",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "James McCann",
-      "norm": "james mccann",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Clay Holmes",
-      "norm": "clay holmes",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ryan Jeffers",
-      "norm": "ryan jeffers",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Garrett Acton",
-      "norm": "garrett acton",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Kyle Farmer",
-      "norm": "kyle farmer",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Kris Bubic",
-      "norm": "kris bubic",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jake Fraley",
-      "norm": "jake fraley",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Matt Waldron",
-      "norm": "matt waldron",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Tyler Glasnow",
-      "norm": "tyler glasnow",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Dean Kremer",
-      "norm": "dean kremer",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jose Butto",
-      "norm": "jose butto",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "James McArthur",
-      "norm": "james mcarthur",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Cody Bradford",
-      "norm": "cody bradford",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ryan Mountcastle",
-      "norm": "ryan mountcastle",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Yaramil Hiraldo",
-      "norm": "yaramil hiraldo",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Parker Meadows",
-      "norm": "parker meadows",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hunter Harvey",
-      "norm": "hunter harvey",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Danny Young",
-      "norm": "danny young",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Anthony Santander",
-      "norm": "anthony santander",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "AJ Smith-Shawver",
-      "norm": "aj smith-shawver",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "David Festa",
-      "norm": "david festa",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jake Cousins",
-      "norm": "jake cousins",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Gavin Stone",
-      "norm": "gavin stone",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hayden Wesneski",
-      "norm": "hayden wesneski",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Yimi Garcia",
-      "norm": "yimi garcia",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Joe Musgrove",
-      "norm": "joe musgrove",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Drew Thorpe",
-      "norm": "drew thorpe",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Anthony Rendon",
-      "norm": "anthony rendon",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hunter Greene",
-      "norm": "hunter greene",
-      "team": "",
-      "status": "D15",
-      "note": ""
-     },
-     {
-      "player": "Josiah Gray",
-      "norm": "josiah gray",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Justin Hagenman",
-      "norm": "justin hagenman",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Corbin Burnes",
-      "norm": "corbin burnes",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Colin Selby",
-      "norm": "colin selby",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Clarke Schmidt",
-      "norm": "clarke schmidt",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "DJ Herz",
-      "norm": "dj herz",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Manuel Rodriguez",
-      "norm": "manuel rodriguez",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ky Bush",
-      "norm": "ky bush",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Joe Ross",
-      "norm": "joe ross",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Michael Kelly",
-      "norm": "michael kelly",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Jarred Kelenic",
-      "norm": "jarred kelenic",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Ethan Roberts",
-      "norm": "ethan roberts",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Matt Shaw",
-      "norm": "matt shaw",
-      "team": "",
-      "status": "IL10",
+      "status": "DTD",
       "note": ""
      },
      {
@@ -7056,6 +6365,41 @@
       "note": ""
      },
      {
+      "player": "Anthony Banda",
+      "norm": "anthony banda",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Richard Lovelady",
+      "norm": "richard lovelady",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Luke Raley",
+      "norm": "luke raley",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jazz Chisholm Jr.",
+      "norm": "jazz chisholm",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Dane Myers",
+      "norm": "dane myers",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
       "player": "Keegan Akin",
       "norm": "keegan akin",
       "team": "",
@@ -7063,8 +6407,43 @@
       "note": ""
      },
      {
+      "player": "Jeremy Pena",
+      "norm": "jeremy pena",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
       "player": "Tyler Soderstrom",
       "norm": "tyler soderstrom",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ethan Roberts",
+      "norm": "ethan roberts",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Mitchell Parker",
+      "norm": "mitchell parker",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Dominic Canzone",
+      "norm": "dominic canzone",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Matt Shaw",
+      "norm": "matt shaw",
       "team": "",
       "status": "IL10",
       "note": ""
@@ -7077,13 +6456,6 @@
       "note": ""
      },
      {
-      "player": "Jose Suarez",
-      "norm": "jose suarez",
-      "team": "",
-      "status": "PL",
-      "note": ""
-     },
-     {
       "player": "David Morgan",
       "norm": "david morgan",
       "team": "",
@@ -7091,10 +6463,920 @@
       "note": ""
      },
      {
-      "player": "Anthony Banda",
-      "norm": "anthony banda",
+      "player": "Yandy Diaz",
+      "norm": "yandy diaz",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Casey Schmitt",
+      "norm": "casey schmitt",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jac Caglianone",
+      "norm": "jac caglianone",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Marcus Semien",
+      "norm": "marcus semien",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Steven Matz",
+      "norm": "steven matz",
       "team": "",
       "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Johan Rojas",
+      "norm": "johan rojas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Cody Freeman",
+      "norm": "cody freeman",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Zack Gelof",
+      "norm": "zack gelof",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Spencer Horwitz",
+      "norm": "spencer horwitz",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Burch Smith",
+      "norm": "burch smith",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Maikel Garcia",
+      "norm": "maikel garcia",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jack Leiter",
+      "norm": "jack leiter",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Josh Ekness",
+      "norm": "josh ekness",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Liam Hicks",
+      "norm": "liam hicks",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Blas Castano",
+      "norm": "blas castano",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Mike Trout",
+      "norm": "mike trout",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ryne Nelson",
+      "norm": "ryne nelson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Max Scherzer",
+      "norm": "max scherzer",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Gleyber Torres",
+      "norm": "gleyber torres",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Spencer Strider",
+      "norm": "spencer strider",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Brad Keller",
+      "norm": "brad keller",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Angel Martinez",
+      "norm": "angel martinez",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Daniel Palencia",
+      "norm": "daniel palencia",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jorge Polanco",
+      "norm": "jorge polanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Carlos Estevez",
+      "norm": "carlos estevez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Grayson Rodriguez",
+      "norm": "grayson rodriguez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Vinnie Pasquantino",
+      "norm": "vinnie pasquantino",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Keaton Winn",
+      "norm": "keaton winn",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Trent Grisham",
+      "norm": "trent grisham",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Wilber Dotel",
+      "norm": "wilber dotel",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brent Rooker",
+      "norm": "brent rooker",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ramon Urias",
+      "norm": "ramon urias",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jalen Beeks",
+      "norm": "jalen beeks",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Will Smith",
+      "norm": "will smith",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jameson Taillon",
+      "norm": "jameson taillon",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Austin Hays",
+      "norm": "austin hays",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "LaMonte Wade Jr.",
+      "norm": "lamonte wade",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Cooper Criswell",
+      "norm": "cooper criswell",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brian Fitzpatrick",
+      "norm": "brian fitzpatrick",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Chris Bassitt",
+      "norm": "chris bassitt",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Adam Frazier",
+      "norm": "adam frazier",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Carlos Rodriguez",
+      "norm": "carlos rodriguez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Chris Devenski",
+      "norm": "chris devenski",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Aaron Judge",
+      "norm": "aaron judge",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ramon Laureano",
+      "norm": "ramon laureano",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "DL Hall",
+      "norm": "dl hall",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Garrett Crochet",
+      "norm": "garrett crochet",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Gordon",
+      "norm": "tanner gordon",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ryan Fernandez",
+      "norm": "ryan fernandez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jeremiah Estrada",
+      "norm": "jeremiah estrada",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Travis d'Arnaud",
+      "norm": "travis darnaud",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Rob Zastryzny",
+      "norm": "rob zastryzny",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Joe Mantiply",
+      "norm": "joe mantiply",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Nick Sogard",
+      "norm": "nick sogard",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Chris Martin",
+      "norm": "chris martin",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brusdar Graterol",
+      "norm": "brusdar graterol",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joel Peguero",
+      "norm": "joel peguero",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Andrew Nardi",
+      "norm": "andrew nardi",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Robert Garcia",
+      "norm": "robert garcia",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Welinton Herrera",
+      "norm": "welinton herrera",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Janson Junk",
+      "norm": "janson junk",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Luis Severino",
+      "norm": "luis severino",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Harrison Bader",
+      "norm": "harrison bader",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jordan Leasure",
+      "norm": "jordan leasure",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Munetaka Murakami",
+      "norm": "munetaka murakami",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jose Quintana",
+      "norm": "jose quintana",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Lenyn Sosa",
+      "norm": "lenyn sosa",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Javier Baez",
+      "norm": "javier baez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Luis Robert Jr.",
+      "norm": "luis robert",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jesse Scholtens",
+      "norm": "jesse scholtens",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Denzel Clarke",
+      "norm": "denzel clarke",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Noah Schultz",
+      "norm": "noah schultz",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jake Irvin",
+      "norm": "jake irvin",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Logan Henderson",
+      "norm": "logan henderson",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ke'Bryan Hayes",
+      "norm": "kebryan hayes",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Yusei Kikuchi",
+      "norm": "yusei kikuchi",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Kutter Crawford",
+      "norm": "kutter crawford",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ben Casparius",
+      "norm": "ben casparius",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Brendan Donovan",
+      "norm": "brendan donovan",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Riley Martin",
+      "norm": "riley martin",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Max Fried",
+      "norm": "max fried",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ben Joyce",
+      "norm": "ben joyce",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Addison Barger",
+      "norm": "addison barger",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Justin Verlander",
+      "norm": "justin verlander",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Edwin Diaz",
+      "norm": "edwin diaz",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bennett Sousa",
+      "norm": "bennett sousa",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brandon Lockridge",
+      "norm": "brandon lockridge",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Cole Ragans",
+      "norm": "cole ragans",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Emilio Pagan",
+      "norm": "emilio pagan",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Patrick Sandoval",
+      "norm": "patrick sandoval",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Murray",
+      "norm": "tanner murray",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "German Marquez",
+      "norm": "german marquez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Cole Sands",
+      "norm": "cole sands",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brandon Williamson",
+      "norm": "brandon williamson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Giancarlo Stanton",
+      "norm": "giancarlo stanton",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Landon Knack",
+      "norm": "landon knack",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Edwin Uceta",
+      "norm": "edwin uceta",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Triston Casas",
+      "norm": "triston casas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bailey Horn",
+      "norm": "bailey horn",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Mick Abel",
+      "norm": "mick abel",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Cristian Javier",
+      "norm": "cristian javier",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Prelander Berroa",
+      "norm": "prelander berroa",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ken Waldichuk",
+      "norm": "ken waldichuk",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Johan Oviedo",
+      "norm": "johan oviedo",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Carlos Vargas",
+      "norm": "carlos vargas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "McCade Brown",
+      "norm": "mccade brown",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Justin Steele",
+      "norm": "justin steele",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Blake Walston",
+      "norm": "blake walston",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bobby Miller",
+      "norm": "bobby miller",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ronel Blanco",
+      "norm": "ronel blanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Steven Wilson",
+      "norm": "steven wilson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tyler Austin",
+      "norm": "tyler austin",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jordan Montgomery",
+      "norm": "jordan montgomery",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Felix Bautista",
+      "norm": "felix bautista",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "A.J. Puk",
+      "norm": "aj puk",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Dedniel Nunez",
+      "norm": "dedniel nunez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Justin Martinez",
+      "norm": "justin martinez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jason Foley",
+      "norm": "jason foley",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Evan Phillips",
+      "norm": "evan phillips",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Alec Marsh",
+      "norm": "alec marsh",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Kris Bryant",
+      "norm": "kris bryant",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Trevor Williams",
+      "norm": "trevor williams",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joe Jimenez",
+      "norm": "joe jimenez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Houck",
+      "norm": "tanner houck",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jackson Jobe",
+      "norm": "jackson jobe",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Spencer Schwellenbach",
+      "norm": "spencer schwellenbach",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Randy Rodriguez",
+      "norm": "randy rodriguez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joe Ross",
+      "norm": "joe ross",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Jarred Kelenic",
+      "norm": "jarred kelenic",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Michael Kelly",
+      "norm": "michael kelly",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Jose Suarez",
+      "norm": "jose suarez",
+      "team": "",
+      "status": "PL",
       "note": ""
      },
      {
@@ -7102,20 +7384,6 @@
       "norm": "david bednar",
       "team": "",
       "status": "PL",
-      "note": ""
-     },
-     {
-      "player": "Richard Lovelady",
-      "norm": "richard lovelady",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Mitchell Parker",
-      "norm": "mitchell parker",
-      "team": "",
-      "status": "IL15",
       "note": ""
      },
      {
@@ -7203,13 +7471,6 @@
       "note": ""
      },
      {
-      "player": "Luis Robert Jr.",
-      "norm": "luis robert",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
       "player": "Jaxon Jelkin",
       "norm": "jaxon jelkin",
       "team": "",
@@ -7221,272 +7482,6 @@
       "norm": "james nunnallee",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Levonas",
-      "norm": "chris levonas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "J.C. Mejia",
-      "norm": "jc mejia",
-      "team": "",
-      "status": "SUS",
-      "note": ""
-     },
-     {
-      "player": "Starlyn Caba",
-      "norm": "starlyn caba",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Mason Ligenza",
-      "norm": "mason ligenza",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Erik Parker",
-      "norm": "erik parker",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "David Bote",
-      "norm": "david bote",
-      "team": "",
-      "status": "RST",
-      "note": ""
-     },
-     {
-      "player": "LaMonte Wade Jr.",
-      "norm": "lamonte wade",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Anson Seibert",
-      "norm": "anson seibert",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kyle-DUP Dernedde-DUP",
-      "norm": "kyle-dup dernedde-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Ryan-DUP Webb-DUP",
-      "norm": "ryan-dup webb-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Stuart Fairchild",
-      "norm": "stuart fairchild",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Trevor-DUP Kuncl-DUP",
-      "norm": "trevor-dup kuncl-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Adrian Areizaga",
-      "norm": "adrian areizaga",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Lavarnway",
-      "norm": "ryan lavarnway",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Jack-DUP Young-DUP",
-      "norm": "jack-dup young-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Eduarniel Nunez",
-      "norm": "eduarniel nunez",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Yahil-DUP Melendez-DUP",
-      "norm": "yahil-dup melendez-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Christian Roa",
-      "norm": "christian roa",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Vince Velasquez",
-      "norm": "vince velasquez",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "P.J.-DUP Labriola-DUP",
-      "norm": "pj-dup labriola-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Sam Huff",
-      "norm": "sam huff",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Kyle Nicolas",
-      "norm": "kyle nicolas",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Nate-DUP Nankil-DUP",
-      "norm": "nate-dup nankil-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Brett Harris",
-      "norm": "brett harris",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Stephen Kolek",
-      "norm": "stephen kolek",
-      "team": "",
-      "status": "PL",
-      "note": ""
-     },
-     {
-      "player": "Ryne Nelson",
-      "norm": "ryne nelson",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Johan Rojas",
-      "norm": "johan rojas",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Cody Freeman",
-      "norm": "cody freeman",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Marcus Semien",
-      "norm": "marcus semien",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Zack Gelof",
-      "norm": "zack gelof",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Riley Martin",
-      "norm": "riley martin",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Spencer Horwitz",
-      "norm": "spencer horwitz",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Steven Matz",
-      "norm": "steven matz",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Maikel Garcia",
-      "norm": "maikel garcia",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Burch Smith",
-      "norm": "burch smith",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Blas Castano",
-      "norm": "blas castano",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Liam Hicks",
-      "norm": "liam hicks",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Josh Ekness",
-      "norm": "josh ekness",
-      "team": "",
-      "status": "IL60",
       "note": ""
      }
     ]
@@ -7528,88 +7523,94 @@
     "props": [],
     "news": [
      {
-      "title": "Jonathan Isaac clears waivers ",
+      "title": "Tobias Harris unlikely to return to Pistons ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:32:48"
+      "when": "2026-06-30 07:51:22"
      },
      {
-      "title": "Norman Powell unlikely to return to Heat",
+      "title": "Joshua Jefferson to miss start of Summer League ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:31:26"
+      "when": "2026-06-30 07:50:09"
      },
      {
-      "title": "Jalen Wilson to become unrestricted free agent ",
+      "title": "Tyler Bilodeau good to go for Summer League ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:29:10"
+      "when": "2026-06-30 07:48:51"
      },
      {
-      "title": "Ochai Agbaji to become unrestricted free agent ",
+      "title": "Mikel Brown Jr. good to go for Summer League ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:28:15"
+      "when": "2026-06-30 07:47:01"
      },
      {
-      "title": "Amari Williams re-signs with Celtics on two-way deal",
+      "title": "Peyton Watson linked to Clippers ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:26:49"
+      "when": "2026-06-30 07:44:43"
      },
      {
-      "title": "Jamir Watkins has team option declined by Wizards ",
+      "title": "Walker Kessler to meet with three teams Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:25:37"
+      "when": "2026-06-30 07:43:34"
      },
      {
-      "title": "Killian Hayes has team option declined by Kings",
+      "title": "Russell Westbrook III linked to Wizards ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:23:19"
+      "when": "2026-06-30 07:42:18"
      },
      {
-      "title": "David Jones Garcia to become restricted free agent",
+      "title": "Jonathan Kuminga to draw interest from Bulls, Cavs",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:21:28"
+      "when": "2026-06-30 07:39:40"
      },
      {
-      "title": "Harrison Ingram to become restricted free agent ",
+      "title": "Jrue Holiday expected to remain in Portland ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:20:46"
+      "when": "2026-06-30 07:37:45"
      },
      {
-      "title": "Brooks Barnhizer to become restricted free agent ",
+      "title": "Sandro Mamukelashvili linked to Lakers",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:19:09"
+      "when": "2026-06-30 07:36:16"
      },
      {
-      "title": "Jalen Duren drawing interest from Lakers",
+      "title": "Jamir Watkins expected to work towards multi-year deal with Wizards ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:30:05"
+      "when": "2026-06-30 06:10:05"
      },
      {
-      "title": "Domantas Sabonis linked to Pistons ",
+      "title": "Luke Kennard expected to draw interest from Suns",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:15:54"
+      "when": "2026-06-30 06:08:42"
      },
      {
-      "title": "Harrison Barnes intends to sign 1-year deal with Spurs",
+      "title": "Donovan Clingan not expected to be traded ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:04:27"
+      "when": "2026-06-30 06:07:23"
      },
      {
-      "title": "Kristaps Porzingis signs 2-year extension with Warriors",
+      "title": "Ariel Hukporti to become unrestricted free agent ",
       "body": "",
       "player": "",
-      "when": "2026-06-29 22:59:05"
+      "when": "2026-06-30 06:05:31"
+     },
+     {
+      "title": "Nolan Traore (knee) will not play in Summer League ",
+      "body": "",
+      "player": "",
+      "when": "2026-06-30 06:04:21"
      }
     ],
     "injuries": [
@@ -10532,44 +10533,44 @@
       "home_pitcher": NaN,
       "away_pitcher_id": NaN,
       "home_pitcher_id": NaN,
-      "home_exp_runs": 4.678,
-      "away_exp_runs": 4.775,
-      "proj_total": 9.452,
-      "home_win_prob": 0.4939,
-      "away_win_prob": 0.5061,
+      "home_exp_runs": 4.667,
+      "away_exp_runs": 4.771,
+      "proj_total": 9.438,
+      "home_win_prob": 0.4867,
+      "away_win_prob": 0.5133,
       "over_probs": {
-       "6.0": 0.73675,
-       "6.5": 0.73675,
-       "7.0": 0.6352,
-       "7.5": 0.6352,
-       "8.0": 0.5585,
-       "8.5": 0.5585,
-       "9.0": 0.45615,
-       "9.5": 0.45615,
-       "10.0": 0.38385,
-       "10.5": 0.38385,
-       "11.0": 0.2987,
-       "11.5": 0.2987,
-       "12.0": 0.242,
-       "12.5": 0.242,
-       "13.0": 0.1848,
-       "13.5": 0.1848,
-       "14.0": 0.1452,
-       "14.5": 0.1452,
-       "15.0": 0.1068
+       "6.0": 0.74185,
+       "6.5": 0.74185,
+       "7.0": 0.6363,
+       "7.5": 0.6363,
+       "8.0": 0.5601,
+       "8.5": 0.5601,
+       "9.0": 0.4574,
+       "9.5": 0.4574,
+       "10.0": 0.38615,
+       "10.5": 0.38615,
+       "11.0": 0.2989,
+       "11.5": 0.2989,
+       "12.0": 0.24255,
+       "12.5": 0.24255,
+       "13.0": 0.1824,
+       "13.5": 0.1824,
+       "14.0": 0.144,
+       "14.5": 0.144,
+       "15.0": 0.10695
       },
       "home_rl_cover": {
-       "-1.5": 0.36365,
-       "1.5": 0.6234
+       "-1.5": 0.355,
+       "1.5": 0.6215
       },
-      "model_nrfi_prob": 0.4591,
-      "model_yrfi_prob": 0.5409,
-      "nrfi_p_top": 0.3602,
-      "nrfi_p_bot": 0.2823,
-      "home_ml": -117.0,
-      "away_ml": 113.0,
-      "home_ml_ev": -0.035,
-      "away_ml_ev": 0.0217,
+      "model_nrfi_prob": 0.438,
+      "model_yrfi_prob": 0.562,
+      "nrfi_p_top": 0.3682,
+      "nrfi_p_bot": 0.3066,
+      "home_ml": -122.0,
+      "away_ml": 117.0,
+      "home_ml_ev": -0.0467,
+      "away_ml_ev": 0.0332,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10584,7 +10585,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 94,
+       "wind_mph": 11,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10601,44 +10607,44 @@
       "home_pitcher": "Joey Cantillo",
       "away_pitcher_id": 669022.0,
       "home_pitcher_id": 676282.0,
-      "home_exp_runs": 3.951,
-      "away_exp_runs": 4.3,
-      "proj_total": 8.252,
-      "home_win_prob": 0.4644,
-      "away_win_prob": 0.5356,
+      "home_exp_runs": 3.952,
+      "away_exp_runs": 4.29,
+      "proj_total": 8.241,
+      "home_win_prob": 0.4677,
+      "away_win_prob": 0.5323,
       "over_probs": {
-       "6.0": 0.6423,
-       "6.5": 0.6423,
-       "7.0": 0.5226,
-       "7.5": 0.5226,
-       "8.0": 0.4418,
-       "8.5": 0.4418,
-       "9.0": 0.34565,
-       "9.5": 0.34565,
-       "10.0": 0.27955,
-       "10.5": 0.27955,
-       "11.0": 0.21145,
-       "11.5": 0.21145,
-       "12.0": 0.16605,
-       "12.5": 0.16605,
-       "13.0": 0.123,
-       "13.5": 0.123,
-       "14.0": 0.09475,
-       "14.5": 0.09475,
-       "15.0": 0.0706
+       "6.0": 0.63945,
+       "6.5": 0.63945,
+       "7.0": 0.5246,
+       "7.5": 0.5246,
+       "8.0": 0.4431,
+       "8.5": 0.4431,
+       "9.0": 0.3457,
+       "9.5": 0.3457,
+       "10.0": 0.2818,
+       "10.5": 0.2818,
+       "11.0": 0.21295,
+       "11.5": 0.21295,
+       "12.0": 0.16615,
+       "12.5": 0.16615,
+       "13.0": 0.1228,
+       "13.5": 0.1228,
+       "14.0": 0.0949,
+       "14.5": 0.0949,
+       "15.0": 0.06975
       },
       "home_rl_cover": {
-       "-1.5": 0.32655,
-       "1.5": 0.609
+       "-1.5": 0.3277,
+       "1.5": 0.6084
       },
-      "model_nrfi_prob": 0.5159,
-      "model_yrfi_prob": 0.4841,
-      "nrfi_p_top": 0.2589,
-      "nrfi_p_bot": 0.3039,
-      "home_ml": -113.0,
-      "away_ml": 113.0,
-      "home_ml_ev": -0.0436,
-      "away_ml_ev": 0.0493,
+      "model_nrfi_prob": 0.513,
+      "model_yrfi_prob": 0.487,
+      "nrfi_p_top": 0.2746,
+      "nrfi_p_bot": 0.2928,
+      "home_ml": -108.0,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0347,
+      "away_ml_ev": 0.0375,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10653,7 +10659,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 96,
+       "wind_mph": 8,
+       "wind_dir": "W",
+       "precip_pct": 1
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -10671,40 +10682,40 @@
       "away_pitcher_id": 674841.0,
       "home_pitcher_id": 801139.0,
       "home_exp_runs": 4.608,
-      "away_exp_runs": 4.366,
-      "proj_total": 8.975,
-      "home_win_prob": 0.5203,
-      "away_win_prob": 0.4797,
+      "away_exp_runs": 4.358,
+      "proj_total": 8.965,
+      "home_win_prob": 0.5217,
+      "away_win_prob": 0.4783,
       "over_probs": {
-       "6.0": 0.70315,
-       "6.5": 0.70315,
-       "7.0": 0.59095,
-       "7.5": 0.59095,
-       "8.0": 0.51205,
-       "8.5": 0.51205,
-       "9.0": 0.4125,
-       "9.5": 0.4125,
-       "10.0": 0.34175,
-       "10.5": 0.34175,
-       "11.0": 0.26665,
-       "11.5": 0.26665,
-       "12.0": 0.215,
-       "12.5": 0.215,
-       "13.0": 0.16045,
-       "13.5": 0.16045,
-       "14.0": 0.12505,
-       "14.5": 0.12505,
-       "15.0": 0.09075
+       "6.0": 0.705,
+       "6.5": 0.705,
+       "7.0": 0.591,
+       "7.5": 0.591,
+       "8.0": 0.51115,
+       "8.5": 0.51115,
+       "9.0": 0.412,
+       "9.5": 0.412,
+       "10.0": 0.34345,
+       "10.5": 0.34345,
+       "11.0": 0.26475,
+       "11.5": 0.26475,
+       "12.0": 0.2126,
+       "12.5": 0.2126,
+       "13.0": 0.15775,
+       "13.5": 0.15775,
+       "14.0": 0.12435,
+       "14.5": 0.12435,
+       "15.0": 0.09085
       },
       "home_rl_cover": {
-       "-1.5": 0.3846,
-       "1.5": 0.6549
+       "-1.5": 0.38645,
+       "1.5": 0.65235
       },
-      "model_nrfi_prob": 0.4813,
-      "model_yrfi_prob": 0.5187,
-      "nrfi_p_top": 0.3139,
-      "nrfi_p_bot": 0.2985,
-      "home_ml": 113.0,
+      "model_nrfi_prob": 0.4783,
+      "model_yrfi_prob": 0.5217,
+      "nrfi_p_top": 0.3192,
+      "nrfi_p_bot": 0.2975,
+      "home_ml": 117.0,
       "away_ml": 127.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
@@ -10723,10 +10734,10 @@
      },
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 8,
-       "wind_dir": "SSW",
-       "precip_pct": 2
+       "temp_f": 92,
+       "wind_mph": 3,
+       "wind_dir": "S",
+       "precip_pct": 1
       },
       "lineups": {
        "home": [],
@@ -10744,44 +10755,44 @@
       "home_pitcher": "Will Warren",
       "away_pitcher_id": 675512.0,
       "home_pitcher_id": 701542.0,
-      "home_exp_runs": 4.767,
-      "away_exp_runs": 4.062,
-      "proj_total": 8.83,
-      "home_win_prob": 0.565,
-      "away_win_prob": 0.435,
+      "home_exp_runs": 4.776,
+      "away_exp_runs": 4.049,
+      "proj_total": 8.825,
+      "home_win_prob": 0.5705,
+      "away_win_prob": 0.4295,
       "over_probs": {
-       "6.0": 0.69255,
-       "6.5": 0.69255,
-       "7.0": 0.5814,
-       "7.5": 0.5814,
-       "8.0": 0.50065,
-       "8.5": 0.50065,
-       "9.0": 0.39985,
-       "9.5": 0.39985,
-       "10.0": 0.33175,
-       "10.5": 0.33175,
-       "11.0": 0.25485,
-       "11.5": 0.25485,
-       "12.0": 0.2021,
-       "12.5": 0.2021,
-       "13.0": 0.14925,
-       "13.5": 0.14925,
-       "14.0": 0.1173,
-       "14.5": 0.1173,
-       "15.0": 0.08485
+       "6.0": 0.6898,
+       "6.5": 0.6898,
+       "7.0": 0.57865,
+       "7.5": 0.57865,
+       "8.0": 0.49685,
+       "8.5": 0.49685,
+       "9.0": 0.3984,
+       "9.5": 0.3984,
+       "10.0": 0.33235,
+       "10.5": 0.33235,
+       "11.0": 0.25215,
+       "11.5": 0.25215,
+       "12.0": 0.1998,
+       "12.5": 0.1998,
+       "13.0": 0.14755,
+       "13.5": 0.14755,
+       "14.0": 0.11555,
+       "14.5": 0.11555,
+       "15.0": 0.08245
       },
       "home_rl_cover": {
-       "-1.5": 0.42415,
-       "1.5": 0.69435
+       "-1.5": 0.42875,
+       "1.5": 0.6974
       },
-      "model_nrfi_prob": 0.482,
-      "model_yrfi_prob": 0.518,
-      "nrfi_p_top": 0.2456,
-      "nrfi_p_bot": 0.3611,
+      "model_nrfi_prob": 0.483,
+      "model_yrfi_prob": 0.517,
+      "nrfi_p_top": 0.2593,
+      "nrfi_p_bot": 0.348,
       "home_ml": -138.0,
       "away_ml": 144.0,
-      "home_ml_ev": -0.0022,
-      "away_ml_ev": 0.0283,
+      "home_ml_ev": 0.0012,
+      "away_ml_ev": 0.0236,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10797,9 +10808,9 @@
      },
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 7,
-       "wind_dir": "SW",
+       "temp_f": 97,
+       "wind_mph": 12,
+       "wind_dir": "WSW",
        "precip_pct": 0
       },
       "lineups": {
@@ -10818,44 +10829,44 @@
       "home_pitcher": "Colin Rea",
       "away_pitcher_id": 621111.0,
       "home_pitcher_id": 607067.0,
-      "home_exp_runs": 4.369,
-      "away_exp_runs": 4.322,
-      "proj_total": 8.691,
-      "home_win_prob": 0.4952,
-      "away_win_prob": 0.5048,
+      "home_exp_runs": 4.36,
+      "away_exp_runs": 4.318,
+      "proj_total": 8.678,
+      "home_win_prob": 0.4976,
+      "away_win_prob": 0.5024,
       "over_probs": {
-       "6.0": 0.67915,
-       "6.5": 0.67915,
-       "7.0": 0.56325,
-       "7.5": 0.56325,
-       "8.0": 0.48265,
-       "8.5": 0.48265,
-       "9.0": 0.38585,
-       "9.5": 0.38585,
-       "10.0": 0.3176,
-       "10.5": 0.3176,
-       "11.0": 0.24335,
-       "11.5": 0.24335,
-       "12.0": 0.19655,
-       "12.5": 0.19655,
-       "13.0": 0.1448,
-       "13.5": 0.1448,
-       "14.0": 0.1121,
-       "14.5": 0.1121,
-       "15.0": 0.08095
+       "6.0": 0.6755,
+       "6.5": 0.6755,
+       "7.0": 0.5652,
+       "7.5": 0.5652,
+       "8.0": 0.48715,
+       "8.5": 0.48715,
+       "9.0": 0.38675,
+       "9.5": 0.38675,
+       "10.0": 0.3188,
+       "10.5": 0.3188,
+       "11.0": 0.2429,
+       "11.5": 0.2429,
+       "12.0": 0.19295,
+       "12.5": 0.19295,
+       "13.0": 0.14295,
+       "13.5": 0.14295,
+       "14.0": 0.1097,
+       "14.5": 0.1097,
+       "15.0": 0.0784
       },
       "home_rl_cover": {
-       "-1.5": 0.35985,
-       "1.5": 0.63245
+       "-1.5": 0.3634,
+       "1.5": 0.6387
       },
-      "model_nrfi_prob": 0.538,
-      "model_yrfi_prob": 0.462,
-      "nrfi_p_top": 0.2562,
-      "nrfi_p_bot": 0.2767,
+      "model_nrfi_prob": 0.5477,
+      "model_yrfi_prob": 0.4523,
+      "nrfi_p_top": 0.2517,
+      "nrfi_p_bot": 0.268,
       "home_ml": -108.0,
-      "away_ml": 104.0,
-      "home_ml_ev": -0.0223,
-      "away_ml_ev": 0.0044,
+      "away_ml": 108.0,
+      "home_ml_ev": -0.0146,
+      "away_ml_ev": 0.0157,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10872,8 +10883,8 @@
      {
       "weather": {
        "temp_f": 91,
-       "wind_mph": 11,
-       "wind_dir": "SSW",
+       "wind_mph": 12,
+       "wind_dir": "SW",
        "precip_pct": 42
       },
       "lineups": {
@@ -10892,44 +10903,44 @@
       "home_pitcher": "Patrick Corbin",
       "away_pitcher_id": 642547.0,
       "home_pitcher_id": 571578.0,
-      "home_exp_runs": 4.164,
+      "home_exp_runs": 4.161,
       "away_exp_runs": 4.358,
-      "proj_total": 8.522,
-      "home_win_prob": 0.4774,
-      "away_win_prob": 0.5226,
+      "proj_total": 8.519,
+      "home_win_prob": 0.4793,
+      "away_win_prob": 0.5208,
       "over_probs": {
-       "6.0": 0.66515,
-       "6.5": 0.66515,
-       "7.0": 0.5512,
-       "7.5": 0.5512,
-       "8.0": 0.47185,
-       "8.5": 0.47185,
-       "9.0": 0.3735,
-       "9.5": 0.3735,
-       "10.0": 0.305,
-       "10.5": 0.305,
-       "11.0": 0.2319,
-       "11.5": 0.2319,
-       "12.0": 0.18305,
-       "12.5": 0.18305,
-       "13.0": 0.1346,
-       "13.5": 0.1346,
-       "14.0": 0.10425,
-       "14.5": 0.10425,
-       "15.0": 0.0753
+       "6.0": 0.66465,
+       "6.5": 0.66465,
+       "7.0": 0.55235,
+       "7.5": 0.55235,
+       "8.0": 0.47325,
+       "8.5": 0.47325,
+       "9.0": 0.37165,
+       "9.5": 0.37165,
+       "10.0": 0.30575,
+       "10.5": 0.30575,
+       "11.0": 0.23285,
+       "11.5": 0.23285,
+       "12.0": 0.18515,
+       "12.5": 0.18515,
+       "13.0": 0.1336,
+       "13.5": 0.1336,
+       "14.0": 0.10365,
+       "14.5": 0.10365,
+       "15.0": 0.07635
       },
       "home_rl_cover": {
-       "-1.5": 0.3396,
-       "1.5": 0.6199
+       "-1.5": 0.34195,
+       "1.5": 0.6206
       },
-      "model_nrfi_prob": 0.4876,
-      "model_yrfi_prob": 0.5124,
-      "nrfi_p_top": 0.3194,
-      "nrfi_p_bot": 0.2836,
-      "home_ml": 100.0,
-      "away_ml": 117.0,
-      "home_ml_ev": NaN,
-      "away_ml_ev": NaN,
+      "model_nrfi_prob": 0.4917,
+      "model_yrfi_prob": 0.5083,
+      "nrfi_p_top": 0.3198,
+      "nrfi_p_bot": 0.2772,
+      "home_ml": 104.0,
+      "away_ml": 104.0,
+      "home_ml_ev": 0.0052,
+      "away_ml_ev": 0.0348,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -10946,7 +10957,7 @@
      {
       "weather": {
        "temp_f": 99,
-       "wind_mph": 9,
+       "wind_mph": 10,
        "wind_dir": "SSW",
        "precip_pct": 2
       },
@@ -10966,44 +10977,44 @@
       "home_pitcher": "Zack Wheeler",
       "away_pitcher_id": 694973.0,
       "home_pitcher_id": 554430.0,
-      "home_exp_runs": 4.42,
-      "away_exp_runs": 4.513,
-      "proj_total": 8.933,
-      "home_win_prob": 0.4874,
-      "away_win_prob": 0.5127,
+      "home_exp_runs": 4.43,
+      "away_exp_runs": 4.516,
+      "proj_total": 8.946,
+      "home_win_prob": 0.4875,
+      "away_win_prob": 0.5125,
       "over_probs": {
-       "6.0": 0.70125,
-       "6.5": 0.70125,
-       "7.0": 0.5913,
-       "7.5": 0.5913,
-       "8.0": 0.5114,
-       "8.5": 0.5114,
-       "9.0": 0.41,
-       "9.5": 0.41,
-       "10.0": 0.34015,
-       "10.5": 0.34015,
-       "11.0": 0.26075,
-       "11.5": 0.26075,
-       "12.0": 0.2053,
-       "12.5": 0.2053,
-       "13.0": 0.1538,
-       "13.5": 0.1538,
-       "14.0": 0.11875,
-       "14.5": 0.11875,
-       "15.0": 0.0853
+       "6.0": 0.70095,
+       "6.5": 0.70095,
+       "7.0": 0.5906,
+       "7.5": 0.5906,
+       "8.0": 0.5091,
+       "8.5": 0.5091,
+       "9.0": 0.41095,
+       "9.5": 0.41095,
+       "10.0": 0.34205,
+       "10.5": 0.34205,
+       "11.0": 0.2611,
+       "11.5": 0.2611,
+       "12.0": 0.2092,
+       "12.5": 0.2092,
+       "13.0": 0.15615,
+       "13.5": 0.15615,
+       "14.0": 0.12125,
+       "14.5": 0.12125,
+       "15.0": 0.08715
       },
       "home_rl_cover": {
-       "-1.5": 0.35695,
-       "1.5": 0.6241
+       "-1.5": 0.35485,
+       "1.5": 0.6252
       },
-      "model_nrfi_prob": 0.5126,
-      "model_yrfi_prob": 0.4874,
-      "nrfi_p_top": 0.2803,
-      "nrfi_p_bot": 0.2878,
+      "model_nrfi_prob": 0.5014,
+      "model_yrfi_prob": 0.4986,
+      "nrfi_p_top": 0.2877,
+      "nrfi_p_bot": 0.2961,
       "home_ml": -127.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0376,
-      "away_ml_ev": 0.0755,
+      "away_ml": 127.0,
+      "home_ml_ev": -0.045,
+      "away_ml_ev": 0.0572,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -11020,8 +11031,8 @@
      {
       "weather": {
        "temp_f": 98,
-       "wind_mph": 6,
-       "wind_dir": "ESE",
+       "wind_mph": 8,
+       "wind_dir": "E",
        "precip_pct": 13
       },
       "lineups": {
@@ -11070,14 +11081,14 @@
        "-1.5": 0.35865,
        "1.5": 0.6318
       },
-      "model_nrfi_prob": 0.505,
-      "model_yrfi_prob": 0.495,
-      "nrfi_p_top": 0.2637,
-      "nrfi_p_bot": 0.3142,
+      "model_nrfi_prob": 0.4979,
+      "model_yrfi_prob": 0.5021,
+      "nrfi_p_top": 0.2748,
+      "nrfi_p_bot": 0.3134,
       "home_ml": -144.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0672,
-      "away_ml_ev": 0.0474,
+      "away_ml": 138.0,
+      "home_ml_ev": -0.0615,
+      "away_ml_ev": 0.0619,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -11093,8 +11104,8 @@
      },
      {
       "weather": {
-       "temp_f": 90,
-       "wind_mph": 16,
+       "temp_f": 95,
+       "wind_mph": 18,
        "wind_dir": "SSW",
        "precip_pct": 0
       },
@@ -11144,14 +11155,14 @@
        "-1.5": 0.36595,
        "1.5": 0.63
       },
-      "model_nrfi_prob": 0.5044,
-      "model_yrfi_prob": 0.4956,
-      "nrfi_p_top": 0.2946,
-      "nrfi_p_bot": 0.2849,
+      "model_nrfi_prob": 0.4772,
+      "model_yrfi_prob": 0.5228,
+      "nrfi_p_top": 0.3233,
+      "nrfi_p_bot": 0.2948,
       "home_ml": 127.0,
-      "away_ml": -133.0,
-      "home_ml_ev": 0.0387,
-      "away_ml_ev": -0.0497,
+      "away_ml": -122.0,
+      "home_ml_ev": 0.0525,
+      "away_ml_ev": -0.024,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -11166,7 +11177,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 89,
+       "wind_mph": 9,
+       "wind_dir": "SSE",
+       "precip_pct": 13
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -11183,44 +11199,44 @@
       "home_pitcher": "Tatsuya Imai",
       "away_pitcher_id": 671737.0,
       "home_pitcher_id": 837227.0,
-      "home_exp_runs": 4.519,
-      "away_exp_runs": 5.088,
-      "proj_total": 9.607,
-      "home_win_prob": 0.444,
-      "away_win_prob": 0.556,
+      "home_exp_runs": 4.551,
+      "away_exp_runs": 5.076,
+      "proj_total": 9.627,
+      "home_win_prob": 0.446,
+      "away_win_prob": 0.554,
       "over_probs": {
-       "6.0": 0.746,
-       "6.5": 0.746,
-       "7.0": 0.6418,
-       "7.5": 0.6418,
-       "8.0": 0.5667,
-       "8.5": 0.5667,
-       "9.0": 0.46735,
-       "9.5": 0.46735,
-       "10.0": 0.39775,
-       "10.5": 0.39775,
-       "11.0": 0.31435,
-       "11.5": 0.31435,
-       "12.0": 0.25855,
-       "12.5": 0.25855,
-       "13.0": 0.1952,
-       "13.5": 0.1952,
-       "14.0": 0.1552,
-       "14.5": 0.1552,
-       "15.0": 0.1147
+       "6.0": 0.7522,
+       "6.5": 0.7522,
+       "7.0": 0.65225,
+       "7.5": 0.65225,
+       "8.0": 0.575,
+       "8.5": 0.575,
+       "9.0": 0.4741,
+       "9.5": 0.4741,
+       "10.0": 0.4012,
+       "10.5": 0.4012,
+       "11.0": 0.3155,
+       "11.5": 0.3155,
+       "12.0": 0.25845,
+       "12.5": 0.25845,
+       "13.0": 0.19685,
+       "13.5": 0.19685,
+       "14.0": 0.15625,
+       "14.5": 0.15625,
+       "15.0": 0.117
       },
       "home_rl_cover": {
-       "-1.5": 0.3213,
-       "1.5": 0.578
+       "-1.5": 0.3251,
+       "1.5": 0.57845
       },
-      "model_nrfi_prob": 0.4979,
-      "model_yrfi_prob": 0.5021,
-      "nrfi_p_top": 0.2834,
-      "nrfi_p_bot": 0.3052,
+      "model_nrfi_prob": 0.4774,
+      "model_yrfi_prob": 0.5226,
+      "nrfi_p_top": 0.3058,
+      "nrfi_p_bot": 0.3123,
       "home_ml": -113.0,
-      "away_ml": 117.0,
-      "home_ml_ev": -0.0514,
-      "away_ml_ev": 0.078,
+      "away_ml": 113.0,
+      "home_ml_ev": -0.0558,
+      "away_ml_ev": 0.063,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -11252,40 +11268,40 @@
       "home_pitcher": "Shane Drohan",
       "away_pitcher_id": 671096.0,
       "home_pitcher_id": 675660.0,
-      "home_exp_runs": 5.749,
-      "away_exp_runs": 3.959,
-      "proj_total": 9.707,
-      "home_win_prob": 0.6577,
-      "away_win_prob": 0.3423,
+      "home_exp_runs": 5.775,
+      "away_exp_runs": 3.947,
+      "proj_total": 9.722,
+      "home_win_prob": 0.6636,
+      "away_win_prob": 0.3364,
       "over_probs": {
-       "6.0": 0.75495,
-       "6.5": 0.75495,
-       "7.0": 0.65605,
-       "7.5": 0.65605,
-       "8.0": 0.577,
-       "8.5": 0.577,
-       "9.0": 0.47525,
-       "9.5": 0.47525,
-       "10.0": 0.4016,
-       "10.5": 0.4016,
-       "11.0": 0.3165,
-       "11.5": 0.3165,
-       "12.0": 0.25895,
-       "12.5": 0.25895,
-       "13.0": 0.19975,
-       "13.5": 0.19975,
-       "14.0": 0.15755,
-       "14.5": 0.15755,
-       "15.0": 0.117
+       "6.0": 0.75735,
+       "6.5": 0.75735,
+       "7.0": 0.6574,
+       "7.5": 0.6574,
+       "8.0": 0.58055,
+       "8.5": 0.58055,
+       "9.0": 0.4771,
+       "9.5": 0.4771,
+       "10.0": 0.4032,
+       "10.5": 0.4032,
+       "11.0": 0.3153,
+       "11.5": 0.3153,
+       "12.0": 0.2563,
+       "12.5": 0.2563,
+       "13.0": 0.19765,
+       "13.5": 0.19765,
+       "14.0": 0.15635,
+       "14.5": 0.15635,
+       "15.0": 0.11575
       },
       "home_rl_cover": {
-       "-1.5": 0.52435,
-       "1.5": 0.7634
+       "-1.5": 0.53265,
+       "1.5": 0.76875
       },
-      "model_nrfi_prob": 0.518,
-      "model_yrfi_prob": 0.482,
-      "nrfi_p_top": 0.2918,
-      "nrfi_p_bot": 0.2685,
+      "model_nrfi_prob": 0.5111,
+      "model_yrfi_prob": 0.4889,
+      "nrfi_p_top": 0.2879,
+      "nrfi_p_bot": 0.2822,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -11321,40 +11337,40 @@
       "home_pitcher": "Kyle Freeland",
       "away_pitcher_id": 676974.0,
       "home_pitcher_id": 607536.0,
-      "home_exp_runs": 4.841,
-      "away_exp_runs": 5.773,
-      "proj_total": 10.614,
-      "home_win_prob": 0.4149,
-      "away_win_prob": 0.5851,
+      "home_exp_runs": 4.851,
+      "away_exp_runs": 5.787,
+      "proj_total": 10.638,
+      "home_win_prob": 0.4153,
+      "away_win_prob": 0.5847,
       "over_probs": {
-       "6.0": 0.81135,
-       "6.5": 0.81135,
-       "7.0": 0.7216,
-       "7.5": 0.7216,
-       "8.0": 0.64865,
-       "8.5": 0.64865,
-       "9.0": 0.55105,
-       "9.5": 0.55105,
-       "10.0": 0.4796,
-       "10.5": 0.4796,
-       "11.0": 0.3922,
-       "11.5": 0.3922,
-       "12.0": 0.3281,
-       "12.5": 0.3281,
-       "13.0": 0.25835,
-       "13.5": 0.25835,
-       "14.0": 0.2096,
-       "14.5": 0.2096,
-       "15.0": 0.16015
+       "6.0": 0.8164,
+       "6.5": 0.8164,
+       "7.0": 0.72565,
+       "7.5": 0.72565,
+       "8.0": 0.6556,
+       "8.5": 0.6556,
+       "9.0": 0.5542,
+       "9.5": 0.5542,
+       "10.0": 0.4804,
+       "10.5": 0.4804,
+       "11.0": 0.39415,
+       "11.5": 0.39415,
+       "12.0": 0.32975,
+       "12.5": 0.32975,
+       "13.0": 0.25865,
+       "13.5": 0.25865,
+       "14.0": 0.21025,
+       "14.5": 0.21025,
+       "15.0": 0.1609
       },
       "home_rl_cover": {
-       "-1.5": 0.3063,
-       "1.5": 0.54175
+       "-1.5": 0.306,
+       "1.5": 0.5398
       },
-      "model_nrfi_prob": 0.4386,
-      "model_yrfi_prob": 0.5614,
-      "nrfi_p_top": 0.3891,
-      "nrfi_p_bot": 0.2819,
+      "model_nrfi_prob": 0.4385,
+      "model_yrfi_prob": 0.5615,
+      "nrfi_p_top": 0.3865,
+      "nrfi_p_bot": 0.2852,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -11390,40 +11406,40 @@
       "home_pitcher": "J.T. Ginn",
       "away_pitcher_id": 660271.0,
       "home_pitcher_id": 669372.0,
-      "home_exp_runs": 4.049,
-      "away_exp_runs": 4.898,
-      "proj_total": 8.947,
-      "home_win_prob": 0.4155,
-      "away_win_prob": 0.5845,
+      "home_exp_runs": 4.084,
+      "away_exp_runs": 4.813,
+      "proj_total": 8.897,
+      "home_win_prob": 0.4275,
+      "away_win_prob": 0.5725,
       "over_probs": {
-       "6.0": 0.7012,
-       "6.5": 0.7012,
-       "7.0": 0.5909,
-       "7.5": 0.5909,
-       "8.0": 0.51165,
-       "8.5": 0.51165,
-       "9.0": 0.4086,
-       "9.5": 0.4086,
-       "10.0": 0.34135,
-       "10.5": 0.34135,
-       "11.0": 0.2622,
-       "11.5": 0.2622,
-       "12.0": 0.20855,
-       "12.5": 0.20855,
-       "13.0": 0.1531,
-       "13.5": 0.1531,
-       "14.0": 0.12,
-       "14.5": 0.12,
-       "15.0": 0.0858
+       "6.0": 0.69195,
+       "6.5": 0.69195,
+       "7.0": 0.58235,
+       "7.5": 0.58235,
+       "8.0": 0.5054,
+       "8.5": 0.5054,
+       "9.0": 0.40625,
+       "9.5": 0.40625,
+       "10.0": 0.33725,
+       "10.5": 0.33725,
+       "11.0": 0.261,
+       "11.5": 0.261,
+       "12.0": 0.2081,
+       "12.5": 0.2081,
+       "13.0": 0.15195,
+       "13.5": 0.15195,
+       "14.0": 0.11795,
+       "14.5": 0.11795,
+       "15.0": 0.0864
       },
       "home_rl_cover": {
-       "-1.5": 0.2926,
-       "1.5": 0.5551
+       "-1.5": 0.3035,
+       "1.5": 0.568
       },
-      "model_nrfi_prob": 0.4788,
-      "model_yrfi_prob": 0.5212,
-      "nrfi_p_top": 0.3229,
-      "nrfi_p_bot": 0.2928,
+      "model_nrfi_prob": 0.4768,
+      "model_yrfi_prob": 0.5232,
+      "nrfi_p_top": 0.3235,
+      "nrfi_p_bot": 0.2952,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -11442,12 +11458,7 @@
       "rl_away_ev": null
      },
      {
-      "weather": {
-       "temp_f": 101,
-       "wind_mph": 10,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -11464,40 +11475,40 @@
       "home_pitcher": "Zac Gallen",
       "away_pitcher_id": 686790.0,
       "home_pitcher_id": 668678.0,
-      "home_exp_runs": 4.18,
-      "away_exp_runs": 5.108,
-      "proj_total": 9.288,
-      "home_win_prob": 0.4095,
-      "away_win_prob": 0.5905,
+      "home_exp_runs": 4.152,
+      "away_exp_runs": 5.092,
+      "proj_total": 9.244,
+      "home_win_prob": 0.4058,
+      "away_win_prob": 0.5942,
       "over_probs": {
-       "6.0": 0.72975,
-       "6.5": 0.72975,
-       "7.0": 0.62175,
-       "7.5": 0.62175,
-       "8.0": 0.5421,
-       "8.5": 0.5421,
-       "9.0": 0.4402,
-       "9.5": 0.4402,
-       "10.0": 0.36745,
-       "10.5": 0.36745,
-       "11.0": 0.28755,
-       "11.5": 0.28755,
-       "12.0": 0.2325,
-       "12.5": 0.2325,
-       "13.0": 0.1722,
-       "13.5": 0.1722,
-       "14.0": 0.1345,
-       "14.5": 0.1345,
-       "15.0": 0.09735
+       "6.0": 0.716,
+       "6.5": 0.716,
+       "7.0": 0.61175,
+       "7.5": 0.61175,
+       "8.0": 0.5335,
+       "8.5": 0.5335,
+       "9.0": 0.43445,
+       "9.5": 0.43445,
+       "10.0": 0.3664,
+       "10.5": 0.3664,
+       "11.0": 0.29025,
+       "11.5": 0.29025,
+       "12.0": 0.2335,
+       "12.5": 0.2335,
+       "13.0": 0.17545,
+       "13.5": 0.17545,
+       "14.0": 0.13675,
+       "14.5": 0.13675,
+       "15.0": 0.09895
       },
       "home_rl_cover": {
-       "-1.5": 0.29305,
-       "1.5": 0.5494
+       "-1.5": 0.28625,
+       "1.5": 0.5423
       },
-      "model_nrfi_prob": 0.4254,
-      "model_yrfi_prob": 0.5746,
-      "nrfi_p_top": 0.3263,
-      "nrfi_p_bot": 0.3686,
+      "model_nrfi_prob": 0.4344,
+      "model_yrfi_prob": 0.5656,
+      "nrfi_p_top": 0.3274,
+      "nrfi_p_bot": 0.3541,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -11519,94 +11530,94 @@
     "props": [],
     "news": [
      {
-      "title": "Brandon Nimmo diagnosed with sprained AC joint in shoulder ",
+      "title": "Jaden Hill (shoulder) yet to begin throwing",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:40:19"
+      "when": "2026-06-30 08:25:55"
      },
      {
-      "title": "Tyler Glasnow (back) resumes throwing ",
+      "title": "Clay Holmes (fibula) to throw off mound this week",
       "body": "",
       "player": "",
-      "when": "2026-06-30 02:03:13"
+      "when": "2026-06-30 08:24:01"
      },
      {
-      "title": "Dane Myers leaves game early Monday ",
+      "title": "Blake Dunn (elbow) receives cortisone injection",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:55:16"
+      "when": "2026-06-30 08:19:37"
      },
      {
-      "title": "Keider Montero to be moved to bullpen ",
+      "title": "Patrick Sandoval (biceps) to make next rehab start Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:53:50"
+      "when": "2026-06-30 08:17:28"
      },
      {
-      "title": "Jazz Chisholm Jr. exits early Monday ",
+      "title": "Nick Pivetta (elbow) throws light bullpen session Saturday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:52:36"
+      "when": "2026-06-30 08:14:46"
      },
      {
-      "title": "Tanner Gordon (hip) to be activated Tuesday ",
+      "title": "Willy Adames (back) MRI reveals no structural damage",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:51:16"
+      "when": "2026-06-30 08:11:44"
      },
      {
-      "title": "Tomoyuki Sugano (finger) to have start pushed back",
+      "title": "Keaton Winn (elbow) throws bullpen session Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:50:01"
+      "when": "2026-06-30 08:05:58"
      },
      {
-      "title": "Brandon Pfaadt likely to be recalled Tuesday ",
+      "title": "Joel Peguero (hamstring) throws bullpen session Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:48:37"
+      "when": "2026-06-30 08:04:02"
      },
      {
-      "title": "Josh Walker recalled from Triple-A ",
+      "title": "Jakob Junis (heat exhaustion) to avoid IL",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:46:27"
+      "when": "2026-06-30 08:01:13"
      },
      {
-      "title": "Keegan Akin (elbow) placed on IL",
+      "title": "Stefan Raeth released by Mariners ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:45:40"
+      "when": "2026-06-30 07:56:14"
      },
      {
-      "title": "Trent Grisham (hamstring) could begin rehab assignment Tuesday ",
+      "title": "Cooper Criswell (shoulder) to undergo MRI July 6",
       "body": "",
       "player": "",
-      "when": "2026-06-30 01:44:08"
+      "when": "2026-06-30 07:54:38"
      },
      {
-      "title": "Cody Laweryson recalled from Triple-A",
+      "title": "Matt Brash (lat) to undergo MRI July 6",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:38:55"
+      "when": "2026-06-30 07:53:58"
      },
      {
-      "title": "Anthony Banda (lat) placed on IL, out months",
+      "title": "Xavier Edwards records stolen base Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:36:38"
+      "when": "2026-06-30 07:39:16"
      },
      {
-      "title": "Cam Smith (foot) in lineup Monday ",
+      "title": "Javier Sanoja has three-hit game Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:07:17"
+      "when": "2026-06-30 07:35:51"
      },
      {
-      "title": "Buddy Kennedy activated by Mariners ",
+      "title": "Griffin Conine blasts one over fence Monday",
       "body": "",
       "player": "",
-      "when": "2026-06-29 23:05:20"
+      "when": "2026-06-30 07:33:14"
      }
     ],
     "injuries": [
@@ -11621,7 +11632,7 @@
       "player": "Logan Evans",
       "norm": "logan evans",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -11635,28 +11646,28 @@
       "player": "Andrew Saalfrank",
       "norm": "andrew saalfrank",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Reese Olson",
       "norm": "reese olson",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Pablo Lopez",
       "norm": "pablo lopez",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Pierson Ohl",
       "norm": "pierson ohl",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -11670,903 +11681,217 @@
       "player": "Joey Wentz",
       "norm": "joey wentz",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Adam Mazur",
       "norm": "adam mazur",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Hayden Birdsong",
       "norm": "hayden birdsong",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Brooks Baldwin",
       "norm": "brooks baldwin",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Cody Ponce",
       "norm": "cody ponce",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Cade Horton",
       "norm": "cade horton",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Zach Eflin",
       "norm": "zach eflin",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Jonathan India",
       "norm": "jonathan india",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Angel Zerpa",
       "norm": "angel zerpa",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Carlos Correa",
       "norm": "carlos correa",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Jordan Westburg",
       "norm": "jordan westburg",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Mike Vasil",
       "norm": "mike vasil",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Brandon Walter",
       "norm": "brandon walter",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Robert Stephenson",
       "norm": "robert stephenson",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Ryan Pepiot",
       "norm": "ryan pepiot",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Bowden Francis",
       "norm": "bowden francis",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Shelby Miller",
       "norm": "shelby miller",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Porter Hodge",
       "norm": "porter hodge",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "RJ Petit",
       "norm": "rj petit",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Ronny Henriquez",
       "norm": "ronny henriquez",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Tylor Megill",
       "norm": "tylor megill",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Reed Garrett",
       "norm": "reed garrett",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Bryan Hoeing",
       "norm": "bryan hoeing",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Rowan Wick",
       "norm": "rowan wick",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Gunnar Hoglund",
       "norm": "gunnar hoglund",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Jose Berrios",
       "norm": "jose berrios",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Robby Snelling",
       "norm": "robby snelling",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Trey Sweeney",
       "norm": "trey sweeney",
       "team": "",
-      "status": "OUT",
+      "status": "IL60",
       "note": ""
      },
      {
       "player": "Jack Kochanowicz",
       "norm": "jack kochanowicz",
       "team": "",
-      "status": "IL60",
+      "status": "OUT",
       "note": ""
      },
      {
       "player": "Cristian Mena",
       "norm": "cristian mena",
       "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Roman Anthony",
-      "norm": "roman anthony",
-      "team": "",
       "status": "IL60",
       "note": ""
      },
      {
-      "player": "Wyatt Langford",
-      "norm": "wyatt langford",
+      "player": "Eugenio Suarez",
+      "norm": "eugenio suarez",
       "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Blake Dunn",
-      "norm": "blake dunn",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Hoby Milner",
-      "norm": "hoby milner",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jesus Sanchez",
-      "norm": "jesus sanchez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Phil Maton",
-      "norm": "phil maton",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Tony Santillan",
-      "norm": "tony santillan",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Marcelo Mayer",
-      "norm": "marcelo mayer",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Robert Suarez",
-      "norm": "robert suarez",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Daniel Susac",
-      "norm": "daniel susac",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Ryan McMahon",
-      "norm": "ryan mcmahon",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Ben Brown",
-      "norm": "ben brown",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Edward Cabrera",
-      "norm": "edward cabrera",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jaden Hill",
-      "norm": "jaden hill",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Lucas Giolito",
-      "norm": "lucas giolito",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Blake Treinen",
-      "norm": "blake treinen",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Michael Soroka",
-      "norm": "michael soroka",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Mark Leiter Jr.",
-      "norm": "mark leiter",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Isiah Kiner-Falefa",
-      "norm": "isiah kiner-falefa",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Jordan Lawlar",
-      "norm": "jordan lawlar",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Wenceel Perez",
-      "norm": "wenceel perez",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Michael Helman",
-      "norm": "michael helman",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Everson Pereira",
-      "norm": "everson pereira",
-      "team": "",
-      "status": "IL7",
-      "note": ""
-     },
-     {
-      "player": "Quinn Priester",
-      "norm": "quinn priester",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Will Wilson",
-      "norm": "will wilson",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jose Ramirez",
-      "norm": "jose ramirez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Coleman Crow",
-      "norm": "coleman crow",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Chase Dollander",
-      "norm": "chase dollander",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Adolis Garcia",
-      "norm": "adolis garcia",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ronald Acuna Jr.",
-      "norm": "ronald acuna",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Kyle Isbel",
-      "norm": "kyle isbel",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Tyler Gilbert",
-      "norm": "tyler gilbert",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Sebastian Rivero",
-      "norm": "sebastian rivero",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Oneil Cruz",
-      "norm": "oneil cruz",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Matt Brash",
-      "norm": "matt brash",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Yoan Moncada",
-      "norm": "yoan moncada",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jonathan Heasley",
-      "norm": "jonathan heasley",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Danny Jansen",
-      "norm": "danny jansen",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Jovani Moran",
-      "norm": "jovani moran",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Gustavo Campero",
-      "norm": "gustavo campero",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Trevor Story",
-      "norm": "trevor story",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Sean Murphy",
-      "norm": "sean murphy",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Nick Pivetta",
-      "norm": "nick pivetta",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Braden Shewmake",
-      "norm": "braden shewmake",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Brooks Kriske",
-      "norm": "brooks kriske",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Bailey Ober",
-      "norm": "bailey ober",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Blake Snell",
-      "norm": "blake snell",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Nick Mears",
-      "norm": "nick mears",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Graham Ashcraft",
-      "norm": "graham ashcraft",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Brant Hurter",
-      "norm": "brant hurter",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Enrique Hernandez",
-      "norm": "enrique hernandez",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Gavin Lux",
-      "norm": "gavin lux",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Luis Campusano",
-      "norm": "luis campusano",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Max Kranick",
-      "norm": "max kranick",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Carter Baumler",
-      "norm": "carter baumler",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Brenton Doyle",
-      "norm": "brenton doyle",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Lance McCullers Jr.",
-      "norm": "lance mccullers",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "James McCann",
-      "norm": "james mccann",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Clay Holmes",
-      "norm": "clay holmes",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ryan Jeffers",
-      "norm": "ryan jeffers",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Garrett Acton",
-      "norm": "garrett acton",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Kyle Farmer",
-      "norm": "kyle farmer",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Kris Bubic",
-      "norm": "kris bubic",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Jake Fraley",
-      "norm": "jake fraley",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Matt Waldron",
-      "norm": "matt waldron",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Tyler Glasnow",
-      "norm": "tyler glasnow",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Dean Kremer",
-      "norm": "dean kremer",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jose Butto",
-      "norm": "jose butto",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "James McArthur",
-      "norm": "james mcarthur",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Cody Bradford",
-      "norm": "cody bradford",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ryan Mountcastle",
-      "norm": "ryan mountcastle",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Yaramil Hiraldo",
-      "norm": "yaramil hiraldo",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Parker Meadows",
-      "norm": "parker meadows",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hunter Harvey",
-      "norm": "hunter harvey",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Danny Young",
-      "norm": "danny young",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Anthony Santander",
-      "norm": "anthony santander",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "AJ Smith-Shawver",
-      "norm": "aj smith-shawver",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "David Festa",
-      "norm": "david festa",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Jake Cousins",
-      "norm": "jake cousins",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Gavin Stone",
-      "norm": "gavin stone",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hayden Wesneski",
-      "norm": "hayden wesneski",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Yimi Garcia",
-      "norm": "yimi garcia",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Joe Musgrove",
-      "norm": "joe musgrove",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Drew Thorpe",
-      "norm": "drew thorpe",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Anthony Rendon",
-      "norm": "anthony rendon",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Hunter Greene",
-      "norm": "hunter greene",
-      "team": "",
-      "status": "D15",
-      "note": ""
-     },
-     {
-      "player": "Josiah Gray",
-      "norm": "josiah gray",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Justin Hagenman",
-      "norm": "justin hagenman",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Corbin Burnes",
-      "norm": "corbin burnes",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Colin Selby",
-      "norm": "colin selby",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Clarke Schmidt",
-      "norm": "clarke schmidt",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "DJ Herz",
-      "norm": "dj herz",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Manuel Rodriguez",
-      "norm": "manuel rodriguez",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Ky Bush",
-      "norm": "ky bush",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Joe Ross",
-      "norm": "joe ross",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Michael Kelly",
-      "norm": "michael kelly",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Jarred Kelenic",
-      "norm": "jarred kelenic",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Ethan Roberts",
-      "norm": "ethan roberts",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Matt Shaw",
-      "norm": "matt shaw",
-      "team": "",
-      "status": "IL10",
+      "status": "DTD",
       "note": ""
      },
      {
@@ -12577,6 +11902,41 @@
       "note": ""
      },
      {
+      "player": "Anthony Banda",
+      "norm": "anthony banda",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Richard Lovelady",
+      "norm": "richard lovelady",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Luke Raley",
+      "norm": "luke raley",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jazz Chisholm Jr.",
+      "norm": "jazz chisholm",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Dane Myers",
+      "norm": "dane myers",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
       "player": "Keegan Akin",
       "norm": "keegan akin",
       "team": "",
@@ -12584,8 +11944,43 @@
       "note": ""
      },
      {
+      "player": "Jeremy Pena",
+      "norm": "jeremy pena",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
       "player": "Tyler Soderstrom",
       "norm": "tyler soderstrom",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ethan Roberts",
+      "norm": "ethan roberts",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Mitchell Parker",
+      "norm": "mitchell parker",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Dominic Canzone",
+      "norm": "dominic canzone",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Matt Shaw",
+      "norm": "matt shaw",
       "team": "",
       "status": "IL10",
       "note": ""
@@ -12598,13 +11993,6 @@
       "note": ""
      },
      {
-      "player": "Jose Suarez",
-      "norm": "jose suarez",
-      "team": "",
-      "status": "PL",
-      "note": ""
-     },
-     {
       "player": "David Morgan",
       "norm": "david morgan",
       "team": "",
@@ -12612,10 +12000,920 @@
       "note": ""
      },
      {
-      "player": "Anthony Banda",
-      "norm": "anthony banda",
+      "player": "Yandy Diaz",
+      "norm": "yandy diaz",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Casey Schmitt",
+      "norm": "casey schmitt",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Jac Caglianone",
+      "norm": "jac caglianone",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
+      "player": "Marcus Semien",
+      "norm": "marcus semien",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Steven Matz",
+      "norm": "steven matz",
       "team": "",
       "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Johan Rojas",
+      "norm": "johan rojas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Cody Freeman",
+      "norm": "cody freeman",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Zack Gelof",
+      "norm": "zack gelof",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Spencer Horwitz",
+      "norm": "spencer horwitz",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Burch Smith",
+      "norm": "burch smith",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Maikel Garcia",
+      "norm": "maikel garcia",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jack Leiter",
+      "norm": "jack leiter",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Josh Ekness",
+      "norm": "josh ekness",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Liam Hicks",
+      "norm": "liam hicks",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Blas Castano",
+      "norm": "blas castano",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Mike Trout",
+      "norm": "mike trout",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ryne Nelson",
+      "norm": "ryne nelson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Max Scherzer",
+      "norm": "max scherzer",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Gleyber Torres",
+      "norm": "gleyber torres",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Spencer Strider",
+      "norm": "spencer strider",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Brad Keller",
+      "norm": "brad keller",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Angel Martinez",
+      "norm": "angel martinez",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Daniel Palencia",
+      "norm": "daniel palencia",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jorge Polanco",
+      "norm": "jorge polanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Carlos Estevez",
+      "norm": "carlos estevez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Grayson Rodriguez",
+      "norm": "grayson rodriguez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Vinnie Pasquantino",
+      "norm": "vinnie pasquantino",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Keaton Winn",
+      "norm": "keaton winn",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Trent Grisham",
+      "norm": "trent grisham",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Wilber Dotel",
+      "norm": "wilber dotel",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brent Rooker",
+      "norm": "brent rooker",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ramon Urias",
+      "norm": "ramon urias",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jalen Beeks",
+      "norm": "jalen beeks",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Will Smith",
+      "norm": "will smith",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jameson Taillon",
+      "norm": "jameson taillon",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Austin Hays",
+      "norm": "austin hays",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "LaMonte Wade Jr.",
+      "norm": "lamonte wade",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Cooper Criswell",
+      "norm": "cooper criswell",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brian Fitzpatrick",
+      "norm": "brian fitzpatrick",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Chris Bassitt",
+      "norm": "chris bassitt",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Adam Frazier",
+      "norm": "adam frazier",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Carlos Rodriguez",
+      "norm": "carlos rodriguez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Chris Devenski",
+      "norm": "chris devenski",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Aaron Judge",
+      "norm": "aaron judge",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Ramon Laureano",
+      "norm": "ramon laureano",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "DL Hall",
+      "norm": "dl hall",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Garrett Crochet",
+      "norm": "garrett crochet",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Gordon",
+      "norm": "tanner gordon",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ryan Fernandez",
+      "norm": "ryan fernandez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jeremiah Estrada",
+      "norm": "jeremiah estrada",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Travis d'Arnaud",
+      "norm": "travis darnaud",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Rob Zastryzny",
+      "norm": "rob zastryzny",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Joe Mantiply",
+      "norm": "joe mantiply",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Nick Sogard",
+      "norm": "nick sogard",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Chris Martin",
+      "norm": "chris martin",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brusdar Graterol",
+      "norm": "brusdar graterol",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joel Peguero",
+      "norm": "joel peguero",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Andrew Nardi",
+      "norm": "andrew nardi",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Robert Garcia",
+      "norm": "robert garcia",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Welinton Herrera",
+      "norm": "welinton herrera",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Janson Junk",
+      "norm": "janson junk",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Luis Severino",
+      "norm": "luis severino",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Harrison Bader",
+      "norm": "harrison bader",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jordan Leasure",
+      "norm": "jordan leasure",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Munetaka Murakami",
+      "norm": "munetaka murakami",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Jose Quintana",
+      "norm": "jose quintana",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Lenyn Sosa",
+      "norm": "lenyn sosa",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Javier Baez",
+      "norm": "javier baez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Luis Robert Jr.",
+      "norm": "luis robert",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jesse Scholtens",
+      "norm": "jesse scholtens",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Denzel Clarke",
+      "norm": "denzel clarke",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Noah Schultz",
+      "norm": "noah schultz",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Jake Irvin",
+      "norm": "jake irvin",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Logan Henderson",
+      "norm": "logan henderson",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ke'Bryan Hayes",
+      "norm": "kebryan hayes",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Yusei Kikuchi",
+      "norm": "yusei kikuchi",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Kutter Crawford",
+      "norm": "kutter crawford",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ben Casparius",
+      "norm": "ben casparius",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Brendan Donovan",
+      "norm": "brendan donovan",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Riley Martin",
+      "norm": "riley martin",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Max Fried",
+      "norm": "max fried",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Ben Joyce",
+      "norm": "ben joyce",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Addison Barger",
+      "norm": "addison barger",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Justin Verlander",
+      "norm": "justin verlander",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Edwin Diaz",
+      "norm": "edwin diaz",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bennett Sousa",
+      "norm": "bennett sousa",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brandon Lockridge",
+      "norm": "brandon lockridge",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Cole Ragans",
+      "norm": "cole ragans",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Emilio Pagan",
+      "norm": "emilio pagan",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Patrick Sandoval",
+      "norm": "patrick sandoval",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Murray",
+      "norm": "tanner murray",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "German Marquez",
+      "norm": "german marquez",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Cole Sands",
+      "norm": "cole sands",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Brandon Williamson",
+      "norm": "brandon williamson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Giancarlo Stanton",
+      "norm": "giancarlo stanton",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
+      "player": "Landon Knack",
+      "norm": "landon knack",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Edwin Uceta",
+      "norm": "edwin uceta",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Triston Casas",
+      "norm": "triston casas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bailey Horn",
+      "norm": "bailey horn",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Mick Abel",
+      "norm": "mick abel",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "Cristian Javier",
+      "norm": "cristian javier",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Prelander Berroa",
+      "norm": "prelander berroa",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ken Waldichuk",
+      "norm": "ken waldichuk",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Johan Oviedo",
+      "norm": "johan oviedo",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Carlos Vargas",
+      "norm": "carlos vargas",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "McCade Brown",
+      "norm": "mccade brown",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Justin Steele",
+      "norm": "justin steele",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Blake Walston",
+      "norm": "blake walston",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Bobby Miller",
+      "norm": "bobby miller",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Ronel Blanco",
+      "norm": "ronel blanco",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Steven Wilson",
+      "norm": "steven wilson",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tyler Austin",
+      "norm": "tyler austin",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jordan Montgomery",
+      "norm": "jordan montgomery",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Felix Bautista",
+      "norm": "felix bautista",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "A.J. Puk",
+      "norm": "aj puk",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Dedniel Nunez",
+      "norm": "dedniel nunez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Justin Martinez",
+      "norm": "justin martinez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jason Foley",
+      "norm": "jason foley",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Evan Phillips",
+      "norm": "evan phillips",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Alec Marsh",
+      "norm": "alec marsh",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Kris Bryant",
+      "norm": "kris bryant",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Trevor Williams",
+      "norm": "trevor williams",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joe Jimenez",
+      "norm": "joe jimenez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Tanner Houck",
+      "norm": "tanner houck",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Jackson Jobe",
+      "norm": "jackson jobe",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Spencer Schwellenbach",
+      "norm": "spencer schwellenbach",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Randy Rodriguez",
+      "norm": "randy rodriguez",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
+      "player": "Joe Ross",
+      "norm": "joe ross",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Jarred Kelenic",
+      "norm": "jarred kelenic",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Michael Kelly",
+      "norm": "michael kelly",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Jose Suarez",
+      "norm": "jose suarez",
+      "team": "",
+      "status": "PL",
       "note": ""
      },
      {
@@ -12623,20 +12921,6 @@
       "norm": "david bednar",
       "team": "",
       "status": "PL",
-      "note": ""
-     },
-     {
-      "player": "Richard Lovelady",
-      "norm": "richard lovelady",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Mitchell Parker",
-      "norm": "mitchell parker",
-      "team": "",
-      "status": "IL15",
       "note": ""
      },
      {
@@ -12724,13 +13008,6 @@
       "note": ""
      },
      {
-      "player": "Luis Robert Jr.",
-      "norm": "luis robert",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
       "player": "Jaxon Jelkin",
       "norm": "jaxon jelkin",
       "team": "",
@@ -12742,272 +13019,6 @@
       "norm": "james nunnallee",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Levonas",
-      "norm": "chris levonas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "J.C. Mejia",
-      "norm": "jc mejia",
-      "team": "",
-      "status": "SUS",
-      "note": ""
-     },
-     {
-      "player": "Starlyn Caba",
-      "norm": "starlyn caba",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Mason Ligenza",
-      "norm": "mason ligenza",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Erik Parker",
-      "norm": "erik parker",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "David Bote",
-      "norm": "david bote",
-      "team": "",
-      "status": "RST",
-      "note": ""
-     },
-     {
-      "player": "LaMonte Wade Jr.",
-      "norm": "lamonte wade",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Anson Seibert",
-      "norm": "anson seibert",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kyle-DUP Dernedde-DUP",
-      "norm": "kyle-dup dernedde-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Ryan-DUP Webb-DUP",
-      "norm": "ryan-dup webb-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Stuart Fairchild",
-      "norm": "stuart fairchild",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Trevor-DUP Kuncl-DUP",
-      "norm": "trevor-dup kuncl-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Adrian Areizaga",
-      "norm": "adrian areizaga",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Lavarnway",
-      "norm": "ryan lavarnway",
-      "team": "",
-      "status": "RET",
-      "note": ""
-     },
-     {
-      "player": "Jack-DUP Young-DUP",
-      "norm": "jack-dup young-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Eduarniel Nunez",
-      "norm": "eduarniel nunez",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Yahil-DUP Melendez-DUP",
-      "norm": "yahil-dup melendez-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Christian Roa",
-      "norm": "christian roa",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Vince Velasquez",
-      "norm": "vince velasquez",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "P.J.-DUP Labriola-DUP",
-      "norm": "pj-dup labriola-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Sam Huff",
-      "norm": "sam huff",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Kyle Nicolas",
-      "norm": "kyle nicolas",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Nate-DUP Nankil-DUP",
-      "norm": "nate-dup nankil-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Brett Harris",
-      "norm": "brett harris",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Stephen Kolek",
-      "norm": "stephen kolek",
-      "team": "",
-      "status": "PL",
-      "note": ""
-     },
-     {
-      "player": "Ryne Nelson",
-      "norm": "ryne nelson",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Johan Rojas",
-      "norm": "johan rojas",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Cody Freeman",
-      "norm": "cody freeman",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Marcus Semien",
-      "norm": "marcus semien",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Zack Gelof",
-      "norm": "zack gelof",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Riley Martin",
-      "norm": "riley martin",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Spencer Horwitz",
-      "norm": "spencer horwitz",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Steven Matz",
-      "norm": "steven matz",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Maikel Garcia",
-      "norm": "maikel garcia",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Burch Smith",
-      "norm": "burch smith",
-      "team": "",
-      "status": "IL60",
-      "note": ""
-     },
-     {
-      "player": "Blas Castano",
-      "norm": "blas castano",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
-      "player": "Liam Hicks",
-      "norm": "liam hicks",
-      "team": "",
-      "status": "IL10",
-      "note": ""
-     },
-     {
-      "player": "Josh Ekness",
-      "norm": "josh ekness",
-      "team": "",
-      "status": "IL60",
       "note": ""
      }
     ]
@@ -13022,9 +13033,9 @@
  },
  "performance": {
   "overall": {
-   "graded_games": 271,
-   "model_brier": 0.249,
-   "model_log_loss": 0.6919,
+   "graded_games": 273,
+   "model_brier": 0.2495,
+   "model_log_loss": 0.6929,
    "bets": 195,
    "bet_win_rate": 0.4615,
    "units": -0.45,
@@ -13035,9 +13046,9 @@
   },
   "by_sport": {
    "MLB": {
-    "graded_games": 241,
-    "model_brier": 0.2507,
-    "model_log_loss": 0.6951,
+    "graded_games": 243,
+    "model_brier": 0.2512,
+    "model_log_loss": 0.6962,
     "bets": 156,
     "bet_win_rate": 0.4808,
     "units": 2.2,
@@ -13073,10 +13084,10 @@
   }
  },
  "nrfi_calibration": {
-  "n": 26,
+  "n": 28,
   "model_brier": 0.2518,
-  "base_brier": 0.2485,
-  "actual_yrfi": 0.4615
+  "base_brier": 0.2487,
+  "actual_yrfi": 0.4643
  },
- "odds_api_credits": 24501
+ "odds_api_credits": 24497
 }
