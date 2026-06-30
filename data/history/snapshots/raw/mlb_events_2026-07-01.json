@@ -1,0 +1,239 @@
+[
+ {
+  "id": 99388,
+  "sr_id": "9f24eab7-383e-45a9-be54-508709bb48e5",
+  "sport": "MLB",
+  "scheduled": "2026-07-01 16:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/baltimore-orioles-vs-chicago-white-sox/?date=2026-07-01",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": null,
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 39,
+      "L": 47,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 91,
+   "forecast_wind_speed": 7,
+   "forecast_wind_direction": "SSW",
+   "forecast_wind_degree": 206,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.58
+  },
+  "broadcasts": [
+   {
+    "network": "MASN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98180,
+  "sr_id": "1a9da513-0eea-4aad-907b-b35b0ca8e426",
+  "sport": "MLB",
+  "scheduled": "2026-07-01 17:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CLE",
+  "visitor": "TEX",
+  "link": "/mlb/matchups/cleveland-guardians-vs-texas-rangers/?date=2026-07-01",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43689",
+    "name": "Joey Cantillo",
+    "link": "/mlb/props/joey-cantillo/",
+    "player": {
+     "short_name": "J. Cantillo",
+     "first_name": "Joey",
+     "last_name": "Cantillo",
+     "image": "https://images.fantasypros.com/images/players/mlb/43689/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "joey-cantillo",
+     "jersey_number": 54
+    }
+   },
+   "visitor_probable": {
+    "id": "7146",
+    "name": "MacKenzie Gore",
+    "link": "/mlb/props/mackenzie-gore/",
+    "player": {
+     "short_name": "M. Gore",
+     "first_name": "MacKenzie",
+     "last_name": "Gore",
+     "image": "https://images.fantasypros.com/images/players/mlb/7146/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "slug": "mackenzie-gore",
+     "jersey_number": 1
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CLE",
+   "season": "2025",
+   "split": "A",
+   "r": "0.972",
+   "1b": "0.981",
+   "2b": "1.045",
+   "3b": "0.674",
+   "hr": "0.924",
+   "name": "Progressive Field"
+  },
+  "venue": {
+   "name": "Progressive Field",
+   "address": "2401 Ontario Street",
+   "city": "Cleveland",
+   "state": "OH",
+   "country": "USA",
+   "zip": "44115",
+   "surface": "grass",
+   "capacity": 34788,
+   "stadium_type": "outdoor",
+   "id": "2b0ccd49-4d87-4996-ac4d-27ffc7ee4c16"
+  },
+  "participants": [
+   {
+    "id": "CLE",
+    "name": "Guardians",
+    "link": "/mlb/teams/cleveland-guardians/",
+    "team": {
+     "city": "Cleveland",
+     "abbreviation": "CLE",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 41,
+      "T": 0
+     },
+     "slug": "cleveland-guardians",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 43,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "texas-rangers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 92,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "W",
+   "forecast_wind_degree": 278,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Clear",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.58
+  },
+  "broadcasts": [
+   {
+    "network": "RSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
