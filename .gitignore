@@ -21,3 +21,6 @@ venv/
 
 # nflverse PBP — free, re-downloadable; not committed (see data/history/pbp/nfl/README.md)
 data/history/pbp/**/*.parquet
+
+# Local agent scratch tooling (smoke harness, backtest sweeps) — not part of the repo
+scratchpad/
