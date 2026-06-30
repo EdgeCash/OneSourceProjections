@@ -72,6 +72,22 @@ def _market_eval(p_model_a: float, a_price, b_price) -> dict:
     return out
 
 
+def _nb_prob_over(line_int: int, mean: float) -> float:
+    """P(total > line_int) under a negative binomial matching the game sim's run
+    dispersion: mean ``mean``, variance ``mean × RUN_DISPERSION``. This mirrors
+    the distribution ``game.draw_runs`` samples from, so an off-grid total line is
+    priced consistently with the simulation instead of from a thinner Poisson.
+    Falls back to Poisson when dispersion ≤ 1 (the sim does the same)."""
+    from scipy import stats as _st
+
+    d = config.RUN_DISPERSION
+    if d <= 1.0 or mean <= 0:
+        return float(1 - _st.poisson.cdf(line_int, mean))
+    p = 1.0 / d                 # var/mean = 1/p  ->  p = 1/d
+    n = mean / (d - 1.0)        # mean = n(1-p)/p ->  n = mean/(d-1)
+    return float(1 - _st.nbinom.cdf(line_int, n, p))
+
+
 # ---------------------------------------------------------------------------
 # Reference data
 # ---------------------------------------------------------------------------
@@ -722,7 +738,11 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                 over_probs = row.get("over_probs") or {}
                 p = over_probs.get(line, over_probs.get(str(line)))
                 if p is None:
-                    p = float(1 - _st.poisson.cdf(int(line), row["proj_total"]))
+                    # Off-grid line: price it from a negative binomial matching the
+                    # simulation's run dispersion (var = mean × RUN_DISPERSION), NOT
+                    # a Poisson (var = mean). A Poisson here overstates P(over) on
+                    # below-mean lines and contradicts the model we actually drew.
+                    p = _nb_prob_over(int(line), float(row["proj_total"]))
                 out.update({"total_line": line, "over_odds": float(best_o["odds"]),
                             "model_over_prob": round(float(p), 4)})
                 under_price = None
