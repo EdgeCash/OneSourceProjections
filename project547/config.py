@@ -86,6 +86,21 @@ STARTER_INNINGS_SHARE = 5.3 / 9.0
 # full weight (1.0) is appropriate and validated best in backtests.
 PARK_WEIGHT = 1.0
 
+# Temperature effect on run scoring (outdoor games only). Warm air is less dense,
+# so the ball carries — a real, well-documented effect. Measured on 2021-25
+# game_context: total runs rise ~0.44 per +10F (≈0.5%/F of the ~8.9-run mean).
+# Applied as a game-level multiplier on both teams' expected runs (scales the
+# total, leaves the margin/win-prob untouched). TEMP_COEF is per-degree; 0 = off.
+# Tuned on the walk-forward totals MAE; skipped for domes/closed roofs.
+# TEMP_COEF tuned on the walk-forward backtest (MLB 2022-25, ~8k outdoor games):
+# totals MAE 3.520 -> 3.511 and RMSE 4.449 -> 4.436 with near-zero bias at 0.003.
+# (Lower than the raw 0.005 runs/°F regression because team form already carries
+# part of the scoring environment, so the marginal per-game coefficient is
+# smaller.) 0 = off.
+TEMP_COEF = 0.003          # fractional run change per °F away from baseline
+TEMP_BASELINE_F = 72.0     # neutral temperature (no adjustment)
+TEMP_CLAMP = 0.08          # cap the total swing at ±8% (guards bad/extreme temps)
+
 # Monte Carlo draws for the game simulation.
 SIM_DRAWS = 20_000
 

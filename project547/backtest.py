@@ -18,6 +18,7 @@ Limitations worth knowing when reading the output:
 
 from __future__ import annotations
 
+import json
 import math
 import statistics
 from collections import defaultdict, deque
@@ -27,11 +28,11 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from . import config, history, odds, parks
+from . import config, history, odds, parks, teams
 from .models import game as mlb_game
 from .models import generic
 from .models import props as mlb_props
-from .models.elo import Elo
+from .models.elo import Elo, EloConfig
 from .names import normalize
 from .sports import SPORTS
 
@@ -113,6 +114,40 @@ def _mlb_games(seasons: list[int], use_results_2026: bool) -> list[dict]:
     rows = [r for r in rows if pd.notna(r["home_score"]) and pd.notna(r["away_score"])]
     rows.sort(key=lambda r: r["date"])
     return rows
+
+
+def mlb_temp_table(seasons: list[int]) -> dict:
+    """{(date 'YYYY-MM-DD', canon home team): first-pitch temp_f} from the
+    committed game_context. Dome/closed-roof games map to None so the model
+    skips the temperature adjustment there. Enables walk-forward validation of
+    the weather effect (the live pipeline already fetches temp per game)."""
+    import gzip
+    from . import teams as _teams
+    out: dict = {}
+    for s in seasons:
+        p = history.HISTORY_DIR / "backfill" / "mlb" / str(s) / "game_context.jsonl.gz"
+        if not p.exists():
+            continue
+        with gzip.open(p, "rt") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                r = json.loads(line)
+                d = str(r.get("date") or "")
+                if len(d) == 8:                       # YYYYMMDD -> YYYY-MM-DD
+                    d = f"{d[:4]}-{d[4:6]}-{d[6:]}"
+                home = _teams.canon("MLB", r.get("home_team", ""))
+                sky = (r.get("sky") or "").lower()
+                temp = r.get("temp_f")
+                try:
+                    temp = float(temp)
+                except (TypeError, ValueError):
+                    temp = None
+                # dome/closed roof -> no weather; guard implausible temps
+                if "dome" in sky or "roof" in sky or temp is None or not (20 <= temp <= 115):
+                    temp = None
+                out[(d, home)] = temp
+    return out
 
 
 def starter_fip_table(seasons: list[int], league_fip: float = 4.10,
@@ -316,7 +351,8 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
              home_opp_bp: float | None = None,
              away_opp_bp: float | None = None,
              park_venue: float = 1.0,
-             home_own_pf: float = 1.0, away_own_pf: float = 1.0):
+             home_own_pf: float = 1.0, away_own_pf: float = 1.0,
+             temp_f: float | None = None):
     """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn).
 
     home_opp_xfip / away_opp_xfip are the FIP of the starter each team
@@ -329,11 +365,13 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
         hi = mlb_game.TeamInputs(name="h", runs_per_game=h.scored,
                                  opp_starter_xfip=home_opp_xfip,
                                  opp_bullpen_xfip=home_opp_bp,
-                                 park_factor=park_venue, own_home_pf=home_own_pf)
+                                 park_factor=park_venue, own_home_pf=home_own_pf,
+                                 temp_f=temp_f)
         ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored,
                                  opp_starter_xfip=away_opp_xfip,
                                  opp_bullpen_xfip=away_opp_bp,
-                                 park_factor=park_venue, own_home_pf=away_own_pf)
+                                 park_factor=park_venue, own_home_pf=away_own_pf,
+                                 temp_f=temp_f)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
         mu_h, mu_a = proj.home_exp_runs, proj.away_exp_runs
@@ -476,17 +514,40 @@ class BetLog:
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
-                      use_park: bool = False, shrink: float = 0.0,
+                      use_park: bool = False, use_temp: bool = False,
+                      shrink: float = 0.0,
                       rest_coeff: float | None = None,
                       opponent_adjust: bool | None = None,
                       qb_coeff: float | None = None,
+                      elo_k: float | None = None,
+                      elo_regress: float | None = None,
+                      elo_home_edge: float | None = None,
+                      elo_blend: float | None = None,
+                      sigma_margin: float | None = None,
+                      sigma_total: float | None = None,
                       detail: bool = False) -> dict:
+    import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
+    # sigma overrides for calibration sweeps (frozen dataclass -> replace).
+    if sigma_margin is not None or sigma_total is not None:
+        sport = _dc.replace(
+            sport,
+            sigma_margin=sport.sigma_margin if sigma_margin is None else sigma_margin,
+            sigma_total=sport.sigma_total if sigma_total is None else sigma_total)
     rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
     qb_coeff = sport.qb_coeff if qb_coeff is None else qb_coeff
     if opponent_adjust is None:
         opponent_adjust = sport.opponent_adjust
+    # Elo params: default to the sport config (so the backtest models what
+    # production actually runs — the live pipeline builds Elo from sport.elo_*),
+    # override to sweep. Previously this used a bare Elo() with library defaults,
+    # so it silently validated k=16/regress=0.25/home_edge=50 regardless of the
+    # sport's configured values.
+    elo_k = sport.elo_k if elo_k is None else elo_k
+    elo_regress = sport.elo_regress if elo_regress is None else elo_regress
+    elo_home_edge = sport.elo_home_edge if elo_home_edge is None else elo_home_edge
+    elo_blend = sport.elo_blend if elo_blend is None else elo_blend
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
              else _wnba_games(seasons) if sport_key == "WNBA"
              else _generic_games(sport_key, seasons))
@@ -498,13 +559,15 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     consensus = closing_consensus(sport_key)
     is_mlb = sport_key == "MLB"
     fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
+    temp_tbl = mlb_temp_table(seasons) if (is_mlb and use_temp) else {}
     bp_table = bullpen_fip_table(seasons) if (is_mlb and use_bullpen) else {}
 
     # Elo (generic sports): maintain ratings walk-forward, pre-warmed from
     # seasons before the test window so early-window ratings are informed.
     elo = None
-    if not is_mlb and sport.elo_blend > 0:
-        elo = Elo()
+    if not is_mlb and elo_blend > 0:
+        elo = Elo(EloConfig(k=elo_k, home_edge=elo_home_edge,
+                            season_regress=elo_regress))
         _prewarm_elo(elo, sport_key, min(seasons))
 
     # accuracy accumulators
@@ -536,12 +599,14 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 home_pf, away_pf = pf_venue, parks.factor(g["away"])
             else:
                 pf_venue = home_pf = away_pf = 1.0
+            temp_f = temp_tbl.get((g["date"], teams.canon("MLB", g["home"]))) \
+                if temp_tbl else None
             hwp, tmean, prob_over, cover_fn, gp_obj = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
-                home_bp, away_bp, pf_venue, home_pf, away_pf)
+                home_bp, away_bp, pf_venue, home_pf, away_pf, temp_f=temp_f)
             if elo is not None:
                 ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
-                hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
+                hwp = (1 - elo_blend) * hwp + elo_blend * ewp
             if rest_coeff and sport.sigma_margin > 0:
                 from datetime import date as _D
                 gd = _D.fromisoformat(g["date"])

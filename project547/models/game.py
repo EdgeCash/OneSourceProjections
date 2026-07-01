@@ -25,6 +25,7 @@ class TeamInputs:
     opp_bullpen_xfip: float | None = None  # opposing bullpen FIP (None = unknown)
     park_factor: float = 1.0      # run factor of the game's venue (1.0 neutral)
     own_home_pf: float = 1.0      # team's own home-park factor (de-bias the rate)
+    temp_f: float | None = None   # first-pitch temperature (None = unknown/dome)
 
 
 @dataclass
@@ -62,6 +63,14 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
         own_bias = 0.5 * team.own_home_pf + 0.5
         park_mult = team.park_factor / own_bias
         base = base * (1 + config.PARK_WEIGHT * (park_mult - 1))
+
+    # Temperature: warm air carries the ball -> more scoring. A game-level
+    # multiplier (same for both teams) so it moves the total, not the margin.
+    # Skipped when temp is unknown (domes/closed roofs pass temp_f=None).
+    if team.temp_f is not None and config.TEMP_COEF:
+        adj = config.TEMP_COEF * (float(team.temp_f) - config.TEMP_BASELINE_F)
+        adj = float(np.clip(adj, -config.TEMP_CLAMP, config.TEMP_CLAMP))
+        base = base * (1 + adj)
 
     if is_home:
         base += config.HOME_FIELD_RUNS / 2
