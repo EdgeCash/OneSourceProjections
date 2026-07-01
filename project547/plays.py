@@ -223,8 +223,13 @@ def game_play_candidates(date: str, day_blob: dict,
     """Moneyline/total bets in ``day_blob`` with model EV >= ``min_edge``
     (default SHARP_EV_MIN). Each carries a ``tier`` — 'sharp' (in the validated
     band, push-worthy), 'stale' (EV too high, likely a stale line -> verify), or
-    'watch' (between) — and a dedup key."""
+    'watch' (between) — a ``gate`` status (the market's demonstrated-edge verdict
+    from realized CLV), and a dedup key. Plays in a GATED market (proven no edge)
+    are dropped; only CLEARED markets can be 'sharp' (pushed) — a PROBATION market
+    is surfaced for tracking but never headline-pushed until it proves out."""
+    from . import edge_gate
     min_edge = config.SHARP_EV_MIN if min_edge is None else min_edge
+    gates = edge_gate.gate_table()
     out = []
     for sport, blob in (day_blob or {}).items():
         for g in blob.get("games", []) or []:
@@ -234,15 +239,17 @@ def game_play_candidates(date: str, day_blob: dict,
                 ev = g.get(f"{side}_ml_ev", g.get(f"{side}_ev"))
                 if price and ev is not None and ev >= min_edge:
                     out.append(_game_play(date, sport, label, "moneyline", side,
-                                          g.get(f"{side}_team", side), price, ev))
+                                          g.get(f"{side}_team", side), price, ev,
+                                          gate=edge_gate.status_for(sport, "moneyline", gates)))
             line = g.get("total_line")
             for side, odds_key, ev_key in (("over", "over_odds", "over_ev"),
                                            ("under", "under_odds", "under_ev")):
                 price, ev = g.get(odds_key), g.get(ev_key)
                 if line is not None and price and ev is not None and ev >= min_edge:
                     out.append(_game_play(date, sport, label, "total", side,
-                                          f"{side} {line:g}", price, ev, line=line))
-    return out
+                                          f"{side} {line:g}", price, ev, line=line,
+                                          gate=edge_gate.status_for(sport, "total", gates)))
+    return [c for c in out if c["curatable"]]        # drop GATED (no-edge) markets
 
 
 def _tier(ev: float) -> str:
@@ -253,13 +260,20 @@ def _tier(ev: float) -> str:
     return "watch"              # between SHARP_EV_MAX and STALE_EV
 
 
-def _game_play(date, sport, game, market, side, pick, price, ev, line=None) -> dict:
+def _game_play(date, sport, game, market, side, pick, price, ev, line=None,
+               gate: str = "probation") -> dict:
+    from . import edge_gate
     tier = _tier(float(ev))
+    # a play is only "sharp" (pushed) when its EV is in-band AND the market has a
+    # demonstrated edge (gate CLEARED). PROBATION/GATED never headline-push.
+    sharp = tier == "sharp" and gate == edge_gate.CLEARED
     return {"key": f"game|{date}|{sport}|{game}|{market}|{side}",
             "date": date, "sport": sport, "game": game, "market": market,
             "side": side, "pick": pick, "price": price, "ev": round(float(ev), 4),
-            "line": line, "tier": tier,
-            "sharp": tier == "sharp", "verify": tier == "stale"}
+            "line": line, "tier": tier, "gate": gate,
+            "curatable": edge_gate.is_curatable(gate),
+            "stake_mult": edge_gate.stake_mult(gate),
+            "sharp": sharp, "verify": tier == "stale"}
 
 
 # ---------------------------------------------------------------------------

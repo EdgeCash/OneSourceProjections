@@ -252,10 +252,12 @@ def main():
             # push them — the only notification stream is the curated 2-6% game
             # plays (the band the owner is paper-testing for ROI).
 
-            # push ONLY the curated 2-6% band ("sharp" tier); 'watch'/'stale'
-            # tiers are tracked in the ledger but never texted.
+            # push ONLY the curated 2-6% band that also clears the demonstrated-
+            # edge gate (the `sharp` flag = in-band EV AND market CLEARED by CLV).
+            # 'watch'/'stale' tiers and probation/gated markets are tracked in the
+            # ledger but never texted — we only headline a market we've proven.
             sharp = [c for c in plays.game_play_candidates(d, slates.get(d, {}))
-                     if c.get("tier") == "sharp" and c["key"] not in notified]
+                     if c.get("sharp") and c["key"] not in notified]
             if sharp:
                 gkeys = {c["key"] for c in sharp}
                 pid = plays.register_pending("game", d, gkeys)
