@@ -83,9 +83,19 @@ SPORTS: dict[str, Sport] = {
     ),
     "WNBA": Sport(
         key="WNBA", espn_path="basketball/wnba", model="normal",
-        league_ppg=82.0, hfa=2.5, sigma_margin=11.5, sigma_total=15.0,
+        # sigma_margin/sigma_total MEASURED from walk-forward residuals (2021-26,
+        # 1312 games): margin-prediction error SD 12.7 and total-prediction error
+        # SD 17.0. The prior 11.5/15.0 were too tight -> the normal model was
+        # overconfident on spreads/moneylines and totals; matching sigma to the
+        # measured error SD calibrates both.
+        league_ppg=82.0, hfa=2.5, sigma_margin=12.7, sigma_total=17.0,
         in_season_months=(5, 6, 7, 8, 9, 10), form_days=45,
         elo_blend=0.65,  # 0.35 off/def model + 0.65 Elo (backtested)
+        # season_regress 0.5 (was 0.25): the k×regress sweep improves Brier at
+        # every k with heavier between-season regression (short WNBA season), and
+        # 0.5 matches 538's WNBA setting. NOTE: k stays 16 — the sweep shows
+        # raising k toward 538's 28-32 HURTS us (Brier 0.2152 -> 0.2182 at k=32).
+        elo_regress=0.5,
         score_method="multiplicative",
         # opponent_adjust and rest were tested per the model audit (2021-26
         # backtest): opponent_adjust is neutral (ML Brier 0.2162 either way) and

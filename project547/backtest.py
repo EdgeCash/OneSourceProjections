@@ -31,7 +31,7 @@ from . import config, history, odds, parks
 from .models import game as mlb_game
 from .models import generic
 from .models import props as mlb_props
-from .models.elo import Elo
+from .models.elo import Elo, EloConfig
 from .names import normalize
 from .sports import SPORTS
 
@@ -480,6 +480,10 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       rest_coeff: float | None = None,
                       opponent_adjust: bool | None = None,
                       qb_coeff: float | None = None,
+                      elo_k: float | None = None,
+                      elo_regress: float | None = None,
+                      elo_home_edge: float | None = None,
+                      elo_blend: float | None = None,
                       detail: bool = False) -> dict:
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
@@ -487,6 +491,15 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     qb_coeff = sport.qb_coeff if qb_coeff is None else qb_coeff
     if opponent_adjust is None:
         opponent_adjust = sport.opponent_adjust
+    # Elo params: default to the sport config (so the backtest models what
+    # production actually runs — the live pipeline builds Elo from sport.elo_*),
+    # override to sweep. Previously this used a bare Elo() with library defaults,
+    # so it silently validated k=16/regress=0.25/home_edge=50 regardless of the
+    # sport's configured values.
+    elo_k = sport.elo_k if elo_k is None else elo_k
+    elo_regress = sport.elo_regress if elo_regress is None else elo_regress
+    elo_home_edge = sport.elo_home_edge if elo_home_edge is None else elo_home_edge
+    elo_blend = sport.elo_blend if elo_blend is None else elo_blend
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
              else _wnba_games(seasons) if sport_key == "WNBA"
              else _generic_games(sport_key, seasons))
@@ -503,8 +516,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     # Elo (generic sports): maintain ratings walk-forward, pre-warmed from
     # seasons before the test window so early-window ratings are informed.
     elo = None
-    if not is_mlb and sport.elo_blend > 0:
-        elo = Elo()
+    if not is_mlb and elo_blend > 0:
+        elo = Elo(EloConfig(k=elo_k, home_edge=elo_home_edge,
+                            season_regress=elo_regress))
         _prewarm_elo(elo, sport_key, min(seasons))
 
     # accuracy accumulators
@@ -541,7 +555,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 home_bp, away_bp, pf_venue, home_pf, away_pf)
             if elo is not None:
                 ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
-                hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
+                hwp = (1 - elo_blend) * hwp + elo_blend * ewp
             if rest_coeff and sport.sigma_margin > 0:
                 from datetime import date as _D
                 gd = _D.fromisoformat(g["date"])
