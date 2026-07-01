@@ -532,3 +532,13 @@
 {"date": "2026-07-01", "sport": "MLB", "game": "Chicago White Sox @ Baltimore Orioles", "market": "model_winprob", "side": "", "pred_home_wp": 0.5063, "home_won": 1, "market_home_wp": 0.5415, "brier": 0.2437, "proj_total": 10.326, "actual_total": 7}
 {"date": "2026-07-01", "sport": "MLB", "game": "Chicago White Sox @ Baltimore Orioles", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5469, "yrfi": 1, "brier": 0.2053}
 {"date": "2026-07-01", "sport": "MLB", "game": "Chicago White Sox @ Baltimore Orioles", "market": "moneyline", "side": "away", "line": null, "price": 141.0, "ev": 0.0631, "won": false, "pnl": -1.0, "clv": 0.105}
+{"date": "2026-07-01", "sport": "MLB", "game": "Texas Rangers @ Cleveland Guardians", "market": "model_winprob", "side": "", "pred_home_wp": 0.4686, "home_won": 1, "market_home_wp": 0.96, "brier": 0.2824, "proj_total": 8.765, "actual_total": 13}
+{"date": "2026-07-01", "sport": "MLB", "game": "Texas Rangers @ Cleveland Guardians", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5066, "yrfi": 0, "brier": 0.2566}
+{"date": "2026-07-01", "sport": "MLB", "game": "Texas Rangers @ Cleveland Guardians", "market": "moneyline", "side": "away", "line": null, "price": 113.0, "ev": 0.0536, "won": false, "pnl": -1.0, "clv": -0.9148}
+{"date": "2026-07-01", "sport": "MLB", "game": "Texas Rangers @ Cleveland Guardians", "market": "total", "side": "over", "line": 7.5, "price": 104.0, "ev": 0.0658, "won": true, "pnl": 1.04, "clv": 0.0275}
+{"date": "2026-07-01", "sport": "MLB", "game": "Washington Nationals @ Boston Red Sox", "market": "model_winprob", "side": "", "pred_home_wp": 0.5312, "home_won": 0, "market_home_wp": 0.2892, "brier": 0.2822, "proj_total": 9.893, "actual_total": 12}
+{"date": "2026-07-01", "sport": "MLB", "game": "Washington Nationals @ Boston Red Sox", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5597, "yrfi": 1, "brier": 0.1939}
+{"date": "2026-07-01", "sport": "MLB", "game": "Detroit Tigers @ New York Yankees", "market": "model_winprob", "side": "", "pred_home_wp": 0.5322, "home_won": 0, "market_home_wp": 0.2914, "brier": 0.2832, "proj_total": 9.291, "actual_total": 8}
+{"date": "2026-07-01", "sport": "MLB", "game": "Detroit Tigers @ New York Yankees", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5338, "yrfi": 0, "brier": 0.2849}
+{"date": "2026-07-01", "sport": "MLB", "game": "San Diego Padres @ Chicago Cubs", "market": "model_winprob", "side": "", "pred_home_wp": 0.5102, "home_won": 1, "market_home_wp": 0.9456, "brier": 0.2399, "proj_total": 9.623, "actual_total": 26}
+{"date": "2026-07-01", "sport": "MLB", "game": "San Diego Padres @ Chicago Cubs", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4842, "yrfi": 1, "brier": 0.266}
