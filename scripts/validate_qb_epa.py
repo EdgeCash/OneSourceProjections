@@ -131,6 +131,7 @@ def build_rows(seasons):
                 h, a, actual = g["home"], g["away"], float(g["result"])
                 if not (h in pr and a in pr):
                     continue
+                gid = g["game_id"]
                 pm = (pr[h][0] + pr[a][1]) / 2 - (pr[a][0] + pr[h][1]) / 2 + HFA
                 qc = crude.get(h, 0.0) - crude.get(a, 0.0)
                 hq, aq = primary.get(h), primary.get(a)
@@ -139,7 +140,8 @@ def build_rows(seasons):
                 cp = ((pr_qb[hq].cpoe if hq in pr_qb else 0.0)
                       - (pr_qb[aq].cpoe if aq in pr_qb else 0.0))
                 rows.append({"pm": pm, "qc": qc, "adj": adj, "cp": cp,
-                             "margin": actual, "y": 1.0 if actual > 0 else 0.0})
+                             "margin": actual, "y": 1.0 if actual > 0 else 0.0,
+                             "game_id": gid, "season": yr, "week": w})
     return rows
 
 

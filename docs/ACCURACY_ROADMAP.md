@@ -91,6 +91,30 @@ still **backward-looking**.
    projected starter needs a depth-chart feed (ESPN), which this environment's
    network policy blocks. Rolling per-QB EPA off the live PBP feed depends on it.
 
+### CLV gate result — the NFL close is too efficient to bet (decisive)
+
+`scripts/validate_qb_clv.py` grades both models ATS against the committed NFL
+closing spreads (event_id == nflverse game_id), same walk-forward stacker,
+6 seasons, n=1217:
+
+| Model | ATS% | ATS% (disagree ≥ 1pt) | mean CLV (pts) |
+|---|---|---|---|
+| Points (raw) | 49.8% | 50.7% | +0.03 |
+| Points + QBadj | 50.0% | 50.4% | +0.02 |
+
+**Both models are a coin flip against the close (~50% ATS, CLV ≈ 0).** The QB
+feature improves the *projection* (Brier 0.2254 → 0.2244) but yields **no
+betting edge** on NFL spreads — the market already prices it. Two conclusions,
+both acted on:
+- **Keep the QB signal for the projection** ("here's the number"), since it
+  makes the published margin more accurate.
+- **Do not curate NFL sides as plays.** This is exactly what the demonstrated-
+  edge gate enforces via CLV — NFL spread stays gated/probation until it proves
+  it beats the close, which on this evidence it does not. Honest > mediocre.
+
+`epa_blend` stays 0 for betting; if the QB term is ever surfaced it feeds the
+displayed projection only, never an auto-curated NFL side.
+
 ## Stage 1 — Wire EPA into projections (the #1 lever) 🔜
 1. **EPA-backed team ratings for NFL** (M). Build a season EPA store from
    nflverse PBP (cache parquet locally; never re-pull). Blend EPA-derived
