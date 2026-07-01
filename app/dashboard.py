@@ -244,7 +244,7 @@ def slates_by_date(data: dict) -> dict:
     return {}
 
 
-def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
+def ev_styler(df: pd.DataFrame, ev_cols: list[str], tier_col: str | None = None):
     def color(v):
         if not isinstance(v, (int, float)) or pd.isna(v):
             return ""
@@ -258,8 +258,20 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str]):
     fmt.update({c: "{:.2f}" for c in ("Proj", "FP Proj", "BP Proj", "Away Proj",
                                       "Home Proj", "Proj Total", "Kelly")
                 if c in df.columns})
-    return df.style.map(color, subset=[c for c in ev_cols if c in df.columns]) \
-                   .format(fmt, na_rep="—")
+    sty = df.style.map(color, subset=[c for c in ev_cols if c in df.columns]) \
+                  .format(fmt, na_rep="—")
+    # Meaning-tint whole rows by tier: CORE PLAY faint green, VERIFY faint amber.
+    # Display-only (Styler), so the underlying frame stays numeric/sortable.
+    if tier_col and tier_col in df.columns:
+        tints = {"CORE PLAY": "background-color: rgba(0,230,118,0.10);",
+                 "VERIFY": "background-color: rgba(255,176,32,0.12);"}
+
+        def tint_row(row):
+            css = tints.get(str(row.get(tier_col, "")), "")
+            return [css] * len(row)
+
+        sty = sty.apply(tint_row, axis=1)
+    return sty
 
 
 # ---------------------------------------------------------------------------
@@ -271,25 +283,26 @@ slates = slates_by_date(data) if data else {}
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
 
-# Two-tier navigation: a top-level area, then (when an area has several pages) a
-# sub-page. Grouped logically: overview -> research by sport -> bet-finding ->
-# live -> tools -> tracking.
+# Two-tier navigation, collapsed to five verb-first areas: a top-level area,
+# then (when an area has several pages) a sub-page. Today -> find Plays ->
+# Research by sport/source -> the Ledger receipts -> the Lab (build & test).
+# Section codes are preserved so the downstream dispatch keeps working.
 NAV_GROUPS = {
-    "🏠 Home": ["HOME"],
-    "🎯 Projections": ["PLAYS", "WORKBOOK"] + NAV_SPORTS + ["PLAYS_DETAIL", "EDGES", "DFS", "SCORES"],
-    "🛠️ Edge Builder": ["EDGE_BUILDER"],
-    "🤖 Prompt Engine": ["PROMPT_ENGINE"],
+    "🏠 Today": ["HOME"],
+    "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
+    "🔬 Research": NAV_SPORTS + ["SHARPSHEET", "DFS", "SCORES", "OTHER_SPORTS"],
     "📒 Ledger": ["PERFORMANCE"],
-    "🔬 Research Hub": ["SHARPSHEET", "OTHER_SPORTS", "BACKTEST", "EXPERTS",
-                        "TOOLS", "DOCS"],
+    "🛠️ Lab": ["EDGE_BUILDER", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "EXPERTS",
+               "WORKBOOK", "DOCS"],
 }
-_PAGE_LABELS = {"PLAYS": "Curated plays", "WORKBOOK": "📥 Daily workbook",
-                "PLAYS_DETAIL": "Plays — full table",
-                "EDGES": "Edge scanner", "DFS": "DFS optimizer",
-                "SCORES": "Live scores", "PERFORMANCE": "Track record",
-                "SHARPSHEET": "Sharp Sheets", "OTHER_SPORTS": "Other sports",
-                "BACKTEST": "Backtest", "EXPERTS": "Expert consensus",
-                "TOOLS": "Calculators", "DOCS": "Methodology & docs"}
+_PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
+                "PLAYS_DETAIL": "Plays — full table", "EDGES": "Edge scanner",
+                "DFS": "DFS optimizer", "SCORES": "Live scores",
+                "PERFORMANCE": "Track record", "SHARPSHEET": "Sharp Sheets",
+                "OTHER_SPORTS": "Other sports", "BACKTEST": "Backtest",
+                "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
+                "DOCS": "Methodology & docs", "WORKBOOK": "📥 Daily workbook",
+                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine"}
 
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
@@ -300,6 +313,12 @@ with st.sidebar:
     pages = NAV_GROUPS[area]
     if len(pages) == 1:
         section = pages[0]
+        # Legacy deep-links / smoke cases may still carry a sub-page code for a
+        # now-collapsed area (e.g. EDGES under Plays). Honour it as the in-page
+        # mode default so the right view opens, without showing a nav row.
+        _legacy = st.session_state.get(f"nav_{area}")
+        if _legacy in ("PLAYS_DETAIL", "EDGES") and section == "PLAYS":
+            st.session_state.setdefault("plays_mode_code", _legacy)
     else:
         section = st.radio(
             area, pages, label_visibility="collapsed", key=f"nav_{area}",
@@ -855,6 +874,10 @@ def render_plays_detail():
             if p is not None and pd.notna(p) else "—"
             for p, b in zip(view["_best_price"], view["_best_book"])]
 
+        # Tier label up front (CORE PLAY / VERIFY / …) from the same ladder the
+        # cards use — classify off the raw EV fraction before we rescale to %.
+        view["tier"] = [ui.play_tier(e, min_edge)["label"]
+                        for e in pd.to_numeric(sub["ev"], errors="coerce")]
         view["price"] = view["price"].map(ui.fmt_american)
         view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
         view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
@@ -863,26 +886,35 @@ def render_plays_detail():
         view["stake"] = (pd.to_numeric(view["kelly"], errors="coerce")
                          .fillna(stake_ev) * bankroll).round(0)
         view["time"] = view["time"].map(ui.fmt_time_et)
-        cols = ["sport", "bet", "game", "time", "price"]
+        # Lead with the decision-relevant columns; secondary detail (matchup,
+        # tip-off, line-shop price, notes) hides behind a toggle to cut clutter.
+        more = st.checkbox("More columns", value=False, key=f"more_{key}",
+                           help="Show matchup, time, line-shop price and notes.")
+        lead = ["tier", "sport", "bet", "price", "model_prob", "ev", "stake"]
+        extra = ["game", "time"]
         if has_shop:
-            cols.append("best")
-        cols += ["model_prob", "ev", "stake"]
+            extra.append("best")
         if "flag" in view.columns and view["flag"].astype(bool).any():
-            cols.append("flag")
+            extra.append("flag")
+        cols = lead + (extra if more else [])
         view = view[cols].rename(columns={
-            "sport": "Sport", "bet": "Bet", "game": "Game", "time": "Time",
-            "price": "Price", "best": "Best (book)", "model_prob": "Model %",
-            "ev": "EV %", "stake": "Stake $", "flag": "Note"})
+            "tier": "Tier", "sport": "Sport", "bet": "Bet", "game": "Game",
+            "time": "Time", "price": "Price", "best": "Best (book)",
+            "model_prob": "Model %", "ev": "EV %", "stake": "Stake $",
+            "flag": "Note"})
         st.dataframe(
-            ev_styler(view, ["EV %"]), width="stretch", hide_index=True, height=600,
+            ev_styler(view, ["EV %"], tier_col="Tier"), width="stretch",
+            hide_index=True, height=600,
             column_config={
                 "Model %": st.column_config.ProgressColumn(
                     "Model %", min_value=0, max_value=100, format="%.0f%%"),
                 "Stake $": st.column_config.NumberColumn(format="$%d")})
         shop_note = (" **Best (book)** is the top price across books — shopping "
                      "the best number is the most reliable edge there is."
-                     if has_shop else "")
-        st.caption("Sorted by EV. Stake = ¼-Kelly × bankroll." + shop_note)
+                     if (more and has_shop) else "")
+        st.caption("Sorted by EV (high → low). CORE-PLAY rows tint green, "
+                   "VERIFY (edge too big — market likely knows) amber. "
+                   "Stake = ¼-Kelly × bankroll." + shop_note)
         ai_block(ui.ai_brief_board(sub, date_sel), key=key)
 
     tab_g, tab_p = st.tabs([f"🏟️ Game plays ({len(games)})",
@@ -926,7 +958,31 @@ def _sharpsheet(sport: str, g: dict | None, date_sel: str):
     render_research_card(sport, g, date_sel)
 
 
+_PLAYS_MODES = ("◆ Board", "Full table", "Edge scanner")
+_PLAYS_MODE_BY_CODE = {"PLAYS": "◆ Board", "PLAYS_DETAIL": "Full table",
+                       "EDGES": "Edge scanner"}
+
+
 def render_plays():
+    """The single Plays page. One in-page mode toggle routes to the three
+    existing views — the curated board, the full sortable table, and the
+    multi-book edge scanner — so all three stay reachable without three nav
+    rows. 'Board' is the default."""
+    # Seed the toggle from a legacy section code (deep-link / collapsed nav).
+    code = st.session_state.pop("plays_mode_code", None)
+    if code and "plays_mode" not in st.session_state:
+        st.session_state["plays_mode"] = _PLAYS_MODE_BY_CODE.get(code, "◆ Board")
+    mode = st.radio("Plays view", _PLAYS_MODES, horizontal=True,
+                    label_visibility="collapsed", key="plays_mode")
+    if mode == "Full table":
+        render_plays_detail()
+    elif mode == "Edge scanner":
+        render_edges()
+    else:
+        render_plays_board()
+
+
+def render_plays_board():
     """Curated plays — simple and scannable (matchup | play), grouped by sport,
     with a Sharp Sheet chip on every row for the deep breakdown. Passes shown."""
     q = topbar("Curated plays")
@@ -1064,6 +1120,63 @@ def _source_tracking_section():
     st.divider()
 
 
+def _bet_label(r: dict) -> str:
+    """Human pick string from a ledger bet row → the play card's `bet` field.
+    Tolerates missing pieces; mirrors how the side/line read on the alert."""
+    side = (r.get("side") or "").strip()
+    line = r.get("line")
+    market = (r.get("market") or "").lower()
+    team = ""
+    game = r.get("game") or ""
+    if " @ " in game:
+        away, home = game.split(" @ ", 1)
+        team = home.strip() if side == "home" else away.strip() if side == "away" else ""
+    if market in ("total", "totals"):
+        ou = "Over" if side == "over" else "Under" if side == "under" else side.title()
+        return f"{ou} {line:g}".strip() if isinstance(line, (int, float)) else ou or "Total"
+    if market in ("spread", "spreads", "runline", "puckline"):
+        base = team or side.title()
+        return f"{base} {line:+g}".strip() if isinstance(line, (int, float)) else base
+    if market in ("moneyline", "ml"):
+        return f"{team or side.title()} ML".strip()
+    return (team or side.title() or market.title() or "—")
+
+
+def _slice_table(bets: list[dict]) -> pd.DataFrame:
+    """By-sport / by-bet-type receipts from graded bet rows. One row per
+    (sport, bet type) plus per-sport subtotals: Bets · Win% · Units · ROI% ·
+    Avg CLV. Pure aggregation — tolerates missing CLV (degrades to None)."""
+    if not bets:
+        return pd.DataFrame()
+
+    def _agg(rows):
+        n = len(rows)
+        wins = sum(1 for r in rows if r.get("won"))
+        units = sum(r.get("pnl") or 0 for r in rows)
+        clvs = [r["clv"] for r in rows if r.get("clv") is not None]
+        return {
+            "Bets": n,
+            "Win%": round(100 * wins / n, 1) if n else None,
+            "Units": round(units, 2),
+            "ROI%": round(100 * units / n, 1) if n else None,
+            "Avg CLV": round(100 * sum(clvs) / len(clvs), 2) if clvs else None,
+        }
+
+    by_sport: dict = {}
+    for r in bets:
+        by_sport.setdefault(r.get("sport") or "—", []).append(r)
+    out = []
+    for sport in sorted(by_sport, key=lambda s: -len(by_sport[s])):
+        rows = by_sport[sport]
+        out.append({"Sport": sport, "Bet type": "All", **_agg(rows)})
+        by_type: dict = {}
+        for r in rows:
+            by_type.setdefault((r.get("market") or "—").title(), []).append(r)
+        for bt in sorted(by_type, key=lambda t: -len(by_type[t])):
+            out.append({"Sport": sport, "Bet type": bt, **_agg(by_type[bt])})
+    return pd.DataFrame(out)
+
+
 def render_performance():
     topbar("Performance", with_search=False)
     _source_tracking_section()
@@ -1074,123 +1187,205 @@ def render_performance():
         st.info("No graded results yet — performance accrues as projected "
                 "games finish and the hourly job grades them.")
         return
-    # The two daily-recap numbers up top: model accuracy and played accuracy.
-    macc, mn = results.model_accuracy()
-    pacc, pn = plays.played_accuracy()
-    a = st.columns(2)
-    a[0].metric("Model accuracy", f"{macc:.0%}" if macc is not None else "—",
-                help=f"How often the model's favored side won ({mn} graded games). "
-                     "The plain-English accuracy number.")
-    a[1].metric("Your played accuracy", f"{pacc:.0%}" if pacc is not None else "—",
-                help=f"Win rate on plays you tapped Played ({pn} decided) — DFS "
-                     "legs and game bets combined.")
 
-    # Day-by-day record (one row per day, from the recap log).
-    drec = plays.load_daily_record()
-    if drec:
-        with st.expander("Daily record", expanded=False):
-            def _pct(v):
-                return f"{v:.0%}" if isinstance(v, (int, float)) else "—"
+    bets = [r for r in ledger if "pnl" in r]
+
+    # ── 1. TOP VERDICT BAND — CLV first, then the bankroll receipts. ──────
+    avg_clv = overall.get("avg_clv_pct")
+    units = overall.get("units", 0) or 0
+    roi = overall.get("roi_pct")
+    n_bets = overall.get("bets", 0) or 0
+    wins = sum(1 for r in bets if r.get("won"))
+    losses = sum(1 for r in bets if r.get("won") is False)
+    v = st.columns(4)
+    v[0].metric("Avg CLV", f"{avg_clv:+.2f}%" if avg_clv is not None else "—",
+                help="Average edge vs the de-vigged closing line. Beating the "
+                     "close is the strongest early proof of real edge — it "
+                     "converges long before win/loss ROI does.")
+    v[1].metric("Units", f"{units:+.2f}" if units else "0.00",
+                help="Cumulative profit/loss in units at ¼-Kelly stakes.")
+    v[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help="Units returned per unit risked across all graded bets.")
+    v[3].metric("Record (W–L)", f"{wins}–{losses}",
+                help=f"{n_bets} graded bets. Wins and losses, both counted.")
+    st.caption("Auto-graded — wins and losses included. We don't delete the "
+               "misses. 52.4% pays the house; 54.7% pays you.")
+
+    # ── 2. EQUITY CURVE — the visual centerpiece. ────────────────────────
+    equity = ui.cumulative_units(ledger)
+    if not equity.empty:
+        eq = ui.equity_chart(equity)
+        if eq is not None:
+            st.altair_chart(eq, use_container_width=True)
+        else:
+            st.line_chart(equity, y="units", height=260)
+        st.caption("Cumulative units at projection-time prices. Up and to the "
+                   "right is the only pitch — every dip is a real losing stretch, "
+                   "left in.")
+
+    # ── 3. BY-SPORT / BY-BET-TYPE SLICE TABLE. ───────────────────────────
+    slice_df = _slice_table(bets)
+    if not slice_df.empty:
+        section_header("By sport & bet type")
+        styler = ev_styler(slice_df, ["ROI%", "Avg CLV"])
+        st.dataframe(styler, width="stretch", hide_index=True)
+        st.caption("Where the edge is — and isn't. ROI% and Avg CLV shade "
+                   "green when we're ahead, red when we're behind. CLV blanks "
+                   "where no closing line was captured.")
+
+    # ── 4. RECENT BETS — the five freshest receipts as graded cards. ─────
+    section_header("Recent bets")
+    recent_rows = sorted(bets, key=lambda r: r.get("date") or "", reverse=True)[:5]
+    if recent_rows:
+        for r in recent_rows:
+            card = {
+                "sport": r.get("sport"), "game": r.get("game"),
+                "bet": _bet_label(r), "price": r.get("price"),
+                "ev": r.get("ev"), "clv": r.get("clv"),
+                "won": r.get("won"), "pnl": r.get("pnl"),
+            }
+            st.markdown(ui.play_card_html(card, graded=True),
+                        unsafe_allow_html=True)
+    rest = ui.recent_bets([r for r in bets
+                           if r not in recent_rows], n=25)
+    if not rest.empty:
+        with st.expander("More graded bets", expanded=False):
+            st.dataframe(rest, width="stretch", hide_index=True)
+    if not recent_rows:
+        st.info("Recent bets show up here once recommended bets are graded.")
+
+    st.caption("Forward-test record at projection-time prices. Brier + "
+               "calibration cover every projected game; units/ROI cover "
+               "recommended bets only.")
+
+    # ── 5. SHOW THE WORK — the deeper views, behind expanders. ───────────
+    # The two daily-recap accuracy numbers + day-by-day record.
+    with st.expander("Accuracy & daily record", expanded=False):
+        macc, mn = results.model_accuracy()
+        pacc, pn = plays.played_accuracy()
+        a = st.columns(2)
+        a[0].metric("Model accuracy", f"{macc:.0%}" if macc is not None else "—",
+                    help=f"How often the model's favored side won ({mn} graded "
+                         "games). The plain-English accuracy number.")
+        a[1].metric("Your played accuracy", f"{pacc:.0%}" if pacc is not None else "—",
+                    help=f"Win rate on plays you tapped Played ({pn} decided) — "
+                         "DFS legs and game bets combined.")
+        drec = plays.load_daily_record()
+        if drec:
+            def _pct(val):
+                return f"{val:.0%}" if isinstance(val, (int, float)) else "—"
             dd = pd.DataFrame(sorted(drec, key=lambda r: r["date"], reverse=True))
-            dd["Model"] = [f"{_pct(v)} ({int(n)})" for v, n in
+            dd["Model"] = [f"{_pct(val)} ({int(n)})" for val, n in
                            zip(dd["model_acc"], dd["model_n"].fillna(0))]
-            dd["Played"] = [f"{_pct(v)} ({int(n)})" for v, n in
+            dd["Played"] = [f"{_pct(val)} ({int(n)})" for val, n in
                             zip(dd["played_acc"], dd["played_n"].fillna(0))]
             dd = dd.rename(columns={"date": "Date"})
             st.dataframe(dd[["Date", "Model", "Played"]].head(30),
                          width="stretch", hide_index=True)
             st.caption("Each row is that day's model accuracy and your played "
                        "accuracy (sample size in parentheses).")
+        gg = st.columns(2)
+        gg[0].metric("Graded games", overall.get("graded_games", 0))
+        gg[1].metric("Model Brier", overall.get("model_brier") or "—",
+                     help="Win-probability error. 0.25 = coin flip; lower is better.")
 
-    c = st.columns(5)
-    c[0].metric("Graded games", overall.get("graded_games", 0))
-    c[1].metric("Model Brier", overall.get("model_brier") or "—",
-                help="Win-probability error. 0.25 = coin flip; lower is better.")
-    c[2].metric("Bets", overall.get("bets", 0))
-    units = overall.get("units", 0)
-    c[3].metric("Units", f"{units:+.2f}" if units else "0.00")
-    roi = overall.get("roi_pct")
-    c[4].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—")
-
-    # Closing Line Value — the fastest, lowest-variance read on real edge.
+    # CLV detail + reliability/calibration curve.
     clv_bets = overall.get("clv_bets") or 0
-    section_header("Closing line value")
-    if not clv_bets:
-        st.info("CLV accrues once recommended bets are graded against the "
-                "captured closing line. Beating the no-vig close is the "
-                "strongest early signal an edge is real — it converges long "
-                "before win/loss ROI does.")
-    else:
-        cl = st.columns(3)
-        avg_clv = overall.get("avg_clv_pct")
-        beat = overall.get("clv_beat_rate")
-        cl[0].metric("Avg CLV", f"{avg_clv:+.2f}%" if avg_clv is not None else "—",
-                     help="Average edge vs the de-vigged closing line. Positive "
-                          "= we beat the close. The best proxy for skill.")
-        cl[1].metric("Beat-close rate", f"{beat * 100:.0f}%" if beat is not None else "—",
-                     help="Share of graded bets that beat the closing line. "
-                          "Above ~55–60% over a few hundred bets signals real edge.")
-        cl[2].metric("Bets w/ close", clv_bets)
-        st.caption("CLV is measured against our own captured BettingPros "
-                   "closing line; it sharpens as more books are added.")
+    with st.expander("Calibration & CLV detail — the honesty check", expanded=False):
+        if not clv_bets:
+            st.info("CLV accrues once recommended bets are graded against the "
+                    "captured closing line. Beating the no-vig close is the "
+                    "strongest early signal an edge is real.")
+        else:
+            cl = st.columns(3)
+            beat = overall.get("clv_beat_rate")
+            cl[0].metric("Avg CLV", f"{avg_clv:+.2f}%" if avg_clv is not None else "—")
+            cl[1].metric("Beat-close rate", f"{beat * 100:.0f}%" if beat is not None else "—",
+                         help="Share of graded bets that beat the closing line. "
+                              "Above ~55–60% over a few hundred bets signals edge.")
+            cl[2].metric("Bets w/ close", clv_bets)
+            st.caption("CLV is measured against our own captured BettingPros "
+                       "closing line; it sharpens as more books are added.")
 
-    # Calibration — the honesty check: when we said X%, did it happen X%?
-    from project547 import scorecard as _scorecard
-    rel = _scorecard.reliability(ledger)
-    if rel.get("n"):
-        section_header("Calibration — honesty check")
-        st.caption(f"When the model said X%, how often it actually happened "
-                   f"({rel['n']} graded games · ECE {rel['ece']:.3f} — lower is "
-                   "better). A calibrated model tracks the dotted line; points "
-                   "below it mean we were overconfident there.")
-        rdf = pd.DataFrame([{"Model said": f"{int(b['lo']*100)}–{int(b['hi']*100)}%",
-                             "mid": (b["lo"] + b["hi"]) / 2, "Predicted": b["pred"],
-                             "Actually won": b["obs"], "Games": b["n"],
-                             "Gap": b["gap"]}
-                            for b in rel["bins"] if b["n"]])
-        try:
-            import altair as alt
-            diag = (alt.Chart(pd.DataFrame({"x": [0, 1]}))
-                    .mark_line(strokeDash=[4, 4], color="#9b937f")
-                    .encode(x=alt.X("x:Q", title="Model said (predicted win %)"),
-                            y=alt.Y("x:Q", title="Actually won")))
-            pts = alt.Chart(rdf).mark_circle(color="#2f7a4a").encode(
-                x="mid:Q", y="Actually won:Q",
-                size=alt.Size("Games:Q", legend=None),
-                tooltip=["Model said", "Predicted", "Actually won", "Games", "Gap"])
-            st.altair_chart((diag + pts).properties(height=300), width="stretch")
-        except Exception:  # noqa: BLE001 — chart optional, table always shows
-            pass
-        st.dataframe(rdf.drop(columns=["mid"]).style.format(
-            {"Predicted": "{:.0%}", "Actually won": "{:.0%}", "Gap": "{:+.0%}"}),
-            hide_index=True, width="stretch")
+        # Reliability table — when the model said X%, did it happen X%?
+        from project547 import scorecard as _scorecard
+        rel = _scorecard.reliability(ledger)
+        if rel.get("n"):
+            st.caption(f"When the model said X%, how often it actually happened "
+                       f"({rel['n']} graded games · ECE {rel['ece']:.3f} — lower "
+                       "is better). Points below the line mean we were "
+                       "overconfident there.")
+            rdf = pd.DataFrame([{"Model said": f"{int(b['lo']*100)}–{int(b['hi']*100)}%",
+                                 "mid": (b["lo"] + b["hi"]) / 2, "Predicted": b["pred"],
+                                 "Actually won": b["obs"], "Games": b["n"],
+                                 "Gap": b["gap"]}
+                                for b in rel["bins"] if b["n"]])
+            try:
+                import altair as alt
+                diag = (alt.Chart(pd.DataFrame({"x": [0, 1]}))
+                        .mark_line(strokeDash=[4, 4], color="#9b937f")
+                        .encode(x=alt.X("x:Q", title="Model said (predicted win %)"),
+                                y=alt.Y("x:Q", title="Actually won")))
+                pts = alt.Chart(rdf).mark_circle(color="#2f7a4a").encode(
+                    x="mid:Q", y="Actually won:Q",
+                    size=alt.Size("Games:Q", legend=None),
+                    tooltip=["Model said", "Predicted", "Actually won", "Games", "Gap"])
+                st.altair_chart((diag + pts).properties(height=300), width="stretch")
+            except Exception:  # noqa: BLE001 — chart optional, table always shows
+                pass
+            st.dataframe(rdf.drop(columns=["mid"]).style.format(
+                {"Predicted": "{:.0%}", "Actually won": "{:.0%}", "Gap": "{:+.0%}"}),
+                hide_index=True, width="stretch")
 
-    # DFS (PrizePicks/Underdog) played-card track record.
+        # Win-probability calibration curve.
+        curve = ui.calibration_curve(ledger)
+        if curve.empty:
+            st.info("Calibration accrues as projected games finish — once enough "
+                    "land, the curve should hug the diagonal.")
+        else:
+            ece = ui.calibration_error(curve)
+            cc = st.columns([3, 1])
+            with cc[0]:
+                st.altair_chart(ui.calibration_chart(curve))
+            with cc[1]:
+                st.metric("Calibration error", f"{ece:.1%}" if ece is not None else "—",
+                          help="Avg gap between predicted and actual win %, "
+                               "weighted by games. Under ~5% is well calibrated.")
+                ll = overall.get("model_log_loss")
+                st.metric("Log loss", ll if ll is not None else "—",
+                          help="Kelly-aligned probability score. Lower is better; "
+                               "0.69 = coin flip.")
+                st.metric("Graded games", int(curve["n"].sum()))
+            st.caption("Dashed line = perfect calibration. Above it = we were "
+                       "under-confident; below = over-confident. Bubble size = "
+                       "games in that bucket.")
+
+    # DFS played-card track record.
     dfs_perf = plays.summary()
     if dfs_perf.get("legs_logged"):
-        section_header("DFS plays (PrizePicks / Underdog)")
-        dc = st.columns(4)
-        dc[0].metric("Legs played", dfs_perf["played_logged"],
-                     help="Legs in a notified +EV card — what you actually put in. "
-                          f"({dfs_perf['legs_logged']} total cleared the "
-                          f"{config.DFS_MIN_EDGE:.0%} edge bar and are tracked.)")
-        dc[1].metric("Played graded", dfs_perf["played_graded"])
-        wr = dfs_perf["played_win_rate"]
-        be = dfs.per_leg_breakeven(2)
-        dc[2].metric("Played win rate", f"{wr:.0%}" if wr is not None else "—",
-                     help="Share of played legs that hit. A 2-pick needs each "
-                          f"leg above ~{be:.0%} to break even.")
-        beat = dfs_perf["line_clv_beat_rate"]
-        dc[3].metric("Line came to us", f"{beat:.0%}" if beat is not None else "—",
-                     help="Share of played legs whose DFS line moved in our favor "
-                          "after we logged it — the fastest read we're early/right.")
-        st.caption("Pushed via ntfy only when a card is +EV; tap **Played** on "
-                   "the alert to count it (Skip ignores it). Legs commit on first "
-                   "qualify so you bet before the line moves.")
+        with st.expander("DFS plays (PrizePicks / Underdog)", expanded=False):
+            dc = st.columns(4)
+            dc[0].metric("Legs played", dfs_perf["played_logged"],
+                         help="Legs in a notified +EV card — what you actually "
+                              f"put in. ({dfs_perf['legs_logged']} total cleared "
+                              f"the {config.DFS_MIN_EDGE:.0%} edge bar.)")
+            dc[1].metric("Played graded", dfs_perf["played_graded"])
+            wr = dfs_perf["played_win_rate"]
+            be = dfs.per_leg_breakeven(2)
+            dc[2].metric("Played win rate", f"{wr:.0%}" if wr is not None else "—",
+                         help="Share of played legs that hit. A 2-pick needs each "
+                              f"leg above ~{be:.0%} to break even.")
+            beat = dfs_perf["line_clv_beat_rate"]
+            dc[3].metric("Line came to us", f"{beat:.0%}" if beat is not None else "—",
+                         help="Share of played legs whose DFS line moved in our "
+                              "favor after we logged it.")
+            st.caption("Pushed via ntfy only when a card is +EV; tap **Played** "
+                       "on the alert to count it. Legs commit on first qualify so "
+                       "you bet before the line moves.")
 
-    # Sharp game plays: the CLV-validated EV band (the bets we actually push).
-    sharp = [r for r in ledger if "pnl" in r
-             and config.SHARP_EV_MIN <= (r.get("ev") or 0) <= config.SHARP_EV_MAX]
+    # Sharp game plays: the CLV-validated EV band.
+    sharp = [r for r in bets
+             if config.SHARP_EV_MIN <= (r.get("ev") or 0) <= config.SHARP_EV_MAX]
     played_keys = plays.confirmed_played()
 
     def _gkey(r):
@@ -1198,151 +1393,99 @@ def render_performance():
                 f"{r['market']}|{r.get('side', '')}")
 
     if sharp:
-        # once any plays are confirmed, report the played set; until then, the
-        # flagged set (so the panel isn't empty before the first confirm).
         shown = ([r for r in sharp if _gkey(r) in played_keys]
                  if played_keys else sharp)
         label = "played" if played_keys else "flagged"
         if shown:
-            section_header(f"Sharp game plays (EV {config.SHARP_EV_MIN:.0%}"
-                   f"–{config.SHARP_EV_MAX:.0%})")
-            sp = st.columns(4)
-            wins = sum(1 for r in shown if r.get("won"))
-            units = sum(r["pnl"] for r in shown)
-            sclv = [r["clv"] for r in shown if r.get("clv") is not None]
-            sp[0].metric(f"Sharp bets ({label})", len(shown))
-            sp[1].metric("Win rate", f"{wins / len(shown):.0%}")
-            sp[2].metric("Units", f"{units:+.2f}")
-            sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
-                         if sclv else "—")
-            st.caption("The CLV-validated EV band — moderate edges that "
-                       "historically beat the close. Tap **Played** on the alert "
-                       "to count one; very high-EV spots are flagged 'verify', "
-                       "not pushed (their CLV says the line is likely stale).")
+            with st.expander(f"Sharp game plays (EV {config.SHARP_EV_MIN:.0%}"
+                             f"–{config.SHARP_EV_MAX:.0%})", expanded=False):
+                sp = st.columns(4)
+                swins = sum(1 for r in shown if r.get("won"))
+                sunits = sum(r["pnl"] for r in shown)
+                sclv = [r["clv"] for r in shown if r.get("clv") is not None]
+                sp[0].metric(f"Sharp bets ({label})", len(shown))
+                sp[1].metric("Win rate", f"{swins / len(shown):.0%}")
+                sp[2].metric("Units", f"{sunits:+.2f}")
+                sp[3].metric("Avg CLV", f"{100 * sum(sclv) / len(sclv):+.1f}%"
+                             if sclv else "—")
+                st.caption("The CLV-validated EV band — moderate edges that "
+                           "historically beat the close. Very high-EV spots are "
+                           "flagged 'verify', not pushed (their CLV says the line "
+                           "is likely stale).")
 
-    equity = ui.cumulative_units(ledger)
-    if not equity.empty:
-        section_header("Cumulative units")
-        eq = ui.equity_chart(equity)
-        if eq is not None:
-            st.altair_chart(eq, use_container_width=True)
-        else:
-            st.line_chart(equity, y="units", height=260)
-
-    # Calibration: do our stated win-probabilities match reality?
-    curve = ui.calibration_curve(ledger)
-    section_header("Win-probability calibration")
-    if curve.empty:
-        st.info("Calibration accrues as projected games finish. Each graded "
-                "game adds a point comparing our predicted win % to the actual "
-                "result — once enough land, the curve should hug the diagonal.")
-    else:
-        ece = ui.calibration_error(curve)
-        cc = st.columns([3, 1])
-        with cc[0]:
-            st.altair_chart(ui.calibration_chart(curve))
-        with cc[1]:
-            st.metric("Calibration error", f"{ece:.1%}" if ece is not None else "—",
-                      help="Avg gap between predicted and actual win %, weighted "
-                           "by games. Lower is better; under ~5% is well "
-                           "calibrated.")
-            ll = overall.get("model_log_loss")
-            st.metric("Log loss", ll if ll is not None else "—",
-                      help="Kelly-aligned probability score (= log-wealth "
-                           "growth). Lower is better; 0.69 = coin flip.")
-            st.metric("Graded games", int(curve["n"].sum()))
-        st.caption("Dashed line = perfect calibration. Points above it mean we "
-                   "were under-confident; below, over-confident. Bubble size = "
-                   "games in that bucket.")
-
-    # Model vs market: does the model add signal where it disagrees with the
-    # market? The honest test of independent skill, not market-following.
+    # Model vs market + the de-vig / MARKET_SHRINK blend tuner.
     from project547 import scorecard as _sc
     sc = _sc.scorecard(ledger)
-    section_header("Model vs market")
     d, a = sc["disagree"], sc["agree"]
-    if not d["n"] and not a["n"]:
-        st.info("Accrues once games are graded with a captured closing line. "
-                "Compares the model's win-probability calibration where it "
-                "**agrees** vs **disagrees** with the market — the disagreement "
-                "bucket is the real test of independent edge (this lands on "
-                "games graded from here on, as the market prob is now captured).")
-    else:
-        be, macc, kacc = d["brier_edge"], d["model_acc"], d["market_acc"]
-        mc = st.columns(3)
-        mc[0].metric("Disagreement games", d["n"])
-        mc[1].metric("Model Brier edge vs market",
-                     f"{be:+.3f}" if be is not None else "—",
-                     help="Market Brier − model Brier on games where our pick "
-                          "differs from the market. Positive = the model is "
-                          "better calibrated exactly where it breaks from the "
-                          "market — independent skill.")
-        mc[2].metric("Model acc. on disagreements",
-                     f"{macc:.0%}" if macc is not None else "—",
-                     delta=(f"{(macc - kacc) * 100:+.0f} pts vs market"
-                            if macc is not None and kacc is not None else None))
-        tbl = pd.DataFrame({
-            "Bucket": ["Disagrees w/ market", "Agrees w/ market", "All games"],
-            "Games": [d["n"], a["n"], sc["n_games"]],
-            "Model Brier": [d["model_brier"], a["model_brier"],
-                            sc["overall"]["model_brier"]],
-            "Market Brier": [d["market_brier"], a["market_brier"],
-                             sc["overall"]["market_brier"]],
-            "Model acc": [d["model_acc"], a["model_acc"], sc["overall"]["model_acc"]],
-            "Market acc": [d["market_acc"], a["market_acc"], sc["overall"]["market_acc"]],
-        })
-        st.dataframe(tbl, width="stretch", hide_index=True)
-        bsc = _sc.bet_scorecard(ledger)
-        con, wm = bsc["contrarian"], bsc["with_market"]
-        if con["n"] or wm["n"]:
-            st.markdown("**Bets by stance**")
-            st.dataframe(pd.DataFrame({
-                "Stance": ["Contrarian (vs market)", "With market"],
-                "Bets": [con["n"], wm["n"]],
-                "ROI %": [con["roi_pct"], wm["roi_pct"]],
-                "Win rate": [con["win_rate"], wm["win_rate"]],
-                "Avg CLV %": [con["avg_clv_pct"], wm["avg_clv_pct"]],
-            }), width="stretch", hide_index=True)
-        st.caption("If the model only wins when it agrees with the market, it's "
-                   "following it. A positive Brier edge and higher accuracy on "
-                   "the disagreement bucket is the proof the model adds signal.")
-
-        # Calibration-driven tuning: the blend weight that would have minimized
-        # Brier over graded games — a data-grounded MARKET_SHRINK recommendation.
-        tune = _sc.optimal_shrink(ledger, current=config.MARKET_SHRINK)
-        st.markdown("**Calibration-driven tuning**")
-        if not tune.get("ready"):
-            st.caption(f"Optimal-shrink tuning unlocks after {tune['min_games']} "
-                       f"graded games ({tune['n']} so far). It will recommend the "
-                       "model/market blend that minimizes Brier.")
+    with st.expander("Model vs market & blend tuner", expanded=False):
+        if not d["n"] and not a["n"]:
+            st.info("Accrues once games are graded with a captured closing line. "
+                    "Compares the model's calibration where it **agrees** vs "
+                    "**disagrees** with the market — the disagreement bucket is "
+                    "the real test of independent edge.")
         else:
-            improv = tune["current_brier"] - tune["best_brier"]
-            tc = st.columns(3)
-            tc[0].metric("Current MARKET_SHRINK", f"{tune['current_alpha']:.2f}")
-            tc[1].metric("Data-optimal shrink", f"{tune['best_brier_alpha']:.2f}",
-                         help="The model↔market blend weight that minimizes Brier "
-                              "over graded games. 0 = trust the model fully; "
-                              "1 = defer to the market.")
-            tc[2].metric("Brier if retuned", f"{tune['best_brier']:.4f}",
-                         delta=f"{-improv:+.4f} vs current", delta_color="inverse")
-            st.caption(
-                f"Over {tune['n']} graded games, `MARKET_SHRINK = "
-                f"{tune['best_brier_alpha']:.2f}` would have minimized win-prob "
-                f"Brier (model-only {tune['model_only_brier']:.4f} · market-only "
-                f"{tune['market_only_brier']:.4f}). Recommendation only — update "
-                "config.py when the sample is large enough to trust.")
+            be, dmacc, kacc = d["brier_edge"], d["model_acc"], d["market_acc"]
+            mc = st.columns(3)
+            mc[0].metric("Disagreement games", d["n"])
+            mc[1].metric("Model Brier edge vs market",
+                         f"{be:+.3f}" if be is not None else "—",
+                         help="Market Brier − model Brier where our pick differs "
+                              "from the market. Positive = better calibrated "
+                              "exactly where it breaks from the market.")
+            mc[2].metric("Model acc. on disagreements",
+                         f"{dmacc:.0%}" if dmacc is not None else "—",
+                         delta=(f"{(dmacc - kacc) * 100:+.0f} pts vs market"
+                                if dmacc is not None and kacc is not None else None))
+            tbl = pd.DataFrame({
+                "Bucket": ["Disagrees w/ market", "Agrees w/ market", "All games"],
+                "Games": [d["n"], a["n"], sc["n_games"]],
+                "Model Brier": [d["model_brier"], a["model_brier"],
+                                sc["overall"]["model_brier"]],
+                "Market Brier": [d["market_brier"], a["market_brier"],
+                                 sc["overall"]["market_brier"]],
+                "Model acc": [d["model_acc"], a["model_acc"], sc["overall"]["model_acc"]],
+                "Market acc": [d["market_acc"], a["market_acc"], sc["overall"]["market_acc"]],
+            })
+            st.dataframe(tbl, width="stretch", hide_index=True)
+            bsc = _sc.bet_scorecard(ledger)
+            con, wm = bsc["contrarian"], bsc["with_market"]
+            if con["n"] or wm["n"]:
+                st.markdown("**Bets by stance**")
+                st.dataframe(pd.DataFrame({
+                    "Stance": ["Contrarian (vs market)", "With market"],
+                    "Bets": [con["n"], wm["n"]],
+                    "ROI %": [con["roi_pct"], wm["roi_pct"]],
+                    "Win rate": [con["win_rate"], wm["win_rate"]],
+                    "Avg CLV %": [con["avg_clv_pct"], wm["avg_clv_pct"]],
+                }), width="stretch", hide_index=True)
+            st.caption("If the model only wins when it agrees with the market, "
+                       "it's following it. A positive Brier edge on the "
+                       "disagreement bucket is the proof it adds signal.")
 
-    by_sport = perf.get("by_sport", {})
-    if by_sport:
-        section_header("By sport")
-        st.dataframe(pd.DataFrame(by_sport).T, width="stretch")
-    recent = ui.recent_bets(ledger)
-    if not recent.empty:
-        section_header("Recent graded bets")
-        st.dataframe(recent, width="stretch", hide_index=True)
-    st.caption("Forward-test record at projection-time prices. Brier + "
-               "calibration cover every projected game; units/ROI cover "
-               "recommended bets only.")
+            # de-vig / MARKET_SHRINK blend tuner.
+            tune = _sc.optimal_shrink(ledger, current=config.MARKET_SHRINK)
+            st.markdown("**Calibration-driven tuning (de-vig blend)**")
+            if not tune.get("ready"):
+                st.caption(f"Optimal-shrink tuning unlocks after "
+                           f"{tune['min_games']} graded games ({tune['n']} so "
+                           "far). It will recommend the model/market blend that "
+                           "minimizes Brier.")
+            else:
+                improv = tune["current_brier"] - tune["best_brier"]
+                tc = st.columns(3)
+                tc[0].metric("Current MARKET_SHRINK", f"{tune['current_alpha']:.2f}")
+                tc[1].metric("Data-optimal shrink", f"{tune['best_brier_alpha']:.2f}",
+                             help="The model↔market blend weight that minimizes "
+                                  "Brier. 0 = trust the model fully; 1 = defer to "
+                                  "the market.")
+                tc[2].metric("Brier if retuned", f"{tune['best_brier']:.4f}",
+                             delta=f"{-improv:+.4f} vs current", delta_color="inverse")
+                st.caption(
+                    f"Over {tune['n']} graded games, `MARKET_SHRINK = "
+                    f"{tune['best_brier_alpha']:.2f}` would have minimized win-prob "
+                    f"Brier (model-only {tune['model_only_brier']:.4f} · "
+                    f"market-only {tune['market_only_brier']:.4f}). Recommendation "
+                    "only — update config.py when the sample is large enough.")
 
 
 # ---------------------------------------------------------------------------
@@ -1642,9 +1785,6 @@ def render_home():
                 "</div></div>", unsafe_allow_html=True)
     st.caption("52.4% pays the house. 54.7% pays you. · "
                f"Updated {gen} ET · model estimates, not financial advice")
-    _, _tg = st.columns([5, 1])
-    with _tg:
-        _theme_toggle("theme_home")
 
     # --- The 54.7 heroes: front and center, glowing by where we stand -------
     st.markdown(_heroes_html(results.hero_metrics(load_ledger())),
@@ -1658,7 +1798,7 @@ def render_home():
     perf = (data or {}).get("performance", {}).get("overall", {})
     games_today = sum(len(b.get("games", []) or []) for b in day.values())
 
-    # --- The receipts (supporting the heroes; full ledger on the Ledger tab) -
+    # --- The receipts (CLV-first: skill shows up in CLV before the bankroll) -
     section_header("The receipts — every pick graded, wins and losses", "📒")
     roi = perf.get("roi_pct")
     clv = perf.get("avg_clv_pct")
@@ -1666,25 +1806,25 @@ def render_home():
     beat = perf.get("clv_beat_rate")
     nbets = perf.get("bets", 0)
     s = st.columns(4)
-    s[0].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
-                help=f"Profit ÷ amount staked, over {nbets} bets.")
-    s[1].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
+    s[0].metric("Avg CLV", f"{clv:+.2f}%" if clv is not None else "—",
                 help="Edge vs the closing line — the truest early skill signal.")
-    s[2].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
-                help="Share of bets that beat the closing line.")
-    s[3].metric("Units", f"{units:+.1f}u" if units is not None else "—",
+    s[1].metric("Units", f"{units:+.1f}u" if units is not None else "—",
                 help=f"Net units across {nbets} graded bets "
                      f"(Brier {perf.get('model_brier') or '—'}).")
+    s[2].metric("ROI", f"{roi:+.1f}%" if roi is not None else "—",
+                help=f"Profit ÷ amount staked, over {nbets} bets.")
+    s[3].metric("CLV beat", f"{beat*100:.0f}%" if beat is not None else "—",
+                help="Share of bets that beat the closing line.")
     if not nbets:
-        st.caption("No graded bets yet — fills in as picks settle. "
-                   "Full history on the **Ledger** tab.")
+        st.caption("Every pick graded — wins and losses. No record yet; it fills "
+                   "in as picks settle. Full history on the **Ledger** tab.")
     else:
-        st.caption("Supporting receipts behind the two numbers above. "
+        st.caption("Every pick graded — wins and losses. "
                    "Full breakdown on the **Ledger** tab.")
     st.divider()
 
-    # --- Today's slate ------------------------------------------------------
-    section_header(f"Today — {default_date or '—'}", "🗓️")
+    # --- Tonight's slate ----------------------------------------------------
+    section_header(f"Tonight — {default_date or '—'}", "🗓️")
     c = st.columns(3)
     c[0].metric("Games", games_today)
     c[1].metric("Edges ≥ thresh", 0 if board.empty else len(board))
@@ -1692,23 +1832,29 @@ def render_home():
 
     left, right = st.columns([3, 2])
     with left:
-        section_header("Today's top edges", "🔥")
+        section_header("Tonight's top plays", "🔥")
         if board.empty:
-            st.info("No edges over the current threshold yet — lower **Min edge** "
-                    "in the sidebar, or check back as lineups post.")
+            # Pass-day honesty, brand voice — not a "lower the bar" nudge.
+            st.markdown(
+                "<div style='background:var(--card);border:1px solid var(--line);"
+                "border-radius:10px;padding:16px 18px;color:var(--muted);'>"
+                "<b style='color:var(--text);'>Passed the slate</b> — nothing "
+                "cleared the bar tonight. We'd rather sit than sell you a coin "
+                "flip. Check back as lineups post.</div>",
+                unsafe_allow_html=True)
         else:
-            view = board.head(8).copy()
-            view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
-            view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100
-            view["price"] = view["price"].map(ui.fmt_american)
-            view = view[["sport", "bet", "ev", "price", "model_prob"]].rename(
-                columns={"sport": "Sport", "bet": "Bet", "ev": "EV %",
-                         "price": "Price", "model_prob": "Model %"})
-            st.dataframe(view, width="stretch", hide_index=True, column_config={
-                "EV %": st.column_config.NumberColumn(format="%+.1f%%"),
-                "Model %": st.column_config.ProgressColumn(
-                    "Model %", min_value=0, max_value=100, format="%.0f%%")})
-            st.caption("Full board on **PLAYS**; sharp/arb/middle edges on **EDGES**.")
+            top = board.head(5).to_dict("records")
+            cols = st.columns(2)
+            for i, play in enumerate(top):
+                with cols[i % 2]:
+                    st.markdown(ui.play_card_html(play), unsafe_allow_html=True)
+            st.markdown(
+                "<div style='margin-top:4px;font-family:var(--disp);font-weight:600;"
+                "font-size:.82rem;letter-spacing:.04em;color:var(--good);'>"
+                "See all plays → <span style='color:var(--muted);font-weight:400;'>"
+                "open <b>Plays</b> for the full board, or <b>Edges</b> for "
+                "sharp/arb/middle markets.</span></div>",
+                unsafe_allow_html=True)
     with right:
         section_header("Slate at a glance", "🗓️")
         pills = []
@@ -1763,12 +1909,14 @@ def render_edges():
         section_header(sport)
         pev = scan["plus_ev"]
         if pev:
-            st.markdown("**➕ Positive EV vs consensus**")
+            st.markdown("**➕ Positive EV vs consensus**  ·  sorted EV high → low")
             df = pd.DataFrame([{
-                "Market": r["market"], "Game": r["game"], "Side": r["side"],
-                "Best": ui.fmt_american(r["price"]), "Book": _book(r["book"]),
-                "Fair %": r["fair_prob"] * 100, "EV %": r["ev"] * 100,
+                "Side": r["side"], "Best": ui.fmt_american(r["price"]),
+                "Book": _book(r["book"]), "Fair %": r["fair_prob"] * 100,
+                "EV %": r["ev"] * 100, "Game": r["game"], "Market": r["market"],
                 "#bk": r["n_books"]} for r in pev])
+            # Keep the raw EV numeric, sort desc, then format via column_config.
+            df = df.sort_values("EV %", ascending=False).reset_index(drop=True)
             st.dataframe(df, width="stretch", hide_index=True, column_config={
                 "Fair %": st.column_config.NumberColumn(format="%.0f%%"),
                 "EV %": st.column_config.NumberColumn(format="%+.1f%%")})

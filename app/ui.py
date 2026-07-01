@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from app import assets
+from project547 import config
 
 ET = ZoneInfo("America/New_York")
 
@@ -495,22 +496,88 @@ def _form_html(badge: str, team: str, form: dict, align: str,
 # Redesign helpers: odds/info bar, confidence chip, letter-graded verdicts
 # ---------------------------------------------------------------------------
 
-def _grade(ev) -> tuple[str, str]:
-    """Letter grade + color for a model edge (EV). A = strong, F = negative."""
+def _letter(ev) -> str:
+    """Just the letter grade for a model edge (EV). A = strong, F = negative.
+    Kept separate from the tier ladder so play_tier can attach a letter without
+    re-deriving the tier from it (and vice versa)."""
     if ev is None or (isinstance(ev, float) and pd.isna(ev)):
-        return ("—", "var(--faint)")
+        return "—"
     e = float(ev) * 100
     if e >= 8:
-        return ("A", "var(--good)")
+        return "A"
     if e >= 5:
-        return ("B", "var(--good)")
+        return "B"
     if e >= 3:
-        return ("C", "var(--mid)")
+        return "C"
     if e >= 1:
-        return ("D", "var(--mid)")
+        return "D"
     if e >= 0:
-        return ("D-", "var(--faint)")
-    return ("F", "var(--neg)")
+        return "D-"
+    return "F"
+
+
+def play_tier(ev, min_edge: float = 0.02) -> dict:
+    """The single source of truth for confidence — collapses the old competing
+    systems (the A–F letter grade, the 0–10 conviction, and the 2–6% "band")
+    into one ladder. Returns {"label", "color", "kind", "letter"}.
+
+    The anti-guru twist: a *huge* edge is a WARNING, not a lock. On these
+    efficient markets a >=8% model edge almost always means the market knows
+    something we don't (injury, lineup, bullpen), so we flag it rather than
+    chase it. Bands track project547.config (SHARP_EV_MIN / SHARP_EV_MAX /
+    STALE_EV) so the dashboard and the ladder never drift apart.
+
+        ev < min_edge              -> PASS       (faint)
+        min_edge <= ev < SHARP_MIN -> LEAN       (mid)   [only when min_edge<SHARP_MIN]
+        SHARP_MIN <= ev < SHARP_MAX-> CORE PLAY  (good)  [the curated 2–6% band]
+        SHARP_MAX <= ev < STALE    -> WATCH      (mid)
+        ev >= STALE                -> VERIFY      (neg)   [edge too big, market knows]
+    """
+    sharp_min = config.SHARP_EV_MIN   # 0.02 — bottom of the curated band
+    sharp_max = config.SHARP_EV_MAX   # 0.06 — top of the validated sweet spot
+    stale = config.STALE_EV           # 0.08 — above this the line's likely stale
+    letter = _letter(ev)
+    if ev is None or (isinstance(ev, float) and pd.isna(ev)):
+        return {"label": "PASS", "color": "var(--faint)", "kind": "pass",
+                "letter": letter}
+    e = float(ev)
+    if e < min_edge:
+        return {"label": "PASS", "color": "var(--faint)", "kind": "pass",
+                "letter": letter}
+    # LEAN only exists when the caller's bar sits below the curated band — the
+    # sliver between a custom min_edge and the 2% core floor.
+    if min_edge < sharp_min and e < sharp_min:
+        return {"label": "LEAN", "color": "var(--mid)", "kind": "lean",
+                "letter": letter}
+    if e < sharp_max:
+        return {"label": "CORE PLAY", "color": "var(--good)", "kind": "core",
+                "letter": letter}
+    if e < stale:
+        return {"label": "WATCH", "color": "var(--mid)", "kind": "watch",
+                "letter": letter}
+    return {"label": "VERIFY", "color": "var(--neg)", "kind": "verify",
+            "letter": letter}
+
+
+def _tier_color(letter: str) -> str:
+    """The letter-chip color, derived from the grade alone (A/B win, C/D
+    caution, F loss). Keeps the small grade badge readable independent of the
+    tier label."""
+    if letter in ("A", "B"):
+        return "var(--good)"
+    if letter in ("C", "D"):
+        return "var(--mid)"
+    if letter == "F":
+        return "var(--neg)"
+    return "var(--faint)"
+
+
+def _grade(ev) -> tuple[str, str]:
+    """Letter grade + color for a model edge (EV). A = strong, F = negative.
+    Thin wrapper over _letter/_tier_color — preserved for callers that want the
+    (letter, color) tuple."""
+    letter = _letter(ev)
+    return (letter, _tier_color(letter))
 
 
 def _info_bar_html(sport: str, g: dict) -> str:
@@ -640,10 +707,11 @@ def _gauge_svg(prob, needle_color: str = "var(--text)") -> str:
 
 
 def _verdict_box(label: str, pick: str, prob, ev, min_edge: float, wm: str = "") -> str:
-    gl, gc = _grade(ev)
-    play = ev is not None and pd.notna(ev) and ev >= min_edge
+    tier = play_tier(ev, min_edge)
+    gl, gc = tier["letter"], _tier_color(tier["letter"])
+    play = tier["kind"] != "pass"
     dco, dbg = ("var(--good)", "#0f2c1c") if play else ("var(--muted)", "var(--line)")
-    decision = "PLAY" if play else "PASS"
+    decision = "PASS" if tier["kind"] == "pass" else tier["label"]
     pctc = ("var(--good)" if (prob is not None and pd.notna(prob) and prob >= 0.62)
             else ("var(--mid)" if (prob is not None and pd.notna(prob) and prob >= 0.5)
                   else "var(--text)"))
@@ -850,14 +918,19 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
     # ---- ③ what's the play? ----
     if best and float(best["ev"]) >= min_edge:
         ev = float(best["ev"])
-        if 0.02 <= ev < 0.06:
+        tier = play_tier(ev, min_edge)
+        if tier["kind"] == "core":
             tag, kind, vcol = "PLAY · 2–6% BAND", "play", "var(--good)"
             why3 = ("Squarely in our curated <b>2–6% band</b> — the range our record hits "
                     "~60%. Logged at this price and graded to the close. No revisions.")
-        elif ev >= 0.08:
+        elif tier["kind"] == "verify":
             tag, kind, vcol = "VERIFY — OFF-MARKET", "warn", "var(--mid)"
             why3 = ("Edge is large enough that the market likely knows something we don't "
                     "(injury, lineup, bullpen). We flag these — we don't chase them.")
+        elif tier["kind"] == "watch":
+            tag, kind, vcol = "WATCH", "warn", "var(--mid)"
+            why3 = ("Just past the sweet spot — a touch rich for the curated band. "
+                    "Worth watching, not yet a core play.")
         else:
             tag, kind, vcol = "LEAN", "edge", "var(--good)"
             why3 = "A modest edge — worth a lean, just under our core play threshold."
@@ -933,6 +1006,148 @@ def _vmeta(label, value, color=None) -> str:
     return (f"<div><div style='font-family:var(--disp);font-size:.58rem;letter-spacing:.06em;"
             f"color:var(--muted);'>{label}</div>"
             f"<div style='font-family:var(--disp);font-weight:600;font-size:1rem;{col}'>{value}</div></div>")
+
+
+# ---------------------------------------------------------------------------
+# The reusable play card (Today / Plays / Ledger) — one compact, themed card.
+# ---------------------------------------------------------------------------
+
+def _g(play: dict, *keys):
+    """First non-null/non-NaN value among `keys` in the play dict, else None.
+    Plays come from a few shapes; tolerate missing keys, never raise."""
+    for k in keys:
+        v = play.get(k)
+        if v is not None and not (isinstance(v, float) and pd.isna(v)):
+            return v
+    return None
+
+
+def _signed_pct(v) -> str:
+    """0.012 -> '+1.2%', -0.004 -> '-0.4%'. '—' when missing."""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "—"
+    return f"{float(v) * 100:+.1f}%"
+
+
+def _signed_units(v) -> str:
+    """0.8 -> '+0.8u', -1.0 -> '-1.0u'. '—' when missing."""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "—"
+    return f"{float(v):+.1f}u"
+
+
+def play_card_html(play: dict, *, graded: bool = False) -> str:
+    """One compact, reusable play card (pure st.markdown HTML, themed via CSS
+    vars). Used on Today / Plays / Ledger. Pulls every field defensively from
+    the play dict (bet/pick, price, model_prob, ev, kelly/stake, sport, game,
+    clv, won, pnl) — missing keys degrade to graceful blanks, never raise.
+
+    Layout, top to bottom:
+      · kicker: sport chip + matchup/time (time right-aligned)
+      · hero: the pick + american price, large (Oswald 700)
+      · the MARKET / IMPLIED / MODEL / EDGE 4-cell grid (reuses _pf_cell)
+      · tier row: play_tier chip + ¼-Kelly stake + conviction
+      · optional one-line WHY ("Model 61%; market implies 57%.")
+      · graded=True also shows CLV and the result (✅ Win / ❌ Loss).
+    """
+    play = play or {}
+    bet = _g(play, "bet", "pick") or "—"
+    price = _g(play, "price", "odds")
+    ev = _g(play, "ev")
+    model_prob = _g(play, "model_prob", "model_over_prob")
+    sport = _g(play, "sport") or ""
+    game = _g(play, "game", "matchup") or ""
+    time = fmt_time_et(_g(play, "time", "game_time"))
+
+    tier = play_tier(ev)
+    imp = _implied(price) if (price is not None and pd.notna(price)) else None
+
+    # ---- kicker: sport chip + matchup, time pushed right ----
+    chip = (f"<span style='font-family:var(--disp);font-size:.62rem;letter-spacing:.08em;"
+            f"padding:2px 8px;border-radius:3px;background:var(--card2);color:var(--muted);"
+            f"border:1px solid var(--line);'>{sport}</span>" if sport else "")
+    kicker = (
+        "<div style='display:flex;align-items:center;gap:9px;margin-bottom:8px;"
+        "font-size:.74rem;color:var(--muted);'>"
+        f"{chip}<span>{game}</span>"
+        f"<span style='margin-left:auto;'>{time}</span></div>")
+
+    # ---- hero: the pick + price, big Oswald ----
+    price_txt = fmt_american(price) or "—"
+    hero = (
+        "<div style='display:flex;align-items:baseline;gap:10px;margin-bottom:10px;'>"
+        f"<span style='font-family:var(--disp);font-weight:700;font-size:1.3rem;"
+        f"letter-spacing:.01em;line-height:1.1;'>{bet}</span>"
+        f"<span style='margin-left:auto;font-family:var(--disp);font-weight:700;"
+        f"font-size:1.3rem;color:var(--text);'>{price_txt}</span></div>")
+
+    # ---- the 4-cell MARKET / IMPLIED / MODEL / EDGE grid (reuse _pf_cell) ----
+    ev_col = None
+    if ev is not None and pd.notna(ev):
+        ev_col = "var(--good)" if float(ev) >= 0 else "var(--neg)"
+    grid = (
+        "<div style='display:grid;grid-template-columns:repeat(4,1fr);"
+        "border:1.5px solid var(--line);border-radius:6px;overflow:hidden;'>"
+        + _pf_cell("MARKET", price_txt)
+        + _pf_cell("IMPLIED", _pct(imp))
+        + _pf_cell("OUR MODEL", _pct(model_prob), True)
+        + _pf_cell("EDGE", _signed_pct(ev), True, ev_col) + "</div>")
+
+    # ---- tier row: play_tier chip + ¼-Kelly stake + conviction ----
+    stake = _g(play, "stake", "kelly")
+    if stake is not None and pd.notna(stake):
+        stake_txt = f"{float(stake):.1f}u"
+    else:
+        stake_txt = "—"
+    conv = _conviction(ev)
+    tier_chip = (
+        f"<span style='font-family:var(--disp);font-size:.7rem;letter-spacing:.06em;"
+        f"font-weight:600;padding:3px 10px;border-radius:3px;color:var(--bg);"
+        f"background:{tier['color']};'>{tier['label']}</span>")
+    grade_chip = (
+        f"<span style='display:inline-flex;width:20px;height:20px;border-radius:6px;"
+        f"background:{_tier_color(tier['letter'])};color:var(--bg);font-size:0.72rem;"
+        f"font-weight:800;align-items:center;justify-content:center;'>{tier['letter']}</span>")
+    tier_row = (
+        "<div style='display:flex;align-items:center;gap:10px;margin-top:10px;"
+        "font-size:.74rem;color:var(--muted);'>"
+        f"{tier_chip}{grade_chip}"
+        f"<span style='margin-left:auto;'>Stake "
+        f"<b style='color:var(--text);'>{stake_txt}</b></span>"
+        f"<span>Conv <b style='color:{_conv_color(conv)};'>{conv:g}</b></span></div>")
+
+    # ---- optional one-line WHY, loosely-held numeric voice ----
+    why = ""
+    if model_prob is not None and imp is not None:
+        why = (f"<div style='font-size:.78rem;color:var(--muted);margin-top:9px;'>"
+               f"Model {_pct(model_prob)}; market implies {_pct(imp)}.</div>")
+
+    # ---- graded: CLV + result ----
+    graded_row = ""
+    if graded:
+        bits = []
+        clv = _g(play, "clv")
+        if clv is not None:
+            cc = "var(--good)" if float(clv) >= 0 else "var(--neg)"
+            bits.append(f"<span>CLV <b style='color:{cc};'>{_signed_pct(clv)}</b></span>")
+        won = play.get("won")
+        pnl = _g(play, "pnl")
+        if won is not None and not (isinstance(won, float) and pd.isna(won)):
+            ok = bool(won)
+            rc = "var(--good)" if ok else "var(--neg)"
+            glyph = "✅ Win" if ok else "❌ Loss"
+            ptxt = f" {_signed_units(pnl)}" if pnl is not None else ""
+            bits.append(f"<span style='color:{rc};font-weight:600;'>{glyph}{ptxt}</span>")
+        if bits:
+            graded_row = (
+                "<div style='display:flex;align-items:center;gap:14px;margin-top:10px;"
+                "padding-top:9px;border-top:1px solid var(--line);font-size:.78rem;'>"
+                + "".join(bits) + "</div>")
+
+    return (
+        "<div style='background:var(--card);border:1px solid var(--line);"
+        "border-radius:12px;padding:14px 16px;margin-bottom:12px;'>"
+        f"{kicker}{hero}{grid}{tier_row}{why}{graded_row}</div>")
 
 
 def _weather_txt(g: dict) -> str:
