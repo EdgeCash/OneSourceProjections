@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-30T19:12:38.903510-04:00",
+ "generated_at": "2026-06-30T23:03:02.269826-04:00",
  "primary_date": "2026-06-30",
  "dates": [
   "2026-06-30",
@@ -11,10 +11,10 @@
     "games": [
      {
       "weather": {
-       "temp_f": 91,
-       "wind_mph": 9,
-       "wind_dir": "S",
-       "precip_pct": 1
+       "temp_f": 85,
+       "wind_mph": 7,
+       "wind_dir": "SSE",
+       "precip_pct": 0
       },
       "lineups": {
        "home": [
@@ -70,35 +70,35 @@
       "home_pitcher": "Trey Gibson",
       "away_pitcher_id": 607200,
       "home_pitcher_id": 694346,
-      "home_exp_runs": 5.4,
-      "away_exp_runs": 5.235,
-      "proj_total": 10.635,
-      "home_win_prob": 0.5153,
-      "away_win_prob": 0.4847,
+      "home_exp_runs": 5.433,
+      "away_exp_runs": 5.327,
+      "proj_total": 10.76,
+      "home_win_prob": 0.511,
+      "away_win_prob": 0.489,
       "over_probs": {
-       "6.0": 0.8124,
-       "6.5": 0.8124,
-       "7.0": 0.72105,
-       "7.5": 0.72105,
-       "8.0": 0.64815,
-       "8.5": 0.64815,
-       "9.0": 0.5532,
-       "9.5": 0.5532,
-       "10.0": 0.4819,
-       "10.5": 0.4819,
-       "11.0": 0.3929,
-       "11.5": 0.3929,
-       "12.0": 0.3343,
-       "12.5": 0.3343,
-       "13.0": 0.26055,
-       "13.5": 0.26055,
-       "14.0": 0.21185,
-       "14.5": 0.21185,
-       "15.0": 0.1603
+       "6.0": 0.8217,
+       "6.5": 0.8217,
+       "7.0": 0.7355,
+       "7.5": 0.7355,
+       "8.0": 0.6657,
+       "8.5": 0.6657,
+       "9.0": 0.5676,
+       "9.5": 0.5676,
+       "10.0": 0.4945,
+       "10.5": 0.4945,
+       "11.0": 0.4024,
+       "11.5": 0.4024,
+       "12.0": 0.33495,
+       "12.5": 0.33495,
+       "13.0": 0.26645,
+       "13.5": 0.26645,
+       "14.0": 0.2159,
+       "14.5": 0.2159,
+       "15.0": 0.16355
       },
       "home_rl_cover": {
-       "-1.5": 0.39205,
-       "1.5": 0.6368
+       "-1.5": 0.3921,
+       "1.5": 0.6266
       },
       "model_nrfi_prob": 0.4542,
       "model_yrfi_prob": 0.5458,
@@ -106,14 +106,14 @@
       "nrfi_p_bot": 0.3066,
       "home_ml": -138.0,
       "away_ml": 133.0,
-      "home_ml_ev": -0.0448,
-      "away_ml_ev": 0.0395,
+      "home_ml_ev": -0.0474,
+      "away_ml_ev": 0.043,
       "total_line": 9.5,
       "over_odds": 122.0,
       "under_odds": 115.0,
-      "model_over_prob": 0.5532,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.5676,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 138.0,
       "rl_away_odds": 163.0,
@@ -123,9 +123,9 @@
      },
      {
       "weather": {
-       "temp_f": 93,
-       "wind_mph": 9,
-       "wind_dir": "W",
+       "temp_f": 92,
+       "wind_mph": 10,
+       "wind_dir": "SSW",
        "precip_pct": 0
       },
       "lineups": {
@@ -183,34 +183,34 @@
       "away_pitcher_id": 594798,
       "home_pitcher_id": 676440,
       "home_exp_runs": 4.013,
-      "away_exp_runs": 4.56,
-      "proj_total": 8.573,
-      "home_win_prob": 0.44,
-      "away_win_prob": 0.56,
+      "away_exp_runs": 4.604,
+      "proj_total": 8.617,
+      "home_win_prob": 0.4402,
+      "away_win_prob": 0.5597,
       "over_probs": {
-       "6.0": 0.6692,
-       "6.5": 0.6692,
-       "7.0": 0.55645,
-       "7.5": 0.55645,
-       "8.0": 0.47765,
-       "8.5": 0.47765,
-       "9.0": 0.3773,
-       "9.5": 0.3773,
-       "10.0": 0.3092,
-       "10.5": 0.3092,
-       "11.0": 0.23415,
-       "11.5": 0.23415,
-       "12.0": 0.1855,
-       "12.5": 0.1855,
-       "13.0": 0.1392,
-       "13.5": 0.1392,
-       "14.0": 0.1073,
-       "14.5": 0.1073,
-       "15.0": 0.07645
+       "6.0": 0.67145,
+       "6.5": 0.67145,
+       "7.0": 0.5593,
+       "7.5": 0.5593,
+       "8.0": 0.47995,
+       "8.5": 0.47995,
+       "9.0": 0.3804,
+       "9.5": 0.3804,
+       "10.0": 0.3124,
+       "10.5": 0.3124,
+       "11.0": 0.2395,
+       "11.5": 0.2395,
+       "12.0": 0.18895,
+       "12.5": 0.18895,
+       "13.0": 0.1384,
+       "13.5": 0.1384,
+       "14.0": 0.1068,
+       "14.5": 0.1068,
+       "15.0": 0.07605
       },
       "home_rl_cover": {
-       "-1.5": 0.30895,
-       "1.5": 0.58245
+       "-1.5": 0.30965,
+       "1.5": 0.5824
       },
       "model_nrfi_prob": 0.4875,
       "model_yrfi_prob": 0.5125,
@@ -218,14 +218,14 @@
       "nrfi_p_bot": 0.3046,
       "home_ml": 117.0,
       "away_ml": -117.0,
-      "home_ml_ev": -0.0158,
-      "away_ml_ev": 0.0135,
+      "home_ml_ev": -0.0157,
+      "away_ml_ev": 0.0134,
       "total_line": 8.0,
       "over_odds": 113.0,
       "under_odds": 105.0,
-      "model_over_prob": 0.4777,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.4799,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": 1.0,
       "rl_home_odds": -115.0,
       "rl_away_odds": 150.0,
@@ -235,10 +235,10 @@
      },
      {
       "weather": {
-       "temp_f": 88,
-       "wind_mph": 11,
-       "wind_dir": "SW",
-       "precip_pct": 2
+       "temp_f": 85,
+       "wind_mph": 5,
+       "wind_dir": "S",
+       "precip_pct": 0
       },
       "lineups": {
        "home": [
@@ -294,35 +294,35 @@
       "home_pitcher": "Cristopher S\u00e1nchez",
       "away_pitcher_id": 696149,
       "home_pitcher_id": 650911,
-      "home_exp_runs": 5.245,
-      "away_exp_runs": 4.076,
-      "proj_total": 9.321,
-      "home_win_prob": 0.6138,
-      "away_win_prob": 0.3862,
+      "home_exp_runs": 5.322,
+      "away_exp_runs": 4.029,
+      "proj_total": 9.351,
+      "home_win_prob": 0.6253,
+      "away_win_prob": 0.3747,
       "over_probs": {
-       "6.0": 0.72515,
-       "6.5": 0.72515,
-       "7.0": 0.61795,
-       "7.5": 0.61795,
-       "8.0": 0.5414,
-       "8.5": 0.5414,
-       "9.0": 0.44015,
-       "9.5": 0.44015,
-       "10.0": 0.3676,
-       "10.5": 0.3676,
-       "11.0": 0.28645,
-       "11.5": 0.28645,
-       "12.0": 0.23365,
-       "12.5": 0.23365,
-       "13.0": 0.1761,
-       "13.5": 0.1761,
-       "14.0": 0.13925,
-       "14.5": 0.13925,
-       "15.0": 0.1012
+       "6.0": 0.7294,
+       "6.5": 0.7294,
+       "7.0": 0.6226,
+       "7.5": 0.6226,
+       "8.0": 0.54485,
+       "8.5": 0.54485,
+       "9.0": 0.4449,
+       "9.5": 0.4449,
+       "10.0": 0.37195,
+       "10.5": 0.37195,
+       "11.0": 0.29045,
+       "11.5": 0.29045,
+       "12.0": 0.23405,
+       "12.5": 0.23405,
+       "13.0": 0.17755,
+       "13.5": 0.17755,
+       "14.0": 0.14045,
+       "14.5": 0.14045,
+       "15.0": 0.1016
       },
       "home_rl_cover": {
-       "-1.5": 0.47255,
-       "1.5": 0.72895
+       "-1.5": 0.4868,
+       "1.5": 0.74335
       },
       "model_nrfi_prob": 0.4509,
       "model_yrfi_prob": 0.5491,
@@ -330,26 +330,26 @@
       "nrfi_p_bot": 0.3336,
       "home_ml": -194.0,
       "away_ml": 194.0,
-      "home_ml_ev": -0.0244,
-      "away_ml_ev": 0.0474,
+      "home_ml_ev": -0.0183,
+      "away_ml_ev": 0.0356,
       "total_line": 9.0,
       "over_odds": 100.0,
       "under_odds": 117.0,
-      "model_over_prob": 0.4401,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.4449,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 100.0,
       "rl_away_odds": 100.0,
-      "model_home_rl": 0.4726,
-      "rl_home_ev": -0.0192,
-      "rl_away_ev": 0.0192
+      "model_home_rl": 0.4868,
+      "rl_home_ev": -0.0092,
+      "rl_away_ev": 0.0092
      },
      {
       "weather": {
-       "temp_f": 89,
-       "wind_mph": 9,
-       "wind_dir": "SW",
+       "temp_f": 87,
+       "wind_mph": 8,
+       "wind_dir": "S",
        "precip_pct": 1
       },
       "lineups": {
@@ -406,35 +406,35 @@
       "home_pitcher": "Cam Schlittler",
       "away_pitcher_id": 669373,
       "home_pitcher_id": 693645,
-      "home_exp_runs": 4.461,
-      "away_exp_runs": 3.454,
-      "proj_total": 7.915,
-      "home_win_prob": 0.6099,
-      "away_win_prob": 0.3901,
+      "home_exp_runs": 4.305,
+      "away_exp_runs": 3.508,
+      "proj_total": 7.813,
+      "home_win_prob": 0.5805,
+      "away_win_prob": 0.4195,
       "over_probs": {
-       "6.0": 0.60725,
-       "6.5": 0.60725,
-       "7.0": 0.49065,
-       "7.5": 0.49065,
-       "8.0": 0.4139,
-       "8.5": 0.4139,
-       "9.0": 0.3209,
-       "9.5": 0.3209,
-       "10.0": 0.2587,
-       "10.5": 0.2587,
-       "11.0": 0.19315,
-       "11.5": 0.19315,
-       "12.0": 0.1511,
-       "12.5": 0.1511,
-       "13.0": 0.10715,
-       "13.5": 0.10715,
-       "14.0": 0.0815,
-       "14.5": 0.0815,
-       "15.0": 0.05555
+       "6.0": 0.5998,
+       "6.5": 0.5998,
+       "7.0": 0.48255,
+       "7.5": 0.48255,
+       "8.0": 0.40365,
+       "8.5": 0.40365,
+       "9.0": 0.31055,
+       "9.5": 0.31055,
+       "10.0": 0.2489,
+       "10.5": 0.2489,
+       "11.0": 0.18235,
+       "11.5": 0.18235,
+       "12.0": 0.14,
+       "12.5": 0.14,
+       "13.0": 0.10195,
+       "13.5": 0.10195,
+       "14.0": 0.07535,
+       "14.5": 0.07535,
+       "15.0": 0.0513
       },
       "home_rl_cover": {
-       "-1.5": 0.4536,
-       "1.5": 0.73545
+       "-1.5": 0.4298,
+       "1.5": 0.7147
       },
       "model_nrfi_prob": 0.4772,
       "model_yrfi_prob": 0.5228,
@@ -442,27 +442,27 @@
       "nrfi_p_bot": 0.3417,
       "home_ml": -102.0,
       "away_ml": 102.0,
-      "home_ml_ev": 0.0727,
-      "away_ml_ev": -0.0742,
+      "home_ml_ev": 0.0524,
+      "away_ml_ev": -0.0534,
       "total_line": 7.5,
       "over_odds": 120.0,
       "under_odds": 108.0,
-      "model_over_prob": 0.4906,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.4825,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 194.0,
       "rl_away_odds": 178.0,
-      "model_home_rl": 0.4536,
+      "model_home_rl": 0.4298,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 86,
-       "wind_mph": 12,
-       "wind_dir": "SSW",
-       "precip_pct": 1
+       "temp_f": 82,
+       "wind_mph": 6,
+       "wind_dir": "SW",
+       "precip_pct": 0
       },
       "lineups": {
        "home": [
@@ -518,35 +518,35 @@
       "home_pitcher": "Kevin Gausman",
       "away_pitcher_id": 690997,
       "home_pitcher_id": 592332,
-      "home_exp_runs": 4.046,
-      "away_exp_runs": 4.152,
-      "proj_total": 8.198,
-      "home_win_prob": 0.4892,
-      "away_win_prob": 0.5108,
+      "home_exp_runs": 4.02,
+      "away_exp_runs": 4.138,
+      "proj_total": 8.159,
+      "home_win_prob": 0.4905,
+      "away_win_prob": 0.5094,
       "over_probs": {
-       "6.0": 0.6414,
-       "6.5": 0.6414,
-       "7.0": 0.5263,
-       "7.5": 0.5263,
-       "8.0": 0.4456,
-       "8.5": 0.4456,
-       "9.0": 0.3464,
-       "9.5": 0.3464,
-       "10.0": 0.28265,
-       "10.5": 0.28265,
-       "11.0": 0.2111,
-       "11.5": 0.2111,
-       "12.0": 0.1644,
-       "12.5": 0.1644,
-       "13.0": 0.11845,
-       "13.5": 0.11845,
-       "14.0": 0.0903,
-       "14.5": 0.0903,
-       "15.0": 0.06355
+       "6.0": 0.6322,
+       "6.5": 0.6322,
+       "7.0": 0.5182,
+       "7.5": 0.5182,
+       "8.0": 0.4364,
+       "8.5": 0.4364,
+       "9.0": 0.3388,
+       "9.5": 0.3388,
+       "10.0": 0.2773,
+       "10.5": 0.2773,
+       "11.0": 0.20775,
+       "11.5": 0.20775,
+       "12.0": 0.163,
+       "12.5": 0.163,
+       "13.0": 0.1166,
+       "13.5": 0.1166,
+       "14.0": 0.08795,
+       "14.5": 0.08795,
+       "15.0": 0.0615
       },
       "home_rl_cover": {
-       "-1.5": 0.347,
-       "1.5": 0.63445
+       "-1.5": 0.346,
+       "1.5": 0.6335
       },
       "model_nrfi_prob": 0.4869,
       "model_yrfi_prob": 0.5131,
@@ -554,27 +554,27 @@
       "nrfi_p_bot": 0.2684,
       "home_ml": 104.0,
       "away_ml": -104.0,
-      "home_ml_ev": -0.0007,
-      "away_ml_ev": 0.0007,
+      "home_ml_ev": 0.0002,
+      "away_ml_ev": -0.0002,
       "total_line": 8.0,
       "over_odds": 107.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.4456,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.4364,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 192.0,
       "rl_away_odds": 163.0,
-      "model_home_rl": 0.347,
+      "model_home_rl": 0.346,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 81,
-       "wind_mph": 10,
-       "wind_dir": "SW",
-       "precip_pct": 28
+       "temp_f": 78,
+       "wind_mph": 6,
+       "wind_dir": "S",
+       "precip_pct": 26
       },
       "lineups": {
        "home": [
@@ -630,63 +630,63 @@
       "home_pitcher": "Connelly Early",
       "away_pitcher_id": 676917,
       "home_pitcher_id": 813349,
-      "home_exp_runs": 4.604,
-      "away_exp_runs": 4.9,
-      "proj_total": 9.504,
-      "home_win_prob": 0.4689,
-      "away_win_prob": 0.5311,
+      "home_exp_runs": 4.504,
+      "away_exp_runs": 4.99,
+      "proj_total": 9.494,
+      "home_win_prob": 0.4489,
+      "away_win_prob": 0.5512,
       "over_probs": {
-       "6.0": 0.7431,
-       "6.5": 0.7431,
-       "7.0": 0.63945,
-       "7.5": 0.63945,
-       "8.0": 0.55935,
-       "8.5": 0.55935,
-       "9.0": 0.4622,
-       "9.5": 0.4622,
-       "10.0": 0.3908,
-       "10.5": 0.3908,
-       "11.0": 0.3057,
-       "11.5": 0.3057,
-       "12.0": 0.25125,
-       "12.5": 0.25125,
-       "13.0": 0.1881,
-       "13.5": 0.1881,
-       "14.0": 0.14905,
-       "14.5": 0.14905,
-       "15.0": 0.10785
+       "6.0": 0.7365,
+       "6.5": 0.7365,
+       "7.0": 0.63215,
+       "7.5": 0.63215,
+       "8.0": 0.5572,
+       "8.5": 0.5572,
+       "9.0": 0.45745,
+       "9.5": 0.45745,
+       "10.0": 0.38845,
+       "10.5": 0.38845,
+       "11.0": 0.30265,
+       "11.5": 0.30265,
+       "12.0": 0.24875,
+       "12.5": 0.24875,
+       "13.0": 0.1916,
+       "13.5": 0.1916,
+       "14.0": 0.1526,
+       "14.5": 0.1526,
+       "15.0": 0.11275
       },
       "home_rl_cover": {
-       "-1.5": 0.34375,
-       "1.5": 0.60185
+       "-1.5": 0.3226,
+       "1.5": 0.58605
       },
       "model_nrfi_prob": 0.4401,
       "model_yrfi_prob": 0.5599,
       "nrfi_p_top": 0.3327,
       "nrfi_p_bot": 0.3405,
       "home_ml": 133.0,
-      "away_ml": 124.0,
+      "away_ml": 122.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
       "total_line": 9.5,
       "over_odds": 122.0,
       "under_odds": 115.0,
-      "model_over_prob": 0.4622,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.4575,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 163.0,
-      "rl_away_odds": -118.0,
-      "model_home_rl": 0.3438,
+      "rl_away_odds": -119.0,
+      "model_home_rl": 0.3226,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 87,
+       "temp_f": 93,
        "wind_mph": 8,
-       "wind_dir": "SSW",
-       "precip_pct": 9
+       "wind_dir": "ESE",
+       "precip_pct": 2
       },
       "lineups": {
        "home": [
@@ -742,59 +742,64 @@
       "home_pitcher": "Mart\u00edn P\u00e9rez",
       "away_pitcher_id": 669461,
       "home_pitcher_id": 527048,
-      "home_exp_runs": 4.694,
-      "away_exp_runs": 4.152,
-      "proj_total": 8.845,
-      "home_win_prob": 0.5508,
-      "away_win_prob": 0.4492,
+      "home_exp_runs": 4.725,
+      "away_exp_runs": 4.205,
+      "proj_total": 8.93,
+      "home_win_prob": 0.5486,
+      "away_win_prob": 0.4514,
       "over_probs": {
-       "6.0": 0.69245,
-       "6.5": 0.69245,
-       "7.0": 0.5816,
-       "7.5": 0.5816,
-       "8.0": 0.50185,
-       "8.5": 0.50185,
-       "9.0": 0.40165,
-       "9.5": 0.40165,
-       "10.0": 0.33335,
-       "10.5": 0.33335,
-       "11.0": 0.25875,
-       "11.5": 0.25875,
-       "12.0": 0.2076,
-       "12.5": 0.2076,
-       "13.0": 0.152,
-       "13.5": 0.152,
-       "14.0": 0.11655,
-       "14.5": 0.11655,
-       "15.0": 0.0851
+       "6.0": 0.69875,
+       "6.5": 0.69875,
+       "7.0": 0.5879,
+       "7.5": 0.5879,
+       "8.0": 0.50685,
+       "8.5": 0.50685,
+       "9.0": 0.4072,
+       "9.5": 0.4072,
+       "10.0": 0.33635,
+       "10.5": 0.33635,
+       "11.0": 0.2603,
+       "11.5": 0.2603,
+       "12.0": 0.2067,
+       "12.5": 0.2067,
+       "13.0": 0.1543,
+       "13.5": 0.1543,
+       "14.0": 0.1212,
+       "14.5": 0.1212,
+       "15.0": 0.0894
       },
       "home_rl_cover": {
-       "-1.5": 0.41345,
-       "1.5": 0.683
+       "-1.5": 0.4088,
+       "1.5": 0.67805
       },
       "model_nrfi_prob": 0.4568,
       "model_yrfi_prob": 0.5432,
       "nrfi_p_top": 0.3006,
       "nrfi_p_bot": 0.3468,
       "home_ml": -134.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0145,
-      "away_ml_ev": 0.0151,
+      "away_ml": 135.0,
+      "home_ml_ev": -0.0135,
+      "away_ml_ev": 0.0225,
       "total_line": 9.5,
       "over_odds": 117.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.4017,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "under_odds": 107.0,
+      "model_over_prob": 0.4072,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
-      "rl_home_odds": 147.0,
-      "rl_away_odds": -107.0,
-      "model_home_rl": 0.4134,
+      "rl_home_odds": 144.0,
+      "rl_away_odds": -108.0,
+      "model_home_rl": 0.4088,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 91,
+       "wind_mph": 14,
+       "wind_dir": "S",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [
         "Carter Jensen",
@@ -849,59 +854,64 @@
       "home_pitcher": "Noah Cameron",
       "away_pitcher_id": 643377,
       "home_pitcher_id": 702070,
-      "home_exp_runs": 4.936,
-      "away_exp_runs": 4.627,
-      "proj_total": 9.563,
-      "home_win_prob": 0.524,
-      "away_win_prob": 0.476,
+      "home_exp_runs": 4.995,
+      "away_exp_runs": 4.765,
+      "proj_total": 9.76,
+      "home_win_prob": 0.5183,
+      "away_win_prob": 0.4817,
       "over_probs": {
-       "6.0": 0.74675,
-       "6.5": 0.74675,
-       "7.0": 0.64155,
-       "7.5": 0.64155,
-       "8.0": 0.5646,
-       "8.5": 0.5646,
-       "9.0": 0.46305,
-       "9.5": 0.46305,
-       "10.0": 0.39245,
-       "10.5": 0.39245,
-       "11.0": 0.3093,
-       "11.5": 0.3093,
-       "12.0": 0.2537,
-       "12.5": 0.2537,
-       "13.0": 0.1944,
-       "13.5": 0.1944,
-       "14.0": 0.15345,
-       "14.5": 0.15345,
-       "15.0": 0.1135
+       "6.0": 0.7581,
+       "6.5": 0.7581,
+       "7.0": 0.6591,
+       "7.5": 0.6591,
+       "8.0": 0.58175,
+       "8.5": 0.58175,
+       "9.0": 0.4805,
+       "9.5": 0.4805,
+       "10.0": 0.4077,
+       "10.5": 0.4077,
+       "11.0": 0.32285,
+       "11.5": 0.32285,
+       "12.0": 0.2647,
+       "12.5": 0.2647,
+       "13.0": 0.20395,
+       "13.5": 0.20395,
+       "14.0": 0.16245,
+       "14.5": 0.16245,
+       "15.0": 0.11915
       },
       "home_rl_cover": {
-       "-1.5": 0.3919,
-       "1.5": 0.6515
+       "-1.5": 0.38815,
+       "1.5": 0.6447
       },
       "model_nrfi_prob": 0.4374,
       "model_yrfi_prob": 0.5626,
       "nrfi_p_top": 0.3529,
       "nrfi_p_bot": 0.3241,
       "home_ml": 108.0,
-      "away_ml": -106.0,
-      "home_ml_ev": 0.0345,
-      "away_ml_ev": -0.0232,
-      "total_line": 9.5,
-      "over_odds": -108.0,
+      "away_ml": -104.0,
+      "home_ml_ev": 0.0335,
+      "away_ml_ev": -0.0131,
+      "total_line": 10.5,
+      "over_odds": 128.0,
       "under_odds": 104.0,
-      "model_over_prob": 0.4631,
-      "over_ev": -0.0439,
-      "under_ev": 0.0273,
+      "model_over_prob": 0.4077,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": 1.0,
-      "rl_home_odds": -119.0,
+      "rl_home_odds": -127.0,
       "rl_away_odds": 147.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 91,
+       "wind_mph": 14,
+       "wind_dir": "SW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [
         "Christian Yelich",
@@ -956,56 +966,56 @@
       "home_pitcher": "Brandon Sproat",
       "away_pitcher_id": 695076,
       "home_pitcher_id": 687075,
-      "home_exp_runs": 5.509,
-      "away_exp_runs": 4.091,
-      "proj_total": 9.601,
-      "home_win_prob": 0.6294,
-      "away_win_prob": 0.3706,
+      "home_exp_runs": 5.587,
+      "away_exp_runs": 4.022,
+      "proj_total": 9.609,
+      "home_win_prob": 0.6423,
+      "away_win_prob": 0.3577,
       "over_probs": {
-       "6.0": 0.7475,
-       "6.5": 0.7475,
-       "7.0": 0.643,
-       "7.5": 0.643,
-       "8.0": 0.569,
-       "8.5": 0.569,
-       "9.0": 0.46555,
-       "9.5": 0.46555,
-       "10.0": 0.39425,
-       "10.5": 0.39425,
-       "11.0": 0.31305,
-       "11.5": 0.31305,
-       "12.0": 0.2529,
-       "12.5": 0.2529,
-       "13.0": 0.19395,
-       "13.5": 0.19395,
-       "14.0": 0.152,
-       "14.5": 0.152,
-       "15.0": 0.1121
+       "6.0": 0.7472,
+       "6.5": 0.7472,
+       "7.0": 0.6481,
+       "7.5": 0.6481,
+       "8.0": 0.5707,
+       "8.5": 0.5707,
+       "9.0": 0.46925,
+       "9.5": 0.46925,
+       "10.0": 0.3946,
+       "10.5": 0.3946,
+       "11.0": 0.3135,
+       "11.5": 0.3135,
+       "12.0": 0.2514,
+       "12.5": 0.2514,
+       "13.0": 0.1914,
+       "13.5": 0.1914,
+       "14.0": 0.1559,
+       "14.5": 0.1559,
+       "15.0": 0.1149
       },
       "home_rl_cover": {
-       "-1.5": 0.4955,
-       "1.5": 0.7412
+       "-1.5": 0.5077,
+       "1.5": 0.7502
       },
       "model_nrfi_prob": 0.4667,
       "model_yrfi_prob": 0.5333,
       "nrfi_p_top": 0.3275,
       "nrfi_p_bot": 0.306,
       "home_ml": -156.0,
-      "away_ml": 163.0,
-      "home_ml_ev": 0.0183,
-      "away_ml_ev": -0.002,
-      "total_line": 9.5,
-      "over_odds": 115.0,
+      "away_ml": 156.0,
+      "home_ml_ev": 0.0189,
+      "away_ml_ev": -0.0295,
+      "total_line": 10.0,
+      "over_odds": 127.0,
       "under_odds": 105.0,
-      "model_over_prob": 0.4656,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "model_over_prob": 0.3946,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
-      "rl_home_odds": 127.0,
-      "rl_away_odds": 112.0,
-      "model_home_rl": 0.4955,
-      "rl_home_ev": NaN,
-      "rl_away_ev": NaN
+      "rl_home_odds": 130.0,
+      "rl_away_odds": -130.0,
+      "model_home_rl": 0.5077,
+      "rl_home_ev": 0.0587,
+      "rl_away_ev": -0.0452
      },
      {
       "weather": null,
@@ -1097,19 +1107,19 @@
       "model_yrfi_prob": 0.4777,
       "nrfi_p_top": 0.2574,
       "nrfi_p_bot": 0.2966,
-      "home_ml": -138.0,
-      "away_ml": 138.0,
-      "home_ml_ev": -0.0058,
-      "away_ml_ev": 0.0079,
+      "home_ml": -134.0,
+      "away_ml": 135.0,
+      "home_ml_ev": -0.0003,
+      "away_ml_ev": 0.0046,
       "total_line": 11.5,
-      "over_odds": 122.0,
-      "under_odds": 103.0,
+      "over_odds": 117.0,
+      "under_odds": 100.0,
       "model_over_prob": 0.2296,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": -1.5,
       "rl_home_odds": 133.0,
-      "rl_away_odds": 101.0,
+      "rl_away_odds": -105.0,
       "model_home_rl": 0.4285,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -1170,35 +1180,35 @@
       "home_pitcher": "Mike Burrows",
       "away_pitcher_id": 657746,
       "home_pitcher_id": 681347,
-      "home_exp_runs": 4.158,
-      "away_exp_runs": 5.569,
-      "proj_total": 9.727,
-      "home_win_prob": 0.3669,
-      "away_win_prob": 0.6331,
+      "home_exp_runs": 4.171,
+      "away_exp_runs": 5.601,
+      "proj_total": 9.772,
+      "home_win_prob": 0.3656,
+      "away_win_prob": 0.6344,
       "over_probs": {
-       "6.0": 0.7573,
-       "6.5": 0.7573,
-       "7.0": 0.6549,
-       "7.5": 0.6549,
-       "8.0": 0.5752,
-       "8.5": 0.5752,
-       "9.0": 0.47615,
-       "9.5": 0.47615,
-       "10.0": 0.4028,
-       "10.5": 0.4028,
-       "11.0": 0.3184,
-       "11.5": 0.3184,
-       "12.0": 0.2586,
-       "12.5": 0.2586,
-       "13.0": 0.19915,
-       "13.5": 0.19915,
-       "14.0": 0.15935,
-       "14.5": 0.15935,
-       "15.0": 0.1188
+       "6.0": 0.7594,
+       "6.5": 0.7594,
+       "7.0": 0.6578,
+       "7.5": 0.6578,
+       "8.0": 0.581,
+       "8.5": 0.581,
+       "9.0": 0.48105,
+       "9.5": 0.48105,
+       "10.0": 0.40805,
+       "10.5": 0.40805,
+       "11.0": 0.32455,
+       "11.5": 0.32455,
+       "12.0": 0.26465,
+       "12.5": 0.26465,
+       "13.0": 0.2035,
+       "13.5": 0.2035,
+       "14.0": 0.16185,
+       "14.5": 0.16185,
+       "15.0": 0.1207
       },
       "home_rl_cover": {
-       "-1.5": 0.25695,
-       "1.5": 0.5005
+       "-1.5": 0.2555,
+       "1.5": 0.49795
       },
       "model_nrfi_prob": 0.4544,
       "model_yrfi_prob": 0.5456,
@@ -1212,8 +1222,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -1319,8 +1329,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -1329,12 +1339,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 83,
-       "wind_mph": 12,
-       "wind_dir": "WSW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Henry Bolte",
@@ -1431,8 +1436,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -1441,12 +1446,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 63,
-       "wind_mph": 7,
-       "wind_dir": "SW",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "J.P. Crawford",
@@ -1543,8 +1543,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -1553,12 +1553,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 98,
-       "wind_mph": 9,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [
         "Ketel Marte",
@@ -1655,8 +1650,8 @@
       "over_odds": NaN,
       "under_odds": NaN,
       "model_over_prob": NaN,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "over_ev": null,
+      "under_ev": null,
       "rl_home_line": NaN,
       "rl_home_odds": NaN,
       "rl_away_odds": NaN,
@@ -36229,94 +36224,94 @@
     ],
     "news": [
      {
-      "title": "Josh Simpson optioned to Triple-A ",
+      "title": "Connor Seabold (lat) leaves game early Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 23:07:01"
+      "when": "2026-07-01 02:02:27"
      },
      {
-      "title": "Cole Wilcox recalled from Triple-A ",
+      "title": "Connelly Early (elbow) leaves start early Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 23:06:11"
+      "when": "2026-07-01 02:00:36"
      },
      {
-      "title": "Luke Raley (elbow) out of lineup Tuesday ",
+      "title": "Willy Adames (back) trending in right direction ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:11:14"
+      "when": "2026-07-01 01:59:10"
      },
      {
-      "title": "Dominic Canzone not in lineup Tuesday ",
+      "title": "Edwin Diaz (elbow) could face live hitters this weekend",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:10:24"
+      "when": "2026-07-01 01:57:48"
      },
      {
-      "title": "Max Muncy stays hot with another long ball in win",
+      "title": "Jack Winkler signs minor league deal with Athletics ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:09:21"
+      "when": "2026-07-01 01:56:16"
      },
      {
-      "title": "Shohei Ohtani to start Friday ",
+      "title": "Austin Slater re-signs with Rays on minor league deal ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:08:09"
+      "when": "2026-07-01 01:54:47"
      },
      {
-      "title": "Andy Pages goes deep, drives in two in 9-4 win",
+      "title": "Brent Rooker (knee) getting re-evaluated Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:07:06"
+      "when": "2026-07-01 00:23:02"
      },
      {
-      "title": "Willy Adames (back) not in lineup Tuesday ",
+      "title": "Kris Bubic (elbow) set for another rehab start Wednesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:06:45"
+      "when": "2026-07-01 00:17:19"
      },
      {
-      "title": "Daniel Palencia (elbow) to be sidelined through All-Star break ",
+      "title": "Carlos Estevez (shoulder) being re-evaluated Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:04:07"
+      "when": "2026-07-01 00:15:52"
      },
      {
-      "title": "Eric Lauer grinds through six for win vs. A's",
+      "title": "AJ Smith-Shawver (elbow) throws 41 pitches in rehab start Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:03:19"
+      "when": "2026-07-01 00:12:05"
      },
      {
-      "title": "Drew Pomeranz making his way in Triple-A ",
+      "title": "Sam Huff sent outright by Orioles",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:02:51"
+      "when": "2026-06-30 23:55:16"
      },
      {
-      "title": "Jameson Taillon (hamstring) could begin rehab assignment this week",
+      "title": "Ben Hartl traded to White Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:01:24"
+      "when": "2026-06-30 23:54:31"
      },
      {
-      "title": "Jazz Chisholm Jr. available off bench Tuesday ",
+      "title": "Ben Peoples traded to Rangers ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:58:41"
+      "when": "2026-06-30 23:53:31"
      },
      {
-      "title": "Aaron Judge (rib) 'starting to feel better'",
+      "title": "Pete Crow-Armstrong will not participate in home run derby",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:57:28"
+      "when": "2026-06-30 23:52:31"
      },
      {
-      "title": "Jackson Jobe (elbow) progressing in right direction ",
+      "title": "Vince Velasquez elects free agency ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:53:51"
+      "when": "2026-06-30 23:22:52"
      }
     ],
     "injuries": [
@@ -37021,13 +37016,6 @@
       "note": ""
      },
      {
-      "player": "Tanner Gordon",
-      "norm": "tanner gordon",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
       "player": "Jeremiah Estrada",
       "norm": "jeremiah estrada",
       "team": "",
@@ -37581,6 +37569,13 @@
       "note": ""
      },
      {
+      "player": "Jonathan Hernandez",
+      "norm": "jonathan hernandez",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Anthony Bender",
       "norm": "anthony bender",
       "team": "",
@@ -37723,33 +37718,7 @@
     ]
    },
    "WNBA": {
-    "games": [
-     {
-      "game_id": "401857321",
-      "game_time": "2026-06-30T23:00Z",
-      "away_team": "Las Vegas Aces",
-      "home_team": "New York Liberty",
-      "away_exp": 86.51,
-      "home_exp": 88.18,
-      "proj_total": 174.69,
-      "home_win_prob": 0.4654,
-      "away_win_prob": 0.5346,
-      "home_ml": null,
-      "away_ml": null,
-      "home_ml_ev": null,
-      "away_ml_ev": null,
-      "total_line": null,
-      "over_odds": null,
-      "model_over_prob": null,
-      "over_ev": null,
-      "spread_home_line": null,
-      "spread_home_odds": null,
-      "spread_away_odds": null,
-      "model_home_cover": null,
-      "spread_home_ev": null,
-      "spread_away_ev": null
-     }
-    ],
+    "games": [],
     "props": [],
     "news": [],
     "injuries": []
@@ -37758,6 +37727,42 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Dean Wade agrees to 4-year, $39 million deal with Philadelphia 76ers",
+      "body": "",
+      "player": "",
+      "when": "2026-07-01 02:37:26"
+     },
+     {
+      "title": "Zach Collins signs 2-year extension with Chicago Bulls",
+      "body": "",
+      "player": "",
+      "when": "2026-07-01 02:20:00"
+     },
+     {
+      "title": "Luke Kennard signs 2-year, $13 million deal with Phoenix Suns",
+      "body": "",
+      "player": "",
+      "when": "2026-07-01 01:51:01"
+     },
+     {
+      "title": "Keon Ellis signs 2-year, $18 million contract with Brooklyn Nets",
+      "body": "",
+      "player": "",
+      "when": "2026-07-01 01:08:19"
+     },
+     {
+      "title": "Kobe Sanders signs 4-year contract with Los Angeles Clippers",
+      "body": "",
+      "player": "",
+      "when": "2026-06-30 23:49:09"
+     },
+     {
+      "title": "Branden Carlson signs 1-year deal with Portland Trail Blazers",
+      "body": "",
+      "player": "",
+      "when": "2026-06-30 23:46:20"
+     },
      {
       "title": "Leonard Miller has contract fully guaranteed by Bulls",
       "body": "",
@@ -37811,42 +37816,6 @@
       "body": "",
       "player": "",
       "when": "2026-06-30 19:57:01"
-     },
-     {
-      "title": "Precious Achiuwa signs two-year deal with Kings",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:55:24"
-     },
-     {
-      "title": "Kawhi Leonard: Clippers nearing deal with Raptors",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:47:50"
-     },
-     {
-      "title": "Moses Moody could be traded",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:23:19"
-     },
-     {
-      "title": "Kris Dunn has contract fully guaranteed by Clippers ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:09:36"
-     },
-     {
-      "title": "Walker Kessler confirmed to meet with Lakers ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:08:25"
-     },
-     {
-      "title": "Tyson Etienne to become unrestricted free agent ",
-      "body": "",
-      "player": "",
-      "when": "2026-06-30 19:07:15"
      }
     ],
     "injuries": [
@@ -38502,6 +38471,13 @@
       "note": ""
      },
      {
+      "player": "Tim Hardaway Jr.",
+      "norm": "tim hardaway",
+      "team": "",
+      "status": "DTD",
+      "note": ""
+     },
+     {
       "player": "Kawhi Leonard",
       "norm": "kawhi leonard",
       "team": "",
@@ -38602,13 +38578,6 @@
      {
       "player": "Brandon Williams",
       "norm": "brandon williams",
-      "team": "",
-      "status": "DTD",
-      "note": ""
-     },
-     {
-      "player": "Tim Hardaway Jr.",
-      "norm": "tim hardaway",
       "team": "",
       "status": "DTD",
       "note": ""
@@ -39347,1415 +39316,19 @@
       "when": "2026-04-05 00:18:10"
      }
     ],
-    "injuries": [
-     {
-      "player": "Tyler Seguin",
-      "norm": "tyler seguin",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Jonathan Huberdeau",
-      "norm": "jonathan huberdeau",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Jared McCann",
-      "norm": "jared mccann",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Kevin Fiala",
-      "norm": "kevin fiala",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Vladislav Namestnikov",
-      "norm": "vladislav namestnikov",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Mattias Janmark",
-      "norm": "mattias janmark",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Joel Hanley",
-      "norm": "joel hanley",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Caleb Jones",
-      "norm": "caleb jones",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Auston Matthews",
-      "norm": "auston matthews",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Thatcher Demko",
-      "norm": "thatcher demko",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Zack MacEwen",
-      "norm": "zack macewen",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Alex Iafallo",
-      "norm": "alex iafallo",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Neal Pionk",
-      "norm": "neal pionk",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Filip Chytil",
-      "norm": "filip chytil",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Troy Terry",
-      "norm": "troy terry",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Rasmus Sandin",
-      "norm": "rasmus sandin",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Filip Gustavsson",
-      "norm": "filip gustavsson",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Pierre Engvall",
-      "norm": "pierre engvall",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Seth Jarvis",
-      "norm": "seth jarvis",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Yan Kuznetsov",
-      "norm": "yan kuznetsov",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Nils Hoglander",
-      "norm": "nils hoglander",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Morgan Barron",
-      "norm": "morgan barron",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Justin Danforth",
-      "norm": "justin danforth",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Jiri Kulich",
-      "norm": "jiri kulich",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Samuel Honzek",
-      "norm": "samuel honzek",
-      "team": "",
-      "status": "IR",
-      "note": ""
-     },
-     {
-      "player": "Arseny Gritsyuk",
-      "norm": "arseny gritsyuk",
-      "team": "",
-      "status": "OUT",
-      "note": ""
-     },
-     {
-      "player": "Harris Pangretitsch",
-      "norm": "harris pangretitsch",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jonas Lagerberg Hoen",
-      "norm": "jonas lagerberg hoen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alexander Grunin",
-      "norm": "alexander grunin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Max Laatikainen",
-      "norm": "max laatikainen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brek Liske",
-      "norm": "brek liske",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kent Sauer",
-      "norm": "kent sauer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Martin Psohlavec",
-      "norm": "martin psohlavec",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Maksim Sokolovskii",
-      "norm": "maksim sokolovskii",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Marek Sklenicka",
-      "norm": "marek sklenicka",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Marcus Ruck",
-      "norm": "marcus ruck",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Liam Ruck",
-      "norm": "liam ruck",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tomas Galvas",
-      "norm": "tomas galvas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Matvei Nikonovich",
-      "norm": "matvei nikonovich",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Parker Von Richter",
-      "norm": "parker von richter",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ivar Stenberg",
-      "norm": "ivar stenberg",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jake Gustafson",
-      "norm": "jake gustafson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brady Knowling",
-      "norm": "brady knowling",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Lin",
-      "norm": "ryan lin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Keaton Verhoeff",
-      "norm": "keaton verhoeff",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Casey Mutryn",
-      "norm": "casey mutryn",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Luken Huff",
-      "norm": "luken huff",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Viktor Federov",
-      "norm": "viktor federov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "William Tomko",
-      "norm": "william tomko",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chase Reid",
-      "norm": "chase reid",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Rylan Singh",
-      "norm": "rylan singh",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Finn Kearns",
-      "norm": "finn kearns",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ola Palme",
-      "norm": "ola palme",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Colin Fitzgerald",
-      "norm": "colin fitzgerald",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Carter Stevens",
-      "norm": "carter stevens",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nicholas Bogas",
-      "norm": "nicholas bogas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Lars Steiner",
-      "norm": "lars steiner",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Landon Nycz",
-      "norm": "landon nycz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Luke Schairer",
-      "norm": "luke schairer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tynan Lawrence",
-      "norm": "tynan lawrence",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Maddox Dagenais",
-      "norm": "maddox dagenais",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Vladimir Proskurin",
-      "norm": "vladimir proskurin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Soller",
-      "norm": "cooper soller",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Stepan Shurygin",
-      "norm": "stepan shurygin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Oleg Kulebyakin",
-      "norm": "oleg kulebyakin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Morgan Anderberg",
-      "norm": "morgan anderberg",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Max Vilen",
-      "norm": "max vilen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tomas Kralovic",
-      "norm": "tomas kralovic",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alexander Bilecki",
-      "norm": "alexander bilecki",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yaroslav Fedoseyev",
-      "norm": "yaroslav fedoseyev",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zach Olsen",
-      "norm": "zach olsen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Mans Gudmundsson",
-      "norm": "mans gudmundsson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gavin McKenna",
-      "norm": "gavin mckenna",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Williams",
-      "norm": "cooper williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Juuson Ainasto",
-      "norm": "juuson ainasto",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Patriks Plumins",
-      "norm": "patriks plumins",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ethan MacKenzie",
-      "norm": "ethan mackenzie",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brooks Rogowski",
-      "norm": "brooks rogowski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Samuel Eriksson",
-      "norm": "samuel eriksson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Lucian Bernat",
-      "norm": "lucian bernat",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Niklas Aaram-Olsen",
-      "norm": "niklas aaram-olsen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Caleb Malhotra",
-      "norm": "caleb malhotra",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Dmitri Ivchenko",
-      "norm": "dmitri ivchenko",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Adam Novotny",
-      "norm": "adam novotny",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Connor Davis",
-      "norm": "connor davis",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yaroslav Bryzgalov",
-      "norm": "yaroslav bryzgalov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Juho Piiparinen",
-      "norm": "juho piiparinen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jonah Sivetson",
-      "norm": "jonah sivetson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Will McLaughlin",
-      "norm": "will mclaughlin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Matthew Minchak",
-      "norm": "matthew minchak",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Benjamin Wilmott",
-      "norm": "benjamin wilmott",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Noel Pakarinen",
-      "norm": "noel pakarinen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Logan Stuart",
-      "norm": "logan stuart",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tyus Sparks",
-      "norm": "tyus sparks",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brian McFadden",
-      "norm": "brian mcfadden",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Oliver Suvanto",
-      "norm": "oliver suvanto",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Samuel Hrenak",
-      "norm": "samuel hrenak",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Viggo Bjorck",
-      "norm": "viggo bjorck",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "John Parsons",
-      "norm": "john parsons",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alofa Tunoa Ta'amu",
-      "norm": "alofa tunoa taamu",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alexandre Taillefer",
-      "norm": "alexandre taillefer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zach Wooten",
-      "norm": "zach wooten",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Landon Hafele",
-      "norm": "landon hafele",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Marc Michaelis",
-      "norm": "marc michaelis",
-      "team": "",
-      "status": "NWT",
-      "note": ""
-     },
-     {
-      "player": "Eric Frossard",
-      "norm": "eric frossard",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gleb Peshkov",
-      "norm": "gleb peshkov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Noah Kosick",
-      "norm": "noah kosick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "James Rieber",
-      "norm": "james rieber",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Matvei Kotkov",
-      "norm": "matvei kotkov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jacob Vandeven",
-      "norm": "jacob vandeven",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nils Bartholdsson",
-      "norm": "nils bartholdsson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Roberto Leandro Henriquez",
-      "norm": "roberto leandro henriquez",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Oscar Olsson",
-      "norm": "oscar olsson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yuri Ivanov",
-      "norm": "yuri ivanov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cullen McCrate",
-      "norm": "cullen mccrate",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Olivers Murnieks",
-      "norm": "olivers murnieks",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ilia Morozov",
-      "norm": "ilia morozov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Daxon Rudolph",
-      "norm": "daxon rudolph",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Dylan Dumont",
-      "norm": "dylan dumont",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Doman Szongoth",
-      "norm": "doman szongoth",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Simon Katolicky",
-      "norm": "simon katolicky",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jack Hextall",
-      "norm": "jack hextall",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alan Shaikhlislamov",
-      "norm": "alan shaikhlislamov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tobias Trejbal",
-      "norm": "tobias trejbal",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Carson Carels",
-      "norm": "carson carels",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Joe Iginla",
-      "norm": "joe iginla",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Egor Barabanov",
-      "norm": "egor barabanov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chase Harrington",
-      "norm": "chase harrington",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Bode Laylin",
-      "norm": "bode laylin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zachary Lansard",
-      "norm": "zachary lansard",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryder Fetterolf",
-      "norm": "ryder fetterolf",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "William Hakansson",
-      "norm": "william hakansson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Zachary Jovanovski",
-      "norm": "zachary jovanovski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Wiggo Sorensson",
-      "norm": "wiggo sorensson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Michael Berchild",
-      "norm": "michael berchild",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "William Sorbrand",
-      "norm": "william sorbrand",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Samu Alalauri",
-      "norm": "samu alalauri",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Roobroeck",
-      "norm": "ryan roobroeck",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Xavier Villeneuve",
-      "norm": "xavier villeneuve",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Shawn Carrier",
-      "norm": "shawn carrier",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Alexandre Raymond",
-      "norm": "alexandre raymond",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Theodore Lechner",
-      "norm": "theodore lechner",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cole Tuminaro",
-      "norm": "cole tuminaro",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ondrej Rumi",
-      "norm": "ondrej rumi",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Beckett Hamilton",
-      "norm": "beckett hamilton",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Axel Elofsson",
-      "norm": "axel elofsson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Egor Shilov",
-      "norm": "egor shilov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tobias Tvrznik",
-      "norm": "tobias tvrznik",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Evan Jardine",
-      "norm": "evan jardine",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Allesandro Di lorio",
-      "norm": "allesandro di lorio",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jonas Woo",
-      "norm": "jonas woo",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Parker Snell",
-      "norm": "parker snell",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Oscar Hemming",
-      "norm": "oscar hemming",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Anttoni Uronen",
-      "norm": "anttoni uronen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Filip Novak",
-      "norm": "filip novak",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Brown",
-      "norm": "ryan brown",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jasper Kuhta",
-      "norm": "jasper kuhta",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Anton Emil Wilde Larsen",
-      "norm": "anton emil wilde larsen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Michal Orsulak",
-      "norm": "michal orsulak",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "JP Hurlbert",
-      "norm": "jp hurlbert",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Luka Arkko",
-      "norm": "luka arkko",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Beckham Edwards",
-      "norm": "beckham edwards",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Adam Levac",
-      "norm": "adam levac",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Myles Brosnan",
-      "norm": "myles brosnan",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Victor Plante",
-      "norm": "victor plante",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Rudolfs Berzkalns",
-      "norm": "rudolfs berzkalns",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Cameron",
-      "norm": "ryan cameron",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Andrew Robinson",
-      "norm": "andrew robinson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Caden Harvey",
-      "norm": "caden harvey",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cole Zurawski",
-      "norm": "cole zurawski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jonas Kemps",
-      "norm": "jonas kemps",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Vilho Vanhatalo",
-      "norm": "vilho vanhatalo",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Louis-Antoine Denault",
-      "norm": "louis-antoine denault",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Simas Ignatavicius",
-      "norm": "simas ignatavicius",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryder Cali",
-      "norm": "ryder cali",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Elton Hermansson",
-      "norm": "elton hermansson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Thomas Vandenberg",
-      "norm": "thomas vandenberg",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yegor Rybkin",
-      "norm": "yegor rybkin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Blake Zielinski",
-      "norm": "blake zielinski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Vertti Svensk",
-      "norm": "vertti svensk",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Lucas Ambrosio",
-      "norm": "lucas ambrosio",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Giorgos Pantelas",
-      "norm": "giorgos pantelas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Liam Lefebvre",
-      "norm": "liam lefebvre",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Adam Goljer",
-      "norm": "adam goljer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tobias Krestan",
-      "norm": "tobias krestan",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Filip Ruzicka",
-      "norm": "filip ruzicka",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Adam Andersson",
-      "norm": "adam andersson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kayden Lemire",
-      "norm": "kayden lemire",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Parker Trottier",
-      "norm": "parker trottier",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tyler Deakos",
-      "norm": "tyler deakos",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gleb Pugachyov",
-      "norm": "gleb pugachyov",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Timofei Runtso",
-      "norm": "timofei runtso",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brayden Klimpke",
-      "norm": "brayden klimpke",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Wesley Royston",
-      "norm": "wesley royston",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Dmitri Borichev",
-      "norm": "dmitri borichev",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Wyatt Cullen",
-      "norm": "wyatt cullen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Justin Graf",
-      "norm": "justin graf",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jakub Floris",
-      "norm": "jakub floris",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Philip Hemmyr",
-      "norm": "philip hemmyr",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Benjamin Cossette Ayotte",
-      "norm": "benjamin cossette ayotte",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     }
-    ]
+    "injuries": []
    }
   },
   "2026-07-01": {
    "MLB": {
     "games": [
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 95,
+       "wind_mph": 4,
+       "wind_dir": "W",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -40769,61 +39342,66 @@
       "home_team": "Baltimore Orioles",
       "away_pitcher": "Noah Schultz",
       "home_pitcher": NaN,
-      "away_pitcher_id": 702273,
+      "away_pitcher_id": 702273.0,
       "home_pitcher_id": NaN,
-      "home_exp_runs": 4.853,
-      "away_exp_runs": 4.771,
-      "proj_total": 9.625,
-      "home_win_prob": 0.507,
-      "away_win_prob": 0.493,
+      "home_exp_runs": 4.883,
+      "away_exp_runs": 4.855,
+      "proj_total": 9.738,
+      "home_win_prob": 0.498,
+      "away_win_prob": 0.502,
       "over_probs": {
-       "6.0": 0.7521,
-       "6.5": 0.7521,
-       "7.0": 0.6526,
-       "7.5": 0.6526,
-       "8.0": 0.5714,
-       "8.5": 0.5714,
-       "9.0": 0.4687,
-       "9.5": 0.4687,
-       "10.0": 0.397,
-       "10.5": 0.397,
-       "11.0": 0.3116,
-       "11.5": 0.3116,
-       "12.0": 0.2553,
-       "12.5": 0.2553,
-       "13.0": 0.1954,
-       "13.5": 0.1954,
-       "14.0": 0.1531,
-       "14.5": 0.1531,
-       "15.0": 0.1139
+       "6.0": 0.75715,
+       "6.5": 0.75715,
+       "7.0": 0.654,
+       "7.5": 0.654,
+       "8.0": 0.57795,
+       "8.5": 0.57795,
+       "9.0": 0.47645,
+       "9.5": 0.47645,
+       "10.0": 0.4039,
+       "10.5": 0.4039,
+       "11.0": 0.3219,
+       "11.5": 0.3219,
+       "12.0": 0.26135,
+       "12.5": 0.26135,
+       "13.0": 0.2019,
+       "13.5": 0.2019,
+       "14.0": 0.16245,
+       "14.5": 0.16245,
+       "15.0": 0.12145
       },
       "home_rl_cover": {
-       "-1.5": 0.3788,
-       "1.5": 0.63605
+       "-1.5": 0.37035,
+       "1.5": 0.6267
       },
       "model_nrfi_prob": 0.4526,
       "model_yrfi_prob": 0.5474,
       "nrfi_p_top": 0.3682,
       "nrfi_p_bot": 0.2836,
-      "home_ml": -127.0,
-      "away_ml": 122.0,
-      "home_ml_ev": -0.0392,
-      "away_ml_ev": 0.0267,
-      "total_line": 10.0,
-      "over_odds": -108.0,
+      "home_ml": -122.0,
+      "away_ml": 120.0,
+      "home_ml_ev": -0.0355,
+      "away_ml_ev": 0.0339,
+      "total_line": 10.5,
+      "over_odds": 108.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.397,
-      "over_ev": -0.075,
-      "under_ev": 0.107,
+      "model_over_prob": 0.4039,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 140.0,
-      "rl_away_odds": 146.0,
-      "model_home_rl": 0.3788,
+      "rl_home_odds": 145.0,
+      "rl_away_odds": 144.0,
+      "model_home_rl": 0.3704,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 92,
+       "wind_mph": 12,
+       "wind_dir": "WNW",
+       "precip_pct": 0
+      },
       "lineups": {
        "home": [],
        "away": []
@@ -40838,64 +39416,64 @@
       "home_team": "Cleveland Guardians",
       "away_pitcher": "MacKenzie Gore",
       "home_pitcher": "Joey Cantillo",
-      "away_pitcher_id": 669022,
+      "away_pitcher_id": 669022.0,
       "home_pitcher_id": 676282.0,
       "home_exp_runs": 3.952,
-      "away_exp_runs": 4.29,
-      "proj_total": 8.241,
-      "home_win_prob": 0.4677,
-      "away_win_prob": 0.5323,
+      "away_exp_runs": 4.331,
+      "proj_total": 8.282,
+      "home_win_prob": 0.4634,
+      "away_win_prob": 0.5366,
       "over_probs": {
-       "6.0": 0.63945,
-       "6.5": 0.63945,
-       "7.0": 0.5246,
-       "7.5": 0.5246,
-       "8.0": 0.4431,
-       "8.5": 0.4431,
-       "9.0": 0.3457,
-       "9.5": 0.3457,
-       "10.0": 0.2818,
-       "10.5": 0.2818,
-       "11.0": 0.21295,
-       "11.5": 0.21295,
-       "12.0": 0.16615,
-       "12.5": 0.16615,
-       "13.0": 0.1228,
-       "13.5": 0.1228,
-       "14.0": 0.0949,
-       "14.5": 0.0949,
-       "15.0": 0.06975
+       "6.0": 0.641,
+       "6.5": 0.641,
+       "7.0": 0.52705,
+       "7.5": 0.52705,
+       "8.0": 0.4449,
+       "8.5": 0.4449,
+       "9.0": 0.3502,
+       "9.5": 0.3502,
+       "10.0": 0.2851,
+       "10.5": 0.2851,
+       "11.0": 0.21425,
+       "11.5": 0.21425,
+       "12.0": 0.1705,
+       "12.5": 0.1705,
+       "13.0": 0.12755,
+       "13.5": 0.12755,
+       "14.0": 0.09715,
+       "14.5": 0.09715,
+       "15.0": 0.06905
       },
       "home_rl_cover": {
-       "-1.5": 0.3277,
-       "1.5": 0.6084
+       "-1.5": 0.32165,
+       "1.5": 0.60525
       },
       "model_nrfi_prob": 0.513,
       "model_yrfi_prob": 0.487,
       "nrfi_p_top": 0.2746,
       "nrfi_p_bot": 0.2928,
-      "home_ml": -106.0,
-      "away_ml": 104.0,
-      "home_ml_ev": -0.035,
-      "away_ml_ev": 0.027,
+      "home_ml": -104.0,
+      "away_ml": 100.0,
+      "home_ml_ev": -0.0382,
+      "away_ml_ev": 0.0193,
       "total_line": 8.5,
       "over_odds": 104.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.4431,
-      "over_ev": -0.0206,
-      "under_ev": 0.0606,
-      "rl_home_line": 1.5,
-      "rl_home_odds": -170.0,
+      "under_odds": -104.0,
+      "model_over_prob": 0.4449,
+      "over_ev": -0.0323,
+      "under_ev": 0.0311,
+      "rl_home_line": -1.5,
+      "rl_home_odds": 180.0,
       "rl_away_odds": 170.0,
-      "model_home_rl": 0.6084,
-      "rl_home_ev": -0.0118,
-      "rl_away_ev": 0.0201
+      "model_home_rl": 0.3216,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 94,
-       "wind_mph": 9,
-       "wind_dir": "SW",
+       "temp_f": 93,
+       "wind_mph": 12,
+       "wind_dir": "WSW",
        "precip_pct": 2
       },
       "lineups": {
@@ -40912,63 +39490,63 @@
       "home_team": "Boston Red Sox",
       "away_pitcher": "Andrew Alvarez",
       "home_pitcher": "Payton Tolle",
-      "away_pitcher_id": 674841,
+      "away_pitcher_id": 674841.0,
       "home_pitcher_id": 801139.0,
-      "home_exp_runs": 4.608,
-      "away_exp_runs": 4.358,
-      "proj_total": 8.965,
-      "home_win_prob": 0.5217,
-      "away_win_prob": 0.4783,
+      "home_exp_runs": 4.508,
+      "away_exp_runs": 4.437,
+      "proj_total": 8.945,
+      "home_win_prob": 0.5023,
+      "away_win_prob": 0.4977,
       "over_probs": {
-       "6.0": 0.705,
-       "6.5": 0.705,
+       "6.0": 0.69935,
+       "6.5": 0.69935,
        "7.0": 0.591,
        "7.5": 0.591,
-       "8.0": 0.51115,
-       "8.5": 0.51115,
-       "9.0": 0.412,
-       "9.5": 0.412,
-       "10.0": 0.34345,
-       "10.5": 0.34345,
-       "11.0": 0.26475,
-       "11.5": 0.26475,
-       "12.0": 0.2126,
-       "12.5": 0.2126,
-       "13.0": 0.15775,
-       "13.5": 0.15775,
-       "14.0": 0.12435,
-       "14.5": 0.12435,
-       "15.0": 0.09085
+       "8.0": 0.5112,
+       "8.5": 0.5112,
+       "9.0": 0.4122,
+       "9.5": 0.4122,
+       "10.0": 0.3421,
+       "10.5": 0.3421,
+       "11.0": 0.2658,
+       "11.5": 0.2658,
+       "12.0": 0.2151,
+       "12.5": 0.2151,
+       "13.0": 0.1593,
+       "13.5": 0.1593,
+       "14.0": 0.12215,
+       "14.5": 0.12215,
+       "15.0": 0.0875
       },
       "home_rl_cover": {
-       "-1.5": 0.38645,
-       "1.5": 0.65235
+       "-1.5": 0.3697,
+       "1.5": 0.63835
       },
       "model_nrfi_prob": 0.4783,
       "model_yrfi_prob": 0.5217,
       "nrfi_p_top": 0.3192,
       "nrfi_p_bot": 0.2975,
-      "home_ml": 122.0,
-      "away_ml": 138.0,
+      "home_ml": 120.0,
+      "away_ml": 135.0,
       "home_ml_ev": NaN,
       "away_ml_ev": NaN,
-      "total_line": 10.0,
-      "over_odds": -108.0,
+      "total_line": 10.5,
+      "over_odds": 108.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.3434,
-      "over_ev": -0.1111,
-      "under_ev": 0.1469,
+      "model_over_prob": 0.3421,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 146.0,
-      "rl_away_odds": -150.0,
-      "model_home_rl": 0.3865,
-      "rl_home_ev": -0.0215,
-      "rl_away_ev": 0.0037
+      "rl_home_odds": 144.0,
+      "rl_away_odds": -108.0,
+      "model_home_rl": 0.3697,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 9,
+       "temp_f": 93,
+       "wind_mph": 10,
        "wind_dir": "SW",
        "precip_pct": 1
       },
@@ -40986,58 +39564,58 @@
       "home_team": "New York Yankees",
       "away_pitcher": "Troy Melton",
       "home_pitcher": "Will Warren",
-      "away_pitcher_id": 675512,
+      "away_pitcher_id": 675512.0,
       "home_pitcher_id": 701542.0,
-      "home_exp_runs": 4.776,
-      "away_exp_runs": 4.049,
-      "proj_total": 8.825,
-      "home_win_prob": 0.5705,
-      "away_win_prob": 0.4295,
+      "home_exp_runs": 4.609,
+      "away_exp_runs": 4.113,
+      "proj_total": 8.722,
+      "home_win_prob": 0.5506,
+      "away_win_prob": 0.4494,
       "over_probs": {
-       "6.0": 0.6898,
-       "6.5": 0.6898,
-       "7.0": 0.57865,
-       "7.5": 0.57865,
-       "8.0": 0.49685,
-       "8.5": 0.49685,
-       "9.0": 0.3984,
-       "9.5": 0.3984,
-       "10.0": 0.33235,
-       "10.5": 0.33235,
-       "11.0": 0.25215,
-       "11.5": 0.25215,
-       "12.0": 0.1998,
-       "12.5": 0.1998,
-       "13.0": 0.14755,
-       "13.5": 0.14755,
-       "14.0": 0.11555,
-       "14.5": 0.11555,
-       "15.0": 0.08245
+       "6.0": 0.67785,
+       "6.5": 0.67785,
+       "7.0": 0.56625,
+       "7.5": 0.56625,
+       "8.0": 0.4908,
+       "8.5": 0.4908,
+       "9.0": 0.3928,
+       "9.5": 0.3928,
+       "10.0": 0.32575,
+       "10.5": 0.32575,
+       "11.0": 0.2499,
+       "11.5": 0.2499,
+       "12.0": 0.1994,
+       "12.5": 0.1994,
+       "13.0": 0.14965,
+       "13.5": 0.14965,
+       "14.0": 0.1168,
+       "14.5": 0.1168,
+       "15.0": 0.0835
       },
       "home_rl_cover": {
-       "-1.5": 0.42875,
-       "1.5": 0.6974
+       "-1.5": 0.4076,
+       "1.5": 0.68145
       },
       "model_nrfi_prob": 0.483,
       "model_yrfi_prob": 0.517,
       "nrfi_p_top": 0.2593,
       "nrfi_p_bot": 0.348,
       "home_ml": -133.0,
-      "away_ml": 133.0,
-      "home_ml_ev": -0.0002,
-      "away_ml_ev": 0.0003,
-      "total_line": 10.5,
-      "over_odds": 105.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.3323,
-      "over_ev": NaN,
-      "under_ev": NaN,
+      "away_ml": 130.0,
+      "home_ml_ev": -0.016,
+      "away_ml_ev": 0.0081,
+      "total_line": 10.0,
+      "over_odds": -105.0,
+      "under_odds": 108.0,
+      "model_over_prob": 0.3257,
+      "over_ev": -0.1228,
+      "under_ev": 0.1455,
       "rl_home_line": -1.5,
-      "rl_home_odds": 153.0,
-      "rl_away_odds": -156.0,
-      "model_home_rl": 0.4288,
-      "rl_home_ev": 0.0267,
-      "rl_away_ev": -0.0249
+      "rl_home_odds": 150.0,
+      "rl_away_odds": -114.0,
+      "model_home_rl": 0.4076,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
@@ -41060,7 +39638,7 @@
       "home_team": "Chicago Cubs",
       "away_pitcher": "Walker Buehler",
       "home_pitcher": "Colin Rea",
-      "away_pitcher_id": 621111,
+      "away_pitcher_id": 621111.0,
       "home_pitcher_id": 607067.0,
       "home_exp_runs": 4.36,
       "away_exp_runs": 4.318,
@@ -41096,29 +39674,29 @@
       "model_yrfi_prob": 0.4523,
       "nrfi_p_top": 0.2517,
       "nrfi_p_bot": 0.268,
-      "home_ml": -117.0,
+      "home_ml": -121.0,
       "away_ml": 117.0,
-      "home_ml_ev": -0.027,
-      "away_ml_ev": 0.0316,
+      "home_ml_ev": -0.0373,
+      "away_ml_ev": 0.0262,
       "total_line": 11.5,
-      "over_odds": 104.0,
-      "under_odds": -106.0,
+      "over_odds": 100.0,
+      "under_odds": 104.0,
       "model_over_prob": 0.2429,
-      "over_ev": -0.1796,
-      "under_ev": 0.1619,
+      "over_ev": -0.1735,
+      "under_ev": 0.197,
       "rl_home_line": -1.5,
       "rl_home_odds": 150.0,
-      "rl_away_odds": 150.0,
+      "rl_away_odds": -156.0,
       "model_home_rl": 0.3634,
-      "rl_home_ev": NaN,
-      "rl_away_ev": NaN
+      "rl_home_ev": -0.0381,
+      "rl_away_ev": 0.0096
      },
      {
       "weather": {
        "temp_f": 93,
-       "wind_mph": 11,
+       "wind_mph": 10,
        "wind_dir": "SSW",
-       "precip_pct": 5
+       "precip_pct": 4
       },
       "lineups": {
        "home": [],
@@ -41133,37 +39711,37 @@
       "home_team": "Toronto Blue Jays",
       "away_pitcher": "Freddy Peralta",
       "home_pitcher": NaN,
-      "away_pitcher_id": 642547,
+      "away_pitcher_id": 642547.0,
       "home_pitcher_id": NaN,
-      "home_exp_runs": 4.161,
-      "away_exp_runs": 4.34,
-      "proj_total": 8.501,
-      "home_win_prob": 0.4819,
-      "away_win_prob": 0.5181,
+      "home_exp_runs": 4.134,
+      "away_exp_runs": 4.326,
+      "proj_total": 8.46,
+      "home_win_prob": 0.4788,
+      "away_win_prob": 0.5212,
       "over_probs": {
-       "6.0": 0.6607,
-       "6.5": 0.6607,
-       "7.0": 0.5512,
-       "7.5": 0.5512,
-       "8.0": 0.47115,
-       "8.5": 0.47115,
-       "9.0": 0.37245,
-       "9.5": 0.37245,
-       "10.0": 0.30665,
-       "10.5": 0.30665,
-       "11.0": 0.2317,
-       "11.5": 0.2317,
-       "12.0": 0.18545,
-       "12.5": 0.18545,
-       "13.0": 0.137,
-       "13.5": 0.137,
-       "14.0": 0.106,
-       "14.5": 0.106,
-       "15.0": 0.07505
+       "6.0": 0.661,
+       "6.5": 0.661,
+       "7.0": 0.5453,
+       "7.5": 0.5453,
+       "8.0": 0.46625,
+       "8.5": 0.46625,
+       "9.0": 0.36875,
+       "9.5": 0.36875,
+       "10.0": 0.30065,
+       "10.5": 0.30065,
+       "11.0": 0.22695,
+       "11.5": 0.22695,
+       "12.0": 0.17935,
+       "12.5": 0.17935,
+       "13.0": 0.1305,
+       "13.5": 0.1305,
+       "14.0": 0.1008,
+       "14.5": 0.1008,
+       "15.0": 0.0725
       },
       "home_rl_cover": {
-       "-1.5": 0.341,
-       "1.5": 0.6258
+       "-1.5": 0.34255,
+       "1.5": 0.6238
       },
       "model_nrfi_prob": 0.4813,
       "model_yrfi_prob": 0.5187,
@@ -41171,20 +39749,20 @@
       "nrfi_p_bot": 0.2772,
       "home_ml": 104.0,
       "away_ml": -104.0,
-      "home_ml_ev": -0.0059,
-      "away_ml_ev": 0.0057,
+      "home_ml_ev": -0.0081,
+      "away_ml_ev": 0.0078,
       "total_line": 9.0,
       "over_odds": 100.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.3725,
-      "over_ev": -0.0893,
-      "under_ev": 0.0893,
+      "under_odds": 104.0,
+      "model_over_prob": 0.3688,
+      "over_ev": -0.0854,
+      "under_ev": 0.1071,
       "rl_home_line": 1.5,
       "rl_home_odds": -163.0,
       "rl_away_odds": 150.0,
-      "model_home_rl": 0.6258,
-      "rl_home_ev": -0.0092,
-      "rl_away_ev": -0.0352
+      "model_home_rl": 0.6238,
+      "rl_home_ev": -0.0103,
+      "rl_away_ev": -0.0334
      },
      {
       "weather": {
@@ -41207,37 +39785,37 @@
       "home_team": "Philadelphia Phillies",
       "away_pitcher": "Paul Skenes",
       "home_pitcher": "Zack Wheeler",
-      "away_pitcher_id": 694973,
+      "away_pitcher_id": 694973.0,
       "home_pitcher_id": 554430.0,
-      "home_exp_runs": 4.43,
-      "away_exp_runs": 4.516,
-      "proj_total": 8.946,
-      "home_win_prob": 0.4875,
-      "away_win_prob": 0.5125,
+      "home_exp_runs": 4.494,
+      "away_exp_runs": 4.465,
+      "proj_total": 8.959,
+      "home_win_prob": 0.4992,
+      "away_win_prob": 0.5008,
       "over_probs": {
-       "6.0": 0.70095,
-       "6.5": 0.70095,
-       "7.0": 0.5906,
-       "7.5": 0.5906,
-       "8.0": 0.5091,
-       "8.5": 0.5091,
-       "9.0": 0.41095,
-       "9.5": 0.41095,
-       "10.0": 0.34205,
-       "10.5": 0.34205,
-       "11.0": 0.2611,
-       "11.5": 0.2611,
-       "12.0": 0.2092,
-       "12.5": 0.2092,
-       "13.0": 0.15615,
-       "13.5": 0.15615,
-       "14.0": 0.12125,
-       "14.5": 0.12125,
-       "15.0": 0.08715
+       "6.0": 0.7013,
+       "6.5": 0.7013,
+       "7.0": 0.5965,
+       "7.5": 0.5965,
+       "8.0": 0.5162,
+       "8.5": 0.5162,
+       "9.0": 0.41505,
+       "9.5": 0.41505,
+       "10.0": 0.34545,
+       "10.5": 0.34545,
+       "11.0": 0.2626,
+       "11.5": 0.2626,
+       "12.0": 0.21115,
+       "12.5": 0.21115,
+       "13.0": 0.15415,
+       "13.5": 0.15415,
+       "14.0": 0.11995,
+       "14.5": 0.11995,
+       "15.0": 0.08795
       },
       "home_rl_cover": {
-       "-1.5": 0.35485,
-       "1.5": 0.6252
+       "-1.5": 0.36805,
+       "1.5": 0.62965
       },
       "model_nrfi_prob": 0.5014,
       "model_yrfi_prob": 0.4986,
@@ -41245,27 +39823,27 @@
       "nrfi_p_bot": 0.2961,
       "home_ml": -127.0,
       "away_ml": 127.0,
-      "home_ml_ev": -0.045,
-      "away_ml_ev": 0.0572,
+      "home_ml_ev": -0.0377,
+      "away_ml_ev": 0.0479,
       "total_line": 8.5,
-      "over_odds": 108.0,
+      "over_odds": 113.0,
       "under_odds": 105.0,
-      "model_over_prob": 0.5091,
+      "model_over_prob": 0.5162,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 163.0,
-      "rl_away_odds": -178.0,
-      "model_home_rl": 0.3548,
-      "rl_home_ev": -0.0364,
-      "rl_away_ev": -0.0104
+      "rl_away_odds": -124.0,
+      "model_home_rl": 0.368,
+      "rl_home_ev": NaN,
+      "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 97,
-       "wind_mph": 8,
-       "wind_dir": "ESE",
-       "precip_pct": 11
+       "temp_f": 98,
+       "wind_mph": 6,
+       "wind_dir": "ENE",
+       "precip_pct": 8
       },
       "lineups": {
        "home": [],
@@ -41281,58 +39859,58 @@
       "home_team": "Atlanta Braves",
       "away_pitcher": "Michael McGreevy",
       "home_pitcher": "Reynaldo L\u00f3pez",
-      "away_pitcher_id": 700241,
+      "away_pitcher_id": 700241.0,
       "home_pitcher_id": 625643.0,
-      "home_exp_runs": 4.332,
-      "away_exp_runs": 4.331,
-      "proj_total": 8.663,
-      "home_win_prob": 0.4976,
-      "away_win_prob": 0.5024,
+      "home_exp_runs": 4.361,
+      "away_exp_runs": 4.387,
+      "proj_total": 8.748,
+      "home_win_prob": 0.4959,
+      "away_win_prob": 0.5041,
       "over_probs": {
-       "6.0": 0.6789,
-       "6.5": 0.6789,
-       "7.0": 0.56455,
-       "7.5": 0.56455,
-       "8.0": 0.4823,
-       "8.5": 0.4823,
-       "9.0": 0.38415,
-       "9.5": 0.38415,
-       "10.0": 0.3154,
-       "10.5": 0.3154,
-       "11.0": 0.2383,
-       "11.5": 0.2383,
-       "12.0": 0.1901,
-       "12.5": 0.1901,
-       "13.0": 0.1415,
-       "13.5": 0.1415,
-       "14.0": 0.10845,
-       "14.5": 0.10845,
-       "15.0": 0.07725
+       "6.0": 0.6849,
+       "6.5": 0.6849,
+       "7.0": 0.57155,
+       "7.5": 0.57155,
+       "8.0": 0.4906,
+       "8.5": 0.4906,
+       "9.0": 0.39015,
+       "9.5": 0.39015,
+       "10.0": 0.3214,
+       "10.5": 0.3214,
+       "11.0": 0.2439,
+       "11.5": 0.2439,
+       "12.0": 0.1952,
+       "12.5": 0.1952,
+       "13.0": 0.1434,
+       "13.5": 0.1434,
+       "14.0": 0.11055,
+       "14.5": 0.11055,
+       "15.0": 0.07975
       },
       "home_rl_cover": {
-       "-1.5": 0.35865,
-       "1.5": 0.6318
+       "-1.5": 0.36065,
+       "1.5": 0.63045
       },
       "model_nrfi_prob": 0.4979,
       "model_yrfi_prob": 0.5021,
       "nrfi_p_top": 0.2748,
       "nrfi_p_bot": 0.3134,
       "home_ml": -122.0,
-      "away_ml": 127.0,
-      "home_ml_ev": -0.0266,
-      "away_ml_ev": 0.0557,
+      "away_ml": 125.0,
+      "home_ml_ev": -0.0302,
+      "away_ml_ev": 0.0509,
       "total_line": 9.5,
       "over_odds": 117.0,
-      "under_odds": 110.0,
-      "model_over_prob": 0.3841,
+      "under_odds": 115.0,
+      "model_over_prob": 0.3901,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 170.0,
-      "rl_away_odds": -185.0,
-      "model_home_rl": 0.3587,
-      "rl_home_ev": -0.0235,
-      "rl_away_ev": -0.0166
+      "rl_home_odds": 150.0,
+      "rl_away_odds": -150.0,
+      "model_home_rl": 0.3607,
+      "rl_home_ev": -0.0344,
+      "rl_away_ev": 0.023
      },
      {
       "weather": null,
@@ -41350,58 +39928,58 @@
       "home_team": "Kansas City Royals",
       "away_pitcher": "Shane McClanahan",
       "home_pitcher": "Seth Lugo",
-      "away_pitcher_id": 663556,
+      "away_pitcher_id": 663556.0,
       "home_pitcher_id": 607625.0,
-      "home_exp_runs": 4.642,
-      "away_exp_runs": 4.658,
-      "proj_total": 9.299,
-      "home_win_prob": 0.4984,
-      "away_win_prob": 0.5016,
+      "home_exp_runs": 4.697,
+      "away_exp_runs": 4.796,
+      "proj_total": 9.493,
+      "home_win_prob": 0.4893,
+      "away_win_prob": 0.5107,
       "over_probs": {
-       "6.0": 0.72695,
-       "6.5": 0.72695,
-       "7.0": 0.62295,
-       "7.5": 0.62295,
-       "8.0": 0.5427,
-       "8.5": 0.5427,
-       "9.0": 0.441,
-       "9.5": 0.441,
-       "10.0": 0.36995,
-       "10.5": 0.36995,
-       "11.0": 0.28735,
-       "11.5": 0.28735,
-       "12.0": 0.2352,
-       "12.5": 0.2352,
-       "13.0": 0.17665,
-       "13.5": 0.17665,
-       "14.0": 0.1405,
-       "14.5": 0.1405,
-       "15.0": 0.10455
+       "6.0": 0.7421,
+       "6.5": 0.7421,
+       "7.0": 0.63635,
+       "7.5": 0.63635,
+       "8.0": 0.5582,
+       "8.5": 0.5582,
+       "9.0": 0.45475,
+       "9.5": 0.45475,
+       "10.0": 0.38475,
+       "10.5": 0.38475,
+       "11.0": 0.30055,
+       "11.5": 0.30055,
+       "12.0": 0.24645,
+       "12.5": 0.24645,
+       "13.0": 0.1886,
+       "13.5": 0.1886,
+       "14.0": 0.1515,
+       "14.5": 0.1515,
+       "15.0": 0.1109
       },
       "home_rl_cover": {
-       "-1.5": 0.36595,
-       "1.5": 0.63
+       "-1.5": 0.35845,
+       "1.5": 0.62295
       },
       "model_nrfi_prob": 0.4772,
       "model_yrfi_prob": 0.5228,
       "nrfi_p_top": 0.3233,
       "nrfi_p_bot": 0.2948,
-      "home_ml": 122.0,
-      "away_ml": -122.0,
-      "home_ml_ev": 0.0373,
+      "home_ml": 127.0,
+      "away_ml": -127.0,
+      "home_ml_ev": 0.0387,
       "away_ml_ev": -0.0305,
       "total_line": 10.5,
       "over_odds": 108.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.37,
-      "over_ev": -0.0679,
-      "under_ev": 0.1038,
+      "under_odds": 104.0,
+      "model_over_prob": 0.3847,
+      "over_ev": NaN,
+      "under_ev": NaN,
       "rl_home_line": 1.5,
-      "rl_home_odds": -127.0,
+      "rl_home_odds": -122.0,
       "rl_away_odds": 122.0,
-      "model_home_rl": 0.63,
-      "rl_home_ev": 0.0377,
-      "rl_away_ev": -0.0689
+      "model_home_rl": 0.623,
+      "rl_home_ev": 0.0467,
+      "rl_away_ev": -0.057
      },
      {
       "weather": null,
@@ -41419,56 +39997,56 @@
       "home_team": "Houston Astros",
       "away_pitcher": "Taj Bradley",
       "home_pitcher": "Tatsuya Imai",
-      "away_pitcher_id": 671737,
+      "away_pitcher_id": 671737.0,
       "home_pitcher_id": 837227.0,
-      "home_exp_runs": 4.551,
-      "away_exp_runs": 5.076,
-      "proj_total": 9.627,
-      "home_win_prob": 0.446,
-      "away_win_prob": 0.554,
+      "home_exp_runs": 4.565,
+      "away_exp_runs": 5.106,
+      "proj_total": 9.671,
+      "home_win_prob": 0.4486,
+      "away_win_prob": 0.5514,
       "over_probs": {
-       "6.0": 0.7522,
-       "6.5": 0.7522,
-       "7.0": 0.65225,
-       "7.5": 0.65225,
-       "8.0": 0.575,
-       "8.5": 0.575,
-       "9.0": 0.4741,
-       "9.5": 0.4741,
-       "10.0": 0.4012,
-       "10.5": 0.4012,
-       "11.0": 0.3155,
-       "11.5": 0.3155,
-       "12.0": 0.25845,
-       "12.5": 0.25845,
-       "13.0": 0.19685,
-       "13.5": 0.19685,
-       "14.0": 0.15625,
-       "14.5": 0.15625,
-       "15.0": 0.117
+       "6.0": 0.75625,
+       "6.5": 0.75625,
+       "7.0": 0.6535,
+       "7.5": 0.6535,
+       "8.0": 0.5775,
+       "8.5": 0.5775,
+       "9.0": 0.475,
+       "9.5": 0.475,
+       "10.0": 0.40325,
+       "10.5": 0.40325,
+       "11.0": 0.3196,
+       "11.5": 0.3196,
+       "12.0": 0.2627,
+       "12.5": 0.2627,
+       "13.0": 0.2001,
+       "13.5": 0.2001,
+       "14.0": 0.1576,
+       "14.5": 0.1576,
+       "15.0": 0.1158
       },
       "home_rl_cover": {
-       "-1.5": 0.3251,
-       "1.5": 0.57845
+       "-1.5": 0.3238,
+       "1.5": 0.5775
       },
       "model_nrfi_prob": 0.4774,
       "model_yrfi_prob": 0.5226,
       "nrfi_p_top": 0.3058,
       "nrfi_p_bot": 0.3123,
-      "home_ml": -113.0,
-      "away_ml": 113.0,
-      "home_ml_ev": -0.0558,
-      "away_ml_ev": 0.063,
+      "home_ml": -117.0,
+      "away_ml": 115.0,
+      "home_ml_ev": -0.0616,
+      "away_ml_ev": 0.0622,
       "total_line": 8.5,
       "over_odds": 104.0,
       "under_odds": 105.0,
-      "model_over_prob": 0.575,
+      "model_over_prob": 0.5775,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 170.0,
-      "rl_away_odds": 178.0,
-      "model_home_rl": 0.3251,
+      "rl_away_odds": 170.0,
+      "model_home_rl": 0.3238,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
@@ -41488,37 +40066,37 @@
       "home_team": "Milwaukee Brewers",
       "away_pitcher": "Andrew Abbott",
       "home_pitcher": "Shane Drohan",
-      "away_pitcher_id": 671096,
+      "away_pitcher_id": 671096.0,
       "home_pitcher_id": 675660.0,
-      "home_exp_runs": 5.775,
-      "away_exp_runs": 3.947,
-      "proj_total": 9.722,
-      "home_win_prob": 0.6636,
-      "away_win_prob": 0.3364,
+      "home_exp_runs": 5.857,
+      "away_exp_runs": 3.88,
+      "proj_total": 9.737,
+      "home_win_prob": 0.6791,
+      "away_win_prob": 0.3209,
       "over_probs": {
-       "6.0": 0.75735,
-       "6.5": 0.75735,
-       "7.0": 0.6574,
-       "7.5": 0.6574,
-       "8.0": 0.58055,
-       "8.5": 0.58055,
-       "9.0": 0.4771,
-       "9.5": 0.4771,
-       "10.0": 0.4032,
-       "10.5": 0.4032,
-       "11.0": 0.3153,
-       "11.5": 0.3153,
-       "12.0": 0.2563,
-       "12.5": 0.2563,
-       "13.0": 0.19765,
-       "13.5": 0.19765,
-       "14.0": 0.15635,
-       "14.5": 0.15635,
-       "15.0": 0.11575
+       "6.0": 0.75415,
+       "6.5": 0.75415,
+       "7.0": 0.65245,
+       "7.5": 0.65245,
+       "8.0": 0.5755,
+       "8.5": 0.5755,
+       "9.0": 0.47835,
+       "9.5": 0.47835,
+       "10.0": 0.40565,
+       "10.5": 0.40565,
+       "11.0": 0.3207,
+       "11.5": 0.3207,
+       "12.0": 0.2615,
+       "12.5": 0.2615,
+       "13.0": 0.202,
+       "13.5": 0.202,
+       "14.0": 0.1598,
+       "14.5": 0.1598,
+       "15.0": 0.1179
       },
       "home_rl_cover": {
-       "-1.5": 0.53265,
-       "1.5": 0.76875
+       "-1.5": 0.54665,
+       "1.5": 0.78145
       },
       "model_nrfi_prob": 0.5111,
       "model_yrfi_prob": 0.4889,
@@ -41557,7 +40135,7 @@
       "home_team": "Colorado Rockies",
       "away_pitcher": "Max Meyer",
       "home_pitcher": "Kyle Freeland",
-      "away_pitcher_id": 676974,
+      "away_pitcher_id": 676974.0,
       "home_pitcher_id": 607536.0,
       "home_exp_runs": 4.851,
       "away_exp_runs": 5.787,
@@ -41617,51 +40195,50 @@
        "away": []
       },
       "player_ids": {
-       "jt ginn": 669372,
-       "shohei ohtani": 660271
+       "jt ginn": 669372
       },
       "game_pk": 824985,
       "game_time": "2026-07-02T01:40:00Z",
       "away_team": "Los Angeles Dodgers",
       "home_team": "Athletics",
-      "away_pitcher": "Shohei Ohtani",
+      "away_pitcher": NaN,
       "home_pitcher": "J.T. Ginn",
-      "away_pitcher_id": 660271,
+      "away_pitcher_id": NaN,
       "home_pitcher_id": 669372.0,
-      "home_exp_runs": 4.077,
+      "home_exp_runs": 4.613,
       "away_exp_runs": 4.817,
-      "proj_total": 8.894,
-      "home_win_prob": 0.4268,
-      "away_win_prob": 0.5732,
+      "proj_total": 9.43,
+      "home_win_prob": 0.4784,
+      "away_win_prob": 0.5215,
       "over_probs": {
-       "6.0": 0.69325,
-       "6.5": 0.69325,
-       "7.0": 0.5822,
-       "7.5": 0.5822,
-       "8.0": 0.5038,
-       "8.5": 0.5038,
-       "9.0": 0.4062,
-       "9.5": 0.4062,
-       "10.0": 0.3363,
-       "10.5": 0.3363,
-       "11.0": 0.25815,
-       "11.5": 0.25815,
-       "12.0": 0.20735,
-       "12.5": 0.20735,
-       "13.0": 0.155,
-       "13.5": 0.155,
-       "14.0": 0.12055,
-       "14.5": 0.12055,
-       "15.0": 0.08735
+       "6.0": 0.7352,
+       "6.5": 0.7352,
+       "7.0": 0.63275,
+       "7.5": 0.63275,
+       "8.0": 0.5539,
+       "8.5": 0.5539,
+       "9.0": 0.4566,
+       "9.5": 0.4566,
+       "10.0": 0.38395,
+       "10.5": 0.38395,
+       "11.0": 0.30325,
+       "11.5": 0.30325,
+       "12.0": 0.24745,
+       "12.5": 0.24745,
+       "13.0": 0.18615,
+       "13.5": 0.18615,
+       "14.0": 0.14625,
+       "14.5": 0.14625,
+       "15.0": 0.1065
       },
       "home_rl_cover": {
-       "-1.5": 0.2989,
-       "1.5": 0.5678
+       "-1.5": 0.35405,
+       "1.5": 0.6083
       },
-      "model_nrfi_prob": 0.4768,
-      "model_yrfi_prob": 0.5232,
+      "model_nrfi_prob": 0.4573,
+      "model_yrfi_prob": 0.5427,
       "nrfi_p_top": 0.3235,
-      "nrfi_p_bot": 0.2952,
+      "nrfi_p_bot": 0.324,
       "home_ml": NaN,
       "away_ml": NaN,
       "home_ml_ev": NaN,
@@ -41680,12 +40257,7 @@
       "rl_away_ev": NaN
      },
      {
-      "weather": {
-       "temp_f": 99,
-       "wind_mph": 12,
-       "wind_dir": "W",
-       "precip_pct": 0
-      },
+      "weather": null,
       "lineups": {
        "home": [],
        "away": []
@@ -41700,7 +40272,7 @@
       "home_team": "Arizona Diamondbacks",
       "away_pitcher": "Trevor McDonald",
       "home_pitcher": "Zac Gallen",
-      "away_pitcher_id": 686790,
+      "away_pitcher_id": 686790.0,
       "home_pitcher_id": 668678.0,
       "home_exp_runs": 4.171,
       "away_exp_runs": 5.105,
@@ -46308,94 +44880,94 @@
     ],
     "news": [
      {
-      "title": "Josh Simpson optioned to Triple-A ",
+      "title": "Connor Seabold (lat) leaves game early Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 23:07:01"
+      "when": "2026-07-01 02:02:27"
      },
      {
-      "title": "Cole Wilcox recalled from Triple-A ",
+      "title": "Connelly Early (elbow) leaves start early Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 23:06:11"
+      "when": "2026-07-01 02:00:36"
      },
      {
-      "title": "Luke Raley (elbow) out of lineup Tuesday ",
+      "title": "Willy Adames (back) trending in right direction ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:11:14"
+      "when": "2026-07-01 01:59:10"
      },
      {
-      "title": "Dominic Canzone not in lineup Tuesday ",
+      "title": "Edwin Diaz (elbow) could face live hitters this weekend",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:10:24"
+      "when": "2026-07-01 01:57:48"
      },
      {
-      "title": "Max Muncy stays hot with another long ball in win",
+      "title": "Jack Winkler signs minor league deal with Athletics ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:09:21"
+      "when": "2026-07-01 01:56:16"
      },
      {
-      "title": "Shohei Ohtani to start Friday ",
+      "title": "Austin Slater re-signs with Rays on minor league deal ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:08:09"
+      "when": "2026-07-01 01:54:47"
      },
      {
-      "title": "Andy Pages goes deep, drives in two in 9-4 win",
+      "title": "Brent Rooker (knee) getting re-evaluated Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:07:06"
+      "when": "2026-07-01 00:23:02"
      },
      {
-      "title": "Willy Adames (back) not in lineup Tuesday ",
+      "title": "Kris Bubic (elbow) set for another rehab start Wednesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:06:45"
+      "when": "2026-07-01 00:17:19"
      },
      {
-      "title": "Daniel Palencia (elbow) to be sidelined through All-Star break ",
+      "title": "Carlos Estevez (shoulder) being re-evaluated Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:04:07"
+      "when": "2026-07-01 00:15:52"
      },
      {
-      "title": "Eric Lauer grinds through six for win vs. A's",
+      "title": "AJ Smith-Shawver (elbow) throws 41 pitches in rehab start Tuesday ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:03:19"
+      "when": "2026-07-01 00:12:05"
      },
      {
-      "title": "Drew Pomeranz making his way in Triple-A ",
+      "title": "Sam Huff sent outright by Orioles",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:02:51"
+      "when": "2026-06-30 23:55:16"
      },
      {
-      "title": "Jameson Taillon (hamstring) could begin rehab assignment this week",
+      "title": "Ben Hartl traded to White Sox",
       "body": "",
       "player": "",
-      "when": "2026-06-30 22:01:24"
+      "when": "2026-06-30 23:54:31"
      },
      {
-      "title": "Jazz Chisholm Jr. available off bench Tuesday ",
+      "title": "Ben Peoples traded to Rangers ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:58:41"
+      "when": "2026-06-30 23:53:31"
      },
      {
-      "title": "Aaron Judge (rib) 'starting to feel better'",
+      "title": "Pete Crow-Armstrong will not participate in home run derby",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:57:28"
+      "when": "2026-06-30 23:52:31"
      },
      {
-      "title": "Jackson Jobe (elbow) progressing in right direction ",
+      "title": "Vince Velasquez elects free agency ",
       "body": "",
       "player": "",
-      "when": "2026-06-30 21:53:51"
+      "when": "2026-06-30 23:22:52"
      }
     ],
     "injuries": [
@@ -47100,13 +45672,6 @@
       "note": ""
      },
      {
-      "player": "Tanner Gordon",
-      "norm": "tanner gordon",
-      "team": "",
-      "status": "IL15",
-      "note": ""
-     },
-     {
       "player": "Jeremiah Estrada",
       "norm": "jeremiah estrada",
       "team": "",
@@ -47660,6 +46225,13 @@
       "note": ""
      },
      {
+      "player": "Jonathan Hernandez",
+      "norm": "jonathan hernandez",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
       "player": "Anthony Bender",
       "norm": "anthony bender",
       "team": "",
@@ -47811,29 +46383,29 @@
  },
  "performance": {
   "overall": {
-   "graded_games": 273,
-   "model_brier": 0.2495,
-   "model_log_loss": 0.6929,
-   "bets": 195,
-   "bet_win_rate": 0.4615,
-   "units": -0.45,
-   "roi_pct": -0.23,
-   "avg_clv_pct": 3.04,
-   "clv_beat_rate": 0.5029,
-   "clv_bets": 173
+   "graded_games": 283,
+   "model_brier": 0.2494,
+   "model_log_loss": 0.6927,
+   "bets": 200,
+   "bet_win_rate": 0.46,
+   "units": -0.77,
+   "roi_pct": -0.39,
+   "avg_clv_pct": 2.95,
+   "clv_beat_rate": 0.5,
+   "clv_bets": 178
   },
   "by_sport": {
    "MLB": {
-    "graded_games": 243,
-    "model_brier": 0.2512,
-    "model_log_loss": 0.6962,
-    "bets": 156,
-    "bet_win_rate": 0.4808,
-    "units": 2.2,
-    "roi_pct": 1.41,
-    "avg_clv_pct": 4.12,
-    "clv_beat_rate": 0.5245,
-    "clv_bets": 143
+    "graded_games": 253,
+    "model_brier": 0.2511,
+    "model_log_loss": 0.6958,
+    "bets": 161,
+    "bet_win_rate": 0.4783,
+    "units": 1.88,
+    "roi_pct": 1.17,
+    "avg_clv_pct": 3.97,
+    "clv_beat_rate": 0.5203,
+    "clv_bets": 148
    },
    "WNBA": {
     "graded_games": 29,
@@ -47862,10 +46434,10 @@
   }
  },
  "nrfi_calibration": {
-  "n": 28,
-  "model_brier": 0.2518,
-  "base_brier": 0.2487,
-  "actual_yrfi": 0.4643
+  "n": 38,
+  "model_brier": 0.2471,
+  "base_brier": 0.2493,
+  "actual_yrfi": 0.5263
  },
- "odds_api_credits": 24473
+ "odds_api_credits": 99996
 }
