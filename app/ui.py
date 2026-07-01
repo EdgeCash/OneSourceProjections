@@ -109,7 +109,36 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
     # off-board line) far more often than the market is wrong; zero the
     # suggested stake on those rows.
     df.loc[ev >= 0.30, "kelly"] = 0.0
+    # Demonstrated-edge gate: tag each row with its market's status (from realized
+    # CLV) and scale the suggested stake — full when the market is proven
+    # (cleared), half while unproven (probation), zero where we've shown no edge
+    # (gated). The tier chip is capped separately via play_tier(gate=...).
+    df = _attach_edge_gate(df)
     return df.sort_values("ev", ascending=False).reset_index(drop=True)
+
+
+# market label (board) -> edge_gate market key
+_GATE_MARKET = {"Moneyline": "moneyline", "Total": "total",
+                "Run Line": "spread", "Spread": "spread"}
+
+
+def _attach_edge_gate(df: pd.DataFrame) -> pd.DataFrame:
+    """Add a ``gate`` column (cleared/probation/gated per market) and scale the
+    ``kelly`` stake by the gate's multiplier. Safe if the gate can't be built."""
+    try:
+        from project547 import edge_gate
+        table = edge_gate.gate_table()
+    except Exception:
+        df["gate"] = "probation"
+        return df
+    def _status(r):
+        mkt = _GATE_MARKET.get(r.get("market"), str(r.get("market", "")).lower())
+        return edge_gate.status_for(r.get("sport"), mkt, table)
+    df["gate"] = df.apply(_status, axis=1)
+    mult = df["gate"].map(edge_gate.stake_mult)
+    kelly = pd.to_numeric(df["kelly"], errors="coerce")
+    df["kelly"] = (kelly * mult).where(kelly.notna(), df["kelly"])
+    return df
 
 
 def _game_edges(sport: str, g: dict) -> list[dict]:
@@ -516,10 +545,21 @@ def _letter(ev) -> str:
     return "F"
 
 
-def play_tier(ev, min_edge: float = 0.02) -> dict:
+_TIER_LABEL = {"pass": ("PASS", "var(--faint)"), "lean": ("LEAN", "var(--mid)"),
+               "core": ("CORE PLAY", "var(--good)"), "watch": ("WATCH", "var(--mid)"),
+               "verify": ("VERIFY", "var(--neg)"), "gated": ("GATED", "var(--faint)")}
+
+
+def play_tier(ev, min_edge: float = 0.02, gate: str | None = None) -> dict:
     """The single source of truth for confidence — collapses the old competing
     systems (the A–F letter grade, the 0–10 conviction, and the 2–6% "band")
-    into one ladder. Returns {"label", "color", "kind", "letter"}.
+    into one ladder. Returns {"label", "color", "kind", "letter", "gate"}.
+
+    ``gate`` is the market's demonstrated-edge status (edge_gate: cleared /
+    probation / gated). It CAPS the tier: a market we've proven no edge in
+    (GATED) can never be more than PASS no matter the EV; an unproven (PROBATION)
+    market caps at LEAN (never a headline CORE PLAY). A too-large-edge VERIFY
+    warning is preserved regardless — it's a caution, not a recommendation.
 
     The anti-guru twist: a *huge* edge is a WARNING, not a lock. On these
     efficient markets a >=8% model edge almost always means the market knows
@@ -538,25 +578,32 @@ def play_tier(ev, min_edge: float = 0.02) -> dict:
     stale = config.STALE_EV           # 0.08 — above this the line's likely stale
     letter = _letter(ev)
     if ev is None or (isinstance(ev, float) and pd.isna(ev)):
-        return {"label": "PASS", "color": "var(--faint)", "kind": "pass",
-                "letter": letter}
-    e = float(ev)
-    if e < min_edge:
-        return {"label": "PASS", "color": "var(--faint)", "kind": "pass",
-                "letter": letter}
-    # LEAN only exists when the caller's bar sits below the curated band — the
-    # sliver between a custom min_edge and the 2% core floor.
-    if min_edge < sharp_min and e < sharp_min:
-        return {"label": "LEAN", "color": "var(--mid)", "kind": "lean",
-                "letter": letter}
-    if e < sharp_max:
-        return {"label": "CORE PLAY", "color": "var(--good)", "kind": "core",
-                "letter": letter}
-    if e < stale:
-        return {"label": "WATCH", "color": "var(--mid)", "kind": "watch",
-                "letter": letter}
-    return {"label": "VERIFY", "color": "var(--neg)", "kind": "verify",
-            "letter": letter}
+        kind = "pass"
+    else:
+        e = float(ev)
+        if e < min_edge:
+            kind = "pass"
+        # LEAN only exists when the caller's bar sits below the curated band.
+        elif min_edge < sharp_min and e < sharp_min:
+            kind = "lean"
+        elif e < sharp_max:
+            kind = "core"
+        elif e < stale:
+            kind = "watch"
+        else:
+            kind = "verify"
+
+    display_kind = kind
+    if gate is not None:
+        from project547 import edge_gate
+        capped = edge_gate.cap_tier(kind, gate)
+        # show a distinct GATED label when a no-edge market forced the cap
+        display_kind = "gated" if (gate == edge_gate.GATED and kind != "verify"
+                                   and capped == "pass") else capped
+    label, color = _TIER_LABEL[display_kind]
+    return {"label": label, "color": color,
+            "kind": "pass" if display_kind == "gated" else display_kind,
+            "letter": letter, "gate": gate}
 
 
 def _tier_color(letter: str) -> str:
@@ -1059,7 +1106,7 @@ def play_card_html(play: dict, *, graded: bool = False) -> str:
     game = _g(play, "game", "matchup") or ""
     time = fmt_time_et(_g(play, "time", "game_time"))
 
-    tier = play_tier(ev)
+    tier = play_tier(ev, gate=_g(play, "gate"))
     imp = _implied(price) if (price is not None and pd.notna(price)) else None
 
     # ---- kicker: sport chip + matchup, time pushed right ----

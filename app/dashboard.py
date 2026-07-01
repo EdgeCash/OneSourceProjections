@@ -1095,6 +1095,48 @@ def render_dfs():
                  width="stretch", hide_index=True)
 
 
+_GATE_BADGE = {"cleared": "🟢 Cleared", "probation": "🟡 Probation",
+               "gated": "🔴 Gated off"}
+
+
+def _edge_gate_section():
+    """Show the per-market demonstrated-edge gate: which markets we've *proven*
+    an edge in (and bet fully), which are unproven (bet small), and which we've
+    shown no edge in (gated off). Transparency is the brand — we say out loud
+    where we do and don't bet, and why."""
+    try:
+        from project547 import edge_gate
+        table = edge_gate.gate_table()
+    except Exception:
+        return
+    if not table:
+        return
+    order = {"cleared": 0, "probation": 1, "gated": 2}
+    rows = []
+    for (sport, market), v in sorted(
+            table.items(), key=lambda kv: (order.get(kv[1]["status"], 9), kv[0])):
+        rows.append({
+            "Market": f"{sport} {str(market).title()}",
+            "Status": _GATE_BADGE.get(v["status"], v["status"]),
+            "CLV bets": v["clv_n"],
+            "Avg CLV": v["avg_clv"],
+            "ROI": v["roi"],
+            "Stake": {"cleared": "full", "probation": "½",
+                      "gated": "none"}.get(v["status"], "½"),
+        })
+    df = pd.DataFrame(rows)
+    section_header("Edge gate — which markets we bet")
+    st.dataframe(df, width="stretch", hide_index=True,
+                 column_config={
+                     "Avg CLV": st.column_config.NumberColumn(format="%+.3f"),
+                     "ROI": st.column_config.NumberColumn(format="%+.3f")})
+    st.caption("A market earns curation by **beating the close (CLV)**, not by "
+               "clearing an EV bar — a 2–6% edge on a market we don't beat is "
+               "noise. 🟢 proven (full stake) · 🟡 unproven, betting small to "
+               "gather CLV · 🔴 shown no edge, gated off. Rolling window, so a "
+               "market re-earns or loses its status as results accrue.")
+
+
 def _source_tracking_section():
     """Projection accuracy by source — our model vs the de-vigged market vs
     BettingPros, across every sport. This is how we prove we beat the baseline."""
@@ -1232,6 +1274,9 @@ def render_performance():
         st.caption("Where the edge is — and isn't. ROI% and Avg CLV shade "
                    "green when we're ahead, red when we're behind. CLV blanks "
                    "where no closing line was captured.")
+
+    # ── 3b. EDGE GATE — which markets we've earned the right to bet. ──────
+    _edge_gate_section()
 
     # ── 4. RECENT BETS — the five freshest receipts as graded cards. ─────
     section_header("Recent bets")

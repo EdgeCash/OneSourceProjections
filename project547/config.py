@@ -141,6 +141,20 @@ SHARP_EV_MIN = 0.02   # notify at/above this EV (the curated 2-6% band)...
 SHARP_EV_MAX = 0.06   # ...and at/below this (the validated sweet spot)
 STALE_EV = 0.08       # at/above this, likely a stale line -> "verify", no push
 
+# ---------------------------------------------------------------------------
+# Demonstrated-edge gate (project547/edge_gate.py). The EV band above says WHICH
+# disagreements to consider; the gate says WHICH MARKETS we've actually proven an
+# edge in. A market must earn curation via realized closing-line value (CLV) — a
+# 2-6% edge on a market we don't beat is noise. Measured on a rolling window of
+# the graded ledger, per (sport, market). Asymmetric: easy-ish to clear, hard to
+# gate off (so a market isn't killed on noise). Tune as the sample grows.
+GATE_WINDOW_DAYS = 180     # rolling window of graded results the gate reads
+GATE_CLEAR_MIN = 30        # CLV-graded bets needed to CLEAR a market...
+GATE_CLV_FLOOR = 0.0       # ...with avg CLV at/above this (beating the close)
+GATE_OFF_MIN = 60          # more evidence required to GATE a market off...
+GATE_OFF_CLV = -0.01       # ...and avg CLV at/below this (clearly losing to close)
+GATE_PROBATION_STAKE = 0.5  # Kelly multiplier for unproven (probation) markets
+
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
 
