@@ -265,6 +265,14 @@ def project_games(date: str) -> pd.DataFrame:
         # Park: game is at the home team's venue; de-bias each team's rate
         # by its own home park (see models/game.expected_runs).
         pf_venue = parks.factor(g["home_team"])
+        # Weather first — its temperature feeds expected_runs (warm air carries
+        # the ball). game_weather returns None for domes/unavailable forecasts,
+        # so temp_f stays None there and the model skips the adjustment.
+        try:
+            wx = weather.game_weather(g["home_team"], g["game_time"])
+        except Exception:
+            wx = None
+        game_temp = (wx or {}).get("temp_f")
         home = game_model.TeamInputs(
             name=g["home_team"],
             runs_per_game=_team_runs_per_game(g["home_team_id"], date),
@@ -272,6 +280,7 @@ def project_games(date: str) -> pd.DataFrame:
             opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["away_team"])),
             park_factor=pf_venue,
             own_home_pf=pf_venue,
+            temp_f=game_temp,
         )
         away = game_model.TeamInputs(
             name=g["away_team"],
@@ -280,12 +289,9 @@ def project_games(date: str) -> pd.DataFrame:
             opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["home_team"])),
             park_factor=pf_venue,
             own_home_pf=parks.factor(g["away_team"]),
+            temp_f=game_temp,
         )
         proj = game_model.simulate(home, away)
-        try:
-            wx = weather.game_weather(g["home_team"], g["game_time"])
-        except Exception:
-            wx = None
         try:
             lu = mlb_statsapi.batting_order(g["game_pk"])
             lineups = {s_: [p["name"] for p in lu.get(s_, [])]
