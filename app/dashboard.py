@@ -130,6 +130,20 @@ _THEME_CSS = """
     border-bottom:1px dashed transparent; transition: color .12s ease,
     border-color .12s ease; }
   a.osp-plink:hover { color: var(--acc2) !important; border-bottom-color: var(--acc2); }
+  /* --- responsive nav: left sidebar on desktop, top tab-strip on mobile ---
+     The keyed top-strip container is hidden by default (desktop uses the
+     sidebar); shown only under the 768px breakpoint where the sidebar
+     collapses to a hamburger. */
+  .st-key-osp_topnav { display: none; }
+  @media (max-width: 768px) {
+    .st-key-osp_topnav { display: block; position: sticky; top: 0; z-index: 50;
+      background: var(--bg); margin: -0.2rem 0 0.5rem; padding: 0.4rem 0 0.35rem;
+      border-bottom: 1.5px solid var(--line); }
+    .st-key-osp_topnav [data-testid="stVerticalBlock"] { gap: 0.3rem; }
+    .st-key-osp_topnav [data-testid="stHorizontalBlock"] { gap: 0.3rem; }
+    .st-key-osp_topnav .stButton > button { width: 100%; font-size: 0.78rem;
+      padding: 0.28rem 0.15rem; letter-spacing: 0.01em; }
+  }
   /* mobile: tighter padding, smaller display type, full-width buttons */
   @media (max-width: 640px) {
     .block-container { padding: 0.6rem 0.6rem 2rem; }
@@ -304,6 +318,19 @@ _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "DOCS": "Methodology & docs", "WORKBOOK": "📥 Daily workbook",
                 "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine"}
 
+# Responsive-nav handoff. The mobile top strip (rendered later, CSS-shown only
+# on narrow viewports) can't mutate the sidebar radio keys after those widgets
+# instantiate this run — so it stashes the pick in `_pending_nav` and reruns.
+# Apply it here, before the sidebar radios below read their keys.
+_pending_nav = st.session_state.pop("_pending_nav", None)
+if _pending_nav:
+    _pa = _pending_nav.get("area")
+    if _pa in NAV_GROUPS and NAV_GROUPS[_pa]:
+        st.session_state["nav_area"] = _pa
+        _ps = _pending_nav.get("section")
+        if _ps and _ps in NAV_GROUPS[_pa]:
+            st.session_state[f"nav_{_pa}"] = _ps
+
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
     st.caption("52.4% pays the house. 54.7% pays you.")
@@ -447,34 +474,36 @@ def render_sport(sport: str):
                  f"{g.get('home_team','')} {g.get('away_team','')}".lower()]
         if not shown:
             st.info("No games match the search." if q else "No games.")
-        confirmed = sum(ui.lineup_status(sport, g)["state"] == "confirmed"
-                        for g in shown)
-        if shown:
-            st.caption(f"🔔 {confirmed} of {len(shown)} lineups confirmed — "
-                       "props and edges firm up (and lines move) as lineups post.")
-        cols = st.columns(2)
-        for i, g in enumerate(shown):
-            with cols[i % 2]:
-                st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-        if shown:
-            section_header("Full matchup breakdown", "📋")
-            c1, c2 = st.columns([4, 2])
-            labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
-            with c2:
-                show_all_cards = st.toggle("Scroll all matchups", value=False,
-                                           key=f"allcards_{sport}_{date_sel}")
-            if show_all_cards:
-                for g in shown:
-                    render_research_card(sport, g, date_sel, caption=False)
-                st.caption("Offense L5 vs the opponent's matching defense; "
-                           "small numbers are league ranks (green = top "
-                           "third). ★ = offense out-ranks the defense.")
-            else:
-                with c1:
-                    pick = st.selectbox("Game", labels, label_visibility="collapsed",
-                                        key=f"matchup_{sport}_{date_sel}")
-                g = shown[labels.index(pick)]
-                render_research_card(sport, g, date_sel)
+        else:
+            # One recency control for the whole feed (was a radio per card).
+            confirmed = sum(ui.lineup_status(sport, g)["state"] == "confirmed"
+                            for g in shown)
+            top = st.columns([3, 2])
+            top[0].caption(f"🔔 {confirmed} of {len(shown)} lineups confirmed — "
+                           "edges and props firm up as lineups post.")
+            with top[1]:
+                window = st.radio(
+                    "Recency window", list(teamstats.WINDOWS), index=0,
+                    horizontal=True, label_visibility="collapsed",
+                    format_func=lambda w: teamstats.WINDOW_LABELS[w],
+                    key=f"win_{sport}_{date_sel}",
+                    help="How much recency to weight — ranks, advantages and "
+                         "strength of schedule recompute for the window you pick.")
+            # The feed: every game's full matchup sheet, top to bottom. Click the
+            # sport, scroll the sheets — no dropdown, no digging.
+            for g in shown:
+                m = _matchup(sport, g.get("home_team", ""),
+                             g.get("away_team", ""), date_sel, window)
+                if m:
+                    st.markdown(
+                        ui.matchup_card_html(sport, g, m, window=window,
+                                             min_edge=min_edge),
+                        unsafe_allow_html=True)
+                else:
+                    st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
+            st.caption("Offense L5 vs the opponent's matching defense; small "
+                       "numbers are league ranks (green = top third). "
+                       "★ = offense out-ranks the defense.")
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
@@ -2733,6 +2762,42 @@ def render_workbook():
             "Tip: opening a protected `.xlsx` in Google Sheets drops cell "
             "protection, so just remember **yellow = the cells you edit**.")
     st.caption(workbook.DISCLAIMER)
+
+
+def _topnav_row(items, active, on_pick, label_fn, per_row, keyp):
+    """Render `items` as a wrapped grid of buttons; the active one is primary.
+    `on_pick(item)` fires on click (it stashes `_pending_nav` + reruns)."""
+    for i in range(0, len(items), per_row):
+        chunk = items[i:i + per_row]
+        cols = st.columns(len(chunk))
+        for c, it in zip(cols, chunk):
+            if c.button(label_fn(it), key=f"{keyp}{it}", width="stretch",
+                        type="primary" if it == active else "secondary"):
+                on_pick(it)
+
+
+# Mobile top-strip nav: mirrors the sidebar radios but as a tab strip. Hidden on
+# desktop via CSS (`.st-key-osp_topnav`), where the left sidebar drives nav; on
+# narrow viewports the sidebar collapses to a hamburger and this is the primary
+# nav (BettorSheets-style: tap a sport, scroll every sheet).
+with st.container(key="osp_topnav"):
+    _areas = [g for g in NAV_GROUPS if NAV_GROUPS[g]]
+
+    def _pick_area(a):
+        _pgs = NAV_GROUPS[a]
+        _sec = _pgs[0] if len(_pgs) == 1 else st.session_state.get(f"nav_{a}", _pgs[0])
+        st.session_state["_pending_nav"] = {"area": a, "section": _sec}
+        st.rerun()
+
+    _topnav_row(_areas, area, _pick_area, lambda a: a, 5, "tnav_a_")
+    _pages = NAV_GROUPS[area]
+    if len(_pages) > 1:
+        def _pick_page(p):
+            st.session_state["_pending_nav"] = {"area": area, "section": p}
+            st.rerun()
+
+        _topnav_row(_pages, section, _pick_page,
+                    lambda p: _PAGE_LABELS.get(p, p.title()), 3, "tnav_p_")
 
 
 if section == "HOME":
