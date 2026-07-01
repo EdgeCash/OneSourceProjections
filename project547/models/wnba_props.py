@@ -41,6 +41,7 @@ ALIASES = {
     "player assists": "assists",
 }
 HALF_LIFE = 8.0  # games; recency weight = 0.5 ** (age_in_games / HALF_LIFE)
+MIN_GAMES = 5    # prior games before the model projection is trusted over vendor
 
 
 def canonical_market(market: str) -> str | None:

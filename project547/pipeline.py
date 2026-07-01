@@ -19,6 +19,7 @@ from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
 from .models import props as prop_model
+from .models import wnba_props
 from .models.elo import Elo, EloConfig
 from .names import normalize
 from .sports import SPORTS, active_sports
@@ -1128,9 +1129,35 @@ def _fp_stat_for_market(fp_stats: dict, market_name: str) -> float | None:
     return None
 
 
+def _wnba_model_prop(player: str, market_name: str, date: str):
+    """Our own per-player projection + NB dispersion for a WNBA prop market,
+    from the committed box-score logs (project547/models/wnba_props). Returns
+    (proj, r) or (None, None) when the market isn't covered or the player's
+    sample is too thin — in which case the vendor projection and the generic
+    distribution are used unchanged. Validated in scripts/validate_wnba_props.py
+    (well-calibrated, ECE 0.016); ships behind the edge gate like every market."""
+    key = wnba_props.canonical_market(market_name)
+    if key is None:
+        return None, None
+    try:
+        season = int(str(date)[:4])
+        series = [pt["value"] for pt in playerlogs.recent_series(
+            "WNBA", player, key, n=40, season=season)]
+    except Exception:
+        return None, None
+    if len(series) < wnba_props.MIN_GAMES:
+        return None, None
+    proj = wnba_props.project(series, key)
+    return (proj.proj, proj.r) if proj else (None, None)
+
+
 def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
     """Props for non-MLB sports: BettingPros lines + premium projections,
-    blended with FantasyPros where available, with our distribution on top."""
+    blended with FantasyPros where available, with our distribution on top.
+
+    For WNBA we add our own per-player projection (from the committed box-score
+    logs) as a third source and price it with our data-fit, calibrated negative
+    binomial instead of the generic keyword dispersion."""
     try:
         raw = bettingpros.props(sport_key, date)
         if not raw:
@@ -1165,7 +1192,10 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         bp_proj = r.get("bp_projection")
         if isinstance(bp_proj, dict):  # early-format snapshot rows
             bp_proj = bp_proj.get("value")
-        sources = [float(v) for v in (fp_proj, bp_proj)
+        model_proj = model_r = None
+        if sport_key == "WNBA":
+            model_proj, model_r = _wnba_model_prop(r["participant"], market_name, date)
+        sources = [float(v) for v in (fp_proj, bp_proj, model_proj)
                    if isinstance(v, (int, float)) and pd.notna(v)]
         projection = sum(sources) / len(sources) if sources else None
 
@@ -1196,10 +1226,14 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
             "perf_l5": r.get("perf_l5"), "perf_l10": r.get("perf_l10"),
             "perf_l20": r.get("perf_l20"), "perf_season": r.get("perf_season"),
             "perf_h2h": r.get("perf_h2h"),
+            "model_projection": round(model_proj, 2) if model_proj is not None else None,
             "model_over_prob": None, "ev_over": None, "ev_under": None, "kelly": None,
         }
         if projection is not None and pd.notna(line):
-            p_over = generic.prop_prob_over(float(projection), float(line), market_name)
+            if model_r is not None:      # WNBA: our data-fit, calibrated NB
+                p_over = wnba_props.prob_over(float(projection), float(line), model_r)
+            else:                        # other sports: generic keyword dispersion
+                p_over = generic.prop_prob_over(float(projection), float(line), market_name)
             row["model_over_prob"] = round(p_over, 4)
             ev = _market_eval(p_over, r.get("over_odds"), r.get("under_odds"),
                               shrink=SPORTS[sport_key].market_shrink)
