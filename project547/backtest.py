@@ -484,9 +484,18 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       elo_regress: float | None = None,
                       elo_home_edge: float | None = None,
                       elo_blend: float | None = None,
+                      sigma_margin: float | None = None,
+                      sigma_total: float | None = None,
                       detail: bool = False) -> dict:
+    import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
+    # sigma overrides for calibration sweeps (frozen dataclass -> replace).
+    if sigma_margin is not None or sigma_total is not None:
+        sport = _dc.replace(
+            sport,
+            sigma_margin=sport.sigma_margin if sigma_margin is None else sigma_margin,
+            sigma_total=sport.sigma_total if sigma_total is None else sigma_total)
     rest_coeff = sport.rest_coeff if rest_coeff is None else rest_coeff
     qb_coeff = sport.qb_coeff if qb_coeff is None else qb_coeff
     if opponent_adjust is None:
