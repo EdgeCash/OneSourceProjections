@@ -1974,6 +1974,104 @@ def _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp) -> s
             f"<tr>{head}</tr>{''.join(body)}</table>")
 
 
+def _invert_survival(over_probs: dict, target_s: float):
+    """Line where P(total > line) crosses ``target_s`` in the sim's survival
+    curve (``{line: P(total>line)}``), linearly interpolated. S decreases with
+    line, so a percentile p maps to target_s = 1 - p."""
+    pts = sorted((float(k), float(v)) for k, v in over_probs.items())
+    if len(pts) < 2:
+        return None
+    # clamp outside the grid
+    if target_s >= pts[0][1]:
+        return pts[0][0]
+    if target_s <= pts[-1][1]:
+        return pts[-1][0]
+    for (l0, s0), (l1, s1) in zip(pts, pts[1:]):
+        if s0 >= target_s >= s1 and s0 != s1:
+            return l0 + (l1 - l0) * (s0 - target_s) / (s0 - s1)
+    return None
+
+
+def _total_range(sport: str, g: dict):
+    """(p25, p50, p75) of the projected total. From the sim's over_probs when
+    present (MLB), else a normal IQR around proj_total using the sport's
+    sigma_total (WNBA/normal model). None when neither is available."""
+    op = g.get("over_probs")
+    if op:
+        p25, p50, p75 = (_invert_survival(op, 0.75), _invert_survival(op, 0.5),
+                         _invert_survival(op, 0.25))
+        if None not in (p25, p75):
+            return p25, p50, p75
+    pt = g.get("proj_total")
+    if pt is None or (isinstance(pt, float) and pd.isna(pt)):
+        return None
+    try:
+        from project547.sports import SPORTS
+        sig = SPORTS[sport].sigma_total
+    except Exception:
+        sig = 0.0
+    if not sig:
+        return None
+    iqr = 0.6745 * sig                       # 25/75 of a normal
+    return float(pt) - iqr, float(pt), float(pt) + iqr
+
+
+def _projection_hero(sport: str, g: dict) -> str:
+    """The premium headline: SCORE PROJECTION · away x.x · home y.y · total ·
+    projected margin · home win% · likely total range and the market cushion.
+    Pure model output; safe when fields are missing."""
+    ax, hx = _exp(g, "away"), _exp(g, "home")
+    away, home = _last(g.get("away_team", "")), _last(g.get("home_team", ""))
+    pt = g.get("proj_total")
+    if pt is None and ax is not None and hx is not None:
+        pt = float(ax) + float(hx)
+    hwp = _mcf(g.get("home_win_prob"))
+    # margin + favorite
+    fav_txt = ""
+    if ax is not None and hx is not None:
+        m = float(hx) - float(ax)
+        who, mag = (home, m) if m >= 0 else (away, -m)
+        fav_txt = f"{who} by {mag:.1f}"
+    win_txt = ""
+    if hwp is not None:
+        fav, p = (home, hwp) if hwp >= 0.5 else (away, 1 - hwp)
+        win_txt = f"{fav} {p * 100:.0f}%"
+
+    # range + market cushion
+    rng = _total_range(sport, g)
+    tl = _mcf(g.get("total_line"))
+    range_txt = ""
+    if rng:
+        p25, _p50, p75 = rng
+        range_txt = f"likely {p25:.1f}–{p75:.1f}"
+        if tl is not None:
+            if tl <= p25:
+                range_txt += (f" · market {tl:g} → <b style='color:var(--good);'>"
+                              f"lean OVER</b> (+{p25 - tl:.1f})")
+            elif tl >= p75:
+                range_txt += (f" · market {tl:g} → <b style='color:var(--good);'>"
+                              f"lean UNDER</b> (+{tl - p75:.1f})")
+            else:
+                range_txt += (f" · market {tl:g} <span style='color:var(--faint);'>"
+                              f"inside range · no edge</span>")
+
+    sub = " · ".join(x for x in (f"Total {_num(pt)}", fav_txt, win_txt) if x)
+    return (
+        f"<div style='background:var(--card2);border:1.5px solid var(--line);"
+        f"border-radius:12px;padding:12px 16px;margin-bottom:12px;text-align:center;'>"
+        f"<div style='font-family:var(--disp);font-size:.6rem;letter-spacing:.16em;"
+        f"text-transform:uppercase;color:var(--faint);margin-bottom:3px;'>Score projection</div>"
+        f"<div style='font-family:var(--disp);font-weight:700;font-size:1.7rem;"
+        f"line-height:1.1;color:var(--text);'>"
+        f"{away} <span style='color:var(--good);'>{_num(ax)}</span>"
+        f"<span style='color:var(--faint);font-weight:400;'> · </span>"
+        f"{home} <span style='color:var(--good);'>{_num(hx)}</span></div>"
+        f"<div style='font-size:.74rem;color:var(--muted);margin-top:4px;'>{sub}</div>"
+        + (f"<div style='font-size:.66rem;color:var(--muted);margin-top:3px;'>{range_txt}</div>"
+           if range_txt else "")
+        + "</div>")
+
+
 def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
                       min_edge: float = 0.02, title: str | None = None) -> str:
     """The full premium matchup graphic. ``matchup`` is teamstats.matchup(...,
@@ -2007,12 +2105,10 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
         + _mc_team_panel(sport, away, matchup.get("away_form"),
                          matchup.get("away_power_rank"), matchup.get("away_sos_rank"),
                          win_label, "right")
-        + (f"<div style='flex:0 0 auto;text-align:center;padding:0 6px;'>"
-           f"<div style='font-family:var(--disp);font-size:.56rem;letter-spacing:.1em;"
-           f"color:var(--faint);'>PROJECTED</div>"
-           f"<div style='font-family:var(--disp);font-weight:700;font-size:1.4rem;'>"
-           f"{_num(_exp(g,'away'))}–{_num(_exp(g,'home'))}</div>"
-           f"<div style='font-size:.6rem;color:var(--muted);'>{when}</div></div>")
+        + (f"<div style='flex:0 0 auto;text-align:center;padding:0 10px;'>"
+           f"<div style='font-family:var(--disp);font-weight:700;font-size:1.1rem;"
+           f"color:var(--faint);'>@</div>"
+           f"<div style='font-size:.6rem;color:var(--muted);margin-top:2px;'>{when}</div></div>")
         + _mc_team_panel(sport, home, matchup.get("home_form"),
                          matchup.get("home_power_rank"), matchup.get("home_sos_rank"),
                          win_label, "left")
@@ -2073,4 +2169,4 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
         f"<div style='font-family:var(--disp);font-weight:700;font-size:1rem;"
         f"letter-spacing:.04em;color:var(--text);margin-bottom:10px;'>{hl}"
         f"<span style='color:var(--faint);font-weight:400;'> · {win_label} window</span></div>"
-        f"{header}{gauges}{top_adv}{tables}{decision}</div>")
+        f"{_projection_hero(sport, g)}{header}{gauges}{top_adv}{tables}{decision}</div>")
