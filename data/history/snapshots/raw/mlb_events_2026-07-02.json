@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99136,
+  "sr_id": "829077f8-8239-4a80-afd4-f221747f3051",
+  "sport": "MLB",
+  "scheduled": "2026-07-02 16:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PHI",
+  "visitor": "PIT",
+  "link": "/mlb/matchups/philadelphia-phillies-vs-pittsburgh-pirates/?date=2026-07-02",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "44942",
+    "name": "Alan Rangel",
+    "link": "/mlb/props/alan-rangel/",
+    "player": {
+     "short_name": "A. Rangel",
+     "first_name": "Alan",
+     "last_name": "Rangel",
+     "image": "https://images.fantasypros.com/images/players/mlb/44942/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "alan-rangel",
+     "jersey_number": 57
+    }
+   },
+   "visitor_probable": {
+    "id": "43901",
+    "name": "Jared Jones",
+    "link": "/mlb/props/jared-jones/",
+    "player": {
+     "short_name": "J. Jones",
+     "first_name": "Jared",
+     "last_name": "Jones",
+     "image": "https://images.fantasypros.com/images/players/mlb/43901/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "jared-jones",
+     "jersey_number": 17
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PHI",
+   "season": "2025",
+   "split": "A",
+   "r": "1.017",
+   "1b": "0.955",
+   "2b": "0.929",
+   "3b": "1.009",
+   "hr": "1.131",
+   "name": "Citizens Bank Park"
+  },
+  "venue": {
+   "name": "Citizens Bank Park",
+   "address": "One Citizens Bank Way",
+   "city": "Philadelphia",
+   "state": "PA",
+   "country": "USA",
+   "zip": "19148",
+   "surface": "grass",
+   "capacity": 42901,
+   "stadium_type": "outdoor",
+   "id": "b4186004-b6d0-42e7-8dc1-82ef0d946ecc"
+  },
+  "participants": [
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 48,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 43,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 96,
+   "forecast_wind_speed": 8,
+   "forecast_wind_direction": "W",
+   "forecast_wind_degree": 281,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Clear",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.54
+  },
+  "broadcasts": [
+   {
+    "network": "SportsNet PT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99051,
+  "sr_id": "787f1fba-58a9-45c9-a7f2-26b9c39d0004",
+  "sport": "MLB",
+  "scheduled": "2026-07-02 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIL",
+  "visitor": "CIN",
+  "link": "/mlb/matchups/cincinnati-reds-vs-milwaukee-brewers/?date=2026-07-02",
+  "series_summary": null,
+  "popularity": 2,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "46366",
+    "name": "Jacob Misiorowski",
+    "link": "/mlb/props/jacob-misiorowski/",
+    "player": {
+     "short_name": "J. Misiorowski",
+     "first_name": "Jacob",
+     "last_name": "Misiorowski",
+     "image": "https://images.fantasypros.com/images/players/mlb/46366/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "jacob-misiorowski",
+     "jersey_number": 32
+    }
+   },
+   "visitor_probable": {
+    "id": "44722",
+    "name": "Chase Burns",
+    "link": "/mlb/props/chase-burns/",
+    "player": {
+     "short_name": "C. Burns",
+     "first_name": "Chase",
+     "last_name": "Burns",
+     "image": "https://images.fantasypros.com/images/players/mlb/44722/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "chase-burns",
+     "jersey_number": 26
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.976",
+   "1b": "0.897",
+   "2b": "0.935",
+   "3b": "0.969",
+   "hr": "1.139",
+   "name": "American Family Field"
+  },
+  "venue": {
+   "name": "American Family Field",
+   "address": "One Brewers Way",
+   "city": "Milwaukee",
+   "state": "WI",
+   "country": "USA",
+   "zip": "53214",
+   "surface": "grass",
+   "capacity": 41700,
+   "stadium_type": "retractable",
+   "id": "3d13c8a7-283f-482b-ade1-441e25b6465d"
+  },
+  "participants": [
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 52,
+      "L": 31,
+      "T": 0
+     },
+     "slug": "milwaukee-brewers",
+     "stadium_deg_offset": "135"
+    }
+   },
+   {
+    "id": "CIN",
+    "name": "Reds",
+    "link": "/mlb/teams/cincinnati-reds/",
+    "team": {
+     "city": "Cincinnati",
+     "abbreviation": "CIN",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 39,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "cincinnati-reds",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 89,
+   "forecast_wind_speed": 18,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 249,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.63
+  },
+  "broadcasts": [
+   {
+    "network": "CINR",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
