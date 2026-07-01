@@ -542,3 +542,5 @@
 {"date": "2026-07-01", "sport": "MLB", "game": "Detroit Tigers @ New York Yankees", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5338, "yrfi": 0, "brier": 0.2849}
 {"date": "2026-07-01", "sport": "MLB", "game": "San Diego Padres @ Chicago Cubs", "market": "model_winprob", "side": "", "pred_home_wp": 0.5102, "home_won": 1, "market_home_wp": 0.9456, "brier": 0.2399, "proj_total": 9.623, "actual_total": 26}
 {"date": "2026-07-01", "sport": "MLB", "game": "San Diego Padres @ Chicago Cubs", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4842, "yrfi": 1, "brier": 0.266}
+{"date": "2026-07-01", "sport": "MLB", "game": "New York Mets @ Toronto Blue Jays", "market": "model_winprob", "side": "", "pred_home_wp": 0.5034, "home_won": 1, "market_home_wp": 0.724, "brier": 0.2466, "proj_total": 8.783, "actual_total": 12}
+{"date": "2026-07-01", "sport": "MLB", "game": "New York Mets @ Toronto Blue Jays", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5305, "yrfi": 1, "brier": 0.2204}
