@@ -447,34 +447,36 @@ def render_sport(sport: str):
                  f"{g.get('home_team','')} {g.get('away_team','')}".lower()]
         if not shown:
             st.info("No games match the search." if q else "No games.")
-        confirmed = sum(ui.lineup_status(sport, g)["state"] == "confirmed"
-                        for g in shown)
-        if shown:
-            st.caption(f"🔔 {confirmed} of {len(shown)} lineups confirmed — "
-                       "props and edges firm up (and lines move) as lineups post.")
-        cols = st.columns(2)
-        for i, g in enumerate(shown):
-            with cols[i % 2]:
-                st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-        if shown:
-            section_header("Full matchup breakdown", "📋")
-            c1, c2 = st.columns([4, 2])
-            labels = [f"{g.get('away_team')} @ {g.get('home_team')}" for g in shown]
-            with c2:
-                show_all_cards = st.toggle("Scroll all matchups", value=False,
-                                           key=f"allcards_{sport}_{date_sel}")
-            if show_all_cards:
-                for g in shown:
-                    render_research_card(sport, g, date_sel, caption=False)
-                st.caption("Offense L5 vs the opponent's matching defense; "
-                           "small numbers are league ranks (green = top "
-                           "third). ★ = offense out-ranks the defense.")
-            else:
-                with c1:
-                    pick = st.selectbox("Game", labels, label_visibility="collapsed",
-                                        key=f"matchup_{sport}_{date_sel}")
-                g = shown[labels.index(pick)]
-                render_research_card(sport, g, date_sel)
+        else:
+            # One recency control for the whole feed (was a radio per card).
+            confirmed = sum(ui.lineup_status(sport, g)["state"] == "confirmed"
+                            for g in shown)
+            top = st.columns([3, 2])
+            top[0].caption(f"🔔 {confirmed} of {len(shown)} lineups confirmed — "
+                           "edges and props firm up as lineups post.")
+            with top[1]:
+                window = st.radio(
+                    "Recency window", list(teamstats.WINDOWS), index=0,
+                    horizontal=True, label_visibility="collapsed",
+                    format_func=lambda w: teamstats.WINDOW_LABELS[w],
+                    key=f"win_{sport}_{date_sel}",
+                    help="How much recency to weight — ranks, advantages and "
+                         "strength of schedule recompute for the window you pick.")
+            # The feed: every game's full matchup sheet, top to bottom. Click the
+            # sport, scroll the sheets — no dropdown, no digging.
+            for g in shown:
+                m = _matchup(sport, g.get("home_team", ""),
+                             g.get("away_team", ""), date_sel, window)
+                if m:
+                    st.markdown(
+                        ui.matchup_card_html(sport, g, m, window=window,
+                                             min_edge=min_edge),
+                        unsafe_allow_html=True)
+                else:
+                    st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
+            st.caption("Offense L5 vs the opponent's matching defense; small "
+                       "numbers are league ranks (green = top third). "
+                       "★ = offense out-ranks the defense.")
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
