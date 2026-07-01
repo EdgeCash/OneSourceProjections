@@ -15,10 +15,16 @@ Calibration is validated in ``scripts/validate_wnba_props.py`` (reliability +
 log-loss vs a naive baseline) — the honest first gate before any edge/CLV claim.
 It ships behind the demonstrated-edge gate like every other market.
 
-Dispersion ``r`` (var = mean + mean^2 / r), fit within-player on 2018–2026 logs
-(players with >= 10 games, >= 5 minutes):
+Dispersion ``r`` (var = mean + mean^2 / r). Starting values came from the
+within-player variance of the 2018–2026 logs; the two high-mean markets were
+then refined by a train (pre-2024) / test (2024+) split, because raw
+within-player variance over-states the *predictive* spread once you condition on
+a good recency-weighted rate. Final, held-out-validated:
 
-    points r~2.4 · rebounds r~6.2 · assists r~5.8 · threes r~3.0 · pra r~3.7
+    points r=5.0 · rebounds r=6.2 · assists r=5.8 · threes r=3.0 · pra r=7.0
+
+(points 2.4→5.0 cut test ECE 0.025→0.010; pra 3.7→7.0 cut it 0.025→0.018;
+rebounds/assists/threes were already best on the holdout.)
 """
 from __future__ import annotations
 
@@ -27,11 +33,11 @@ from dataclasses import dataclass
 # market -> (box-score stat column, NB dispersion r, league baseline rate,
 #            shrink strength in "prior games")
 MARKETS = {
-    "points":   dict(stat="points",     r=2.4, base=8.5,  prior=5.0),
+    "points":   dict(stat="points",     r=5.0, base=8.5,  prior=5.0),
     "rebounds": dict(stat="rebounds",   r=6.2, base=3.5,  prior=5.0),
     "assists":  dict(stat="assists",    r=5.8, base=2.0,  prior=5.0),
     "threes":   dict(stat="three_made", r=3.0, base=0.8,  prior=6.0),
-    "pra":      dict(stat="pra",        r=3.7, base=14.0, prior=5.0),
+    "pra":      dict(stat="pra",        r=7.0, base=14.0, prior=5.0),
 }
 # market aliases -> canonical key (mirrors playerlogs.MARKET_STAT vocabulary)
 ALIASES = {

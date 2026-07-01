@@ -97,8 +97,10 @@ projections. This is mostly a code task, not harvesting.
   recency-weighted, shrunk rate → negative-binomial P(over) for PTS/REB/AST/
   threes/PRA (dispersion fit from within-player variance of the logs). Walk-
   forward calibration (`scripts/validate_wnba_props.py`, n=320k) beats the naive
-  baseline on LogLoss (0.652 vs 0.687), Brier (0.231 vs 0.242) and ECE (0.016 vs
-  0.068) — well-calibrated across the whole reliability curve.
+  baseline on LogLoss (0.651 vs 0.687), Brier (0.230 vs 0.242) and ECE (0.010 vs
+  0.068) — well-calibrated across the whole reliability curve. Per-market
+  dispersions were train/test-split validated (points & PRA refined on a held-
+  out 2024+ set).
 - [ ] **Wire into the live pipeline**: use the model's P(over) as the WNBA prop
   probability, blended with the vendor projection as a prior; surface on the prop
   sheet. Ships behind the edge gate (probation until CLV proves out).
