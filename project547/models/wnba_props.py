@@ -1,0 +1,117 @@
+"""WNBA player-prop rate model — a real per-player distribution built from the
+committed box-score logs, so the app can price points/rebounds/assists/threes/
+PRA itself instead of only echoing a vendor projection.
+
+Approach (deliberately simple and provable):
+  * **Rate** = exponential-recency-weighted mean of the player's prior games,
+    shrunk toward a market baseline by sample size (a rookie / thin sample is
+    pulled toward the league level, not trusted at face value).
+  * **Distribution** = negative binomial with a per-market dispersion ``r`` fit
+    from the *within-player* variance of the committed logs (these counts are
+    over-dispersed relative to Poisson — see fit below), giving P(over line).
+
+Everything is walk-forward safe: feed it only games before the projection date.
+Calibration is validated in ``scripts/validate_wnba_props.py`` (reliability +
+log-loss vs a naive baseline) — the honest first gate before any edge/CLV claim.
+It ships behind the demonstrated-edge gate like every other market.
+
+Dispersion ``r`` (var = mean + mean^2 / r), fit within-player on 2018–2026 logs
+(players with >= 10 games, >= 5 minutes):
+
+    points r~2.4 · rebounds r~6.2 · assists r~5.8 · threes r~3.0 · pra r~3.7
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+# market -> (box-score stat column, NB dispersion r, league baseline rate,
+#            shrink strength in "prior games")
+MARKETS = {
+    "points":   dict(stat="points",     r=2.4, base=8.5,  prior=5.0),
+    "rebounds": dict(stat="rebounds",   r=6.2, base=3.5,  prior=5.0),
+    "assists":  dict(stat="assists",    r=5.8, base=2.0,  prior=5.0),
+    "threes":   dict(stat="three_made", r=3.0, base=0.8,  prior=6.0),
+    "pra":      dict(stat="pra",        r=3.7, base=14.0, prior=5.0),
+}
+# market aliases -> canonical key (mirrors playerlogs.MARKET_STAT vocabulary)
+ALIASES = {
+    "3-pointers made": "threes", "made threes": "threes", "three_made": "threes",
+    "pts+reb+ast": "pra", "points+rebounds+assists": "pra",
+    "player points": "points", "player rebounds": "rebounds",
+    "player assists": "assists",
+}
+HALF_LIFE = 8.0  # games; recency weight = 0.5 ** (age_in_games / HALF_LIFE)
+
+
+def canonical_market(market: str) -> str | None:
+    if not market:
+        return None
+    m = market.strip().lower()
+    if m in MARKETS:
+        return m
+    return ALIASES.get(m)
+
+
+@dataclass(frozen=True)
+class PropProjection:
+    market: str
+    proj: float          # projected mean (recency-weighted, shrunk)
+    n: int               # prior games backing it
+    r: float             # NB dispersion used
+
+
+def weighted_rate(values: list[float], *, base: float, prior: float,
+                  half_life: float = HALF_LIFE) -> tuple[float, float]:
+    """Exponential-recency-weighted mean of ``values`` (most-recent LAST),
+    shrunk toward ``base`` by ``prior`` pseudo-games. Returns (rate, eff_n)."""
+    if not values:
+        return base, 0.0
+    n = len(values)
+    # age 0 = most recent (last element)
+    wsum = 0.0
+    vsum = 0.0
+    for i, v in enumerate(values):
+        age = (n - 1) - i
+        w = 0.5 ** (age / half_life)
+        wsum += w
+        vsum += w * v
+    obs = vsum / wsum
+    # shrink toward base using effective (unweighted) sample size
+    rate = (n * obs + prior * base) / (n + prior)
+    return rate, wsum
+
+
+def _nb_cdf(k: int, mean: float, r: float) -> float:
+    """P(X <= k) for a negative binomial with the given mean and dispersion r
+    (var = mean + mean^2/r). Iterative pmf sum — counts are small, so this is
+    cheap and dependency-free (no scipy)."""
+    if mean <= 0:
+        return 1.0
+    p = r / (r + mean)              # success prob in the (r, p) parameterization
+    pmf = p ** r                    # P(X = 0)
+    cdf = pmf
+    for i in range(1, k + 1):
+        pmf *= (i - 1 + r) / i * (1 - p)
+        cdf += pmf
+    return min(cdf, 1.0)
+
+
+def prob_over(mean: float, line: float, r: float) -> float:
+    """P(stat > line). For a half-point line (4.5) this is P(X >= 5); for an
+    integer line (4) the push mass at exactly 4 is excluded (standard over)."""
+    import math
+    k = math.floor(line)
+    return max(0.0, 1.0 - _nb_cdf(k, mean, r))
+
+
+def project(values: list[float], market: str) -> PropProjection | None:
+    """Projected mean + params for a market from the player's prior stat series
+    (chronological, most-recent last). Returns None for unknown markets."""
+    key = canonical_market(market)
+    if key is None:
+        return None
+    cfg = MARKETS[key]
+    rate, _ = weighted_rate([float(v) for v in values], base=cfg["base"],
+                            prior=cfg["prior"])
+    return PropProjection(market=key, proj=round(rate, 2), n=len(values),
+                          r=cfg["r"])

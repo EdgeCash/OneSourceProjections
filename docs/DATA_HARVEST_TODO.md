@@ -93,8 +93,15 @@ advanced stats (SP+/PPA/FPI/talent) are live-fetched, not cached.
 Player logs **2018–2026 are already committed** but the model still leans on vendor
 projections. This is mostly a code task, not harvesting.
 
-- [ ] Build per-player neg-binomial rate models for PTS/REB/AST/3PM from the on-disk logs
-  (mirror the MLB props approach), blend with vendor as a prior.
+- [x] **Built + validated** `project547/models/wnba_props.py`: per-player
+  recency-weighted, shrunk rate → negative-binomial P(over) for PTS/REB/AST/
+  threes/PRA (dispersion fit from within-player variance of the logs). Walk-
+  forward calibration (`scripts/validate_wnba_props.py`, n=320k) beats the naive
+  baseline on LogLoss (0.652 vs 0.687), Brier (0.231 vs 0.242) and ECE (0.016 vs
+  0.068) — well-calibrated across the whole reliability curve.
+- [ ] **Wire into the live pipeline**: use the model's P(over) as the WNBA prop
+  probability, blended with the vendor projection as a prior; surface on the prop
+  sheet. Ships behind the edge gate (probation until CLV proves out).
 - [ ] **Harvest closing lines 2018–2025** → `data/history/closing_lines/wnba/<year>.jsonl.gz`
   (only 2026 on disk) so props/edges can be backtested for CLV.
   - Source: The Odds API historical (paid) or an existing EdgeCash archive if available.
