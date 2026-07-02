@@ -55,12 +55,23 @@ FOOTBALL_PAIRS = [
     ("Pass TD/G", "pass_td", None, "high"),
     ("Giveaways/G", "giveaways", None, "low"),
 ]
+# NHL — offense (goals/shots) vs opponent allowed; save%/blocks/hits/pim support.
+NHL_PAIRS = [
+    ("Goals/G", "goals", "opp_goals", "high"),
+    ("Shots/G", "shots", "opp_shots", "high"),
+    ("Save%", "save_pct", None, "high"),
+    ("Blocks/G", "blocks", None, "high"),
+    ("Hits/G", "hits", None, "high"),
+    ("PIM/G", "pim", None, "low"),
+]
 
 STAT_SPECS = {
     "WNBA": {"pairs": WNBA_PAIRS},
+    "NBA": {"pairs": WNBA_PAIRS},   # identical box-score schema
     "MLB": {"pairs": MLB_PAIRS, "trends": MLB_TRENDS},
     "NFL": {"pairs": FOOTBALL_PAIRS},
     "NCAAF": {"pairs": FOOTBALL_PAIRS},
+    "NHL": {"pairs": NHL_PAIRS},
 }
 
 # Stat labels that belong in a separate "supporting" section (team-vs-team)
@@ -68,9 +79,11 @@ STAT_SPECS = {
 # the reference cards split scoring from rebounding/ball-control rows.
 SUPPORTING_LABELS = {
     "WNBA": {"REB", "AST", "BLK+STL", "TOV"},
+    "NBA": {"REB", "AST", "BLK+STL", "TOV"},
     "NFL": {"Pass TD/G", "Giveaways/G"},
     "NCAAF": {"Pass TD/G", "Giveaways/G"},
     "MLB": set(),  # MLB uses the game-trends section instead
+    "NHL": {"Save%", "Blocks/G", "Hits/G", "PIM/G"},
 }
 
 
@@ -93,16 +106,66 @@ DIRECTIONS = {
     "tot_yds": "high", "pass_yds": "high", "rush_yds": "high", "pass_td": "high",
     "giveaways": "low",
     "opp_tot_yds": "low", "opp_pass_yds": "low", "opp_rush_yds": "low",
+    # NHL: goals/shots high, allowed low, save%/blocks/hits high, pim low
+    "goals": "high", "shots": "high", "save_pct": "high", "blocks": "high",
+    "hits": "high", "pim": "low", "opp_goals": "low", "opp_shots": "low",
 }
 
 
-@lru_cache(maxsize=6)
+def _score_cols(sport: str) -> tuple[str, str]:
+    """(for, against) scoring columns by sport — the inputs to records, Elo,
+    power/SOS ranks and form."""
+    if sport == "MLB":
+        return ("runs", "opp_runs")
+    if sport == "NHL":
+        return ("goals", "opp_goals")
+    return ("pts", "opp_pts")
+
+
+@lru_cache(maxsize=8)
 def team_games(sport: str, seasons: tuple[int, ...]) -> pd.DataFrame:
-    if sport == "WNBA":
-        return _wnba_team_games(seasons)
+    if sport in ("WNBA", "NBA"):
+        return _basketball_team_games(sport, seasons)
     if sport in ("NFL", "NCAAF"):
         return _football_team_games(sport, seasons)
+    if sport == "NHL":
+        return _nhl_team_games(seasons)
     return _mlb_team_games(seasons)
+
+
+def _nhl_team_games(seasons) -> pd.DataFrame:
+    """One row per team-game from the committed skater + goalie box logs:
+    goals/shots(SOG)/blocks/hits/pim from skaters, saves/shots-against/save%
+    from the goalie, and the opponent's goals/shots joined as 'allowed'."""
+    df = history.player_games("nhl", seasons=list(seasons))
+    if df.empty:
+        return pd.DataFrame()
+    df = df.copy()
+    df["game_id"] = df["game_id"].astype(str)
+    is_goalie = df["saves"].notna()
+    sk = df[~is_goalie]
+    gk = df[is_goalie]
+    g = sk.groupby(["game_id", "team"], as_index=False).agg(
+        date=("date", "first"), season=("season", "first"),
+        opp=("opponent", "first"), is_home=("is_home", "first"),
+        goals=("goals", "sum"), shots=("shots", "sum"),
+        blocks=("blocks", "sum"), hits=("hits", "sum"), pim=("pim", "sum"))
+    if not gk.empty:
+        gg = gk.groupby(["game_id", "team"], as_index=False).agg(
+            saves=("saves", "sum"), shots_against=("shots_against", "sum"),
+            goals_against=("goals_against", "sum"))
+        gg["save_pct"] = (gg["saves"] / gg["shots_against"].replace(0, np.nan))
+        g = g.merge(gg, on=["game_id", "team"], how="left")
+    g["team"] = g["team"].map(lambda t: teams.canon("NHL", t))
+    g["opp"] = g["opp"].map(lambda t: teams.canon("NHL", t))
+    # drop non-NHL entries (international sides in 4 Nations / exhibitions)
+    real = teams.keys("NHL")
+    g = g[g["team"].isin(real) & g["opp"].isin(real)]
+    opp = g[["game_id", "team", "goals", "shots"]].rename(
+        columns={"team": "opp_team", "goals": "opp_goals", "shots": "opp_shots"})
+    merged = g.merge(opp, left_on=["game_id", "opp"],
+                     right_on=["game_id", "opp_team"], how="left")
+    return merged.sort_values("date")
 
 
 def _football_team_games(sport: str, seasons) -> pd.DataFrame:
@@ -142,8 +205,8 @@ def _football_team_games(sport: str, seasons) -> pd.DataFrame:
     return df.sort_values("date")
 
 
-def _wnba_team_games(seasons) -> pd.DataFrame:
-    df = history.player_games("wnba", seasons=list(seasons))
+def _basketball_team_games(sport: str, seasons) -> pd.DataFrame:
+    df = history.player_games(sport.lower(), seasons=list(seasons))
     if df.empty:
         return pd.DataFrame()
     g = df.groupby(["game_id", "team"], as_index=False).agg(
@@ -165,7 +228,7 @@ def _wnba_team_games(seasons) -> pd.DataFrame:
                  "fg3_pct": "opp_fg3_pct", "reb": "opp_reb"})
     merged = g.merge(opp, left_on=["game_id", "opp"], right_on=["game_id", "opp_team"],
                      how="left")
-    merged["team"] = merged["team"].map(lambda t: teams.canon("WNBA", t))
+    merged["team"] = merged["team"].map(lambda t: teams.canon(sport, t))
     return merged.sort_values("date")
 
 
@@ -289,7 +352,7 @@ def _directions(sport: str) -> dict:
 def _season_winpct(sport: str, df: pd.DataFrame, asof: str) -> dict:
     """{team: current-season win%} as of a date — the input to strength of
     schedule (how good were the teams you played)."""
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     # strict < asof: never let the as-of date's own games into the strength
     # estimate (matches _window; avoids leaking same-day results when grading)
     cut = df[df["date"] < asof] if "date" in df.columns else df
@@ -322,7 +385,7 @@ def elo_ratings(sport: str, df: pd.DataFrame, asof: str) -> dict:
         cfg = (EloConfig(k=sp.elo_k, home_edge=sp.elo_home_edge,
                          season_regress=sp.elo_regress) if sp else EloConfig())
         elo = Elo(cfg)
-        fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+        fc, oc = _score_cols(sport)
         if fc not in df.columns or "opp" not in df.columns:
             return {}
         home = df[(df["is_home"]) & (df["date"] < asof)].sort_values("date")
@@ -344,7 +407,7 @@ def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str,
     scoring margin over the window."""
     if ratings:
         return _rank_map(ratings, higher_better=True)
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     if fc not in df.columns or oc not in df.columns:
         return {}
     n = None if window == "season" else int(window[1:])
@@ -471,7 +534,7 @@ def team_form(sport: str, df: pd.DataFrame, team: str, asof: str,
     d = _window(df, team, asof)
     if d.empty:
         return {}
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     if fc not in d.columns or oc not in d.columns:
         return {}
     cur = d[d["season"] == d["season"].max()]

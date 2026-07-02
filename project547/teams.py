@@ -63,7 +63,79 @@ _WNBA = {
     "WSH": ["Washington Mystics", "Mystics", "WSH", "WAS"],
 }
 
-_MAPS = {"MLB": _MLB, "WNBA": _WNBA}
+# canonical key = ESPN abbreviation (what our slates/box logs use); every other
+# representation (full name, nickname, alt abbrevs) resolves to it. NHL box logs
+# store full names while the slate uses abbrevs, so the full names are essential.
+_NHL = {
+    "ANA": ["Anaheim Ducks", "Ducks", "ANA"],
+    "BOS": ["Boston Bruins", "Bruins", "BOS"],
+    "BUF": ["Buffalo Sabres", "Sabres", "BUF"],
+    "CGY": ["Calgary Flames", "Flames", "CGY"],
+    "CAR": ["Carolina Hurricanes", "Hurricanes", "CAR"],
+    "CHI": ["Chicago Blackhawks", "Blackhawks", "CHI"],
+    "COL": ["Colorado Avalanche", "Avalanche", "COL"],
+    "CBJ": ["Columbus Blue Jackets", "Blue Jackets", "CBJ"],
+    "DAL": ["Dallas Stars", "Stars", "DAL"],
+    "DET": ["Detroit Red Wings", "Red Wings", "DET"],
+    "EDM": ["Edmonton Oilers", "Oilers", "EDM"],
+    "FLA": ["Florida Panthers", "Panthers", "FLA"],
+    "LA": ["Los Angeles Kings", "Kings", "LA", "LAK"],
+    "MIN": ["Minnesota Wild", "Wild", "MIN"],
+    "MTL": ["Montreal Canadiens", "Montréal Canadiens", "Canadiens", "MTL"],
+    "NSH": ["Nashville Predators", "Predators", "NSH"],
+    "NJ": ["New Jersey Devils", "Devils", "NJ", "NJD"],
+    "NYI": ["New York Islanders", "Islanders", "NYI"],
+    "NYR": ["New York Rangers", "Rangers", "NYR"],
+    "OTT": ["Ottawa Senators", "Senators", "OTT"],
+    "PHI": ["Philadelphia Flyers", "Flyers", "PHI"],
+    "PIT": ["Pittsburgh Penguins", "Penguins", "PIT"],
+    "SJ": ["San Jose Sharks", "Sharks", "SJ", "SJS"],
+    "SEA": ["Seattle Kraken", "Kraken", "SEA"],
+    "STL": ["St. Louis Blues", "Blues", "STL"],
+    "TB": ["Tampa Bay Lightning", "Lightning", "TB", "TBL"],
+    "TOR": ["Toronto Maple Leafs", "Maple Leafs", "TOR"],
+    "UTAH": ["Utah Hockey Club", "Utah Mammoth", "Mammoth", "UTAH", "UTA"],
+    "VAN": ["Vancouver Canucks", "Canucks", "VAN"],
+    "VGK": ["Vegas Golden Knights", "Golden Knights", "VGK", "VEG"],
+    "WSH": ["Washington Capitals", "Capitals", "WSH", "WAS"],
+    "WPG": ["Winnipeg Jets", "Jets", "WPG", "WIN"],
+    "ARI": ["Arizona Coyotes", "Coyotes", "ARI", "PHX"],
+}
+
+_NBA = {
+    "ATL": ["Atlanta Hawks", "Hawks", "ATL"],
+    "BOS": ["Boston Celtics", "Celtics", "BOS"],
+    "BKN": ["Brooklyn Nets", "Nets", "BKN", "BRK"],
+    "CHA": ["Charlotte Hornets", "Hornets", "CHA", "CHO"],
+    "CHI": ["Chicago Bulls", "Bulls", "CHI"],
+    "CLE": ["Cleveland Cavaliers", "Cavaliers", "CLE"],
+    "DAL": ["Dallas Mavericks", "Mavericks", "DAL"],
+    "DEN": ["Denver Nuggets", "Nuggets", "DEN"],
+    "DET": ["Detroit Pistons", "Pistons", "DET"],
+    "GS": ["Golden State Warriors", "Warriors", "GS", "GSW"],
+    "HOU": ["Houston Rockets", "Rockets", "HOU"],
+    "IND": ["Indiana Pacers", "Pacers", "IND"],
+    "LAC": ["LA Clippers", "Los Angeles Clippers", "Clippers", "LAC"],
+    "LAL": ["Los Angeles Lakers", "Lakers", "LAL"],
+    "MEM": ["Memphis Grizzlies", "Grizzlies", "MEM"],
+    "MIA": ["Miami Heat", "Heat", "MIA"],
+    "MIL": ["Milwaukee Bucks", "Bucks", "MIL"],
+    "MIN": ["Minnesota Timberwolves", "Timberwolves", "MIN"],
+    "NO": ["New Orleans Pelicans", "Pelicans", "NO", "NOP"],
+    "NY": ["New York Knicks", "Knicks", "NY", "NYK"],
+    "OKC": ["Oklahoma City Thunder", "Thunder", "OKC"],
+    "ORL": ["Orlando Magic", "Magic", "ORL"],
+    "PHI": ["Philadelphia 76ers", "76ers", "Sixers", "PHI"],
+    "PHX": ["Phoenix Suns", "Suns", "PHX", "PHO"],
+    "POR": ["Portland Trail Blazers", "Trail Blazers", "POR"],
+    "SAC": ["Sacramento Kings", "Kings", "SAC"],
+    "SA": ["San Antonio Spurs", "Spurs", "SA", "SAS"],
+    "TOR": ["Toronto Raptors", "Raptors", "TOR"],
+    "UTAH": ["Utah Jazz", "Jazz", "UTAH", "UTA"],
+    "WSH": ["Washington Wizards", "Wizards", "WSH", "WAS"],
+}
+
+_MAPS = {"MLB": _MLB, "WNBA": _WNBA, "NHL": _NHL, "NBA": _NBA}
 
 
 @lru_cache(maxsize=8)
@@ -79,3 +151,9 @@ def canon(sport: str, name: str) -> str:
     if not name:
         return ""
     return _index(sport).get(normalize(name), normalize(name))
+
+
+def keys(sport: str) -> set[str]:
+    """Canonical keys for a sport (its real teams) — used to filter out
+    non-league entries like international sides in NHL box logs."""
+    return set(_MAPS.get(sport, {}).keys())
