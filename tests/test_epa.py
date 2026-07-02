@@ -78,6 +78,49 @@ def test_net_epa_weights_offense_more():
     assert t.net_epa == pytest.approx((1.6 * 0.2) / 2.6, abs=1e-9)
 
 
+def _passer_plays(passer_strength, def_strength, n=60, cpoe=None):
+    """Synthetic dropbacks: each passer faces every defense; play EPA is
+    passer_strength - def_strength. Optional constant CPOE per passer."""
+    out = []
+    for q, qs in passer_strength.items():
+        for d, ds in def_strength.items():
+            for _ in range(n):
+                rec = {"passer": q, "defteam": d, "epa": qs - ds}
+                if cpoe is not None:
+                    rec["cpoe"] = cpoe.get(q, 0.0)
+                out.append(rec)
+    return out
+
+
+def test_passer_ratings_recover_and_opponent_adjust():
+    # Q1 faces only the elite defense D1; Q2 only the leaky D2. Raw means would
+    # rank Q2 above Q1, but the opponent adjustment must recover Q1 >= Q2.
+    passers = {"Q1": 0.20, "Q2": 0.20, "Q3": -0.20}
+    defs = {"D1": 0.30, "D2": -0.10, "D3": 0.0}
+    r = epa.passer_epa_ratings(_passer_plays(passers, defs), lam=1.0)
+    assert set(r) == {"Q1", "Q2", "Q3"}
+    assert r["Q1"].epa > r["Q3"].epa            # true ordering recovered
+    assert r["Q1"].epa == pytest.approx(r["Q2"].epa, abs=1e-6)  # equal true skill
+
+
+def test_passer_cpoe_shrinks_by_dropbacks():
+    passers = {"Q1": 0.1, "Q2": 0.1}
+    defs = {"D1": 0.0}
+    # Q1 has many dropbacks, Q2 few — same raw CPOE=10 shrinks less for Q1.
+    big = _passer_plays({"Q1": 0.1}, defs, n=400, cpoe={"Q1": 10.0})
+    small = _passer_plays({"Q2": 0.1}, defs, n=5, cpoe={"Q2": 10.0})
+    r = epa.passer_epa_ratings(big + small, lam=1.0, cpoe_prior=200.0)
+    assert r["Q1"].cpoe > r["Q2"].cpoe > 0.0
+
+
+def test_passer_ratings_shrink_with_large_lambda():
+    passers = {"Q1": 0.4, "Q2": -0.4}
+    defs = {"D1": 0.0}
+    weak = epa.passer_epa_ratings(_passer_plays(passers, defs), lam=1.0)
+    strong = epa.passer_epa_ratings(_passer_plays(passers, defs), lam=10_000.0)
+    assert abs(strong["Q1"].epa) < abs(weak["Q1"].epa)
+
+
 def test_epa_to_points_and_margin():
     assert epa.epa_to_points(0.1, "nfl") == pytest.approx(6.4, abs=1e-6)
     home = epa.TeamEPA("H", off_epa=0.15, def_epa=-0.05, off_sr=0, def_sr=0, plays=400)

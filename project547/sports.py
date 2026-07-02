@@ -131,8 +131,14 @@ SPORTS: dict[str, Sport] = {
         rest_coeff=0.5,
     ),
     "NCAAF": Sport(
+        # league_ppg recentred 28.0 -> 27.0: the modern era (2021-25 committed
+        # backfill, n=1110) averages ~26.4 pts/team (mean total 52.8); 28.0 was
+        # anchored to older, higher-scoring seasons and systematically over-
+        # projected totals ~2-3 pts (model 56.0 vs actual ~53). sigma_total 16.5
+        # is adequate (backtest total residual RMSE 15.5). NCAAF has no committed
+        # closing lines, so this is a projection-accuracy fix, not a betting claim.
         key="NCAAF", espn_path="football/college-football", model="normal",
-        league_ppg=28.0, hfa=2.7, sigma_margin=16.0, sigma_total=16.5,
+        league_ppg=27.0, hfa=2.7, sigma_margin=16.0, sigma_total=16.5,
         in_season_months=(8, 9, 10, 11, 12, 1), form_days=140,
         espn_params={"groups": 80, "limit": 400},  # FBS only
         score_method="multiplicative",

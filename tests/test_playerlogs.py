@@ -4,6 +4,30 @@ from app import ui
 from project547 import playerlogs as pl
 
 
+def test_logs_drop_dnp_and_low_minutes(monkeypatch):
+    # basketball logs with a DNP and a garbage-time cameo must be excluded so a
+    # non-appearance isn't counted as "scored 0" (train/serve skew vs the
+    # prop-model validators, which exclude them).
+    df = pd.DataFrame([
+        {"player_name": "Test Player", "date": "2026-06-01", "opponent": "X",
+         "season": 2026, "minutes": 30, "did_not_play": False, "points": 20},
+        {"player_name": "Test Player", "date": "2026-06-03", "opponent": "Y",
+         "season": 2026, "minutes": 0, "did_not_play": True, "points": 0},
+        {"player_name": "Test Player", "date": "2026-06-05", "opponent": "Z",
+         "season": 2026, "minutes": 2, "did_not_play": False, "points": 0},
+        {"player_name": "Test Player", "date": "2026-06-07", "opponent": "W",
+         "season": 2026, "minutes": 28, "did_not_play": False, "points": 14},
+    ])
+    monkeypatch.setattr(pl.history, "player_games",
+                        lambda sk, seasons=None: df.copy())
+    monkeypatch.setattr(pl, "FORWARD_DIR", pl.FORWARD_DIR / "does-not-exist")
+    pl._logs.cache_clear()
+    series = pl.recent_series("WNBA", "Test Player", "points", n=10, season=2026)
+    pl._logs.cache_clear()
+    vals = [p["value"] for p in series]
+    assert vals == [20.0, 14.0]     # DNP and 2-minute cameo dropped
+
+
 def test_market_to_stat():
     assert pl.market_to_stat("pitcher_strikeouts") == ("strikeOuts", "P")
     assert pl.market_to_stat("batter_total_bases") == ("totalBases", "B")

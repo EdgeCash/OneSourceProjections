@@ -148,6 +148,72 @@ def team_epa_ratings(plays: list[dict], *, league: str = "nfl",
     return out
 
 
+@dataclass(frozen=True)
+class PasserEPA:
+    passer: str
+    epa: float          # opponent-adjusted pass EPA/dropback over league average
+    cpoe: float         # attempt-shrunk completion % over expected (0 if unavailable)
+    dropbacks: int      # dropbacks backing the estimate
+
+
+def passer_epa_ratings(plays: list[dict], *, lam: float = 60.0,
+                       cpoe_prior: float = 200.0) -> dict[str, PasserEPA]:
+    """Opponent-adjusted per-passer pass-EPA/dropback (the QB signal research
+    calls the #1 NFL lever), plus attempt-shrunk CPOE.
+
+    Each play dict needs ``passer`` (QB id), ``defteam`` (defense) and ``epa``;
+    optional ``cpoe``. Same ridge as team ratings but the offensive unit is the
+    *passer*, so a QB's rating is separated from both his defense faced and (via
+    the ridge shrinkage) his own small samples — early-season / backup QBs are
+    pulled toward league average rather than exploding. Walk-forward safe: pass
+    only dropbacks that occurred before the projection date.
+
+    ``lam`` (higher than the team default) reflects that a single QB has far
+    fewer plays than a team; ``cpoe_prior`` shrinks CPOE toward 0 by dropbacks.
+    """
+    passers = sorted({p["passer"] for p in plays})
+    defs = sorted({p["defteam"] for p in plays})
+    if not passers or not defs:
+        return {}
+    pidx = {t: i for i, t in enumerate(passers)}
+    didx = {t: i for i, t in enumerate(defs)}
+    n = len(plays)
+    # Reuse the two-way ridge: "offense" index space is passers, "defense" is
+    # defenses. n_teams must cover both, so pad to max and slice back.
+    off_i = np.fromiter((pidx[p["passer"]] for p in plays), dtype=int, count=n)
+    def_i = np.fromiter((didx[p["defteam"]] for p in plays), dtype=int, count=n)
+    epa = np.fromiter((float(p["epa"]) for p in plays), dtype=float, count=n)
+    # Independent dummy spaces (passers vs defenses) — build the design directly.
+    npass, ndef = len(passers), len(defs)
+    p_cols = 1 + npass + ndef
+    X = np.zeros((n, p_cols))
+    X[:, 0] = 1.0
+    rows = np.arange(n)
+    X[rows, 1 + off_i] = 1.0
+    X[rows, 1 + npass + def_i] = -1.0
+    pen = np.full(p_cols, lam)
+    pen[0] = 0.0
+    coef = np.linalg.solve(X.T @ X + np.diag(pen), X.T @ epa)
+    pass_eff = coef[1:1 + npass]
+    counts = np.bincount(off_i, minlength=npass)
+    # attempt-shrunk mean CPOE per passer
+    cpoe_sum: dict[int, float] = {}
+    cpoe_n: dict[int, int] = {}
+    for p in plays:
+        c = p.get("cpoe")
+        if c is not None and not (isinstance(c, float) and np.isnan(c)):
+            i = pidx[p["passer"]]
+            cpoe_sum[i] = cpoe_sum.get(i, 0.0) + float(c)
+            cpoe_n[i] = cpoe_n.get(i, 0) + 1
+    out: dict[str, PasserEPA] = {}
+    for t, i in pidx.items():
+        cn = cpoe_n.get(i, 0)
+        cpoe = (cpoe_sum.get(i, 0.0) / cn) * (cn / (cn + cpoe_prior)) if cn else 0.0
+        out[t] = PasserEPA(passer=t, epa=round(float(pass_eff[i]), 4),
+                           cpoe=round(cpoe, 4), dropbacks=int(counts[i]))
+    return out
+
+
 def epa_to_points(epa_per_play_diff: float, league: str = "nfl") -> float:
     """Convert a net EPA/play advantage into an approximate points margin,
     using league plays-per-game. A 0.10 EPA/play edge over a full NFL game

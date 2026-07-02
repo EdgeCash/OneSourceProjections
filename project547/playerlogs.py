@@ -21,6 +21,7 @@ from .config import REPO_ROOT
 from .names import normalize
 
 FORWARD_DIR = REPO_ROOT / "data" / "history" / "playerlogs"
+MIN_PLAY_MINUTES = 5   # basketball: drop DNP / garbage-time cameos from the logs
 
 # prop market -> (box-score stat key, role filter or None)
 MARKET_STAT = {
@@ -44,6 +45,15 @@ MARKET_STAT = {
     "blocks": ("blocks", None),
     "pts+reb+ast": ("pra", None),
     "pra": ("pra", None),
+    # NHL skater (flat columns; assists/points/blocks share the basketball keys
+    # above since the column names match — only the hockey-specific ones here).
+    "shots on goal": ("shots", None),
+    "shots": ("shots", None),
+    "sog": ("shots", None),
+    "goals": ("goals", None),
+    "blocked shots": ("blocks", None),
+    "saves": ("saves", None),
+    "goalie saves": ("saves", None),
     # Football — flat columns matching the committed backfill schema
     # (data/history/backfill/<nfl|ncaaf>/<year>/player_games.jsonl.gz).
     "passing yards": ("pass_yards", None),
@@ -97,6 +107,14 @@ def _logs(sport: str, seasons: tuple[int, ...]) -> pd.DataFrame:
     if not frames:
         return pd.DataFrame(columns=["norm", "date", "season", "opp"])
     out = pd.concat(frames, ignore_index=True)
+    # Drop non-appearances so a DNP isn't counted as "scored 0" — that biases
+    # every rate/hit-rate low and creates a train/serve skew vs the prop-model
+    # validators, which exclude them. Sport-agnostic: only filters on columns
+    # that exist (basketball has did_not_play/minutes; MLB/NHL don't, untouched).
+    if "did_not_play" in out.columns:
+        out = out[~(out["did_not_play"] == True)]  # noqa: E712
+    if "minutes" in out.columns:
+        out = out[out["minutes"].isna() | (out["minutes"] >= MIN_PLAY_MINUTES)]
     out["date"] = pd.to_datetime(out["date"])
     out = out.sort_values("date").drop_duplicates(["norm", "date"], keep="last")
     return out
@@ -114,6 +132,10 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
         base["season"] = df["season"]
     else:
         base["season"] = pd.to_datetime(df["date"]).dt.year
+    # appearance flags (basketball) so _logs can drop non-appearances
+    for flag in ("minutes", "did_not_play"):
+        if flag in df.columns:
+            base[flag] = df[flag]
     for key in ("strikeOuts", "hits", "totalBases", "homeRuns",
                 "baseOnBalls", "earnedRuns", "inningsPitched"):
         if "stats" in df.columns:          # backfill: nested stats dict
@@ -126,7 +148,9 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
         base["outs"] = (pd.to_numeric(base["inningsPitched"], errors="coerce")
                         * 3).round()
     for col in ("points", "rebounds", "assists", "three_made", "steals",
-                "blocks", "pra"):
+                "blocks", "pra",
+                "shots", "goals", "hits", "pim",    # NHL skater stats
+                "saves", "shots_against", "goals_against"):  # NHL goalie stats
         if col in df.columns:
             base[col] = df[col]
     # Football flat columns (backfill + forward store share these names)
