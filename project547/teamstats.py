@@ -25,9 +25,14 @@ from .names import normalize
 # "allowed" stat; def_col is None where we have no allowed version.
 WNBA_PAIRS = [
     ("PPG", "pts", "opp_pts", "high"),
+    ("Off Rtg", "off_rtg", "opp_off_rtg", "high"),   # pts per 100 poss (pace-adj)
+    ("eFG%", "efg", "opp_efg", "high"),
     ("2PT%", "fg2_pct", "opp_fg2_pct", "high"),
     ("3PT%", "fg3_pct", "opp_fg3_pct", "high"),
     ("FT%", "ft_pct", None, "high"),
+    ("Pace", "pace", None, "high"),
+    ("TS%", "ts", None, "high"),
+    ("OREB%", "oreb_pct", None, "high"),
     ("REB", "reb", "opp_reb", "high"),
     ("AST", "ast", None, "high"),
     ("BLK+STL", "stocks", None, "high"),
@@ -78,8 +83,8 @@ STAT_SPECS = {
 # rather than the primary scoring offense-vs-defense table — mirrors the way
 # the reference cards split scoring from rebounding/ball-control rows.
 SUPPORTING_LABELS = {
-    "WNBA": {"REB", "AST", "BLK+STL", "TOV"},
-    "NBA": {"REB", "AST", "BLK+STL", "TOV"},
+    "WNBA": {"Pace", "TS%", "OREB%", "REB", "AST", "BLK+STL", "TOV"},
+    "NBA": {"Pace", "TS%", "OREB%", "REB", "AST", "BLK+STL", "TOV"},
     "NFL": {"Pass TD/G", "Giveaways/G"},
     "NCAAF": {"Pass TD/G", "Giveaways/G"},
     "MLB": set(),  # MLB uses the game-trends section instead
@@ -96,6 +101,9 @@ DIRECTIONS = {
     "pts": "high", "fg2_pct": "high", "fg3_pct": "high", "ft_pct": "high",
     "reb": "high", "ast": "high", "stocks": "high", "runs": "high",
     "hits": "high", "ba": "high", "hr": "high", "f1": "high",
+    # basketball advanced
+    "off_rtg": "high", "efg": "high", "pace": "high", "ts": "high",
+    "oreb_pct": "high", "opp_off_rtg": "low", "opp_efg": "low",
     # offense (low good)
     "tov": "low", "k": "low",
     # defense / allowed (low good) + pitcher K (high good)
@@ -209,25 +217,46 @@ def _basketball_team_games(sport: str, seasons) -> pd.DataFrame:
     df = history.player_games(sport.lower(), seasons=list(seasons))
     if df.empty:
         return pd.DataFrame()
-    g = df.groupby(["game_id", "team"], as_index=False).agg(
+    _has = lambda c: c in df.columns  # noqa: E731
+    aggs = dict(
         date=("date", "first"), season=("season", "first"),
         opp=("opponent", "first"), is_home=("is_home", "first"),
         pts=("points", "sum"), fgm=("fg_made", "sum"), fga=("fg_att", "sum"),
         tpm=("three_made", "sum"), tpa=("three_att", "sum"),
         ftm=("ft_made", "sum"), fta=("ft_att", "sum"),
         reb=("rebounds", "sum"), ast=("assists", "sum"),
-        stl=("steals", "sum"), blk=("blocks", "sum"), tov=("turnovers", "sum"),
-    )
+        stl=("steals", "sum"), blk=("blocks", "sum"), tov=("turnovers", "sum"))
+    if _has("oreb"):
+        aggs["oreb"] = ("oreb", "sum")
+    if _has("dreb"):
+        aggs["dreb"] = ("dreb", "sum")
+    g = df.groupby(["game_id", "team"], as_index=False).agg(**aggs)
     g["fg2_pct"] = ((g["fgm"] - g["tpm"]) / (g["fga"] - g["tpa"]).replace(0, np.nan))
     g["fg3_pct"] = g["tpm"] / g["tpa"].replace(0, np.nan)
     g["ft_pct"] = g["ftm"] / g["fta"].replace(0, np.nan)
     g["stocks"] = g["stl"] + g["blk"]
+    # Advanced (derived): possessions/pace, efficiency (pts per 100), eFG%, TS%.
+    # Poss ~= FGA - OREB + TOV + 0.44*FTA (the standard estimate).
+    oreb = g["oreb"] if "oreb" in g.columns else 0
+    g["poss"] = g["fga"] - oreb + g["tov"] + 0.44 * g["fta"]
+    g["pace"] = g["poss"]                                   # per-game possessions
+    g["off_rtg"] = g["pts"] / g["poss"].replace(0, np.nan) * 100
+    g["efg"] = (g["fgm"] + 0.5 * g["tpm"]) / g["fga"].replace(0, np.nan)
+    g["ts"] = g["pts"] / (2 * (g["fga"] + 0.44 * g["fta"])).replace(0, np.nan)
     # join opponent's offense in the same game as this team's "allowed"
-    opp = g[["game_id", "team", "pts", "fg2_pct", "fg3_pct", "reb"]].rename(
-        columns={"team": "opp_team", "pts": "opp_pts", "fg2_pct": "opp_fg2_pct",
-                 "fg3_pct": "opp_fg3_pct", "reb": "opp_reb"})
+    cols = ["game_id", "team", "pts", "fg2_pct", "fg3_pct", "reb", "off_rtg", "efg"]
+    if "dreb" in g.columns:
+        cols.append("dreb")
+    opp = g[cols].rename(columns={
+        "team": "opp_team", "pts": "opp_pts", "fg2_pct": "opp_fg2_pct",
+        "fg3_pct": "opp_fg3_pct", "reb": "opp_reb", "off_rtg": "opp_off_rtg",
+        "efg": "opp_efg", "dreb": "opp_dreb"})
     merged = g.merge(opp, left_on=["game_id", "opp"], right_on=["game_id", "opp_team"],
                      how="left")
+    # OREB% needs the opponent's DREB from the same game
+    if "oreb" in merged.columns and "opp_dreb" in merged.columns:
+        merged["oreb_pct"] = (merged["oreb"]
+                              / (merged["oreb"] + merged["opp_dreb"]).replace(0, np.nan))
     merged["team"] = merged["team"].map(lambda t: teams.canon(sport, t))
     return merged.sort_values("date")
 
