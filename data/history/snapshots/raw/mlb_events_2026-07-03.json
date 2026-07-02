@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99518,
+  "sr_id": "ac586d37-ad49-46d1-b608-8f3c2da5ea23",
+  "sport": "MLB",
+  "scheduled": "2026-07-03 20:05:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CHC",
+  "visitor": "STL",
+  "link": "/mlb/matchups/chicago-cubs-vs-st-louis-cardinals/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7275",
+    "name": "David Peterson",
+    "link": "/mlb/props/david-peterson/",
+    "player": {
+     "short_name": "D. Peterson",
+     "first_name": "David",
+     "last_name": "Peterson",
+     "image": "https://images.fantasypros.com/images/players/mlb/7275/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "david-peterson",
+     "jersey_number": 19
+    }
+   },
+   "visitor_probable": {
+    "id": "45747",
+    "name": "Andre Pallante",
+    "link": "/mlb/props/andre-pallante/",
+    "player": {
+     "short_name": "A. Pallante",
+     "first_name": "Andre",
+     "last_name": "Pallante",
+     "image": "https://images.fantasypros.com/images/players/mlb/45747/headshot/210x210.webp",
+     "position": "SP",
+     "team": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "andre-pallante",
+     "jersey_number": 53
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CHC",
+   "season": "2025",
+   "split": "A",
+   "r": "0.898",
+   "1b": "0.994",
+   "2b": "0.876",
+   "3b": "1.210",
+   "hr": "0.883",
+   "name": "Wrigley Field"
+  },
+  "venue": {
+   "name": "Wrigley Field",
+   "address": "1060 West Addison Street",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60613",
+   "surface": "grass",
+   "capacity": 41363,
+   "stadium_type": "outdoor",
+   "id": "53f8eb0d-a361-4a7a-930b-2f8735ea0698"
+  },
+  "participants": [
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 49,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "STL",
+    "name": "Cardinals",
+    "link": "/mlb/teams/st-louis-cardinals/",
+    "team": {
+     "city": "St. Louis",
+     "abbreviation": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "st-louis-cardinals",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 88,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "SW",
+   "forecast_wind_degree": 228,
+   "forecast_rain_chance": 40,
+   "forecast_icon": "Cloudy",
+   "forecast_pressure": 1015,
+   "forecast_humidity": 0.66
+  },
+  "broadcasts": [
+   {
+    "network": "MARQ",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 100100,
+  "sr_id": "e49ad246-18a1-4448-adf3-66c004a4b44b",
+  "sport": "MLB",
+  "scheduled": "2026-07-03 22:45:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WSH",
+  "visitor": "PIT",
+  "link": "/mlb/matchups/pittsburgh-pirates-vs-washington-nationals/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7531",
+    "name": "Foster Griffin",
+    "link": "/mlb/props/foster-griffin/",
+    "player": {
+     "short_name": "F. Griffin",
+     "first_name": "Foster",
+     "last_name": "Griffin",
+     "image": "https://images.fantasypros.com/images/players/mlb/7531/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "foster-griffin",
+     "jersey_number": 22
+    }
+   },
+   "visitor_probable": {
+    "id": "6477",
+    "name": "Mitch Keller",
+    "link": "/mlb/props/mitch-keller/",
+    "player": {
+     "short_name": "M. Keller",
+     "first_name": "Mitch",
+     "last_name": "Keller",
+     "image": "https://images.fantasypros.com/images/players/mlb/6477/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "mitch-keller",
+     "jersey_number": 23
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "WSH",
+   "season": "2025",
+   "split": "A",
+   "r": "1.011",
+   "1b": "0.976",
+   "2b": "1.004",
+   "3b": "0.889",
+   "hr": "1.054",
+   "name": "Nationals Park"
+  },
+  "venue": {
+   "name": "Nationals Park",
+   "address": "1500 South Capitol Street SE",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20003",
+   "surface": "grass",
+   "capacity": 41376,
+   "stadium_type": "outdoor",
+   "id": "bb062fb1-e268-412e-b3d2-2ddb6acc1822"
+  },
+  "participants": [
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 45,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "washington-nationals",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 43,
+      "L": 44,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 100,
+   "forecast_wind_speed": 11,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 282,
+   "forecast_rain_chance": 40,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1013,
+   "forecast_humidity": 0.42
+  },
+  "broadcasts": [
+   {
+    "network": "SportsNet PT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
