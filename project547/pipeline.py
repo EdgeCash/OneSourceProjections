@@ -17,7 +17,7 @@ import pandas as pd
 
 from . import (config, internal_stats, odds, parks, platoon, playerlogs, teams,
                umpires, weather)
-from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
+from .clients import bettingpros, espn, fantasypros, mlb_statsapi, oddsapi, statcast
 from .models import game as game_model
 from .models import generic
 from .models import nba_props
@@ -1045,6 +1045,175 @@ def project_tennis_matches(sport_key: str, date: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _attach_tennis_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
+    """Price the tennis match model against The Odds API two-way (player) money
+    lines: model win prob vs the de-vigged market -> EV per side + Kelly. Columns
+    stay None when no odds cover the match (the Odds API only carries the live
+    tournaments). Market label 'tennis_moneyline' so the downstream edge gate
+    treats it as its own market (new -> PROBATION until it proves CLV)."""
+    for c in ("p1_price", "p2_price", "p1_ev", "p2_ev", "kelly", "market"):
+        if c not in df.columns:
+            df[c] = None
+    if df.empty:
+        return df
+    try:
+        events = oddsapi.game_odds(sport_key, markets="h2h")
+    except Exception as e:
+        log.warning("%s Odds API unavailable: %s", sport_key, e)
+        events = []
+    if not events:
+        return df
+    price: dict[str, float] = {}      # normalized player name -> best (longest) price
+    for r in oddsapi.normalize(events):
+        if r["market"] != "moneyline" or r["price"] is None:
+            continue
+        nm = normalize(r["name"])
+        if nm and (nm not in price or r["price"] > price[nm]):
+            price[nm] = r["price"]
+    shrink = SPORTS[sport_key].market_shrink
+
+    def _row(row):
+        a = price.get(normalize(row["player1"]))
+        b = price.get(normalize(row["player2"]))
+        if a is None and b is None:
+            return pd.Series({})
+        ev = _market_eval(row["player1_win_prob"], a, b, shrink=shrink)
+        best = max([v for v in (ev["ev_a"], ev["ev_b"]) if v is not None],
+                   default=None)
+        kelly = None
+        if best is not None and best > 0:
+            p1_side = best == ev["ev_a"]
+            side_odds = a if p1_side else b
+            side_p = ev["p_used"] if p1_side else 1 - ev["p_used"]
+            kelly = round(odds.kelly_stake(side_p, float(side_odds),
+                                           config.KELLY_FRACTION), 4)
+        return pd.Series({"p1_price": a, "p2_price": b, "p1_ev": ev["ev_a"],
+                          "p2_ev": ev["ev_b"], "kelly": kelly,
+                          "market": "tennis_moneyline"})
+
+    edges = df.apply(_row, axis=1)
+    for c in edges.columns:
+        df[c] = edges[c]
+    return df
+
+
+def _soccer_odds_index(events: list[dict]) -> tuple[dict, dict]:
+    """Best (longest) soccer prices per event keyed by (norm home, norm away):
+    ``(ml, tot)`` where ml={home,draw,away: price} and tot={over,under: price}
+    for the 2.5 line."""
+    ev_ml: dict = {}
+    ev_tot: dict = {}
+    for e in events or []:
+        h, a = normalize(e.get("home_team") or ""), normalize(e.get("away_team") or "")
+        if not h or not a:
+            continue
+        ml: dict = {}
+        tot: dict = {}
+        for bk in e.get("bookmakers", []) or []:
+            for mk in bk.get("markets", []) or []:
+                if mk.get("key") == "h2h":
+                    for oc in mk.get("outcomes", []) or []:
+                        nm, pr = oc.get("name"), oc.get("price")
+                        if pr is None:
+                            continue
+                        side = ("draw" if str(nm).lower() == "draw"
+                                else "home" if normalize(nm) == h
+                                else "away" if normalize(nm) == a else None)
+                        if side and (side not in ml or pr > ml[side]):
+                            ml[side] = pr
+                elif mk.get("key") == "totals":
+                    for oc in mk.get("outcomes", []) or []:
+                        nm = str(oc.get("name") or "").lower()
+                        pr, pt = oc.get("price"), oc.get("point")
+                        if pr is None or pt is None or abs(pt - 2.5) > 1e-6:
+                            continue
+                        side = "over" if "over" in nm else "under" if "under" in nm else None
+                        if side and (side not in tot or pr > tot[side]):
+                            tot[side] = pr
+        if ml:
+            ev_ml[(h, a)] = ml
+        if tot:
+            ev_tot[(h, a)] = tot
+    return ev_ml, ev_tot
+
+
+def _attach_soccer_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
+    """Price the soccer model against The Odds API: 1X2 (three-way, de-vigged and
+    shrunk toward market) and over/under 2.5 goals -> EV per side + best-side
+    Kelly. None where no book covers the match. Markets 'soccer_moneyline' /
+    'soccer_total' for the downstream edge gate."""
+    cols = ("home_ml", "draw_ml", "away_ml", "home_ev", "draw_ev", "away_ev",
+            "over_price", "under_price", "over_ev", "under_ev", "kelly", "market")
+    for c in cols:
+        if c not in df.columns:
+            df[c] = None
+    if df.empty:
+        return df
+    try:
+        events = oddsapi.game_odds(sport_key, markets="h2h,totals")
+    except Exception as e:
+        log.warning("%s Odds API unavailable: %s", sport_key, e)
+        events = []
+    if not events:
+        return df
+    ev_ml, ev_tot = _soccer_odds_index(events)
+    shrink = SPORTS[sport_key].market_shrink
+
+    def _lookup(row, index):
+        h, a = normalize(row["home_team"]), normalize(row["away_team"])
+        if (h, a) in index:
+            return index[(h, a)]
+        for (kh, ka), v in index.items():       # contains fallback (name variants)
+            if (h in kh or kh in h) and (a in ka or ka in a):
+                return v
+        return None
+
+    def _row(row):
+        out: dict = {}
+        ml = _lookup(row, ev_ml)
+        if ml and {"home", "draw", "away"} <= set(ml):
+            fair = odds.fair_multiway({"home": ml["home"], "draw": ml["draw"],
+                                       "away": ml["away"]})
+            if fair:
+                model = {"home": row["home_win_prob"], "draw": row["draw_prob"],
+                         "away": row["away_win_prob"]}
+                blended = {k: odds.blend_toward_market(model[k], fair[k], shrink)
+                           for k in model}
+                s = sum(blended.values()) or 1.0
+                blended = {k: v / s for k, v in blended.items()}
+                for k in ("home", "draw", "away"):
+                    out[f"{k}_ml"] = ml[k]
+                    out[f"{k}_ev"] = round(odds.expected_value(blended[k],
+                                                               float(ml[k])), 4)
+        tot = _lookup(row, ev_tot)
+        if tot and "over" in tot and "under" in tot:
+            ev = _market_eval(row["over_2_5"], tot["over"], tot["under"], shrink=shrink)
+            out["over_price"], out["under_price"] = tot["over"], tot["under"]
+            out["over_ev"], out["under_ev"] = ev["ev_a"], ev["ev_b"]
+        evs = {k: out[k] for k in ("home_ev", "draw_ev", "away_ev", "over_ev",
+                                   "under_ev") if out.get(k) is not None}
+        best_side = max(evs, key=evs.get) if evs else None
+        if best_side and evs[best_side] > 0:
+            price_map = {"home_ev": out.get("home_ml"), "draw_ev": out.get("draw_ml"),
+                         "away_ev": out.get("away_ml"), "over_ev": out.get("over_price"),
+                         "under_ev": out.get("under_price")}
+            side_price = price_map[best_side]
+            p_map = {"home_ev": row["home_win_prob"], "draw_ev": row["draw_prob"],
+                     "away_ev": row["away_win_prob"], "over_ev": row["over_2_5"],
+                     "under_ev": round(1 - row["over_2_5"], 4)}
+            if side_price is not None:
+                out["kelly"] = round(odds.kelly_stake(
+                    p_map[best_side], float(side_price), config.KELLY_FRACTION), 4)
+            out["market"] = ("soccer_total" if best_side in ("over_ev", "under_ev")
+                             else "soccer_moneyline")
+        return pd.Series(out)
+
+    edges = df.apply(_row, axis=1)
+    for c in edges.columns:
+        df[c] = edges[c]
+    return df
+
+
 def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
     if games.empty:
         return games
@@ -1627,13 +1796,15 @@ _TENNIS_SPORTS = {"ATP", "WTA"}
 
 def _run_soccer(sport_key: str, date: str) -> dict:
     games, ge = _safe_step(
-        lambda: project_soccer_games(sport_key, date), "games", sport_key)
+        lambda: _attach_soccer_edges(project_soccer_games(sport_key, date),
+                                     sport_key, date), "games", sport_key)
     return _bundle(games, [], ge, None)
 
 
 def _run_tennis(sport_key: str, date: str) -> dict:
     games, ge = _safe_step(
-        lambda: project_tennis_matches(sport_key, date), "games", sport_key)
+        lambda: _attach_tennis_edges(project_tennis_matches(sport_key, date),
+                                     sport_key, date), "games", sport_key)
     return _bundle(games, [], ge, None)
 
 
