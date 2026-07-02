@@ -160,3 +160,22 @@ def test_football_matchup_ready():
     assert m and {r["stat"] for r in m["away_off_vs_home_def"]} >= {
         "Points/G", "Total Yds/G", "Pass Yds/G", "Rush Yds/G"}
     assert m["home_power_rank"] and m["home_sos_rank"]
+
+
+def test_bullpen_fatigue_levels(monkeypatch):
+    import pandas as pd
+    from project547 import internal_stats as istat
+    daily = pd.DataFrame([
+        {"team_c": "NYY", "date": "2026-05-01", "ip": 3.0},
+        {"team_c": "NYY", "date": "2026-05-02", "ip": 3.0},
+        {"team_c": "BOS", "date": "2026-05-02", "ip": 1.0},
+    ])
+    monkeypatch.setattr(istat, "_reliever_daily", lambda s: daily)
+    # NYY threw on both prior days (6 IP / 2 days) -> heavy
+    hy = istat.bullpen_fatigue(2026, "NYY", "2026-05-03", days=2)
+    assert hy["level"] == "heavy" and hy["ip"] == 6.0
+    # BOS threw 1 IP on one day -> fresh
+    bo = istat.bullpen_fatigue(2026, "BOS", "2026-05-03", days=2)
+    assert bo["level"] == "fresh"
+    # a team with no recent relief work -> empty
+    assert istat.bullpen_fatigue(2026, "LAD", "2026-05-03") == {}

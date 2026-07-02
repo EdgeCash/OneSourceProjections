@@ -97,6 +97,41 @@ def _fip(hr, bb, hbp, k, ip, prior_ip: float) -> float:
 
 
 @lru_cache(maxsize=4)
+@lru_cache(maxsize=4)
+def _reliever_daily(season: int) -> pd.DataFrame:
+    """Per (team, date) relief innings — the input to bullpen-fatigue."""
+    df = _mlb_rows(season)
+    if df.empty:
+        return pd.DataFrame(columns=["team_c", "date", "ip"])
+    rp = df[(df["position"] == "P") & (df["started"] == False)].copy()  # noqa: E712
+    if rp.empty:
+        return pd.DataFrame(columns=["team_c", "date", "ip"])
+    rp["team_c"] = rp["team"].map(lambda t: teams.canon("MLB", str(t)))
+    daily = rp.groupby(["team_c", "date"], as_index=False)["inningsPitched"].sum()
+    return daily.rename(columns={"inningsPitched": "ip"})
+
+
+def bullpen_fatigue(season: int, team: str, asof: str, days: int = 2) -> dict:
+    """How hard a team's bullpen has worked in the ``days`` before ``asof``.
+    Returns {ip, appearances_days, level}: level in
+    'fresh' / 'moderate' / 'heavy' (>= ~4.5 relief IP over 2 days, or work on
+    both prior days, taxes a pen). Empty dict when unknown."""
+    daily = _reliever_daily(season)
+    if daily.empty:
+        return {}
+    tc = teams.canon("MLB", str(team))
+    lo = (pd.to_datetime(asof) - pd.Timedelta(days=days)).strftime("%Y-%m-%d")
+    d = pd.to_datetime(daily["date"], errors="coerce")
+    sub = daily[(daily["team_c"] == tc) & (d < pd.to_datetime(asof)) & (d >= lo)]
+    if sub.empty:
+        return {}
+    ip = round(float(pd.to_numeric(sub["ip"], errors="coerce").sum()), 1)
+    n_days = int(sub["date"].nunique())
+    level = "heavy" if (ip >= 4.5 or n_days >= days) else (
+        "moderate" if ip >= 2.5 else "fresh")
+    return {"ip": ip, "appearances_days": n_days, "level": level}
+
+
 def pitcher_table(season: int) -> pd.DataFrame:
     """Starter rates: Name, norm_name, FIP, K%, IP, GS."""
     df = _mlb_rows(season)

@@ -540,7 +540,18 @@ def matchup(sport: str, home: str, away: str, asof: str,
     elo = elo_ratings(sport, df, asof)  # current strength; {} -> proxy fallback
     pranks = power_ranks(sport, df, asof, window, elo)
     sranks = sos_ranks(sport, df, asof, window, elo)
+    bullpen = {}
+    if sport == "MLB":
+        try:
+            from . import internal_stats
+            season = int(str(asof)[:4])
+            bullpen = {
+                "home_bullpen": internal_stats.bullpen_fatigue(season, home_k, asof),
+                "away_bullpen": internal_stats.bullpen_fatigue(season, away_k, asof)}
+        except Exception:
+            bullpen = {}
     return {
+        **bullpen,
         "home": home, "away": away,
         "window": window, "window_label": WINDOW_LABELS[window],
         "home_form": team_form(sport, df, home_k, asof),

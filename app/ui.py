@@ -2207,6 +2207,12 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
     wx = _weather_txt(g).lstrip(" ·").strip()
     if wx:
         bits.append(wx)
+    # Bullpen fatigue (MLB) — a taxed pen leaks late runs; only surface if notable
+    for tm, key in ((_last(away), "away_bullpen"), (_last(home), "home_bullpen")):
+        bp = matchup.get(key) or {}
+        if bp.get("level") in ("heavy", "moderate"):
+            emoji = "🔴" if bp["level"] == "heavy" else "🟠"
+            bits.append(f"Pen {emoji} <b>{tm} {bp['level']} ({bp['ip']:g} IP L2)</b>")
     bits.append(f"Window <b>{win_label}</b>")
 
     header = (
