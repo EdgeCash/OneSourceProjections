@@ -145,6 +145,14 @@ SPORTS: dict[str, Sport] = {
         # Heavy roster turnover -> regress harder toward the mean each season.
         elo_blend=0.50, elo_k=22.0, elo_home_edge=65.0, elo_regress=0.45,
     ),
+    "ATP": Sport(
+        # Player-vs-player: the team fields below are unused (the tennis path uses
+        # a player-Elo model, models/tennis). Kept in the registry so the slate/
+        # results plumbing and active_sports work. Year-round tour.
+        key="ATP", espn_path="tennis/atp", model="normal",
+        league_ppg=0.0, hfa=0.0, sigma_margin=0.0, sigma_total=0.0,
+        in_season_months=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), form_days=540,
+    ),
     "MLS": Sport(
         key="MLS", espn_path="soccer/usa.1", model="poisson",
         # Goals per team per game (MLS runs ~2.9 total). hfa in goals — home

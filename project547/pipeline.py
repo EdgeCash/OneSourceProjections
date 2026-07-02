@@ -24,6 +24,7 @@ from .models import nba_props
 from .models import nhl_props
 from .models import props as prop_model
 from .models import soccer
+from .models import tennis
 from .models import wnba_props
 from .models.elo import Elo, EloConfig
 from .names import normalize
@@ -1010,6 +1011,40 @@ def project_soccer_games(sport_key: str, date: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def project_tennis_matches(sport_key: str, date: str) -> pd.DataFrame:
+    """Tennis match projections: P(each player wins) from surface-aware player
+    Elo (models/tennis), primed from ESPN match history. Projection-only for now
+    (no odds feed), surfaced and, once priced, gated in PROBATION like any new
+    market."""
+    slate = espn.tennis_matches(sport_key, date, date)
+    slate = [m for m in slate if not m["completed"]]
+    if not slate:
+        return pd.DataFrame()
+    sport = SPORTS[sport_key]
+    start = mlb_statsapi._shift_date(date, -sport.form_days)
+    elo = tennis.TennisElo()
+    try:
+        history = espn.tennis_matches(sport_key, start, date, completed_only=True)
+        for m in sorted(history, key=lambda x: x["date"]):
+            elo.update(m["winner"],
+                       m["player2"] if m["winner"] == m["player1"] else m["player1"],
+                       m.get("surface"))
+    except Exception as e:
+        log.warning("%s Elo history unavailable: %s", sport_key, e)
+    rows = []
+    for m in slate:
+        p1, p2, surf = m["player1"], m["player2"], m.get("surface")
+        p1_win = elo.match_prob(p1, p2, surf)
+        rows.append({
+            "match_id": m["match_id"], "match_time": m["match_time"],
+            "tournament": m["tournament"], "surface": surf,
+            "player1": p1, "player2": p2,
+            "player1_win_prob": p1_win, "player2_win_prob": round(1 - p1_win, 4),
+            "p1_matches": elo.seen(p1), "p2_matches": elo.seen(p2),
+        })
+    return pd.DataFrame(rows)
+
+
 def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
     if games.empty:
         return games
@@ -1587,6 +1622,7 @@ def _run_generic(sport_key: str, date: str, pull_props: bool = True) -> dict:
 # Match-model sports with no shared prop board: projection-only (1X2/totals for
 # soccer, match win prob for tennis), surfaced and gated in PROBATION once priced.
 _SOCCER_SPORTS = {"MLS", "EPL"}
+_TENNIS_SPORTS = {"ATP", "WTA"}
 
 
 def _run_soccer(sport_key: str, date: str) -> dict:
@@ -1595,11 +1631,19 @@ def _run_soccer(sport_key: str, date: str) -> dict:
     return _bundle(games, [], ge, None)
 
 
+def _run_tennis(sport_key: str, date: str) -> dict:
+    games, ge = _safe_step(
+        lambda: project_tennis_matches(sport_key, date), "games", sport_key)
+    return _bundle(games, [], ge, None)
+
+
 def _dispatch(key: str, date: str, pull_props: bool) -> dict:
     if key == "MLB":
         return _run_mlb(date, pull_props)
     if key in _SOCCER_SPORTS:
         return _run_soccer(key, date)
+    if key in _TENNIS_SPORTS:
+        return _run_tennis(key, date)
     return _run_generic(key, date, pull_props)
 
 
