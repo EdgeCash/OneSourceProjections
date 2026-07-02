@@ -118,10 +118,18 @@ TEMP_CLAMP = 0.08          # cap the total swing at ±8% (guards bad/extreme tem
 # and tested). Applied like temperature: RUNS is a game-level multiplier on both
 # teams' expected runs (moves the total, not the margin); K multiplies the
 # pitcher-strikeout environment (that path already ships behind the edge gate).
-UMPIRE_RUNS_WEIGHT = 0.0    # OFF (context-only) pending a validated multi-season table
+# Validated on the multi-season committed table (build_mlb_umpires.py, 20k+
+# regular-season games 2016-25, ump ids matched via the retrosheet biofile).
+# Out-of-sample (train 2016-22 -> test 2023-25, umps with >=40 games each side):
+# K-rate tendency persists (train->test corr 0.27) but the run-environment
+# tendency barely does (0.15 — runs are dominated by the offenses/pitchers, the
+# zone is a small lever). So we enable a small, shrunk, clamped K coefficient and
+# keep RUNS pinned to 0 (context-only) until it shows out-of-sample signal.
+# K multiplies the pitcher-strikeout environment, which ships behind the edge gate.
+UMPIRE_RUNS_WEIGHT = 0.0    # OFF (context-only): runs tendency doesn't hold out-of-sample
 UMPIRE_RUNS_CLAMP = 0.035   # cap the total swing at ±3.5% (~±0.32 runs) when enabled
-UMPIRE_K_WEIGHT = 0.0       # OFF (context-only) pending validation
-UMPIRE_K_CLAMP = 0.06       # cap the strikeout swing at ±6% when enabled
+UMPIRE_K_WEIGHT = 0.35      # small: ~0.27 OOS persistence, on an already-shrunk index
+UMPIRE_K_CLAMP = 0.06       # cap the strikeout swing at ±6%
 
 # Monte Carlo draws for the game simulation.
 SIM_DRAWS = 20_000

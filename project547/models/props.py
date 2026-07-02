@@ -76,6 +76,29 @@ def refine_expected_innings(base: float, workload: dict | None) -> float:
     return float(max(3.0, min(exp, 7.5)))
 
 
+# Times-through-the-order: hitters strike out less the deeper into a start they
+# see a pitcher (the 3rd time through, K rate runs ~8% below the 1st/2nd). A
+# flat per-BF rate therefore over-projects Ks for a start that turns the lineup a
+# 3rd time. We shave the K lambda by the share of batters faced beyond two turns,
+# times a conservative penalty. The expected batters faced comes from
+# expected_innings — which the live pitch-count feed already refines — so a
+# stretched-out starter's deeper start is reflected here too.
+ORDER_SIZE = 9
+TTO_K_PENALTY = 0.06        # relative K-rate haircut on 3rd-time-through PAs
+TTO_K_FACTOR_FLOOR = 0.95   # a start rarely gives back more than ~5% of its Ks
+
+
+def times_through_order_k_factor(expected_innings: float,
+                                 order_size: int = ORDER_SIZE) -> float:
+    """Multiplier (<=1.0) on the K lambda for the share of batters faced the 3rd+
+    time through the order. 1.0 when the start doesn't reach a 3rd turn."""
+    bf = max(expected_innings, 0.0) * BF_PER_INNING
+    if bf <= 0:
+        return 1.0
+    frac_third = max(0.0, bf - 2 * order_size) / bf
+    return max(TTO_K_FACTOR_FLOOR, 1.0 - TTO_K_PENALTY * frac_third)
+
+
 def pitcher_strikeouts(
     expected_innings: float,
     k_rate: float | None,
@@ -87,7 +110,8 @@ def pitcher_strikeouts(
 
     opp_k_rate shifts the matchup: a team that strikes out 26% of the time
     inflates lambda vs one at 18%. ump_k_factor applies the home-plate umpire's
-    (shrunk, clamped) strikeout-zone tendency; 1.0 = neutral.
+    (shrunk, clamped) strikeout-zone tendency; 1.0 = neutral. A times-through-the-
+    order factor trims Ks for starts that turn the lineup a 3rd+ time.
     """
     rate = blend(k_rate, None, LEAGUE_K_RATE)
     if opp_k_rate:
@@ -96,7 +120,10 @@ def pitcher_strikeouts(
     lam = blend(lam_own, fp_projected_k, lam_own)
     if ump_k_factor and ump_k_factor != 1.0:
         lam = lam * ump_k_factor
-    return {"lambda": lam, "mean": lam}
+    tto = times_through_order_k_factor(expected_innings)
+    if tto != 1.0:
+        lam = lam * tto
+    return {"lambda": lam, "mean": lam, "tto_factor": round(tto, 4)}
 
 
 # Additional pitcher markets (DFS books quote all of these). Means come from

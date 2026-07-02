@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import logging
 from datetime import date as _date
+from functools import lru_cache
 
 import pandas as pd
 
@@ -355,6 +356,13 @@ def project_games(date: str) -> pd.DataFrame:
 def project_props(date: str) -> pd.DataFrame:
     season = _season(date)
     slate = mlb_statsapi.schedule(date)
+    # Resolve the slate's starters' handedness live (by id) from the people
+    # endpoint so the platoon nudge uses authoritative hands, not the stale map.
+    try:
+        platoon.prime_hands((g.get(f"{s}_pitcher_id"), g.get(f"{s}_pitcher"))
+                            for g in slate for s in ("home", "away"))
+    except Exception:
+        pass
     pitchers = _pitcher_table(season)
     batters = _batter_table(season)
     fp = _fp_projections(season, date)
@@ -423,7 +431,8 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
                                               fp_k_today, ump_k_factor=ump_k)
         rows.append({**common, "market": "pitcher_strikeouts",
                      "projection": round(model["mean"], 2),
-                     "dist": "poisson", "param": model["lambda"]})
+                     "dist": "poisson", "param": model["lambda"],
+                     "tto_factor": model.get("tto_factor")})
 
         # Additional DFS-quoted pitcher markets (outs, hits/ER/walks allowed),
         # derived from expected innings + the pitcher's own per-inning rates
@@ -461,7 +470,8 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict,
         return rows
     for side, opp_side in (("home", "away"), ("away", "home")):
         # opposing starter's throwing hand -> each hitter's platoon split
-        vs_hand = platoon.throws(g.get(f"{opp_side}_pitcher") or "")
+        vs_hand = platoon.throws(g.get(f"{opp_side}_pitcher") or "",
+                                 g.get(f"{opp_side}_pitcher_id"))
         for entry in lineups.get(side, []):
             name, slot = entry["name"], entry["slot"]
             stats_row: dict = {}
@@ -1202,13 +1212,53 @@ def _fp_stat_for_market(fp_stats: dict, market_name: str) -> float | None:
 _LOG_PROP_MODELS = {"WNBA": wnba_props, "NHL": nhl_props}
 
 
-def _log_model_prop(sport_key: str, player: str, market_name: str, date: str):
+@lru_cache(maxsize=8)
+def _wnba_defense_table(season: int) -> tuple:
+    """Opponent-defense multipliers per (team, market) from the committed WNBA
+    box-score logs, keyed by canonical team so it joins the slate. Cached per
+    season; returned as a tuple of items so lru_cache can hold it."""
+    try:
+        df = playerlogs._logs("WNBA", (season,))
+    except Exception:
+        return ()
+    cols = ("points", "rebounds", "assists", "three_made", "pra")
+    rows = []
+    for rec in df.to_dict("records"):
+        opp = rec.get("opp")
+        if not opp:
+            continue
+        row = {"team": teams.canon("WNBA", str(opp))}
+        for c in cols:
+            if c in rec:
+                row[c] = rec[c]
+        rows.append(row)
+    return tuple(wnba_props.defense_factors(rows).items())
+
+
+def _slate_opponent_map(sport_key: str, date: str) -> dict:
+    """{canonical_team: canonical_opponent} for a date, from the ESPN slate."""
+    out: dict = {}
+    try:
+        for g in espn.slate(sport_key, date):
+            h = teams.canon(sport_key, g.get("home_team") or "")
+            a = teams.canon(sport_key, g.get("away_team") or "")
+            if h and a:
+                out[h], out[a] = a, h
+    except Exception:
+        pass
+    return out
+
+
+def _log_model_prop(sport_key: str, player: str, market_name: str, date: str,
+                    opponent: str | None = None, def_table: dict | None = None):
     """Our own per-player projection + NB dispersion for a prop market, from the
     committed box-score logs (wnba_props / nhl_props). Returns (proj, r), or
     (None, None) when the sport/market isn't covered or the player's sample is
     too thin — in which case the vendor projection and the generic distribution
     are used unchanged. Both models are held-out validated (ECE ~0.01); they
-    ship behind the demonstrated-edge gate like every market."""
+    ship behind the demonstrated-edge gate like every market. When the model
+    exposes an opponent adjustment (WNBA) and the matchup is known, the
+    projection is nudged by the opposing team's defense in that market."""
     model = _LOG_PROP_MODELS.get(sport_key)
     if model is None:
         return None, None
@@ -1224,7 +1274,12 @@ def _log_model_prop(sport_key: str, player: str, market_name: str, date: str):
     if len(series) < model.MIN_GAMES:
         return None, None
     proj = model.project(series, key)
-    return (proj.proj, proj.r) if proj else (None, None)
+    if not proj:
+        return None, None
+    mean = proj.proj
+    if opponent and def_table and hasattr(model, "opponent_factor"):
+        mean = mean * model.opponent_factor(market_name, opponent, def_table)
+    return round(mean, 2), proj.r
 
 
 def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
@@ -1257,6 +1312,12 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         lookup = {}
     fp = _fp_generic_index(sport_key, date)
 
+    # Opponent adjustment (WNBA): the day's matchups + a defense-vs-market table
+    # from the committed logs, so each player's projection is nudged by who they
+    # face. Both keyed by canonical team so they join cleanly.
+    opp_map = _slate_opponent_map(sport_key, date) if sport_key == "WNBA" else {}
+    def_table = dict(_wnba_defense_table(int(str(date)[:4]))) if sport_key == "WNBA" else {}
+
     rows = []
     for _, r in flat.iterrows():
         mid = r.get("market_id")
@@ -1268,8 +1329,11 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         bp_proj = r.get("bp_projection")
         if isinstance(bp_proj, dict):  # early-format snapshot rows
             bp_proj = bp_proj.get("value")
+        opponent = opp_map.get(teams.canon(sport_key, r.get("player_team") or "")) \
+            if opp_map else None
         model_proj, model_r = _log_model_prop(
-            sport_key, r["participant"], market_name, date)
+            sport_key, r["participant"], market_name, date,
+            opponent=opponent, def_table=def_table)
         sources = [float(v) for v in (fp_proj, bp_proj, model_proj)
                    if isinstance(v, (int, float)) and pd.notna(v)]
         projection = sum(sources) / len(sources) if sources else None
@@ -1279,6 +1343,7 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
             "market": market_name,
             "player": r["participant"],
             "team": r.get("player_team"),
+            "opponent": opponent,
             "position": r.get("player_position"),
             "player_image": r.get("player_image"),
             "projection": round(projection, 2) if projection is not None else None,

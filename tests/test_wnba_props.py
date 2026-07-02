@@ -67,3 +67,34 @@ def test_market_aliases():
     assert wp.canonical_market("PTS+REB+AST") == "pra"
     assert wp.canonical_market("Player Points") == "points"
     assert wp.canonical_market("") is None
+
+
+def _defense_rows():
+    # league is 10 pts/appearance; TOUGH allows 6, SOFT allows 14, with enough
+    # appearances to clear the shrink prior and show a real (clamped) factor.
+    rows = []
+    for _ in range(200):
+        rows.append({"team": "TOUGH", "points": 6.0})
+        rows.append({"team": "SOFT", "points": 14.0})
+        rows.append({"team": "AVG", "points": 10.0})
+    return rows
+
+
+def test_defense_factors_direction_and_clamp():
+    tbl = wp.defense_factors(_defense_rows())
+    tough = wp.opponent_factor("Points", "TOUGH", tbl)
+    soft = wp.opponent_factor("Points", "SOFT", tbl)
+    avg = wp.opponent_factor("Points", "AVG", tbl)
+    assert tough < avg < soft                       # direction
+    assert avg == pytest.approx(1.0, abs=1e-3)      # league-average team ~neutral
+    # hard clamp at ±DEF_CLAMP even though raw factors are 0.6 / 1.4
+    assert tough >= 1 - wp.DEF_CLAMP - 1e-9
+    assert soft <= 1 + wp.DEF_CLAMP + 1e-9
+
+
+def test_opponent_factor_neutral_when_unknown():
+    tbl = wp.defense_factors(_defense_rows())
+    assert wp.opponent_factor("Points", "NOPE", tbl) == 1.0      # unknown team
+    assert wp.opponent_factor("Points", None, tbl) == 1.0        # no opponent
+    assert wp.opponent_factor("bad market", "SOFT", tbl) == 1.0  # unknown market
+    assert wp.opponent_factor("Points", "SOFT", {}) == 1.0       # empty table

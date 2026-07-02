@@ -315,6 +315,34 @@ def player_season_stats(player_id: int, season: int, group: str) -> dict:
     return {}
 
 
+def hitter_platoon_splits_live(player_id: int, season: int) -> dict:
+    """Current-season vL/vR platoon lines for a hitter, live from the statSplits
+    endpoint (``sitCodes=vl,vr``). Returns ``{"vl": {avg, slg, plateAppearances},
+    "vr": {...}}`` (only the codes with data), or ``{}``. This is the freshest
+    platoon source — the committed backfill splits lag by design — so the platoon
+    module layers it ahead of the committed table. Cached for the schedule TTL
+    (splits move slowly within a day). Empty on any error."""
+    if not player_id:
+        return {}
+    try:
+        data = cached_json(
+            f"statsapi:statsplits:{player_id}:{season}:hitting", _TTL_SCHEDULE,
+            lambda: _get(f"people/{player_id}/stats",
+                         {"stats": "statSplits", "group": "hitting",
+                          "season": season, "sitCodes": "vl,vr"}))
+    except Exception:
+        return {}
+    out: dict[str, dict] = {}
+    for block in data.get("stats", []):
+        for split in block.get("splits", []):
+            code = (split.get("split") or {}).get("code")
+            st = split.get("stat", {}) or {}
+            if code in ("vl", "vr") and st:
+                out[code] = {"avg": st.get("avg"), "slg": st.get("slg"),
+                             "plateAppearances": st.get("plateAppearances")}
+    return out
+
+
 def people_handedness(player_ids: list[int]) -> dict[int, dict]:
     """Live bats/throws for a batch of player ids from the people endpoint —
     the source that fills handedness for players the committed retrosheet map
