@@ -1,6 +1,50 @@
 import pandas as pd
 
 from app import ui
+from project547 import edge_gate
+
+
+def _mc_game():
+    return {"away_team": "Away Team", "home_team": "Home Team",
+            "away_win_prob": 0.40, "home_win_prob": 0.60,
+            "away_ml": 130, "home_ml": -140, "home_ml_ev": 0.05, "away_ml_ev": -0.02,
+            "total_line": 8.5, "model_over_prob": 0.55, "over_odds": -105,
+            "under_odds": -115, "over_ev": 0.04, "under_ev": -0.03}
+
+
+def test_bet_ticket_gate_caps_and_stake():
+    g = _mc_game()
+    # cleared moneyline -> PLAY with a real ¼-Kelly stake; gated total -> PASS
+    table = {("MLB", "moneyline"): {"status": edge_gate.CLEARED},
+             ("MLB", "total"): {"status": edge_gate.GATED}}
+    calls = {c["label"]: c for c in
+             ui._mc_market_calls("MLB", g, 0.02, gate_table=table, bankroll=1000)}
+    assert calls["Moneyline"]["decision"] == "PLAY"
+    assert calls["Moneyline"]["gate"] == "cleared"
+    assert calls["Moneyline"]["stake_units"] > 0
+    assert calls["Moneyline"]["stake_dollars"] > 0
+    # gated market can never be a play regardless of EV, and gets no stake
+    assert calls["Total"]["decision"] == "PASS"
+    assert calls["Total"]["gate"] == "gated"
+    assert calls["Total"]["stake_units"] is None
+
+
+def test_bet_ticket_probation_caps_at_lean():
+    g = _mc_game()
+    table = {("MLB", "moneyline"): {"status": edge_gate.PROBATION}}
+    calls = {c["label"]: c for c in
+             ui._mc_market_calls("MLB", g, 0.02, gate_table=table)}
+    # a would-be PLAY is capped to LEAN while the market is unproven
+    assert calls["Moneyline"]["decision"] == "LEAN"
+
+
+def test_bet_ticket_renders_in_card():
+    g = _mc_game()
+    table = {("MLB", "moneyline"): {"status": edge_gate.CLEARED}}
+    html = ui.matchup_card_html("MLB", g, {}, gate_table=table, bankroll=1000)
+    assert "bet ticket" in html.lower()
+    assert "🟢" in html          # gate badge present
+    assert "1u = 1% bankroll" in html
 
 
 def test_fmt_american():

@@ -804,11 +804,23 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["rl_away_odds"] = away_price
                 if p_cover is not None:
                     out["model_home_rl"] = round(float(p_cover), 4)
-                    ev = _market_eval(float(p_cover), float(best_h["odds"]), away_price,
-                                      shrink=SPORTS["MLB"].market_shrink)
-                    if ev["ev_a"] is not None:
+                    shrink = SPORTS["MLB"].market_shrink
+                    ev = _market_eval(float(p_cover), float(best_h["odds"]),
+                                      away_price, shrink=shrink)
+                    # Run-line prices are line-shopped best-of-book, so the
+                    # home/away pair often sums under 1.0 (a synthetic arb across
+                    # books) and the two-way de-vig rejects it. Fall back to
+                    # honest per-side pricing at the real best price (same as the
+                    # props board) rather than dropping the edge.
+                    if ev["ev_a"] is None and away_price is not None:
+                        ha = _market_eval(float(p_cover), float(best_h["odds"]),
+                                          None, shrink=shrink)
+                        hb = _market_eval(1.0 - float(p_cover), float(away_price),
+                                          None, shrink=shrink)
+                        ev = {"ev_a": ha["ev_a"], "ev_b": hb["ev_a"]}
+                    if ev.get("ev_a") is not None:
                         out["rl_home_ev"] = ev["ev_a"]
-                    if ev["ev_b"] is not None:
+                    if ev.get("ev_b") is not None:
                         out["rl_away_ev"] = ev["ev_b"]
         return pd.Series(out, dtype=object)
 
@@ -949,31 +961,40 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
     tot = flat_by_market.get("total", pd.DataFrame())
     if not tot.empty and "line" in tot.columns:
         event_teams = _bp_event_teams(events)
-        overs = tot[tot["selection"].astype(str).str.lower().str.contains("over", na=False)]
-        overs = overs[overs["line"].notna()]
+        sel = tot["selection"].astype(str).str.lower()
+        overs = tot[sel.str.contains("over", na=False) & tot["line"].notna()]
         overs = overs.sort_values("odds", ascending=False).drop_duplicates("event_id")
         by_event = {r["event_id"]: r for _, r in overs.iterrows()}
+        unders = tot[sel.str.contains("under", na=False) & tot["line"].notna()]
+        unders = unders.sort_values("odds", ascending=False).drop_duplicates("event_id")
+        under_by_event = {r["event_id"]: r for _, r in unders.iterrows()}
 
         def total_cols(row):
-            offer = None
+            offer = under = None
             for eid, teams in event_teams.items():
                 if eid in by_event and any(
                     _teams_match(row["home_team"], t) or _teams_match(row["away_team"], t)
                     for t in teams
                 ):
                     offer = by_event[eid]
+                    under = under_by_event.get(eid)
                     break
             if offer is None:
                 return pd.Series({"total_line": None, "over_odds": None,
-                                  "model_over_prob": None, "over_ev": None})
+                                  "under_odds": None, "model_over_prob": None,
+                                  "over_ev": None, "under_ev": None})
             line = float(offer["line"])
             p = row["_proj"].prob_over(line, sport)
-            ev = _market_eval(p, float(offer["odds"]), None)
+            under_odds = float(under["odds"]) if under is not None else None
+            ev = _market_eval(p, float(offer["odds"]), under_odds,
+                              shrink=SPORTS[sport].market_shrink)
             return pd.Series({
                 "total_line": line,
                 "over_odds": offer["odds"],
+                "under_odds": under_odds,
                 "model_over_prob": round(p, 4),
                 "over_ev": ev["ev_a"],
+                "under_ev": ev["ev_b"],
             })
 
         games = pd.concat([games, games.apply(total_cols, axis=1)], axis=1)
@@ -1018,8 +1039,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         games = pd.concat([games, games.apply(spread_cols, axis=1)], axis=1)
 
     _ensure_cols(games, ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
-                         "total_line", "over_odds", "model_over_prob",
-                         "over_ev", "spread_home_line", "spread_home_odds",
+                         "total_line", "over_odds", "under_odds", "model_over_prob",
+                         "over_ev", "under_ev", "spread_home_line", "spread_home_odds",
                          "spread_away_odds", "model_home_cover",
                          "spread_home_ev", "spread_away_ev"))
     return games.drop(columns=["_proj"])

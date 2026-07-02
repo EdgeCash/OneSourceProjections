@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from app import assets
-from project547 import config
+from project547 import config, odds
 
 ET = ZoneInfo("America/New_York")
 
@@ -1802,7 +1802,8 @@ def _mc_team_panel(sport, team, form, power_rank, sos_rank, win_label, align) ->
 
 def _mc_gauge(call) -> str:
     color = {"PLAY": "var(--good)", "LEAN": "var(--mid)",
-             "PASS": "var(--faint)"}[call["decision"]]
+             "PASS": "var(--faint)", "VERIFY": "var(--neg)"}.get(
+        call["decision"], "var(--faint)")
     pct = int(round(call["conf"] / 10 * 100))
     return (
         f"<div style='text-align:center;min-width:96px;'>"
@@ -1819,29 +1820,67 @@ def _mc_gauge(call) -> str:
         f"{call['decision']}</div></div>")
 
 
-def _mc_market_calls(sport, g, min_edge) -> list:
+_GATE_BADGE = {"cleared": "🟢", "probation": "🟡", "gated": "🔴"}
+_KIND_DECISION = {"core": "PLAY", "lean": "LEAN", "watch": "LEAN",
+                  "verify": "VERIFY", "pass": "PASS"}
+
+
+def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -> list:
+    """Per-market read for the Model-read block. Each call carries the pick, EV,
+    conf, the gate-capped decision, the market's gate status, and the ¼-Kelly
+    stake at the best price (units = % of bankroll, plus $ when a bankroll is
+    given) — the 'bet ticket' a bettor needs to actually place and size it."""
     calls = []
 
-    def add(label, an, ap, ae, bn, bp, be):
-        opts = [o for o in ((an, _mcf(ap), _mcf(ae)), (bn, _mcf(bp), _mcf(be)))
-                if o[1] is not None]
+    def add(label, gate_key, sides):
+        # sides: list of (name, prob, ev, american_odds)
+        opts = [(n, _mcf(p), _mcf(e), _mcf(o)) for (n, p, e, o) in sides
+                if _mcf(p) is not None]
         if not opts:
             return
-        name, prob, ev = max(opts, key=lambda o: (o[2] if o[2] is not None else -9, o[1]))
-        decision = ("PLAY" if ev is not None and ev >= min_edge
-                    else "LEAN" if ev is not None and ev > 0 else "PASS")
+        name, prob, ev, price = max(
+            opts, key=lambda o: (o[2] if o[2] is not None else -9, o[1]))
+        status = None
+        if gate_table is not None:
+            try:
+                from project547 import edge_gate
+                status = edge_gate.status_for(sport, gate_key, gate_table)
+            except Exception:
+                status = None
+        tier = play_tier(ev, min_edge, gate=status)
+        decision = _KIND_DECISION.get(tier["kind"], "PASS")
         conf = max(0.0, min(10.0, 5 + (ev * 60 if ev is not None else -3)))
+        # ¼-Kelly stake at the best price, scaled by the gate; only for live plays
+        units = dollars = None
+        if (decision in ("PLAY", "LEAN") and ev is not None and ev > 0
+                and price is not None):
+            f = odds.kelly_stake(prob, float(price), config.KELLY_FRACTION)
+            if status:
+                try:
+                    from project547 import edge_gate
+                    f *= edge_gate.stake_mult(status)
+                except Exception:
+                    pass
+            if f > 0:
+                units = round(f * 100, 1)                 # 1 unit = 1% of bankroll
+                dollars = round(f * bankroll) if bankroll else None
         calls.append({"label": label, "pick": name, "prob": prob, "ev": ev,
-                      "decision": decision, "conf": round(conf, 1)})
+                      "decision": decision, "conf": round(conf, 1),
+                      "gate": status, "stake_units": units,
+                      "stake_dollars": dollars})
 
-    add("Moneyline", _last(g.get("away_team")), g.get("away_win_prob"), g.get("away_ml_ev"),
-        _last(g.get("home_team")), g.get("home_win_prob"), g.get("home_ml_ev"))
+    add("Moneyline", "moneyline", [
+        (_last(g.get("away_team")), g.get("away_win_prob"), g.get("away_ml_ev"),
+         g.get("away_ml")),
+        (_last(g.get("home_team")), g.get("home_win_prob"), g.get("home_ml_ev"),
+         g.get("home_ml"))])
     mover = _mcf(g.get("model_over_prob"))
     if mover is not None:
         tl = _mcf(g.get("total_line"))
         ln = f" {tl:g}" if tl is not None else ""
-        add("Total", f"Over{ln}", mover, g.get("over_ev"),
-            f"Under{ln}", 1 - mover, g.get("under_ev"))
+        add("Total", "total", [
+            (f"Over{ln}", mover, g.get("over_ev"), g.get("over_odds")),
+            (f"Under{ln}", 1 - mover, g.get("under_ev"), g.get("under_odds"))])
     hc = _mcf(g.get("model_home_rl") if g.get("model_home_rl") is not None
               else g.get("model_home_cover"))
     if hc is not None:
@@ -1849,9 +1888,12 @@ def _mc_market_calls(sport, g, min_edge) -> list:
                   else g.get("spread_home_line"))
         h_ev = g.get("rl_home_ev") if g.get("rl_home_ev") is not None else g.get("spread_home_ev")
         a_ev = g.get("rl_away_ev") if g.get("rl_away_ev") is not None else g.get("spread_away_ev")
+        h_od = g.get("rl_home_odds") if g.get("rl_home_odds") is not None else g.get("spread_home_odds")
+        a_od = g.get("rl_away_odds") if g.get("rl_away_odds") is not None else g.get("spread_away_odds")
         hn = f"{_last(g.get('home_team'))} {sl:+g}" if sl is not None else _last(g.get("home_team"))
         an = f"{_last(g.get('away_team'))} {-sl:+g}" if sl is not None else _last(g.get("away_team"))
-        add("Run Line" if sport == "MLB" else "Spread", hn, hc, h_ev, an, 1 - hc, a_ev)
+        add("Run Line" if sport == "MLB" else "Spread", "spread",
+            [(hn, hc, h_ev, h_od), (an, 1 - hc, a_ev, a_od)])
     return calls
 
 
@@ -2120,9 +2162,14 @@ def _projection_hero(sport: str, g: dict) -> str:
 
 
 def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
-                      min_edge: float = 0.02, title: str | None = None) -> str:
+                      min_edge: float = 0.02, title: str | None = None,
+                      gate_table=None, bankroll: float = 0) -> str:
     """The full premium matchup graphic. ``matchup`` is teamstats.matchup(...,
-    window=window). Safe on an empty matchup (renders the header only)."""
+    window=window). Safe on an empty matchup (renders the header only).
+
+    ``gate_table`` (edge_gate.gate_table()) and ``bankroll`` turn the Model-read
+    block into a bet ticket: each market shows its gate status and the ¼-Kelly
+    stake alongside the pick and EV."""
     away, home = g.get("away_team", ""), g.get("home_team", "")
     n = matchup.get("n_teams", 30)
     win_label = matchup.get("window_label", "L5")
@@ -2145,6 +2192,21 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
     if nrfi is not None:
         lean = "NRFI" if nrfi >= 0.5 else "YRFI"
         bits.append(f"1st inning <b>{lean} {max(nrfi, 1 - nrfi) * 100:.0f}%</b>")
+    # Park factor (MLB) + weather — top-of-mind for totals/HR bettors and
+    # previously only shown on the fallback card, never the premium one.
+    if sport == "MLB":
+        try:
+            from project547 import parks
+            pf = parks.factor(g.get("home_team", ""))
+            if pf:
+                tag = ("hitter" if pf > 1.02 else "pitcher" if pf < 0.98
+                       else "neutral")
+                bits.append(f"Park <b>{pf:.2f}× {tag}</b>")
+        except Exception:
+            pass
+    wx = _weather_txt(g).lstrip(" ·").strip()
+    if wx:
+        bits.append(wx)
     bits.append(f"Window <b>{win_label}</b>")
 
     header = (
@@ -2165,7 +2227,8 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
            f"font-size:.66rem;color:var(--muted);'>"
            + "".join(f"<span>{b}</span>" for b in bits) + "</div>"))
 
-    calls = _mc_market_calls(sport, g, min_edge)
+    calls = _mc_market_calls(sport, g, min_edge, gate_table=gate_table,
+                             bankroll=bankroll)
     gauges = (f"<div style='display:flex;justify-content:center;gap:18px;margin:14px 0;'>"
               + "".join(_mc_gauge(c) for c in calls) + "</div>") if calls else ""
 
@@ -2194,17 +2257,32 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
 
     # decision block
     dec_bits = []
+    any_gate = any(c.get("gate") for c in calls)
     for c in calls:
-        col = {"PLAY": "var(--good)", "LEAN": "var(--mid)", "PASS": "var(--faint)"}[c["decision"]]
+        col = {"PLAY": "var(--good)", "LEAN": "var(--mid)", "PASS": "var(--faint)",
+               "VERIFY": "var(--neg)"}.get(c["decision"], "var(--faint)")
         ev = f"{c['ev']*100:+.1f}% EV" if c["ev"] is not None else "no priced edge"
+        badge = _GATE_BADGE.get(c.get("gate"), "")
+        badge_html = f"{badge} " if badge else ""
+        stake = ""
+        if c.get("stake_units"):
+            dol = f" (${c['stake_dollars']})" if c.get("stake_dollars") else ""
+            stake = (f" · <b style='color:var(--text);'>"
+                     f"{c['stake_units']:g}u{dol}</b>")
         dec_bits.append(f"<div style='margin:2px 0;font-size:.72rem;'>"
-                        f"<b>{c['label']}:</b> {c['pick']} — "
+                        f"{badge_html}<b>{c['label']}:</b> {c['pick']} — "
                         f"<span style='color:{col};font-weight:700;'>{c['decision']}</span> "
-                        f"<span style='color:var(--muted);'>({ev}, conf {c['conf']:.1f}/10)</span></div>")
+                        f"<span style='color:var(--muted);'>({ev}, conf {c['conf']:.1f}/10)</span>"
+                        f"{stake}</div>")
+    legend = ("<div style='font-size:.56rem;color:var(--muted);margin-top:5px;'>"
+              "🟢 proven edge (full stake) · 🟡 unproven, tracking (½) · "
+              "🔴 no proven edge (no bet) · stake = ¼-Kelly, 1u = 1% bankroll"
+              "</div>") if any_gate else ""
     decision = (f"<div style='margin-top:12px;padding-top:9px;border-top:1px solid var(--line);'>"
                 f"<div style='font-family:var(--disp);font-size:.64rem;font-weight:700;"
                 f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
-                f"margin-bottom:4px;'>Model read</div>" + "".join(dec_bits)
+                f"margin-bottom:4px;'>Model read · bet ticket</div>" + "".join(dec_bits)
+                + legend
                 + "<div style='font-size:.58rem;color:var(--faint);margin-top:6px;'>"
                 "Personal research · not financial advice · the trigger is always yours."
                 "</div></div>") if dec_bits else ""

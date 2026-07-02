@@ -25,9 +25,14 @@ from .names import normalize
 # "allowed" stat; def_col is None where we have no allowed version.
 WNBA_PAIRS = [
     ("PPG", "pts", "opp_pts", "high"),
+    ("Off Rtg", "off_rtg", "opp_off_rtg", "high"),   # pts per 100 poss (pace-adj)
+    ("eFG%", "efg", "opp_efg", "high"),
     ("2PT%", "fg2_pct", "opp_fg2_pct", "high"),
     ("3PT%", "fg3_pct", "opp_fg3_pct", "high"),
     ("FT%", "ft_pct", None, "high"),
+    ("Pace", "pace", None, "high"),
+    ("TS%", "ts", None, "high"),
+    ("OREB%", "oreb_pct", None, "high"),
     ("REB", "reb", "opp_reb", "high"),
     ("AST", "ast", None, "high"),
     ("BLK+STL", "stocks", None, "high"),
@@ -36,7 +41,7 @@ WNBA_PAIRS = [
 MLB_PAIRS = [
     ("Runs/G", "runs", "opp_runs", "high"),
     ("Hits/G", "hits", "opp_hits", "high"),
-    ("HR/G", "hr", None, "high"),
+    ("HR/G", "hr", "opp_hr", "high"),
     ("Batter K/G", "k", "pk", "low"),
     ("1st Inn R/G", "f1", "opp_f1", "high"),
 ]
@@ -55,22 +60,35 @@ FOOTBALL_PAIRS = [
     ("Pass TD/G", "pass_td", None, "high"),
     ("Giveaways/G", "giveaways", None, "low"),
 ]
+# NHL — offense (goals/shots) vs opponent allowed; save%/blocks/hits/pim support.
+NHL_PAIRS = [
+    ("Goals/G", "goals", "opp_goals", "high"),
+    ("Shots/G", "shots", "opp_shots", "high"),
+    ("Save%", "save_pct", None, "high"),
+    ("Blocks/G", "blocks", None, "high"),
+    ("Hits/G", "hits", None, "high"),
+    ("PIM/G", "pim", None, "low"),
+]
 
 STAT_SPECS = {
     "WNBA": {"pairs": WNBA_PAIRS},
+    "NBA": {"pairs": WNBA_PAIRS},   # identical box-score schema
     "MLB": {"pairs": MLB_PAIRS, "trends": MLB_TRENDS},
     "NFL": {"pairs": FOOTBALL_PAIRS},
     "NCAAF": {"pairs": FOOTBALL_PAIRS},
+    "NHL": {"pairs": NHL_PAIRS},
 }
 
 # Stat labels that belong in a separate "supporting" section (team-vs-team)
 # rather than the primary scoring offense-vs-defense table — mirrors the way
 # the reference cards split scoring from rebounding/ball-control rows.
 SUPPORTING_LABELS = {
-    "WNBA": {"REB", "AST", "BLK+STL", "TOV"},
+    "WNBA": {"Pace", "TS%", "OREB%", "REB", "AST", "BLK+STL", "TOV"},
+    "NBA": {"Pace", "TS%", "OREB%", "REB", "AST", "BLK+STL", "TOV"},
     "NFL": {"Pass TD/G", "Giveaways/G"},
     "NCAAF": {"Pass TD/G", "Giveaways/G"},
     "MLB": set(),  # MLB uses the game-trends section instead
+    "NHL": {"Save%", "Blocks/G", "Hits/G", "PIM/G"},
 }
 
 
@@ -83,26 +101,79 @@ DIRECTIONS = {
     "pts": "high", "fg2_pct": "high", "fg3_pct": "high", "ft_pct": "high",
     "reb": "high", "ast": "high", "stocks": "high", "runs": "high",
     "hits": "high", "ba": "high", "hr": "high", "f1": "high",
+    # basketball advanced
+    "off_rtg": "high", "efg": "high", "pace": "high", "ts": "high",
+    "oreb_pct": "high", "opp_off_rtg": "low", "opp_efg": "low",
     # offense (low good)
     "tov": "low", "k": "low",
     # defense / allowed (low good) + pitcher K (high good)
     "opp_pts": "low", "opp_fg2_pct": "low", "opp_fg3_pct": "low",
     "opp_reb": "low", "opp_runs": "low", "opp_hits": "low", "opp_f1": "low",
-    "pk": "high",
+    "opp_hr": "low", "pk": "high",
     # football offense (high good) + allowed (low good); giveaways low good
     "tot_yds": "high", "pass_yds": "high", "rush_yds": "high", "pass_td": "high",
     "giveaways": "low",
     "opp_tot_yds": "low", "opp_pass_yds": "low", "opp_rush_yds": "low",
+    # NHL: goals/shots high, allowed low, save%/blocks/hits high, pim low
+    "goals": "high", "shots": "high", "save_pct": "high", "blocks": "high",
+    "hits": "high", "pim": "low", "opp_goals": "low", "opp_shots": "low",
 }
 
 
-@lru_cache(maxsize=6)
+def _score_cols(sport: str) -> tuple[str, str]:
+    """(for, against) scoring columns by sport — the inputs to records, Elo,
+    power/SOS ranks and form."""
+    if sport == "MLB":
+        return ("runs", "opp_runs")
+    if sport == "NHL":
+        return ("goals", "opp_goals")
+    return ("pts", "opp_pts")
+
+
+@lru_cache(maxsize=8)
 def team_games(sport: str, seasons: tuple[int, ...]) -> pd.DataFrame:
-    if sport == "WNBA":
-        return _wnba_team_games(seasons)
+    if sport in ("WNBA", "NBA"):
+        return _basketball_team_games(sport, seasons)
     if sport in ("NFL", "NCAAF"):
         return _football_team_games(sport, seasons)
+    if sport == "NHL":
+        return _nhl_team_games(seasons)
     return _mlb_team_games(seasons)
+
+
+def _nhl_team_games(seasons) -> pd.DataFrame:
+    """One row per team-game from the committed skater + goalie box logs:
+    goals/shots(SOG)/blocks/hits/pim from skaters, saves/shots-against/save%
+    from the goalie, and the opponent's goals/shots joined as 'allowed'."""
+    df = history.player_games("nhl", seasons=list(seasons))
+    if df.empty:
+        return pd.DataFrame()
+    df = df.copy()
+    df["game_id"] = df["game_id"].astype(str)
+    is_goalie = df["saves"].notna()
+    sk = df[~is_goalie]
+    gk = df[is_goalie]
+    g = sk.groupby(["game_id", "team"], as_index=False).agg(
+        date=("date", "first"), season=("season", "first"),
+        opp=("opponent", "first"), is_home=("is_home", "first"),
+        goals=("goals", "sum"), shots=("shots", "sum"),
+        blocks=("blocks", "sum"), hits=("hits", "sum"), pim=("pim", "sum"))
+    if not gk.empty:
+        gg = gk.groupby(["game_id", "team"], as_index=False).agg(
+            saves=("saves", "sum"), shots_against=("shots_against", "sum"),
+            goals_against=("goals_against", "sum"))
+        gg["save_pct"] = (gg["saves"] / gg["shots_against"].replace(0, np.nan))
+        g = g.merge(gg, on=["game_id", "team"], how="left")
+    g["team"] = g["team"].map(lambda t: teams.canon("NHL", t))
+    g["opp"] = g["opp"].map(lambda t: teams.canon("NHL", t))
+    # drop non-NHL entries (international sides in 4 Nations / exhibitions)
+    real = teams.keys("NHL")
+    g = g[g["team"].isin(real) & g["opp"].isin(real)]
+    opp = g[["game_id", "team", "goals", "shots"]].rename(
+        columns={"team": "opp_team", "goals": "opp_goals", "shots": "opp_shots"})
+    merged = g.merge(opp, left_on=["game_id", "opp"],
+                     right_on=["game_id", "opp_team"], how="left")
+    return merged.sort_values("date")
 
 
 def _football_team_games(sport: str, seasons) -> pd.DataFrame:
@@ -142,30 +213,51 @@ def _football_team_games(sport: str, seasons) -> pd.DataFrame:
     return df.sort_values("date")
 
 
-def _wnba_team_games(seasons) -> pd.DataFrame:
-    df = history.player_games("wnba", seasons=list(seasons))
+def _basketball_team_games(sport: str, seasons) -> pd.DataFrame:
+    df = history.player_games(sport.lower(), seasons=list(seasons))
     if df.empty:
         return pd.DataFrame()
-    g = df.groupby(["game_id", "team"], as_index=False).agg(
+    _has = lambda c: c in df.columns  # noqa: E731
+    aggs = dict(
         date=("date", "first"), season=("season", "first"),
         opp=("opponent", "first"), is_home=("is_home", "first"),
         pts=("points", "sum"), fgm=("fg_made", "sum"), fga=("fg_att", "sum"),
         tpm=("three_made", "sum"), tpa=("three_att", "sum"),
         ftm=("ft_made", "sum"), fta=("ft_att", "sum"),
         reb=("rebounds", "sum"), ast=("assists", "sum"),
-        stl=("steals", "sum"), blk=("blocks", "sum"), tov=("turnovers", "sum"),
-    )
+        stl=("steals", "sum"), blk=("blocks", "sum"), tov=("turnovers", "sum"))
+    if _has("oreb"):
+        aggs["oreb"] = ("oreb", "sum")
+    if _has("dreb"):
+        aggs["dreb"] = ("dreb", "sum")
+    g = df.groupby(["game_id", "team"], as_index=False).agg(**aggs)
     g["fg2_pct"] = ((g["fgm"] - g["tpm"]) / (g["fga"] - g["tpa"]).replace(0, np.nan))
     g["fg3_pct"] = g["tpm"] / g["tpa"].replace(0, np.nan)
     g["ft_pct"] = g["ftm"] / g["fta"].replace(0, np.nan)
     g["stocks"] = g["stl"] + g["blk"]
+    # Advanced (derived): possessions/pace, efficiency (pts per 100), eFG%, TS%.
+    # Poss ~= FGA - OREB + TOV + 0.44*FTA (the standard estimate).
+    oreb = g["oreb"] if "oreb" in g.columns else 0
+    g["poss"] = g["fga"] - oreb + g["tov"] + 0.44 * g["fta"]
+    g["pace"] = g["poss"]                                   # per-game possessions
+    g["off_rtg"] = g["pts"] / g["poss"].replace(0, np.nan) * 100
+    g["efg"] = (g["fgm"] + 0.5 * g["tpm"]) / g["fga"].replace(0, np.nan)
+    g["ts"] = g["pts"] / (2 * (g["fga"] + 0.44 * g["fta"])).replace(0, np.nan)
     # join opponent's offense in the same game as this team's "allowed"
-    opp = g[["game_id", "team", "pts", "fg2_pct", "fg3_pct", "reb"]].rename(
-        columns={"team": "opp_team", "pts": "opp_pts", "fg2_pct": "opp_fg2_pct",
-                 "fg3_pct": "opp_fg3_pct", "reb": "opp_reb"})
+    cols = ["game_id", "team", "pts", "fg2_pct", "fg3_pct", "reb", "off_rtg", "efg"]
+    if "dreb" in g.columns:
+        cols.append("dreb")
+    opp = g[cols].rename(columns={
+        "team": "opp_team", "pts": "opp_pts", "fg2_pct": "opp_fg2_pct",
+        "fg3_pct": "opp_fg3_pct", "reb": "opp_reb", "off_rtg": "opp_off_rtg",
+        "efg": "opp_efg", "dreb": "opp_dreb"})
     merged = g.merge(opp, left_on=["game_id", "opp"], right_on=["game_id", "opp_team"],
                      how="left")
-    merged["team"] = merged["team"].map(lambda t: teams.canon("WNBA", t))
+    # OREB% needs the opponent's DREB from the same game
+    if "oreb" in merged.columns and "opp_dreb" in merged.columns:
+        merged["oreb_pct"] = (merged["oreb"]
+                              / (merged["oreb"] + merged["opp_dreb"]).replace(0, np.nan))
+    merged["team"] = merged["team"].map(lambda t: teams.canon(sport, t))
     return merged.sort_values("date")
 
 
@@ -210,9 +302,9 @@ def _mlb_team_games(seasons) -> pd.DataFrame:
         p["team"] = p["team"].map(lambda t: teams.canon("MLB", t))
         df = df.merge(b, on=["game_pk", "team"], how="left")
         df = df.merge(p, on=["game_pk", "team"], how="left")
-        # opponent hits allowed
-        opp_h = b[["game_pk", "team", "hits"]].rename(
-            columns={"team": "opp", "hits": "opp_hits"})
+        # opponent hits + HR allowed (fills the defense half of Hits/G & HR/G)
+        opp_h = b[["game_pk", "team", "hits", "hr"]].rename(
+            columns={"team": "opp", "hits": "opp_hits", "hr": "opp_hr"})
         df = df.merge(opp_h, on=["game_pk", "opp"], how="left")
     return df.sort_values("date")
 
@@ -289,7 +381,7 @@ def _directions(sport: str) -> dict:
 def _season_winpct(sport: str, df: pd.DataFrame, asof: str) -> dict:
     """{team: current-season win%} as of a date — the input to strength of
     schedule (how good were the teams you played)."""
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     # strict < asof: never let the as-of date's own games into the strength
     # estimate (matches _window; avoids leaking same-day results when grading)
     cut = df[df["date"] < asof] if "date" in df.columns else df
@@ -322,7 +414,7 @@ def elo_ratings(sport: str, df: pd.DataFrame, asof: str) -> dict:
         cfg = (EloConfig(k=sp.elo_k, home_edge=sp.elo_home_edge,
                          season_regress=sp.elo_regress) if sp else EloConfig())
         elo = Elo(cfg)
-        fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+        fc, oc = _score_cols(sport)
         if fc not in df.columns or "opp" not in df.columns:
             return {}
         home = df[(df["is_home"]) & (df["date"] < asof)].sort_values("date")
@@ -344,7 +436,7 @@ def power_ranks(sport: str, df: pd.DataFrame, asof: str, window: str,
     scoring margin over the window."""
     if ratings:
         return _rank_map(ratings, higher_better=True)
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     if fc not in df.columns or oc not in df.columns:
         return {}
     n = None if window == "season" else int(window[1:])
@@ -471,7 +563,7 @@ def team_form(sport: str, df: pd.DataFrame, team: str, asof: str,
     d = _window(df, team, asof)
     if d.empty:
         return {}
-    fc, oc = ("runs", "opp_runs") if sport == "MLB" else ("pts", "opp_pts")
+    fc, oc = _score_cols(sport)
     if fc not in d.columns or oc not in d.columns:
         return {}
     cur = d[d["season"] == d["season"].max()]
