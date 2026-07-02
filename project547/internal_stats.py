@@ -182,8 +182,8 @@ def batter_table(season: int) -> pd.DataFrame:
                 return None
         agg["est_ba"] = agg["player_id"].map(lambda p: look(p, "xba"))
         agg["est_slg"] = agg["player_id"].map(lambda p: look(p, "xslg"))
-    return agg[[c for c in ("Name", "norm_name", "AVG", "SLG", "ISO", "BB%",
-                            "K%", "PA", "HR", "est_ba", "est_slg")
+    return agg[[c for c in ("Name", "norm_name", "player_id", "AVG", "SLG",
+                            "ISO", "BB%", "K%", "PA", "HR", "est_ba", "est_slg")
                 if c in agg.columns]]
 
 
