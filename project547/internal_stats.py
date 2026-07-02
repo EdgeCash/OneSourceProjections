@@ -25,7 +25,7 @@ SP_IP_PRIOR = 50.0
 BP_IP_PRIOR = 120.0
 
 _PITCH_FIELDS = ["strikeOuts", "battersFaced", "inningsPitched",
-                 "baseOnBalls", "hitByPitch", "homeRuns"]
+                 "baseOnBalls", "hitByPitch", "homeRuns", "hits", "earnedRuns"]
 _BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances"]
 
 
@@ -109,6 +109,7 @@ def pitcher_table(season: int) -> pd.DataFrame:
         k=("strikeOuts", "sum"), bf=("battersFaced", "sum"),
         ip=("inningsPitched", "sum"), bb=("baseOnBalls", "sum"),
         hbp=("hitByPitch", "sum"), hr=("homeRuns", "sum"),
+        hits=("hits", "sum"), er=("earnedRuns", "sum"),
         GS=("date", "count"),
     ).reset_index()
     agg = agg[agg["ip"] > 0]
@@ -116,8 +117,16 @@ def pitcher_table(season: int) -> pd.DataFrame:
         round(_fip(r.hr or 0, r.bb or 0, r.hbp or 0, r.k or 0, r.ip, SP_IP_PRIOR), 3)
         for r in agg.itertuples()]
     agg["K%"] = (agg["k"] / agg["bf"].replace(0, np.nan)).round(4)
+    # Per-inning rates so the outs/hits/ER/walks prop models use the pitcher's
+    # own numbers instead of league fallbacks (H/9, BB/9, ERA, BB%).
+    ip = agg["ip"].replace(0, np.nan)
+    agg["H/9"] = (agg["hits"] / ip * 9).round(3)
+    agg["BB/9"] = (agg["bb"] / ip * 9).round(3)
+    agg["ERA"] = (agg["er"] / ip * 9).round(3)
+    agg["BB%"] = (agg["bb"] / agg["bf"].replace(0, np.nan)).round(4)
     agg["IP"] = agg["ip"]
-    return agg[["Name", "norm_name", "FIP", "K%", "IP", "GS"]]
+    return agg[["Name", "norm_name", "FIP", "K%", "H/9", "BB/9", "ERA", "BB%",
+                "IP", "GS"]]
 
 
 @lru_cache(maxsize=4)
