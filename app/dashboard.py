@@ -227,6 +227,17 @@ def load_ledger() -> list[dict]:
     return results.load_ledger()
 
 
+@st.cache_data(ttl=300)
+def gate_table() -> dict:
+    """Per-(sport, market) demonstrated-edge status for the bet-ticket badges.
+    Cached (ttl 300s) so the scroll feed's many cards share one build."""
+    try:
+        from project547 import edge_gate
+        return edge_gate.gate_table()
+    except Exception:
+        return {}
+
+
 def refresh():
     from datetime import datetime, timedelta
     from zoneinfo import ZoneInfo
@@ -497,7 +508,9 @@ def render_sport(sport: str):
                 if m:
                     st.markdown(
                         ui.matchup_card_html(sport, g, m, window=window,
-                                             min_edge=min_edge),
+                                             min_edge=min_edge,
+                                             gate_table=gate_table(),
+                                             bankroll=bankroll),
                         unsafe_allow_html=True)
                 else:
                     st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
@@ -578,7 +591,8 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         st.info("Team stat splits aren't available for this matchup yet.")
         st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
         return
-    st.markdown(ui.matchup_card_html(sport, g, m, window=window, min_edge=min_edge),
+    st.markdown(ui.matchup_card_html(sport, g, m, window=window, min_edge=min_edge,
+                                     gate_table=gate_table(), bankroll=bankroll),
                 unsafe_allow_html=True)
     _shop_line(sport, g, date_sel)
     _bp_validator(sport, g, date_sel)
