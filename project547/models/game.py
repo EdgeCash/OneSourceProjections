@@ -26,6 +26,7 @@ class TeamInputs:
     park_factor: float = 1.0      # run factor of the game's venue (1.0 neutral)
     own_home_pf: float = 1.0      # team's own home-park factor (de-bias the rate)
     temp_f: float | None = None   # first-pitch temperature (None = unknown/dome)
+    ump_runs_factor: float = 1.0  # home-plate ump run multiplier (1.0 = neutral)
 
 
 @dataclass
@@ -71,6 +72,12 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
         adj = config.TEMP_COEF * (float(team.temp_f) - config.TEMP_BASELINE_F)
         adj = float(np.clip(adj, -config.TEMP_CLAMP, config.TEMP_CLAMP))
         base = base * (1 + adj)
+
+    # Home-plate umpire: a game-level multiplier (same for both teams, so it
+    # moves the total not the margin), already shrunk + clamped in umpires.py.
+    # 1.0 (neutral) when the crew isn't posted or the weight is off.
+    if team.ump_runs_factor and team.ump_runs_factor != 1.0:
+        base = base * team.ump_runs_factor
 
     if is_home:
         base += config.HOME_FIELD_RUNS / 2

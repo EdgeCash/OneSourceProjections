@@ -59,17 +59,21 @@ def pitcher_strikeouts(
     k_rate: float | None,
     opp_k_rate: float | None = None,
     fp_projected_k: float | None = None,
+    ump_k_factor: float = 1.0,
 ) -> dict:
     """Expected Ks and a function-ready lambda for the Poisson.
 
     opp_k_rate shifts the matchup: a team that strikes out 26% of the time
-    inflates lambda vs one at 18%.
+    inflates lambda vs one at 18%. ump_k_factor applies the home-plate umpire's
+    (shrunk, clamped) strikeout-zone tendency; 1.0 = neutral.
     """
     rate = blend(k_rate, None, LEAGUE_K_RATE)
     if opp_k_rate:
         rate = rate * (0.5 + 0.5 * opp_k_rate / LEAGUE_K_RATE)
     lam_own = expected_innings * BF_PER_INNING * rate
     lam = blend(lam_own, fp_projected_k, lam_own)
+    if ump_k_factor and ump_k_factor != 1.0:
+        lam = lam * ump_k_factor
     return {"lambda": lam, "mean": lam}
 
 

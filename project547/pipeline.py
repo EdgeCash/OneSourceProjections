@@ -15,7 +15,7 @@ from datetime import date as _date
 import pandas as pd
 
 from . import (config, internal_stats, odds, parks, platoon, playerlogs, teams,
-               weather)
+               umpires, weather)
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -276,6 +276,13 @@ def project_games(date: str) -> pd.DataFrame:
         except Exception:
             wx = None
         game_temp = (wx or {}).get("temp_f")
+        # Home-plate umpire (assignment + tendency). Best-effort: None until the
+        # crew posts a few hours pre-game, and a neutral factor otherwise.
+        try:
+            ump = umpires.for_game(g["game_pk"])
+        except Exception:
+            ump = None
+        ump_rf = (ump or {}).get("runs_factor") or 1.0
         home = game_model.TeamInputs(
             name=g["home_team"],
             runs_per_game=_team_runs_per_game(g["home_team_id"], date),
@@ -284,6 +291,7 @@ def project_games(date: str) -> pd.DataFrame:
             park_factor=pf_venue,
             own_home_pf=pf_venue,
             temp_f=game_temp,
+            ump_runs_factor=ump_rf,
         )
         away = game_model.TeamInputs(
             name=g["away_team"],
@@ -293,6 +301,7 @@ def project_games(date: str) -> pd.DataFrame:
             park_factor=pf_venue,
             own_home_pf=parks.factor(g["away_team"]),
             temp_f=game_temp,
+            ump_runs_factor=ump_rf,
         )
         proj = game_model.simulate(home, away)
         try:
@@ -315,6 +324,7 @@ def project_games(date: str) -> pd.DataFrame:
         rows.append(
             {
                 "weather": wx,
+                "umpire": ump,
                 "lineups": lineups,
                 "player_ids": pids or None,
                 "game_pk": g["game_pk"],
@@ -358,6 +368,12 @@ def project_props(date: str) -> pd.DataFrame:
 
 def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -> list[dict]:
     rows = []
+    # Home-plate umpire strikeout-zone tendency (shrunk + clamped; 1.0 when the
+    # crew isn't posted or the weight is off). Applied to the K prop only.
+    try:
+        ump_k = (umpires.for_game(g["game_pk"]) or {}).get("k_factor") or 1.0
+    except Exception:
+        ump_k = 1.0
     for side, opp_side in (("home", "away"), ("away", "home")):
         name = g.get(f"{side}_pitcher")
         if not name:
@@ -391,7 +407,8 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
             "team": g[f"{side}_team"],
             "opponent": g[f"{opp_side}_team"],
         }
-        model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k, fp_k_today)
+        model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k,
+                                              fp_k_today, ump_k_factor=ump_k)
         rows.append({**common, "market": "pitcher_strikeouts",
                      "projection": round(model["mean"], 2),
                      "dist": "poisson", "param": model["lambda"]})

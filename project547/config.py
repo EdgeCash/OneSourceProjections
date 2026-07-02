@@ -101,6 +101,28 @@ TEMP_COEF = 0.003          # fractional run change per °F away from baseline
 TEMP_BASELINE_F = 72.0     # neutral temperature (no adjustment)
 TEMP_CLAMP = 0.08          # cap the total swing at ±8% (guards bad/extreme temps)
 
+# Home-plate umpire tendency. The committed table (data/history/mlb_umpires.json,
+# built by scripts/build_mlb_umpires.py) carries per-ump runs/K/BB indexes vs the
+# league average, shrunk toward 1.0 by game count. The home-plate ump is surfaced
+# as game context on every game (see umpires.for_game / pipeline), and these
+# weights + clamps gate how much — if at all — that tendency also nudges the model.
+#
+# These default to 0 (context-only) on purpose. On the first half-season on disk
+# each ump has only ~10-17 plate games, and at that sample the runs index is
+# dominated by which teams/pitchers they happened to draw, not a stable zone
+# effect: the k_idx↔runs_idx correlation is ≈0 where a real zone signal would be
+# negative (wide zone → more strikeouts, fewer runs). Letting that move a tuned
+# totals model would inject noise. So we ship the assignment + numbers now and,
+# like the EPA blend, keep the model coefficient pinned to 0 until a multi-season
+# table shows an out-of-sample signal — then raise these (the plumbing is wired
+# and tested). Applied like temperature: RUNS is a game-level multiplier on both
+# teams' expected runs (moves the total, not the margin); K multiplies the
+# pitcher-strikeout environment (that path already ships behind the edge gate).
+UMPIRE_RUNS_WEIGHT = 0.0    # OFF (context-only) pending a validated multi-season table
+UMPIRE_RUNS_CLAMP = 0.035   # cap the total swing at ±3.5% (~±0.32 runs) when enabled
+UMPIRE_K_WEIGHT = 0.0       # OFF (context-only) pending validation
+UMPIRE_K_CLAMP = 0.06       # cap the strikeout swing at ±6% when enabled
+
 # Monte Carlo draws for the game simulation.
 SIM_DRAWS = 20_000
 
