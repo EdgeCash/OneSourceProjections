@@ -26,7 +26,8 @@ BP_IP_PRIOR = 120.0
 
 _PITCH_FIELDS = ["strikeOuts", "battersFaced", "inningsPitched",
                  "baseOnBalls", "hitByPitch", "homeRuns", "hits", "earnedRuns"]
-_BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances"]
+_BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances",
+               "baseOnBalls", "strikeOuts"]
 
 
 def _ip_to_float(v):
@@ -162,10 +163,16 @@ def batter_table(season: int) -> pd.DataFrame:
         Name=("name", "first"), player_id=("player_id", "first"),
         H=("hits", "sum"), TB=("totalBases", "sum"), HR=("homeRuns", "sum"),
         AB=("atBats", "sum"), PA=("plateAppearances", "sum"),
+        BB=("baseOnBalls", "sum"), K=("strikeOuts", "sum"),
     ).reset_index()
     agg = agg[agg["AB"] > 0]
     agg["AVG"] = (agg["H"] / agg["AB"]).round(4)
     agg["SLG"] = (agg["TB"] / agg["AB"]).round(4)
+    # plate-discipline / power rates (context beyond AVG/SLG)
+    pa = agg["PA"].replace(0, np.nan)
+    agg["ISO"] = (agg["SLG"] - agg["AVG"]).round(4)   # raw power
+    agg["BB%"] = (agg["BB"] / pa).round(4)
+    agg["K%"] = (agg["K"] / pa).round(4)
     x = history.statcast_xstats(season - 1).get("batting", {})
     if x:
         def look(pid, key):
@@ -175,8 +182,9 @@ def batter_table(season: int) -> pd.DataFrame:
                 return None
         agg["est_ba"] = agg["player_id"].map(lambda p: look(p, "xba"))
         agg["est_slg"] = agg["player_id"].map(lambda p: look(p, "xslg"))
-    return agg[[c for c in ("Name", "norm_name", "AVG", "SLG", "PA", "HR",
-                            "est_ba", "est_slg") if c in agg.columns]]
+    return agg[[c for c in ("Name", "norm_name", "AVG", "SLG", "ISO", "BB%",
+                            "K%", "PA", "HR", "est_ba", "est_slg")
+                if c in agg.columns]]
 
 
 def clear_caches():
