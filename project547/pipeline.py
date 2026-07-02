@@ -20,6 +20,7 @@ from . import (config, internal_stats, odds, parks, platoon, playerlogs, teams,
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
+from .models import nba_props
 from .models import nhl_props
 from .models import props as prop_model
 from .models import wnba_props
@@ -1209,13 +1210,14 @@ def _fp_stat_for_market(fp_stats: dict, market_name: str) -> float | None:
 
 # sports that price props from our own committed box-score logs (validated,
 # well-calibrated per-player NB models) rather than only the vendor projection.
-_LOG_PROP_MODELS = {"WNBA": wnba_props, "NHL": nhl_props}
+_LOG_PROP_MODELS = {"WNBA": wnba_props, "NHL": nhl_props, "NBA": nba_props}
 
 
 # sports whose log prop model exposes an opponent adjustment, with the stat
 # columns their defense table needs from the committed logs.
 _OPP_ADJUST_COLS = {
     "WNBA": ("points", "rebounds", "assists", "three_made", "pra"),
+    "NBA": ("points", "rebounds", "assists", "three_made", "pra"),
     "NHL": ("shots", "points", "goals", "assists", "blocks", "saves"),
 }
 
