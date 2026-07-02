@@ -2192,6 +2192,21 @@ def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
     if nrfi is not None:
         lean = "NRFI" if nrfi >= 0.5 else "YRFI"
         bits.append(f"1st inning <b>{lean} {max(nrfi, 1 - nrfi) * 100:.0f}%</b>")
+    # Park factor (MLB) + weather — top-of-mind for totals/HR bettors and
+    # previously only shown on the fallback card, never the premium one.
+    if sport == "MLB":
+        try:
+            from project547 import parks
+            pf = parks.factor(g.get("home_team", ""))
+            if pf:
+                tag = ("hitter" if pf > 1.02 else "pitcher" if pf < 0.98
+                       else "neutral")
+                bits.append(f"Park <b>{pf:.2f}× {tag}</b>")
+        except Exception:
+            pass
+    wx = _weather_txt(g).lstrip(" ·").strip()
+    if wx:
+        bits.append(wx)
     bits.append(f"Window <b>{win_label}</b>")
 
     header = (
