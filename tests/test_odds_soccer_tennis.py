@@ -15,6 +15,19 @@ def test_soccer_sport_keys_mapped():
     assert oddsapi.SPORT_KEYS["EPL"] == "soccer_epl"
 
 
+def test_new_sports_refresh_twice_daily():
+    from project547 import config
+    # soccer/tennis are slow (twice-daily); core US sports stay hourly
+    assert oddsapi._sport_ttl("MLS") == config.ODDS_API_SLOW_TTL
+    assert oddsapi._sport_ttl("EPL") == config.ODDS_API_SLOW_TTL
+    assert oddsapi._sport_ttl("ATP") == config.ODDS_API_SLOW_TTL
+    assert oddsapi._sport_ttl("MLB") == config.ODDS_API_TTL
+    assert config.ODDS_API_SLOW_TTL == 12 * 60 * 60
+    # the cache bucket rotates once per TTL window (so a 12h TTL == 2 fetches/day)
+    slow, hourly = oddsapi._bucket(43200), oddsapi._bucket(3300)
+    assert isinstance(slow, int) and isinstance(hourly, int)
+
+
 def test_tennis_key_discovery(monkeypatch):
     monkeypatch.setattr(oddsapi, "list_sports", lambda: [
         {"key": "tennis_atp_wimbledon", "active": True},

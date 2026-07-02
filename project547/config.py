@@ -60,6 +60,9 @@ NTFY_CONFIRM_TOPIC = lambda: secret("NTFY_CONFIRM_TOPIC")  # noqa: E731
 ODDS_API_REGIONS = "us,us2"
 ODDS_API_MARKETS = "h2h,totals"
 ODDS_API_TTL = 3300  # seconds (~55 min) — at most one spend per sport per hour
+# Soccer/tennis lines move slowly and are secondary markets, so we don't need
+# them hourly — refresh at most twice a day to conserve credits.
+ODDS_API_SLOW_TTL = 12 * 60 * 60  # 12h (~twice a day) for soccer/tennis
 ODDS_API_MIN_CREDITS = 1000  # stop calling once the account drops below this
 
 # ---------------------------------------------------------------------------

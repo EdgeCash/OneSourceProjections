@@ -99,9 +99,24 @@ def _fetch(osk: str, regions: str, markets: str) -> list[dict]:
     return resp.json()
 
 
+def _bucket(ttl: int) -> int:
+    """Cache-key bucket that rotates once per ``ttl`` window, so a longer TTL
+    actually means fewer fetches (an hourly bucket would re-spend every hour no
+    matter the TTL)."""
+    return int(datetime.now(timezone.utc).timestamp() // max(ttl, 1))
+
+
+def _sport_ttl(sport_key: str) -> int:
+    """Refresh cadence for a sport: soccer/tennis are slow, secondary markets
+    (twice a day); the core US sports stay hourly."""
+    if sport_key in _TENNIS_PREFIX or \
+            SPORT_KEYS.get(sport_key, "").startswith("soccer_"):
+        return config.ODDS_API_SLOW_TTL
+    return config.ODDS_API_TTL
+
+
 def _fetch_one(osk: str, regions: str, markets: str, ttl: int) -> list[dict]:
-    bucket = datetime.now(timezone.utc).strftime("%Y%m%d%H")
-    key = f"oddsapi:{osk}:{regions}:{markets}:{bucket}"
+    key = f"oddsapi:{osk}:{regions}:{markets}:{_bucket(ttl)}"
     try:
         return cached_json(key, ttl, lambda: _fetch(osk, regions, markets))
     except Exception as e:
@@ -111,13 +126,14 @@ def _fetch_one(osk: str, regions: str, markets: str, ttl: int) -> list[dict]:
 
 def list_sports() -> list[dict]:
     """The Odds API /sports catalogue (which sports/tournaments are in season).
-    Cached hourly; [] with no key. Free of odds-credit charge on the API."""
+    Cached at the slow (twice-daily) cadence; [] with no key. Free of odds-credit
+    charge on the API."""
     if not config.THE_ODDS_API_KEY():
         return []
-    bucket = datetime.now(timezone.utc).strftime("%Y%m%d%H")
+    ttl = config.ODDS_API_SLOW_TTL
     try:
         return cached_json(
-            f"oddsapi:sports:{bucket}", config.ODDS_API_TTL,
+            f"oddsapi:sports:{_bucket(ttl)}", ttl,
             lambda: requests.get(f"{BASE}/sports",
                                  params={"apiKey": config.THE_ODDS_API_KEY()},
                                  timeout=30).json())
@@ -150,7 +166,7 @@ def game_odds(sport_key: str, regions: str | None = None,
         return []
     regions = regions or config.ODDS_API_REGIONS
     markets = markets or config.ODDS_API_MARKETS
-    ttl = config.ODDS_API_TTL if ttl is None else ttl
+    ttl = _sport_ttl(sport_key) if ttl is None else ttl
 
     if sport_key in _TENNIS_PREFIX:
         events: list[dict] = []
