@@ -28,15 +28,16 @@ def test_new_sports_refresh_twice_daily():
     assert isinstance(slow, int) and isinstance(hourly, int)
 
 
-def test_tennis_key_discovery(monkeypatch):
+def test_tennis_key_discovery_majors_only(monkeypatch):
     monkeypatch.setattr(oddsapi, "list_sports", lambda: [
         {"key": "tennis_atp_wimbledon", "active": True},
         {"key": "tennis_atp_us_open", "active": False},      # not live -> excluded
-        {"key": "tennis_wta_wimbledon", "active": True},     # wrong tour
+        {"key": "tennis_atp_halle", "active": True},         # regular tour -> skip
+        {"key": "tennis_wta_french_open", "active": True},   # wrong tour for ATP
         {"key": "soccer_epl", "active": True},               # not tennis
     ])
     assert oddsapi.tennis_sport_keys("ATP") == ["tennis_atp_wimbledon"]
-    assert oddsapi.tennis_sport_keys("WTA") == ["tennis_wta_wimbledon"]
+    assert oddsapi.tennis_sport_keys("WTA") == ["tennis_wta_french_open"]
     assert oddsapi.tennis_sport_keys("MLB") == []
 
 

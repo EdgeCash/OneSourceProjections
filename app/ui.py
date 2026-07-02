@@ -141,7 +141,29 @@ def _attach_edge_gate(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _tennis_edges(sport: str, g: dict) -> list[dict]:
+    """Match-winner edges for a tennis match (player vs player money line)."""
+    rows = []
+    p1, p2 = g.get("player1"), g.get("player2")
+    matchup = f"{p1} vs {p2}"
+    for who, price_k, ev_k, prob_k in (
+            ("player1", "p1_price", "p1_ev", "player1_win_prob"),
+            ("player2", "p2_price", "p2_ev", "player2_win_prob")):
+        name = g.get(who)
+        price, ev, prob = g.get(price_k), g.get(ev_k), g.get(prob_k)
+        if ev is not None and price is not None and pd.notna(ev) and pd.notna(price):
+            rows.append({"sport": sport, "type": "Game", "market": "Moneyline",
+                         "bet": f"{name} ML", "game": matchup, "line": None,
+                         "price": price, "model_prob": prob, "ev": ev,
+                         "kelly": g.get("kelly"), "time": g.get("match_time"),
+                         "_home": p1, "_away": p2,
+                         "_shop_mkt": "moneyline", "_sidekey": name})
+    return rows
+
+
 def _game_edges(sport: str, g: dict) -> list[dict]:
+    if g.get("player1") and g.get("player2"):   # tennis: no teams/totals
+        return _tennis_edges(sport, g)
     rows = []
     matchup = f"{g.get('away_team')} @ {g.get('home_team')}"
     home_t, away_t = g.get("home_team"), g.get("away_team")
@@ -160,12 +182,20 @@ def _game_edges(sport: str, g: dict) -> list[dict]:
             g.get(f"{side}_ml"), g.get(f"{side}_win_prob"),
             g.get(f"{side}_ml_ev", g.get(f"{side}_ev")),
             shop_mkt="moneyline", sidekey=g.get(f"{side}_team"))
-    add("Total", f"Over {g.get('total_line')}", g.get("total_line"),
-        g.get("over_odds"), g.get("model_over_prob"), g.get("over_ev"),
-        shop_mkt="total", sidekey="over")
-    mop = g.get("model_over_prob")
-    add("Total", f"Under {g.get('total_line')}", g.get("total_line"),
-        g.get("under_odds"), (1 - mop) if mop is not None else None,
+    # soccer draw (three-way money line)
+    if g.get("draw_prob") is not None:
+        add("Moneyline", "Draw", None, g.get("draw_ml"), g.get("draw_prob"),
+            g.get("draw_ev"), shop_mkt="moneyline", sidekey="Draw")
+    # totals: MLB/team sports quote over_odds/model_over_prob; soccer quotes
+    # over_price/over_2_5 (goals O/U 2.5) — accept either.
+    total_line = g.get("total_line", 2.5 if g.get("over_price") is not None else None)
+    over_price = g.get("over_odds", g.get("over_price"))
+    under_price = g.get("under_odds", g.get("under_price"))
+    mop = g.get("model_over_prob", g.get("over_2_5"))
+    add("Total", f"Over {total_line}", total_line, over_price, mop,
+        g.get("over_ev"), shop_mkt="total", sidekey="over")
+    add("Total", f"Under {total_line}", total_line, under_price,
+        (1 - mop) if mop is not None else None,
         g.get("under_ev"), shop_mkt="total", sidekey="under")
     # run line / spread (home side line; away is the opposite handicap)
     sp_line = g.get("rl_home_line", g.get("spread_home_line"))
@@ -236,6 +266,66 @@ def _best_edge(game: dict) -> tuple[str, float] | None:
             cands.append((r["bet"], float(r["ev"])))
     cands = [c for c in cands if c[1] > 0]
     return max(cands, key=lambda c: c[1]) if cands else None
+
+
+def _edge_label(g: dict) -> str:
+    be = _best_edge(g)
+    return f"{be[0]} {be[1] * 100:+.1f}%" if be else "—"
+
+
+def soccer_table(games) -> pd.DataFrame:
+    """Display table for a soccer slate: matchup, expected goals, 1X2 %, O/U 2.5,
+    the market money line (home/draw/away) and the best model edge. Odds columns
+    read '—' until The Odds API covers the match."""
+    rows = []
+    for g in games or []:
+        rows.append({
+            "Match": f"{g.get('away_team')} @ {g.get('home_team')}",
+            "Time": fmt_time_et(g.get("game_time")),
+            "xG H-A": f"{_num(g.get('home_exp'))}–{_num(g.get('away_exp'))}",
+            "Home%": _pct(g.get("home_win_prob")),
+            "Draw%": _pct(g.get("draw_prob")),
+            "Away%": _pct(g.get("away_win_prob")),
+            "Over 2.5%": _pct(g.get("over_2_5")),
+            "ML H/D/A": " / ".join(fmt_american(g.get(k))
+                                   for k in ("home_ml", "draw_ml", "away_ml")),
+            "Best edge": _edge_label(g),
+        })
+    return pd.DataFrame(rows)
+
+
+def tennis_table(games) -> pd.DataFrame:
+    """Display table for a tennis slate: matchup, tournament, surface, each
+    player's model win %, the market money line, sample sizes, best edge."""
+    rows = []
+    for g in games or []:
+        rows.append({
+            "Match": f"{g.get('player1')} vs {g.get('player2')}",
+            "Tournament": g.get("tournament"),
+            "Surface": str(g.get("surface") or "").title() or "—",
+            "P1 win%": _pct(g.get("player1_win_prob")),
+            "P2 win%": _pct(g.get("player2_win_prob")),
+            "ML P1/P2": f"{fmt_american(g.get('p1_price'))} / "
+                        f"{fmt_american(g.get('p2_price'))}",
+            "Matches P1/P2": f"{g.get('p1_matches', '—')}/{g.get('p2_matches', '—')}",
+            "Best edge": _edge_label(g),
+        })
+    return pd.DataFrame(rows)
+
+
+def match_edge_table(sport: str, g: dict) -> pd.DataFrame:
+    """The priced sides behind a soccer/tennis match (Sharp Sheet body): market,
+    bet, model %, price, EV. Empty when no odds have arrived yet."""
+    rows = []
+    for r in _game_edges(sport, g):
+        rows.append({
+            "Market": r["market"], "Bet": r["bet"],
+            "Model%": _pct(r["model_prob"]),
+            "Price": fmt_american(r["price"]),
+            "EV%": (f"{r['ev'] * 100:+.1f}"
+                    if r["ev"] is not None and pd.notna(r["ev"]) else "—"),
+        })
+    return pd.DataFrame(rows)
 
 
 def lineup_status(sport: str, g: dict) -> dict:

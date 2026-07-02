@@ -44,6 +44,10 @@ SPORT_KEYS = {
 
 # our sport key -> The Odds API tennis key prefix (tournaments are per-key)
 _TENNIS_PREFIX = {"ATP": "tennis_atp", "WTA": "tennis_wta"}
+# Only the four Grand Slams are worth the credits (deep, liquid markets that best
+# match our Elo model); regular ATP/WTA tour stops are skipped. The Odds API keys
+# these as e.g. tennis_atp_wimbledon / tennis_atp_us_open.
+_TENNIS_MAJORS = ("aus_open", "french_open", "wimbledon", "us_open")
 
 # The Odds API market key -> our internal market name
 _MARKET = {"h2h": "moneyline", "totals": "total", "spreads": "spread"}
@@ -143,14 +147,20 @@ def list_sports() -> list[dict]:
 
 
 def tennis_sport_keys(sport_key: str) -> list[str]:
-    """Active per-tournament tennis keys for a tour (ATP/WTA) from /sports —
-    e.g. ['tennis_atp_wimbledon']. The Odds API has no single 'all tennis' key,
-    so we fan out over whatever tournaments are currently live."""
+    """Active per-tournament tennis keys for a tour (ATP/WTA) from /sports,
+    **restricted to the Grand Slams** — e.g. ['tennis_atp_wimbledon']. The Odds
+    API has no single 'all tennis' key, so we fan out over the majors that are
+    currently live (regular tour stops aren't worth the credits)."""
     prefix = _TENNIS_PREFIX.get(sport_key)
     if not prefix:
         return []
-    return [s["key"] for s in list_sports()
-            if s.get("active") and str(s.get("key", "")).startswith(prefix)]
+    out = []
+    for s in list_sports():
+        key = str(s.get("key", ""))
+        if (s.get("active") and key.startswith(prefix)
+                and any(m in key for m in _TENNIS_MAJORS)):
+            out.append(key)
+    return out
 
 
 def game_odds(sport_key: str, regions: str | None = None,

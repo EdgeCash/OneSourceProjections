@@ -12,6 +12,53 @@ def _mc_game():
             "under_odds": -115, "over_ev": 0.04, "under_ev": -0.03}
 
 
+def _soccer_game():
+    return {"home_team": "Inter Miami CF", "away_team": "Sporting Kansas City",
+            "home_exp": 2.1, "away_exp": 1.0, "home_win_prob": 0.62,
+            "draw_prob": 0.22, "away_win_prob": 0.16, "over_2_5": 0.58,
+            "home_ml": -180, "draw_ml": 320, "away_ml": 450,
+            "home_ev": 0.03, "draw_ev": -0.02, "away_ev": 0.01,
+            "over_price": -115, "under_price": -105, "over_ev": 0.02, "under_ev": -0.04}
+
+
+def _tennis_game():
+    return {"player1": "Alexander Zverev", "player2": "Taylor Fritz",
+            "tournament": "Wimbledon", "surface": "grass",
+            "player1_win_prob": 0.61, "player2_win_prob": 0.39,
+            "p1_price": -135, "p2_price": 115, "p1_ev": 0.02, "p2_ev": -0.03,
+            "p1_matches": 40, "p2_matches": 38, "kelly": 0.008}
+
+
+def test_game_edges_soccer_three_way_and_totals():
+    edges = ui._game_edges("MLS", _soccer_game())
+    bets = {r["bet"] for r in edges}
+    assert "Draw" in bets                            # three-way money line
+    assert any("Over 2.5" in b for b in bets)        # goals total via aliases
+    assert {r["market"] for r in edges} == {"Moneyline", "Total"}
+
+
+def test_game_edges_tennis_players():
+    edges = ui._game_edges("ATP", _tennis_game())
+    assert {r["bet"] for r in edges} == {"Alexander Zverev ML", "Taylor Fritz ML"}
+    assert all(r["market"] == "Moneyline" for r in edges)
+    assert edges[0]["_home"] == "Alexander Zverev"   # player carried for resolve
+
+
+def test_soccer_and_tennis_tables_render():
+    st = ui.soccer_table([_soccer_game()])
+    assert list(st["Match"]) == ["Sporting Kansas City @ Inter Miami CF"]
+    assert st.iloc[0]["Draw%"] == "22%"
+    tt = ui.tennis_table([_tennis_game()])
+    assert tt.iloc[0]["Surface"] == "Grass" and tt.iloc[0]["P1 win%"] == "61%"
+
+
+def test_match_edge_table_empty_without_odds():
+    g = {"home_team": "A", "away_team": "B", "home_win_prob": 0.5,
+         "draw_prob": 0.3, "away_win_prob": 0.2, "over_2_5": 0.5}
+    assert ui.match_edge_table("MLS", g).empty          # no prices -> no rows
+    assert not ui.match_edge_table("MLS", _soccer_game()).empty
+
+
 def test_bet_ticket_gate_caps_and_stake():
     g = _mc_game()
     # cleared moneyline -> PLAY with a real ¼-Kelly stake; gated total -> PASS
