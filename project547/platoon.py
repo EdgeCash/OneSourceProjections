@@ -45,6 +45,52 @@ def bats(name: str) -> str | None:
     return (rec or {}).get("bats")
 
 
+def refresh_handedness(pairs) -> int:
+    """Fill handedness for players the committed retrosheet map misses (recent
+    debuts default to R/R until the live feed fills them in — see
+    scripts/import_mlb_handedness.py). ``pairs`` is an iterable of
+    ``(player_id, name)`` from the live slate; any whose normalized name is
+    absent (or has a null bats/throws) is fetched in one batched call to the
+    people endpoint and merged into ``mlb_handedness.json``. Returns the number
+    of newly resolved players. Best-effort: statsapi being unreachable is not an
+    error, it just resolves nothing."""
+    from .clients import mlb_statsapi
+
+    current = _handedness()
+    missing_ids = []
+    for pid, name in pairs:
+        if not pid:
+            continue
+        rec = current.get(normalize(name or ""))
+        if rec and rec.get("bats") and rec.get("throws"):
+            continue
+        missing_ids.append(int(pid))
+    if not missing_ids:
+        return 0
+
+    try:
+        fetched = mlb_statsapi.people_handedness(missing_ids)
+    except Exception:
+        return 0
+
+    added = 0
+    data = dict(current)  # copy the cached map to mutate + persist
+    for rec in fetched.values():
+        nm = normalize(rec.get("name") or "")
+        if not nm or not (rec.get("bats") or rec.get("throws")):
+            continue
+        prev = data.get(nm)
+        entry = {"bats": rec.get("bats"), "throws": rec.get("throws")}
+        if prev != entry:
+            data[nm] = entry
+            added += 1
+    if added:
+        _HAND_PATH.write_text(json.dumps(data, separators=(",", ":"),
+                                         sort_keys=True))
+        _handedness.cache_clear()  # so throws()/bats() see the new names
+    return added
+
+
 @lru_cache(maxsize=6)
 def _hitting_splits(season: int) -> dict:
     path = (REPO_ROOT / "data" / "history" / "backfill" / "mlb" / str(season)

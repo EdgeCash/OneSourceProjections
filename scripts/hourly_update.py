@@ -43,6 +43,63 @@ ET = ZoneInfo("America/New_York")
 APP_URL = "https://onesourceprojections.streamlit.app"
 RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
 MLB_BACKFILL_STATE = OUTPUT_DIR.parent / "track" / "mlb_backfill_state.json"
+HANDEDNESS_STATE = OUTPUT_DIR.parent / "track" / "mlb_handedness_state.json"
+UMPIRE_STATE = OUTPUT_DIR.parent / "track" / "mlb_umpire_state.json"
+
+
+def _maybe_refresh_umpires(today_iso: str) -> None:
+    """Once per day, extend the committed umpire-tendency table with the
+    finished games since it was last built (incremental — only the new days,
+    a handful of boxscores). Keeps the per-ump indexes current as the season
+    accrues. Best-effort and deduped by date."""
+    try:
+        state = json.loads(UMPIRE_STATE.read_text()) \
+            if UMPIRE_STATE.exists() else {}
+    except Exception:
+        state = {}
+    if state.get("last") == today_iso:
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "build_mlb_umpires",
+            Path(__file__).resolve().parent / "build_mlb_umpires.py")
+        bmu = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bmu)
+        n = bmu.refresh_current_season(int(today_iso[:4]))
+        UMPIRE_STATE.parent.mkdir(parents=True, exist_ok=True)
+        UMPIRE_STATE.write_text(json.dumps({"last": today_iso}))
+        log.info("refreshed MLB umpire tendencies: %d umps", n)
+    except Exception as e:
+        log.error("MLB umpire refresh failed: %s", e)
+
+
+def _maybe_refresh_handedness(today_iso: str, upcoming: list[str]) -> None:
+    """Once per day, fill handedness for any slate player the committed
+    retrosheet map misses (recent debuts) from the live people endpoint, so the
+    platoon signal keeps working for this season's call-ups. Best-effort and
+    deduped by date; only resolves anything where statsapi is reachable."""
+    try:
+        state = json.loads(HANDEDNESS_STATE.read_text()) \
+            if HANDEDNESS_STATE.exists() else {}
+    except Exception:
+        state = {}
+    if state.get("last") == today_iso:
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "refresh_mlb_handedness",
+            Path(__file__).resolve().parent / "refresh_mlb_handedness.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        added = mod.refresh(upcoming)
+        HANDEDNESS_STATE.parent.mkdir(parents=True, exist_ok=True)
+        HANDEDNESS_STATE.write_text(json.dumps({"last": today_iso}))
+        if added:
+            log.info("refreshed MLB handedness: +%d players", added)
+    except Exception as e:
+        log.error("MLB handedness refresh failed: %s", e)
 
 
 def _maybe_refresh_mlb_backfill(today_iso: str) -> None:
@@ -295,6 +352,14 @@ def main():
     # 3a) once/day: extend the current MLB season's game-log backfill with
     #     recent finals so team_games('MLB') (rates, NRFI, cards) stays current.
     _maybe_refresh_mlb_backfill(today.isoformat())
+
+    # 3a2) once/day: fill handedness for slate players the committed map misses
+    #      (recent debuts) so the platoon nudge covers this season's call-ups.
+    _maybe_refresh_handedness(today.isoformat(), upcoming)
+
+    # 3a3) once/day: extend the umpire-tendency table with recent finals so the
+    #      per-ump indexes stay current (assignment is fetched live per run).
+    _maybe_refresh_umpires(today.isoformat())
 
     # 3b) daily recap push (once/day): YESTERDAY's model + played accuracy,
     #     logged to the daily record so the day-by-day history accrues.
