@@ -315,6 +315,56 @@ def player_season_stats(player_id: int, season: int, group: str) -> dict:
     return {}
 
 
+def people_handedness(player_ids: list[int]) -> dict[int, dict]:
+    """Live bats/throws for a batch of player ids from the people endpoint —
+    the source that fills handedness for players the committed retrosheet map
+    misses (recent debuts). Returns {id: {"bats": 'L|R|B', "throws": 'L|R',
+    "name": full_name}}. Batched (StatsAPI accepts a comma list of ids) and
+    cached statically since handedness never changes."""
+    ids = sorted({int(p) for p in player_ids if p})
+    if not ids:
+        return {}
+    key = "statsapi:people:" + ",".join(str(i) for i in ids)
+    data = cached_json(
+        key, _TTL_STATIC,
+        lambda: _get("people", {"personIds": ",".join(str(i) for i in ids)}))
+    out: dict[int, dict] = {}
+    for p in data.get("people", []):
+        pid = p.get("id")
+        if pid is None:
+            continue
+        bats = (p.get("batSide") or {}).get("code")
+        # StatsAPI codes switch-hitters 'S'; the committed retrosheet map uses
+        # 'B' — normalize so the merged dataset keeps one convention.
+        if bats == "S":
+            bats = "B"
+        out[int(pid)] = {
+            "bats": bats,
+            "throws": (p.get("pitchHand") or {}).get("code"),
+            "name": p.get("fullName"),
+        }
+    return out
+
+
+def game_officials(game_pk: int) -> dict:
+    """Umpire crew for a game from the boxscore ``officials`` block, keyed by
+    role. Returns e.g. {"home_plate": {"name": ..., "id": ...}, "first_base":
+    ...}. The home-plate ump is the one that matters for K/run tendency. Empty
+    dict if the crew isn't posted yet (assignments appear a few hours pre-game)."""
+    try:
+        data = cached_json(f"statsapi:box:{game_pk}", _TTL_SCHEDULE,
+                           lambda: _get(f"game/{game_pk}/boxscore"))
+    except Exception:
+        return {}
+    out: dict[str, dict] = {}
+    for o in data.get("officials", []) or []:
+        role = (o.get("officialType") or "").lower().replace(" ", "_")
+        person = o.get("official", {}) or {}
+        if role and person.get("fullName"):
+            out[role] = {"name": person.get("fullName"), "id": person.get("id")}
+    return out
+
+
 def team_season_hitting(team_id: int, season: int) -> dict:
     data = cached_json(
         f"statsapi:teamhit:{team_id}:{season}",
