@@ -14,7 +14,8 @@ from datetime import date as _date
 
 import pandas as pd
 
-from . import config, internal_stats, odds, parks, playerlogs, teams, weather
+from . import (config, internal_stats, odds, parks, platoon, playerlogs, teams,
+               weather)
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -351,7 +352,7 @@ def project_props(date: str) -> pd.DataFrame:
     rows: list[dict] = []
     for g in slate:
         rows += _pitcher_prop_rows(g, pitchers, fp, season)
-        rows += _batter_prop_rows(g, batters, fp)
+        rows += _batter_prop_rows(g, batters, fp, season)
     return pd.DataFrame(rows)
 
 
@@ -422,13 +423,16 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
     return rows
 
 
-def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
+def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict,
+                      season: int) -> list[dict]:
     rows = []
     try:
         lineups = mlb_statsapi.batting_order(g["game_pk"])
     except Exception:
         return rows
     for side, opp_side in (("home", "away"), ("away", "home")):
+        # opposing starter's throwing hand -> each hitter's platoon split
+        vs_hand = platoon.throws(g.get(f"{opp_side}_pitcher") or "")
         for entry in lineups.get(side, []):
             name, slot = entry["name"], entry["slot"]
             stats_row: dict = {}
@@ -450,15 +454,26 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
 
             ba = _lookup_float(stats_row, "AVG")
             xba = _lookup_float(stats_row, "est_ba")
-            hits = prop_model.batter_hits(exp_ab, ba, xba, fp_h)
-
             slg = _lookup_float(stats_row, "SLG")
             xslg = _lookup_float(stats_row, "est_slg")
+            # Platoon nudge: shrink the hitter's rates toward their split vs the
+            # starter's hand (shrunk by the split's PA; 1.0 when unknown).
+            pid = stats_row.get("player_id")
+            avg_mult = (platoon.platoon_mult(pid, vs_hand, season, ba or 0, "avg")
+                        if ba and vs_hand else 1.0)
+            slg_mult = (platoon.platoon_mult(pid, vs_hand, season, slg or 0, "slg")
+                        if slg and vs_hand else 1.0)
+            ba = ba * avg_mult if ba else ba
+            slg = slg * slg_mult if slg else slg
+
+            hits = prop_model.batter_hits(exp_ab, ba, xba, fp_h)
             tb = prop_model.batter_total_bases(exp_ab, slg, xslg, fp_tb)
 
             pa_total = _lookup_float(stats_row, "PA")
             hr_total = _lookup_float(stats_row, "HR")
             hr_rate = hr_total / pa_total if hr_total and pa_total else None
+            if hr_rate:
+                hr_rate *= slg_mult          # power scales with the platoon edge
             hr = prop_model.batter_home_run(exp_ab + 0.4, hr_rate, fp_hr)
 
             common = {
@@ -466,6 +481,8 @@ def _batter_prop_rows(g: dict, batters: pd.DataFrame, fp: dict) -> list[dict]:
                 "player": name,
                 "team": g[f"{side}_team"],
                 "opponent": g[f"{opp_side}_team"],
+                "platoon": (f"vs {'LHP' if vs_hand == 'L' else 'RHP'}"
+                            if vs_hand else None),
             }
             rows += [
                 {**common, "market": "batter_hits", "projection": round(hits["mean"], 2),

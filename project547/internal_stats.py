@@ -25,8 +25,9 @@ SP_IP_PRIOR = 50.0
 BP_IP_PRIOR = 120.0
 
 _PITCH_FIELDS = ["strikeOuts", "battersFaced", "inningsPitched",
-                 "baseOnBalls", "hitByPitch", "homeRuns"]
-_BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances"]
+                 "baseOnBalls", "hitByPitch", "homeRuns", "hits", "earnedRuns"]
+_BAT_FIELDS = ["hits", "totalBases", "homeRuns", "atBats", "plateAppearances",
+               "baseOnBalls", "strikeOuts"]
 
 
 def _ip_to_float(v):
@@ -96,6 +97,41 @@ def _fip(hr, bb, hbp, k, ip, prior_ip: float) -> float:
 
 
 @lru_cache(maxsize=4)
+@lru_cache(maxsize=4)
+def _reliever_daily(season: int) -> pd.DataFrame:
+    """Per (team, date) relief innings — the input to bullpen-fatigue."""
+    df = _mlb_rows(season)
+    if df.empty:
+        return pd.DataFrame(columns=["team_c", "date", "ip"])
+    rp = df[(df["position"] == "P") & (df["started"] == False)].copy()  # noqa: E712
+    if rp.empty:
+        return pd.DataFrame(columns=["team_c", "date", "ip"])
+    rp["team_c"] = rp["team"].map(lambda t: teams.canon("MLB", str(t)))
+    daily = rp.groupby(["team_c", "date"], as_index=False)["inningsPitched"].sum()
+    return daily.rename(columns={"inningsPitched": "ip"})
+
+
+def bullpen_fatigue(season: int, team: str, asof: str, days: int = 2) -> dict:
+    """How hard a team's bullpen has worked in the ``days`` before ``asof``.
+    Returns {ip, appearances_days, level}: level in
+    'fresh' / 'moderate' / 'heavy' (>= ~4.5 relief IP over 2 days, or work on
+    both prior days, taxes a pen). Empty dict when unknown."""
+    daily = _reliever_daily(season)
+    if daily.empty:
+        return {}
+    tc = teams.canon("MLB", str(team))
+    lo = (pd.to_datetime(asof) - pd.Timedelta(days=days)).strftime("%Y-%m-%d")
+    d = pd.to_datetime(daily["date"], errors="coerce")
+    sub = daily[(daily["team_c"] == tc) & (d < pd.to_datetime(asof)) & (d >= lo)]
+    if sub.empty:
+        return {}
+    ip = round(float(pd.to_numeric(sub["ip"], errors="coerce").sum()), 1)
+    n_days = int(sub["date"].nunique())
+    level = "heavy" if (ip >= 4.5 or n_days >= days) else (
+        "moderate" if ip >= 2.5 else "fresh")
+    return {"ip": ip, "appearances_days": n_days, "level": level}
+
+
 def pitcher_table(season: int) -> pd.DataFrame:
     """Starter rates: Name, norm_name, FIP, K%, IP, GS."""
     df = _mlb_rows(season)
@@ -109,6 +145,7 @@ def pitcher_table(season: int) -> pd.DataFrame:
         k=("strikeOuts", "sum"), bf=("battersFaced", "sum"),
         ip=("inningsPitched", "sum"), bb=("baseOnBalls", "sum"),
         hbp=("hitByPitch", "sum"), hr=("homeRuns", "sum"),
+        hits=("hits", "sum"), er=("earnedRuns", "sum"),
         GS=("date", "count"),
     ).reset_index()
     agg = agg[agg["ip"] > 0]
@@ -116,8 +153,16 @@ def pitcher_table(season: int) -> pd.DataFrame:
         round(_fip(r.hr or 0, r.bb or 0, r.hbp or 0, r.k or 0, r.ip, SP_IP_PRIOR), 3)
         for r in agg.itertuples()]
     agg["K%"] = (agg["k"] / agg["bf"].replace(0, np.nan)).round(4)
+    # Per-inning rates so the outs/hits/ER/walks prop models use the pitcher's
+    # own numbers instead of league fallbacks (H/9, BB/9, ERA, BB%).
+    ip = agg["ip"].replace(0, np.nan)
+    agg["H/9"] = (agg["hits"] / ip * 9).round(3)
+    agg["BB/9"] = (agg["bb"] / ip * 9).round(3)
+    agg["ERA"] = (agg["er"] / ip * 9).round(3)
+    agg["BB%"] = (agg["bb"] / agg["bf"].replace(0, np.nan)).round(4)
     agg["IP"] = agg["ip"]
-    return agg[["Name", "norm_name", "FIP", "K%", "IP", "GS"]]
+    return agg[["Name", "norm_name", "FIP", "K%", "H/9", "BB/9", "ERA", "BB%",
+                "IP", "GS"]]
 
 
 @lru_cache(maxsize=4)
@@ -153,10 +198,16 @@ def batter_table(season: int) -> pd.DataFrame:
         Name=("name", "first"), player_id=("player_id", "first"),
         H=("hits", "sum"), TB=("totalBases", "sum"), HR=("homeRuns", "sum"),
         AB=("atBats", "sum"), PA=("plateAppearances", "sum"),
+        BB=("baseOnBalls", "sum"), K=("strikeOuts", "sum"),
     ).reset_index()
     agg = agg[agg["AB"] > 0]
     agg["AVG"] = (agg["H"] / agg["AB"]).round(4)
     agg["SLG"] = (agg["TB"] / agg["AB"]).round(4)
+    # plate-discipline / power rates (context beyond AVG/SLG)
+    pa = agg["PA"].replace(0, np.nan)
+    agg["ISO"] = (agg["SLG"] - agg["AVG"]).round(4)   # raw power
+    agg["BB%"] = (agg["BB"] / pa).round(4)
+    agg["K%"] = (agg["K"] / pa).round(4)
     x = history.statcast_xstats(season - 1).get("batting", {})
     if x:
         def look(pid, key):
@@ -166,8 +217,9 @@ def batter_table(season: int) -> pd.DataFrame:
                 return None
         agg["est_ba"] = agg["player_id"].map(lambda p: look(p, "xba"))
         agg["est_slg"] = agg["player_id"].map(lambda p: look(p, "xslg"))
-    return agg[[c for c in ("Name", "norm_name", "AVG", "SLG", "PA", "HR",
-                            "est_ba", "est_slg") if c in agg.columns]]
+    return agg[[c for c in ("Name", "norm_name", "player_id", "AVG", "SLG",
+                            "ISO", "BB%", "K%", "PA", "HR", "est_ba", "est_slg")
+                if c in agg.columns]]
 
 
 def clear_caches():
