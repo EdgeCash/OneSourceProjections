@@ -52,3 +52,28 @@ def test_roles_partition_markets():
     goalie = [m for m, c in npx.MARKETS.items() if c["role"] == "goalie"]
     assert "saves" in goalie and "shots" in skater
     assert set(skater) & set(goalie) == set()
+
+
+def _def_rows():
+    # league allows 3.0 shots/appearance; TIGHT allows 2.0, LOOSE 4.0. Goalie
+    # saves keyed the same way: SHOOTS_LOTS induces 34 saves vs league 26.
+    rows = []
+    for _ in range(200):
+        rows.append({"team": "TIGHT", "shots": 2.0})
+        rows.append({"team": "LOOSE", "shots": 4.0})
+        rows.append({"team": "AVG", "shots": 3.0})
+        rows.append({"team": "SHOOTS_LOTS", "saves": 34.0})
+        rows.append({"team": "AVG", "saves": 26.0})
+    return rows
+
+
+def test_opponent_factor_uses_nhl_markets():
+    tbl = npx.defense_factors(_def_rows())
+    tight = npx.opponent_factor("Shots On Goal", "TIGHT", tbl)
+    loose = npx.opponent_factor("SOG", "LOOSE", tbl)
+    assert tight < 1.0 < loose                         # defense direction
+    # saves ride the SHOOTING team's volume (right direction for a goalie)
+    assert npx.opponent_factor("Goalie Saves", "SHOOTS_LOTS", tbl) > 1.0
+    # unknown team / market -> neutral
+    assert npx.opponent_factor("Shots", "NOPE", tbl) == 1.0
+    assert npx.opponent_factor("Faceoffs", "TIGHT", tbl) == 1.0

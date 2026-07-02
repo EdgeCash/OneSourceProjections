@@ -1212,27 +1212,45 @@ def _fp_stat_for_market(fp_stats: dict, market_name: str) -> float | None:
 _LOG_PROP_MODELS = {"WNBA": wnba_props, "NHL": nhl_props}
 
 
-@lru_cache(maxsize=8)
-def _wnba_defense_table(season: int) -> tuple:
-    """Opponent-defense multipliers per (team, market) from the committed WNBA
+# sports whose log prop model exposes an opponent adjustment, with the stat
+# columns their defense table needs from the committed logs.
+_OPP_ADJUST_COLS = {
+    "WNBA": ("points", "rebounds", "assists", "three_made", "pra"),
+    "NHL": ("shots", "points", "goals", "assists", "blocks", "saves"),
+}
+
+
+@lru_cache(maxsize=16)
+def _defense_table(sport_key: str, season: int) -> tuple:
+    """Opponent-defense multipliers per (team, market) from a sport's committed
     box-score logs, keyed by canonical team so it joins the slate. Cached per
-    season; returned as a tuple of items so lru_cache can hold it."""
+    (sport, season); returned as a tuple of items so lru_cache can hold it."""
+    model = _LOG_PROP_MODELS.get(sport_key)
+    cols = _OPP_ADJUST_COLS.get(sport_key)
+    if model is None or cols is None or not hasattr(model, "defense_factors"):
+        return ()
+    # Season labelling differs by sport (WNBA = calendar year, NHL = the season's
+    # start year), and NHL/NBA are queried out of season — so build from the most
+    # recent season that actually has logs within a short lookback window.
     try:
-        df = playerlogs._logs("WNBA", (season,))
+        df = playerlogs._logs(sport_key, tuple(range(season - 2, season + 1)))
     except Exception:
         return ()
-    cols = ("points", "rebounds", "assists", "three_made", "pra")
+    if df.empty or "season" not in df.columns:
+        return ()
+    latest = df["season"].dropna().max()
+    df = df[df["season"] == latest]
     rows = []
     for rec in df.to_dict("records"):
         opp = rec.get("opp")
         if not opp:
             continue
-        row = {"team": teams.canon("WNBA", str(opp))}
+        row = {"team": teams.canon(sport_key, str(opp))}
         for c in cols:
             if c in rec:
                 row[c] = rec[c]
         rows.append(row)
-    return tuple(wnba_props.defense_factors(rows).items())
+    return tuple(model.defense_factors(rows).items())
 
 
 def _slate_opponent_map(sport_key: str, date: str) -> dict:
@@ -1312,11 +1330,13 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
         lookup = {}
     fp = _fp_generic_index(sport_key, date)
 
-    # Opponent adjustment (WNBA): the day's matchups + a defense-vs-market table
-    # from the committed logs, so each player's projection is nudged by who they
-    # face. Both keyed by canonical team so they join cleanly.
-    opp_map = _slate_opponent_map(sport_key, date) if sport_key == "WNBA" else {}
-    def_table = dict(_wnba_defense_table(int(str(date)[:4]))) if sport_key == "WNBA" else {}
+    # Opponent adjustment (WNBA, NHL): the day's matchups + a defense-vs-market
+    # table from the committed logs, so each player's projection is nudged by who
+    # they face. Both keyed by canonical team so they join cleanly. Empty (no-op)
+    # for sports without an opponent model or out of season (empty slate).
+    opp_adjust = sport_key in _OPP_ADJUST_COLS
+    opp_map = _slate_opponent_map(sport_key, date) if opp_adjust else {}
+    def_table = dict(_defense_table(sport_key, int(str(date)[:4]))) if opp_adjust else {}
 
     rows = []
     for _, r in flat.iterrows():

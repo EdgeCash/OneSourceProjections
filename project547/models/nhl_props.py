@@ -43,7 +43,10 @@ HALF_LIFE = 10.0   # games; NHL skater form is noisier -> slightly longer window
 MIN_GAMES = 5
 
 # re-use the pure WNBA machinery (identical math) so there is one implementation.
-from .wnba_props import _nb_cdf, prob_over, weighted_rate  # noqa: E402
+from .wnba_props import (  # noqa: E402
+    _nb_cdf, prob_over, weighted_rate,
+    defense_factors as _defense_factors, opponent_factor as _opponent_factor,
+)
 
 
 def canonical_market(market: str) -> str | None:
@@ -72,3 +75,16 @@ def project(values: list[float], market: str) -> PropProjection | None:
                             prior=cfg["prior"], half_life=HALF_LIFE)
     return PropProjection(market=key, proj=round(rate, 2), n=len(values),
                           r=cfg["r"])
+
+
+# Opponent adjustment, reusing the shared engine with NHL's own market vocabulary.
+# For skater markets (shots/points/goals/assists/blocks) the log's opponent is the
+# DEFENDING team, so the factor is their defense. For goalie saves the opponent is
+# the SHOOTING team, so the same aggregation yields that team's shot volume — the
+# correct direction (a goalie facing a high-volume team makes more saves).
+def defense_factors(rows) -> dict:
+    return _defense_factors(rows, MARKETS)
+
+
+def opponent_factor(market: str, opponent_team: str | None, table: dict) -> float:
+    return _opponent_factor(market, opponent_team, table, canonical=canonical_market)
