@@ -23,6 +23,7 @@ from .models import generic
 from .models import nba_props
 from .models import nhl_props
 from .models import props as prop_model
+from .models import soccer
 from .models import wnba_props
 from .models.elo import Elo, EloConfig
 from .names import normalize
@@ -972,6 +973,43 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def project_soccer_games(sport_key: str, date: str) -> pd.DataFrame:
+    """Soccer match projections: 1X2 (home/draw/away), expected goals, over/under
+    2.5, and both-teams-to-score. Expected goals come from the shared off/def team
+    ratings (in goals) + home field; the scoreline distribution and draw come from
+    models/soccer (Dixon-Coles-corrected Poisson). Projection-only for now — no
+    odds feed is wired for soccer, so there is no EV/edge column yet; the numbers
+    surface and, once priced, flow through the edge gate in PROBATION like any new
+    market."""
+    sport = SPORTS[sport_key]
+    slate = espn.slate(sport_key, date)
+    if not slate:
+        return pd.DataFrame()
+    start = mlb_statsapi._shift_date(date, -sport.form_days)
+    try:
+        results = espn.results_range(sport_key, start, date)
+    except Exception as e:
+        log.warning("%s results unavailable: %s", sport_key, e)
+        results = []
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
+    rows = []
+    for g in slate:
+        h_exp, a_exp = generic.expected_score(
+            sport, ratings.get(g["home_team"]), ratings.get(g["away_team"]))
+        probs = soccer.outcome_probs(h_exp, a_exp)
+        rows.append({
+            "game_id": g["game_id"], "game_time": g["game_time"],
+            "away_team": g["away_team"], "home_team": g["home_team"],
+            "home_exp": round(h_exp, 2), "away_exp": round(a_exp, 2),
+            "proj_total": round(h_exp + a_exp, 2),
+            "home_win_prob": probs["home"], "draw_prob": probs["draw"],
+            "away_win_prob": probs["away"],
+            "over_2_5": soccer.over_prob(h_exp, a_exp, 2.5),
+            "btts": soccer.btts_prob(h_exp, a_exp),
+        })
+    return pd.DataFrame(rows)
+
+
 def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
     if games.empty:
         return games
@@ -1546,6 +1584,25 @@ def _run_generic(sport_key: str, date: str, pull_props: bool = True) -> dict:
     return _bundle(games, props, ge, pe)
 
 
+# Match-model sports with no shared prop board: projection-only (1X2/totals for
+# soccer, match win prob for tennis), surfaced and gated in PROBATION once priced.
+_SOCCER_SPORTS = {"MLS", "EPL"}
+
+
+def _run_soccer(sport_key: str, date: str) -> dict:
+    games, ge = _safe_step(
+        lambda: project_soccer_games(sport_key, date), "games", sport_key)
+    return _bundle(games, [], ge, None)
+
+
+def _dispatch(key: str, date: str, pull_props: bool) -> dict:
+    if key == "MLB":
+        return _run_mlb(date, pull_props)
+    if key in _SOCCER_SPORTS:
+        return _run_soccer(key, date)
+    return _run_generic(key, date, pull_props)
+
+
 def run(date: str | None = None, sports: list[str] | None = None,
         write: bool = True, pull_props: bool = True) -> dict:
     date = date or _date.today().isoformat()
@@ -1557,8 +1614,7 @@ def run(date: str | None = None, sports: list[str] | None = None,
             log.warning("unknown sport %s, skipping", key)
             continue
         try:
-            out_sports[key] = (_run_mlb(date, pull_props) if key == "MLB"
-                               else _run_generic(key, date, pull_props))
+            out_sports[key] = _dispatch(key, date, pull_props)
             out_sports[key]["news"] = _sport_news(key)
             out_sports[key]["injuries"] = _sport_injuries(key)
             log.info("%s: %d games, %d props", key,
