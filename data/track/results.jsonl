@@ -544,3 +544,12 @@
 {"date": "2026-07-01", "sport": "MLB", "game": "San Diego Padres @ Chicago Cubs", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4842, "yrfi": 1, "brier": 0.266}
 {"date": "2026-07-01", "sport": "MLB", "game": "New York Mets @ Toronto Blue Jays", "market": "model_winprob", "side": "", "pred_home_wp": 0.5034, "home_won": 1, "market_home_wp": 0.724, "brier": 0.2466, "proj_total": 8.783, "actual_total": 12}
 {"date": "2026-07-01", "sport": "MLB", "game": "New York Mets @ Toronto Blue Jays", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5305, "yrfi": 1, "brier": 0.2204}
+{"date": "2026-07-01", "sport": "MLB", "game": "Pittsburgh Pirates @ Philadelphia Phillies", "market": "model_winprob", "side": "", "pred_home_wp": 0.5075, "home_won": 1, "market_home_wp": 0.5404, "brier": 0.2426, "proj_total": 9.638, "actual_total": 16}
+{"date": "2026-07-01", "sport": "MLB", "game": "Pittsburgh Pirates @ Philadelphia Phillies", "market": "model_nrfi", "side": "", "pred_yrfi": 0.521, "yrfi": 0, "brier": 0.2714}
+{"date": "2026-07-01", "sport": "MLB", "game": "Pittsburgh Pirates @ Philadelphia Phillies", "market": "moneyline", "side": "away", "line": null, "price": 138.0, "ev": 0.0603, "won": false, "pnl": -1.0, "clv": 0.0938}
+{"date": "2026-07-01", "sport": "MLB", "game": "St. Louis Cardinals @ Atlanta Braves", "market": "model_winprob", "side": "", "pred_home_wp": 0.4854, "home_won": 1, "market_home_wp": 0.5459, "brier": 0.2648, "proj_total": 8.723, "actual_total": 6}
+{"date": "2026-07-01", "sport": "MLB", "game": "St. Louis Cardinals @ Atlanta Braves", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5326, "yrfi": 1, "brier": 0.2185}
+{"date": "2026-07-01", "sport": "MLB", "game": "St. Louis Cardinals @ Atlanta Braves", "market": "moneyline", "side": "away", "line": null, "price": 118.0, "ev": 0.0426, "won": false, "pnl": -1.0, "clv": -0.0101}
+{"date": "2026-07-01", "sport": "MLB", "game": "Tampa Bay Rays @ Kansas City Royals", "market": "model_winprob", "side": "", "pred_home_wp": 0.4837, "home_won": 0, "market_home_wp": 0.4637, "brier": 0.234, "proj_total": 9.534, "actual_total": 4}
+{"date": "2026-07-01", "sport": "MLB", "game": "Tampa Bay Rays @ Kansas City Royals", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5494, "yrfi": 1, "brier": 0.203}
+{"date": "2026-07-01", "sport": "MLB", "game": "Tampa Bay Rays @ Kansas City Royals", "market": "moneyline", "side": "home", "line": null, "price": 138.0, "ev": 0.0588, "won": false, "pnl": -1.0, "clv": 0.1036}
