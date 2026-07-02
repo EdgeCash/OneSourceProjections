@@ -346,6 +346,64 @@ def people_handedness(player_ids: list[int]) -> dict[int, dict]:
     return out
 
 
+def _ip_to_outs(ip) -> int | None:
+    """statsapi 'inningsPitched' like '5.2' = 5 innings + 2 outs -> total outs."""
+    if ip is None:
+        return None
+    s = str(ip)
+    try:
+        whole, frac = s.split(".") if "." in s else (s, "0")
+        return int(whole) * 3 + int(frac)
+    except ValueError:
+        return None
+
+
+def pitcher_recent_workload(player_id: int, season: int, n: int = 5) -> dict | None:
+    """Recent per-start pitch counts + innings for a pitcher, so expected
+    innings can reflect a workload the season average misses (a starter
+    building up from the IL, a rookie on a pitch limit, a stretched-out opener).
+
+    Returns {"starts": [{date, pitches, outs}], "pitch_ceiling": int,
+    "pitches_per_out": float, "n_starts": int} over the last ``n`` starts, or
+    None if we can't get a usable log. Prefers true starts (gamesStarted==1);
+    falls back to all outings when a pitcher has too few logged starts (call-ups
+    still being stretched), since that's exactly whose ceiling we care about."""
+    if not player_id:
+        return None
+    try:
+        data = cached_json(
+            f"statsapi:gamelog:{player_id}:{season}:pitching", _TTL_SCHEDULE,
+            lambda: _get(f"people/{player_id}/stats",
+                         {"stats": "gameLog", "group": "pitching",
+                          "season": season}))
+    except Exception:
+        return None
+    splits = (data.get("stats") or [{}])[0].get("splits", []) or []
+    rows = []
+    for s in splits:  # gameLog is chronological (oldest first)
+        st = s.get("stat", {})
+        pitches = st.get("numberOfPitches")
+        outs = _ip_to_outs(st.get("inningsPitched"))
+        if pitches is None or outs is None:
+            continue
+        rows.append({"date": s.get("date"), "pitches": int(pitches),
+                     "outs": outs, "gs": bool(st.get("gamesStarted"))})
+    starts = [r for r in rows if r["gs"]]
+    pool = starts if len(starts) >= 2 else rows   # too few starts -> use all
+    pool = pool[-n:]
+    if not pool:
+        return None
+    tot_pitches = sum(r["pitches"] for r in pool)
+    tot_outs = sum(r["outs"] for r in pool) or 1
+    return {
+        "starts": [{"date": r["date"], "pitches": r["pitches"], "outs": r["outs"]}
+                   for r in pool],
+        "n_starts": len(pool),
+        "pitch_ceiling": max(r["pitches"] for r in pool),
+        "pitches_per_out": tot_pitches / tot_outs,
+    }
+
+
 def game_officials(game_pk: int) -> dict:
     """Umpire crew for a game from the boxscore ``officials`` block, keyed by
     role. Returns e.g. {"home_plate": {"name": ..., "id": ...}, "first_base":

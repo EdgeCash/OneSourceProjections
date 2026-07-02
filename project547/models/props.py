@@ -54,6 +54,28 @@ def prob_over_neg_binom(mean: float, line: float, dispersion: float = TB_DISPERS
     return float(1 - stats.nbinom.cdf(int(line), dispersion, p))
 
 
+def refine_expected_innings(base: float, workload: dict | None) -> float:
+    """Nudge the season-average expected innings toward what a pitcher's recent
+    pitch counts actually support. ``base`` is the season IP/GS expectation;
+    ``workload`` is clients.mlb_statsapi.pitcher_recent_workload(). A starter
+    building up from the IL or on a pitch limit throws fewer innings than his
+    season line implies — the pitch ceiling catches that; the season average
+    lags. Symmetric but conservative: the recent budget gets half the weight,
+    and it can only lift ``base`` by up to half an inning (managers pull
+    starters for many reasons, so we trust the downside more than the upside).
+    Returns ``base`` unchanged when there's no usable recent workload."""
+    if not workload or workload.get("n_starts", 0) < 2:
+        return base
+    ppo = workload.get("pitches_per_out") or 0
+    ceiling = workload.get("pitch_ceiling") or 0
+    if ppo <= 0 or ceiling <= 0:
+        return base
+    budget_innings = (ceiling / ppo) / 3.0     # innings the ceiling supports
+    exp = 0.5 * base + 0.5 * budget_innings
+    exp = min(exp, base + 0.5)                  # cap the upside
+    return float(max(3.0, min(exp, 7.5)))
+
+
 def pitcher_strikeouts(
     expected_innings: float,
     k_rate: float | None,

@@ -63,6 +63,27 @@ def test_pitcher_strikeouts_blend():
     assert 0.5 < p_over < 0.95
 
 
+def test_refine_expected_innings():
+    # no workload -> unchanged
+    assert props.refine_expected_innings(6.0, None) == 6.0
+    assert props.refine_expected_innings(6.0, {"n_starts": 1}) == 6.0
+    # a starter on a limit (low pitch ceiling) is pulled DOWN from his season avg
+    limited = {"n_starts": 3, "pitch_ceiling": 60, "pitches_per_out": 5.0}
+    # budget = (60/5)/3 = 4.0 innings; exp = 0.5*6 + 0.5*4 = 5.0
+    assert props.refine_expected_innings(6.0, limited) == 5.0
+    # an established starter (ceiling supports his line) stays ~unchanged...
+    established = {"n_starts": 4, "pitch_ceiling": 102, "pitches_per_out": 5.6}
+    exp = props.refine_expected_innings(6.0, established)
+    assert 5.9 < exp <= 6.5
+    # ...and the upside is capped at +0.5 even for a monster ceiling
+    monster = {"n_starts": 4, "pitch_ceiling": 130, "pitches_per_out": 5.0}
+    assert props.refine_expected_innings(6.0, monster) == 6.5
+    # floor clamp holds: a low base + tiny ceiling can't drop below 3.0
+    # budget=(20/6)/3=1.11, exp=0.5*3.2+0.5*1.11=2.15 -> clamped up to 3.0
+    assert props.refine_expected_innings(3.2,
+        {"n_starts": 3, "pitch_ceiling": 20, "pitches_per_out": 6.0}) == 3.0
+
+
 def test_batter_models_sane():
     h = props.batter_hits(expected_ab=4.2, ba=0.300, xba=0.290)
     assert 1.1 < h["mean"] < 1.4

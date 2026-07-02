@@ -389,6 +389,16 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
             k_rate /= 100.0
         ip, gs = _lookup_float(stats_row, "IP"), _lookup_float(stats_row, "GS")
         exp_innings = (ip / gs) if ip and gs else 5.3
+        # Recent pitch counts refine the season-average innings: a starter
+        # building up / on a limit throws fewer than his season line implies.
+        pid = g.get(f"{side}_pitcher_id")
+        workload = None
+        if pid:
+            try:
+                workload = mlb_statsapi.pitcher_recent_workload(pid, season)
+            except Exception:
+                workload = None
+        exp_innings = prop_model.refine_expected_innings(exp_innings, workload)
 
         opp_team_id = g[f"{opp_side}_team_id"]
         opp_stats = mlb_statsapi.team_season_hitting(opp_team_id, season)
@@ -406,6 +416,8 @@ def _pitcher_prop_rows(g: dict, pitchers: pd.DataFrame, fp: dict, season: int) -
             "player": name,
             "team": g[f"{side}_team"],
             "opponent": g[f"{opp_side}_team"],
+            "exp_innings": round(exp_innings, 2),
+            "pitch_ceiling": (workload or {}).get("pitch_ceiling"),
         }
         model = prop_model.pitcher_strikeouts(exp_innings, k_rate, opp_k,
                                               fp_k_today, ump_k_factor=ump_k)
