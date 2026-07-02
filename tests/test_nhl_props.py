@@ -34,3 +34,21 @@ def test_prob_over_shared_math_is_sane():
 
 def test_unknown_market_returns_none():
     assert npx.project([1, 2, 3], "Faceoffs") is None
+
+
+def test_saves_is_a_goalie_market():
+    assert npx.canonical_market("Goalie Saves") == "saves"
+    assert npx.canonical_market("Total Saves") == "saves"
+    assert npx.MARKETS["saves"]["role"] == "goalie"
+    proj = npx.project([28, 31, 22, 40, 25, 33], "saves")
+    assert proj.market == "saves"
+    assert 22 < proj.proj < 40
+    # a ~26-save goalie is well over 20.5 and well under 40.5
+    assert npx.prob_over(proj.proj, 20.5, proj.r) > npx.prob_over(proj.proj, 40.5, proj.r)
+
+
+def test_roles_partition_markets():
+    skater = [m for m, c in npx.MARKETS.items() if c["role"] == "skater"]
+    goalie = [m for m, c in npx.MARKETS.items() if c["role"] == "goalie"]
+    assert "saves" in goalie and "shots" in skater
+    assert set(skater) & set(goalie) == set()

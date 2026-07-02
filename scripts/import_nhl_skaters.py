@@ -57,8 +57,14 @@ CANDIDATES = {
     "hits":        ["hits", "hitsfor", "i_f_hits"],
     "pim":         ["pim", "penaltyminutes", "penalty_minutes", "penalityminutes"],
     "toi":         ["timeonice", "toi", "icetime", "ice_time"],
+    # goalie stats (a goalie box-score file has these instead of g/a/shots)
+    "saves":         ["sv", "saves"],
+    "shots_against": ["sa", "shotsagainst", "shots_against"],
+    "goals_against": ["ga", "goalsagainst", "goals_against"],
 }
-REQUIRED = ("date", "player_name", "team", "goals", "assists", "shots")
+# a row is a skater if it has SOG, a goalie if it has saves; combined files
+# (skaters + goalies concatenated) are supported — role is decided per row.
+REQUIRED_ANY = ("shots", "saves")   # at least one must be present in the input
 
 
 def _norm(c: str) -> str:
@@ -133,12 +139,16 @@ def main():
     print("\nColumn mapping detected:")
     for f in CANDIDATES:
         print(f"  {f:12} <- {m.get(f, '(none)')}")
-    missing = [f for f in REQUIRED if f not in m]
-    if missing:
-        print(f"\nERROR: could not match required field(s): {missing}")
-        print("CSV columns were:\n  " + "\n  ".join(map(str, df.columns)))
+    if not any(f in m for f in REQUIRED_ANY):
+        print(f"\nERROR: found neither skater shots nor goalie saves "
+              f"({REQUIRED_ANY}). CSV columns were:\n  "
+              + "\n  ".join(map(str, df.columns)))
         print("\nAdd the right synonym to CANDIDATES and re-run.")
         sys.exit(2)
+    for f in ("date", "player_name"):
+        if f not in m:
+            print(f"\nERROR: required field {f!r} not found.")
+            sys.exit(2)
 
     by_season: dict[int, list[dict]] = {}
     skipped = 0
@@ -164,6 +174,10 @@ def main():
             return int(fv) if fv.is_integer() else fv
 
         goals, assists = num("goals"), num("assists")
+        shots, saves = num("shots"), num("saves")
+        is_goalie = saves is not None and shots is None
+        position = r.get(m["position"]) if "position" in m and pd.notna(
+            r.get(m["position"])) else ("G" if is_goalie else None)
         rec = {
             "game_id": str(r[m["game_id"]]) if "game_id" in m else None,
             "date": str(r[m["date"]])[:10],
@@ -174,15 +188,19 @@ def main():
             "player_id": (int(r[m["player_id"]]) if "player_id" in m
                           and pd.notna(r[m["player_id"]]) else None),
             "player_name": r.get(m["player_name"]),
-            "position": r.get(m["position"]) if "position" in m else None,
+            "position": position,
+            # skater stats (None for goalies)
             "goals": goals, "assists": assists,
-            "points": num("points") if "points" in m else (
-                (goals or 0) + (assists or 0)),
-            "shots": num("shots"), "blocks": num("blocks"),
+            "points": (num("points") if "points" in m else
+                       ((goals or 0) + (assists or 0))) if not is_goalie else None,
+            "shots": shots, "blocks": num("blocks"),
             "hits": num("hits"), "pim": num("pim"),
             "toi": _toi_seconds(r.get(m["toi"])) if "toi" in m else None,
+            # goalie stats (None for skaters)
+            "saves": saves, "shots_against": num("shots_against"),
+            "goals_against": num("goals_against"),
         }
-        if not rec["player_name"] or rec["shots"] is None:
+        if not rec["player_name"] or (shots is None and saves is None):
             skipped += 1
             continue
         by_season.setdefault(season, []).append(rec)

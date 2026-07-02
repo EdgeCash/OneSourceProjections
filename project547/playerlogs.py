@@ -51,6 +51,8 @@ MARKET_STAT = {
     "sog": ("shots", None),
     "goals": ("goals", None),
     "blocked shots": ("blocks", None),
+    "saves": ("saves", None),
+    "goalie saves": ("saves", None),
     # Football — flat columns matching the committed backfill schema
     # (data/history/backfill/<nfl|ncaaf>/<year>/player_games.jsonl.gz).
     "passing yards": ("pass_yards", None),
@@ -134,7 +136,8 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
                         * 3).round()
     for col in ("points", "rebounds", "assists", "three_made", "steals",
                 "blocks", "pra",
-                "shots", "goals", "hits", "pim"):   # NHL skater stats
+                "shots", "goals", "hits", "pim",    # NHL skater stats
+                "saves", "shots_against", "goals_against"):  # NHL goalie stats
         if col in df.columns:
             base[col] = df[col]
     # Football flat columns (backfill + forward store share these names)

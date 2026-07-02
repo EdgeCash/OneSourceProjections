@@ -28,7 +28,7 @@ def load_logs():
         with gzip.open(f) as fh:
             for line in fh:
                 r = json.loads(line)
-                if r.get("shots") is None:
+                if r.get("shots") is None and r.get("saves") is None:
                     continue
                 rows.append(r)
     rows.sort(key=lambda r: (r.get("date", ""), r.get("game_id", "")))
@@ -42,7 +42,13 @@ def _pairs(rows):
     for r in rows:
         pid = r.get("player_id") or r.get("player_name")
         test = r.get("date", "") >= "2024-01-01"
+        is_goalie = r.get("saves") is not None
         for market, cfg in npx.MARKETS.items():
+            # only score a market for the matching role (goalie rows -> saves,
+            # skater rows -> everything else) so zeros of the wrong role don't
+            # pollute the fit.
+            if (cfg["role"] == "goalie") != is_goalie:
+                continue
             stat = cfg["stat"]
             series = hist[pid][stat]
             if len(series) >= MIN_PRIOR:
@@ -53,7 +59,11 @@ def _pairs(rows):
                         out[market].append((proj.proj, line,
                                             1.0 if actual > line else 0.0, test))
         for market, cfg in npx.MARKETS.items():
-            hist[pid][cfg["stat"]].append(float(r.get(cfg["stat"], 0) or 0))
+            if (cfg["role"] == "goalie") != is_goalie:
+                continue
+            v = r.get(cfg["stat"])
+            if v is not None:
+                hist[pid][cfg["stat"]].append(float(v))
     return out
 
 
