@@ -804,11 +804,23 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["rl_away_odds"] = away_price
                 if p_cover is not None:
                     out["model_home_rl"] = round(float(p_cover), 4)
-                    ev = _market_eval(float(p_cover), float(best_h["odds"]), away_price,
-                                      shrink=SPORTS["MLB"].market_shrink)
-                    if ev["ev_a"] is not None:
+                    shrink = SPORTS["MLB"].market_shrink
+                    ev = _market_eval(float(p_cover), float(best_h["odds"]),
+                                      away_price, shrink=shrink)
+                    # Run-line prices are line-shopped best-of-book, so the
+                    # home/away pair often sums under 1.0 (a synthetic arb across
+                    # books) and the two-way de-vig rejects it. Fall back to
+                    # honest per-side pricing at the real best price (same as the
+                    # props board) rather than dropping the edge.
+                    if ev["ev_a"] is None and away_price is not None:
+                        ha = _market_eval(float(p_cover), float(best_h["odds"]),
+                                          None, shrink=shrink)
+                        hb = _market_eval(1.0 - float(p_cover), float(away_price),
+                                          None, shrink=shrink)
+                        ev = {"ev_a": ha["ev_a"], "ev_b": hb["ev_a"]}
+                    if ev.get("ev_a") is not None:
                         out["rl_home_ev"] = ev["ev_a"]
-                    if ev["ev_b"] is not None:
+                    if ev.get("ev_b") is not None:
                         out["rl_away_ev"] = ev["ev_b"]
         return pd.Series(out, dtype=object)
 
