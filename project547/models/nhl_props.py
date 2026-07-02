@@ -2,29 +2,30 @@
 (``project547/models/wnba_props``): per-player recency-weighted, shrunk rate →
 negative binomial P(over) for shots-on-goal / points / goals / assists / blocks.
 
-Status: the distribution dispersions below are **provisional priors** based on
-typical NHL skater rates, NOT yet fit to data — the committed skater logs don't
-exist until the box-score CSV is imported (``scripts/import_nhl_skaters.py``).
-Once ``data/history/backfill/nhl/<year>/player_games.jsonl.gz`` lands,
-``scripts/validate_nhl_props.py`` fits each market's ``r`` on a held-out split
-and checks calibration (exactly as WNBA was done, ECE 0.010); only then does the
-model get wired into the live pipeline behind the edge gate. Until validated it
-is not trusted over the vendor projection.
+Status: **validated.** The dispersions below were fit on the committed skater
+logs (2016–2025, imported via ``scripts/import_nhl_skaters.py``) on a train
+(pre-2024) / test (2024+) split by ``scripts/validate_nhl_props.py``. Held-out
+calibration is excellent across every market (ECE ≤ 0.013, matching WNBA):
+
+    shots  r=7.5 ECE 0.010 · points r=5.8 ECE 0.010 · goals r=1.5 ECE 0.012 ·
+    assists r=2.8 ECE 0.013 · blocks r=5.8 ECE 0.006
+
+It's wired into the live pipeline (``project_generic_props``) behind the
+demonstrated-edge gate, exactly like WNBA — surfaced and tracked in probation
+until it proves CLV.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-# market -> (box-score stat column, provisional NB dispersion r, league
-#            baseline per-game rate, shrink strength in "prior games").
-# r values are placeholders pending the fit; goals/assists/points are low-mean
-# and near-Poisson (high r), shots is the workhorse count.
+# market -> (box-score stat column, NB dispersion r [fit on a held-out split],
+#            league baseline per-game rate, shrink strength in "prior games").
 MARKETS = {
-    "shots":   dict(stat="shots",   r=6.0, base=2.2, prior=5.0),
-    "points":  dict(stat="points",  r=3.0, base=0.6, prior=6.0),
-    "goals":   dict(stat="goals",   r=4.0, base=0.3, prior=6.0),
-    "assists": dict(stat="assists", r=4.0, base=0.4, prior=6.0),
-    "blocks":  dict(stat="blocks",  r=4.0, base=1.0, prior=6.0),
+    "shots":   dict(stat="shots",   r=7.5, base=2.2, prior=5.0),
+    "points":  dict(stat="points",  r=5.8, base=0.6, prior=6.0),
+    "goals":   dict(stat="goals",   r=1.5, base=0.3, prior=6.0),
+    "assists": dict(stat="assists", r=2.8, base=0.4, prior=6.0),
+    "blocks":  dict(stat="blocks",  r=5.8, base=1.0, prior=6.0),
 }
 ALIASES = {
     "shots on goal": "shots", "sog": "shots", "player shots": "shots",

@@ -63,17 +63,20 @@ The game model is built and the EPA code exists (`project547/epa.py`,
   opponent-adjusted, shrunk by attempts; plumb projected starters from depth charts.
 - [ ] Backfill NFL `player_games.jsonl.gz` for 2016–2024 (only 2025 on disk today) for props backtesting.
 
-### 2. NHL — harvest skater logs, switch props on  ·  Value: high · Effort: M
-NHL is the most data-starved sport: **no player/skater data at all**, so props
-are entirely disabled. Game model (Poisson + Elo) is fine.
+### 2. NHL — harvest skater logs, switch props on  ·  Value: high · Effort: M ✅ DONE
+NHL was the most data-starved sport (no skater data → props disabled). Now live.
 
-- [ ] **Harvest:** per-game skater + goalie box lines, seasons **2021–2026**.
-  - Source (free, official, no key): NHL Web API `https://api-web.nhle.com`
-    (game boxscores → skater G/A/SOG/TOI, goalie saves). Optional xG from MoneyPuck.
-  - Land in: `data/history/backfill/nhl/<year>/player_games.jsonl.gz`
-    (match the WNBA/NBA JSONL shape so `playerlogs.py` picks it up).
-- [ ] Add an NHL props branch (SOG, points, goalie saves) modeled like MLB props
-  (Poisson/neg-binomial per-player rates), gated by the edge gate.
+- [x] **Harvested** skater box scores (2016–2025) via `scripts/import_nhl_skaters.py`
+  (auto-detects columns, derives season from date to match the backfill
+  convention, writes compact `data/history/backfill/nhl/<year>/player_games.jsonl.gz`
+  — ~10 MB from a 164 MB raw CSV).
+- [x] **Built + validated** `project547/models/nhl_props.py`: per-player NB rate
+  model for SOG/points/goals/assists/blocks. Held-out (2024+) calibration is
+  excellent on every market (ECE ≤ 0.013; shots/points/blocks ≈ 0.006–0.010).
+- [x] **Wired** into `project_generic_props` behind the edge gate (shared hook
+  with WNBA); `scripts/validate_nhl_props.py` fits + checks it.
+- [ ] Later: goalie saves (needs a goalie log, separate from the skater file);
+  optional xG from MoneyPuck.
 
 ### 3. NCAAF — closing lines + cache CFBD  ·  Value: high · Effort: M
 Configured but **cannot be validated**: no closing-line history on disk, and CFBD

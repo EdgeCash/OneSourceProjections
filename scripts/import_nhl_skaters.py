@@ -4,9 +4,12 @@ already reads — so the 157 MB raw file never touches the repo, only the derive
 
 Usage (run wherever the file is reachable — your machine, CI, anywhere):
 
-    python scripts/import_nhl_skaters.py nhl-skater-box-scores.csv.zip
+    python scripts/import_nhl_skaters.py part1.zip [part2.zip ...]
 
-pandas reads the .csv.zip directly (no unzip). The script auto-detects the
+Accepts one or more CSV / .zip files (they're concatenated). Only seasons >=
+MIN_SEASON are written (older hockey is a different scoring era and just bloats
+the repo; the live model only reads the last two seasons anyway) — override with
+the env var NHL_MIN_SEASON. pandas reads .zip directly. The script auto-detects the
 dataset's column names (they vary by source), prints the mapping it found, and
 writes one gzip per season to:
 
@@ -24,12 +27,14 @@ from __future__ import annotations
 
 import gzip
 import json
+import os
 import sys
 from pathlib import Path
 
 import pandas as pd
 
 OUT_ROOT = Path("data/history/backfill/nhl")
+MIN_SEASON = int(os.environ.get("NHL_MIN_SEASON", "2016"))
 
 # canonical field -> ordered synonyms (lowercased, non-alnum stripped for match)
 CANDIDATES = {
@@ -40,8 +45,9 @@ CANDIDATES = {
     "team":        ["team", "playerteam", "teamabbrev", "teamabbreviation"],
     "opponent":    ["opposingteam", "opponent", "opp", "opponentteam", "againstteam"],
     "home_away":   ["homeoraway", "home_or_away", "homeaway", "venue", "ishome", "home"],
-    "position":    ["position", "pos", "playerposition"],
-    "game_id":     ["gameid", "game_id", "gamepk", "gid"],
+    "position":    ["position", "pos", "playerposition", "positiongroup",
+                    "position_group"],
+    "game_id":     ["gameid", "game_id", "gamepk", "gid", "eventid", "event_id"],
     # counting stats
     "goals":       ["goals", "g", "i_f_goals", "goalsfor"],
     "assists":     ["assists", "a", "i_f_assists", "totalassists"],
@@ -71,14 +77,31 @@ def _resolve(cols) -> dict[str, str]:
 
 
 def _season_of(row, m) -> int:
-    if "season" in m and pd.notna(row.get(m["season"])):
-        s = int(str(row[m["season"]])[:4])
-        return s
+    # Always derive from the DATE using the start-year convention, to match the
+    # committed backfill (data/history/backfill/nhl/2024 == the 2024-25 season).
+    # The source CSV's own `season` column uses the *ending* year, so trusting it
+    # would shift everything by one and break date/season joins.
     d = str(row[m["date"]])
-    # NHL season spans two years; Oct-Dec belongs to the season labelled by that
-    # start year, Jan-Jun to the prior start year.
     y, mo = int(d[:4]), int(d[5:7]) if len(d) >= 7 else 7
     return y if mo >= 8 else y - 1
+
+
+def _toi_seconds(v):
+    """'MM:SS' (or 'H:MM:SS') time-on-ice -> integer seconds; passes through
+    plain numbers; None on anything unparseable."""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return None
+    s = str(v).strip()
+    if ":" in s:
+        parts = [int(p) for p in s.split(":")]
+        sec = 0
+        for p in parts:
+            sec = sec * 60 + p
+        return sec
+    try:
+        return int(float(s))
+    except ValueError:
+        return None
 
 
 def _is_home(row, m) -> bool | None:
@@ -96,10 +119,16 @@ def main():
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)
-    src = sys.argv[1]
-    print(f"Reading {src} ...")
-    df = pd.read_csv(src)
-    print(f"  {len(df):,} rows, {len(df.columns)} columns")
+    srcs = sys.argv[1:]
+    frames = []
+    for src in srcs:
+        print(f"Reading {src} ...")
+        d = pd.read_csv(src)
+        print(f"  {len(d):,} rows, {len(d.columns)} columns")
+        frames.append(d)
+    df = pd.concat(frames, ignore_index=True) if len(frames) > 1 else frames[0]
+    if len(frames) > 1:
+        print(f"Combined: {len(df):,} rows")
     m = _resolve(df.columns)
     print("\nColumn mapping detected:")
     for f in CANDIDATES:
@@ -112,16 +141,29 @@ def main():
         sys.exit(2)
 
     by_season: dict[int, list[dict]] = {}
+    skipped = 0
     for _, r in df.iterrows():
         try:
             season = _season_of(r, m)
         except Exception:
+            skipped += 1
             continue
+        if season < MIN_SEASON:
+            continue
+
         def num(field):
             if field not in m:
                 return None
             v = r.get(m[field])
-            return None if pd.isna(v) else (int(v) if float(v).is_integer() else float(v))
+            if pd.isna(v):
+                return None
+            try:
+                fv = float(v)
+            except (TypeError, ValueError):
+                return None
+            return int(fv) if fv.is_integer() else fv
+
+        goals, assists = num("goals"), num("assists")
         rec = {
             "game_id": str(r[m["game_id"]]) if "game_id" in m else None,
             "date": str(r[m["date"]])[:10],
@@ -133,15 +175,19 @@ def main():
                           and pd.notna(r[m["player_id"]]) else None),
             "player_name": r.get(m["player_name"]),
             "position": r.get(m["position"]) if "position" in m else None,
-            "goals": num("goals"), "assists": num("assists"),
+            "goals": goals, "assists": assists,
             "points": num("points") if "points" in m else (
-                (num("goals") or 0) + (num("assists") or 0)),
+                (goals or 0) + (assists or 0)),
             "shots": num("shots"), "blocks": num("blocks"),
-            "hits": num("hits"), "pim": num("pim"), "toi": num("toi"),
+            "hits": num("hits"), "pim": num("pim"),
+            "toi": _toi_seconds(r.get(m["toi"])) if "toi" in m else None,
         }
         if not rec["player_name"] or rec["shots"] is None:
+            skipped += 1
             continue
         by_season.setdefault(season, []).append(rec)
+    if skipped:
+        print(f"  ({skipped:,} rows skipped: no name/shots or unparseable date)")
 
     print("\nWriting per-season logs:")
     for season, rows in sorted(by_season.items()):
