@@ -41,7 +41,7 @@ WNBA_PAIRS = [
 MLB_PAIRS = [
     ("Runs/G", "runs", "opp_runs", "high"),
     ("Hits/G", "hits", "opp_hits", "high"),
-    ("HR/G", "hr", None, "high"),
+    ("HR/G", "hr", "opp_hr", "high"),
     ("Batter K/G", "k", "pk", "low"),
     ("1st Inn R/G", "f1", "opp_f1", "high"),
 ]
@@ -109,7 +109,7 @@ DIRECTIONS = {
     # defense / allowed (low good) + pitcher K (high good)
     "opp_pts": "low", "opp_fg2_pct": "low", "opp_fg3_pct": "low",
     "opp_reb": "low", "opp_runs": "low", "opp_hits": "low", "opp_f1": "low",
-    "pk": "high",
+    "opp_hr": "low", "pk": "high",
     # football offense (high good) + allowed (low good); giveaways low good
     "tot_yds": "high", "pass_yds": "high", "rush_yds": "high", "pass_td": "high",
     "giveaways": "low",
@@ -302,9 +302,9 @@ def _mlb_team_games(seasons) -> pd.DataFrame:
         p["team"] = p["team"].map(lambda t: teams.canon("MLB", t))
         df = df.merge(b, on=["game_pk", "team"], how="left")
         df = df.merge(p, on=["game_pk", "team"], how="left")
-        # opponent hits allowed
-        opp_h = b[["game_pk", "team", "hits"]].rename(
-            columns={"team": "opp", "hits": "opp_hits"})
+        # opponent hits + HR allowed (fills the defense half of Hits/G & HR/G)
+        opp_h = b[["game_pk", "team", "hits", "hr"]].rename(
+            columns={"team": "opp", "hits": "opp_hits", "hr": "opp_hr"})
         df = df.merge(opp_h, on=["game_pk", "opp"], how="left")
     return df.sort_values("date")
 
