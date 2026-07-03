@@ -324,11 +324,13 @@ MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 NAV_GROUPS = {
     "🏠 Today": ["HOME"],
     "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
-    "🔬 Research": NAV_SPORTS + ["SHARPSHEET", "DFS", "SCORES", "OTHER_SPORTS"],
-    "📒 Ledger": ["PERFORMANCE"],
-    "🛠️ Lab": ["EDGE_BUILDER", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "EXPERTS",
-               "WORKBOOK", "DOCS"],
+    "🏟️ Sports": NAV_SPORTS,   # the per-sport Sharp Sheets
+    "📊 Scores": ["SCORES"],
+    "⋯ More": ["SHARPSHEET", "OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
+               "EXPERTS", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "WORKBOOK", "DOCS"],
 }
+_SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
+                 "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
 _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "PLAYS_DETAIL": "Plays — full table", "EDGES": "Edge scanner",
                 "DFS": "DFS optimizer", "SCORES": "Live scores",
@@ -336,7 +338,8 @@ _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "OTHER_SPORTS": "Other sports", "BACKTEST": "Backtest",
                 "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
                 "DOCS": "Methodology & docs", "WORKBOOK": "📥 Daily workbook",
-                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine"}
+                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine",
+                **_SPORT_LABELS}
 
 # Responsive-nav handoff. The mobile top strip (rendered later, CSS-shown only
 # on narrow viewports) can't mutate the sidebar radio keys after those widgets
