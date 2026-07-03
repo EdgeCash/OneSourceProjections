@@ -512,23 +512,20 @@ def render_sport(sport: str):
                     key=f"win_{sport}_{date_sel}",
                     help="How much recency to weight — ranks, advantages and "
                          "strength of schedule recompute for the window you pick.")
-            # The feed: every game's full matchup sheet, top to bottom. Click the
+            # The feed: every game's full Sharp Sheet, top to bottom. Click the
             # sport, scroll the sheets — no dropdown, no digging.
             for g in shown:
                 m = _matchup(sport, g.get("home_team", ""),
-                             g.get("away_team", ""), date_sel, window)
-                if m:
-                    st.markdown(
-                        ui.matchup_card_html(sport, g, m, window=window,
-                                             min_edge=min_edge,
-                                             gate_table=gate_table(),
-                                             bankroll=bankroll),
-                        unsafe_allow_html=True)
-                else:
-                    st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-            st.caption("Offense L5 vs the opponent's matching defense; small "
-                       "numbers are league ranks (green = top third). "
-                       "★ = offense out-ranks the defense.")
+                             g.get("away_team", ""), date_sel, window) or {}
+                st.markdown(
+                    ui.sharp_sheet_html(
+                        sport, g, m, window=window, min_edge=min_edge,
+                        gate_table=gate_table(), bankroll=bankroll,
+                        props=props, best_line=_best_line_for(sport, g, date_sel),
+                        data=_sheet_data(sport, g, m, date_sel)),
+                    unsafe_allow_html=True)
+            st.caption("Each game's full Sharp Sheet — the dense offense-vs-defense "
+                       "tables live under the 'Advanced' fold on each.")
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
