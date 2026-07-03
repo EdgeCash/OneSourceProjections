@@ -317,21 +317,28 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL",
 # board) — routed to a dedicated renderer instead of render_sport.
 MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 
-# Two-tier navigation, collapsed to five verb-first areas: a top-level area,
-# then (when an area has several pages) a sub-page. Today -> find Plays ->
-# Research by sport/source -> the Ledger receipts -> the Lab (build & test).
-# Section codes are preserved so the downstream dispatch keeps working.
-NAV_GROUPS = {
-    "🏠 Today": ["HOME"],
-    "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
-    "🏟️ Sports": NAV_SPORTS,   # the per-sport Sharp Sheets
-    "📊 Scores": ["SCORES"],
-    # SHARPSHEET browser retired — the Sharp Sheet now lives on the Sports feed.
-    "⋯ More": ["OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
-               "EXPERTS", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "WORKBOOK", "DOCS"],
-}
 _SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
                  "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
+
+# Flat navigation (like the reference site): the in-season sports are top-level,
+# one click each — no "Sports" sub-menu to dig through. Offseason sports + the
+# lab/ledger pages live under "More". Section codes preserved for the dispatch.
+from datetime import date as _date_cls  # noqa: E402
+try:
+    from project547.sports import active_sports as _active_sports
+    _NAV_ACTIVE = [s for s in NAV_SPORTS if s in _active_sports(_date_cls.today().isoformat())]
+except Exception:
+    _NAV_ACTIVE = list(NAV_SPORTS)
+_NAV_INACTIVE = [s for s in NAV_SPORTS if s not in _NAV_ACTIVE]
+NAV_GROUPS = {
+    "🏠 Today": ["HOME"],
+    "🎯 Plays": ["PLAYS"],  # Board/Full table/Edge scanner are an in-page mode toggle
+    **{_SPORT_LABELS.get(s, s): [s] for s in _NAV_ACTIVE},  # in-season sports, flat
+    "📊 Scores": ["SCORES"],
+    # SHARPSHEET browser retired — the Sharp Sheet now lives on each sport page.
+    "⋯ More": _NAV_INACTIVE + ["OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
+               "EXPERTS", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "WORKBOOK", "DOCS"],
+}
 _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "PLAYS_DETAIL": "Plays — full table", "EDGES": "Edge scanner",
                 "DFS": "DFS optimizer", "SCORES": "Live scores",

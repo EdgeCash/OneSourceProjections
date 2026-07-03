@@ -2622,10 +2622,10 @@ _SS_STYLE = """<style>
 .osp-ss-markets{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
 .osp-ss-mk{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 10px;
   text-align:center;position:relative}
-.osp-ss-mklbl{font-family:var(--disp);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.osp-ss-mkbig{font-family:var(--disp);font-weight:700;font-size:1.8rem;line-height:1.05;margin:4px 0 1px}
-.osp-ss-mkpick{font-size:.76rem;font-weight:600}
-.osp-ss-mksub{font-size:.66rem;color:var(--muted);margin-top:3px}
+.osp-ss-mklbl{font-family:var(--disp);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.osp-ss-mkbig{font-family:var(--disp);font-weight:700;font-size:1.9rem;line-height:1.05;margin:4px 0 1px}
+.osp-ss-mkpick{font-size:.82rem;font-weight:600}
+.osp-ss-mksub{font-size:.72rem;color:var(--muted);margin-top:3px}
 .osp-ss-tag{position:absolute;top:8px;right:8px;font-size:.56rem;font-weight:700;letter-spacing:.04em;
   padding:2px 5px;border-radius:5px;text-transform:uppercase}
 .t-good{background:rgba(47,122,74,.14);color:var(--good)} .t-mid{background:rgba(169,121,27,.16);color:var(--mid,#a9791b)}
@@ -3002,8 +3002,8 @@ def _confidence(sport: str, g: dict, calls: list, data: dict) -> dict:
 
 
 _SS_STYLE2 = """<style>
-.osp-ss-gap{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.03em;
-  color:var(--mid,#a9791b);background:rgba(169,121,27,.12);border:1px solid rgba(169,121,27,.4);
+.osp-ss-gap{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.03em;
+  color:var(--mid,#e3b341);background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.5);
   border-radius:5px;padding:0 5px;text-transform:uppercase;vertical-align:middle}
 .osp-ss-pit{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--card);
   border:1.5px solid var(--line);border-radius:13px;padding:12px 15px}
@@ -3016,11 +3016,11 @@ _SS_STYLE2 = """<style>
 .osp-ss-pen{font-size:.74rem;color:var(--muted);margin-top:6px}
 .osp-ss-badge{font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:5px;text-transform:uppercase}
 .osp-ss-mtab{width:100%;border-collapse:collapse;font-size:.8rem}
-.osp-ss-mtab th{font-family:var(--disp);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
-  color:var(--muted);text-align:right;padding:5px 8px;border-bottom:1.5px solid var(--line)}
+.osp-ss-mtab th{font-family:var(--disp);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1.5px solid var(--line)}
 .osp-ss-mtab th:first-child,.osp-ss-mtab td:first-child{text-align:left}
-.osp-ss-mtab td{padding:5px 8px;text-align:right;border-top:1px solid var(--line);
-  font-variant-numeric:tabular-nums}
+.osp-ss-mtab td{padding:6px 8px;text-align:right;border-top:1px solid var(--line);
+  font-variant-numeric:tabular-nums;font-size:.84rem}
 .osp-ss-note{font-size:.68rem;color:var(--muted);margin-top:8px;line-height:1.5}
 .osp-ss-unc{display:flex;gap:26px;flex-wrap:wrap;background:var(--card2);border:1px solid var(--line);
   border-radius:11px;padding:11px 15px;font-size:.9rem}
