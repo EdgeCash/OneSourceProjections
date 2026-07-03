@@ -10,6 +10,7 @@ board, or the PERFORMANCE tracker.
 """
 
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -18,6 +19,8 @@ import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+log = logging.getLogger("osp.dashboard")
 
 from app import ui  # noqa: E402
 from app.auth import require_password  # noqa: E402
@@ -523,14 +526,22 @@ def render_sport(sport: str):
             # The feed: every game's full Sharp Sheet, top to bottom. Click the
             # sport, scroll the sheets — no dropdown, no digging.
             for g in shown:
-                m = _matchup(sport, g.get("home_team", ""),
-                             g.get("away_team", ""), date_sel, window) or {}
+                # Never let one game's data-build error blank the whole feed —
+                # degrade to DATA GAP chips (empty data) and keep rendering.
+                try:
+                    m = _matchup(sport, g.get("home_team", ""),
+                                 g.get("away_team", ""), date_sel, window) or {}
+                    data = _sheet_data(sport, g, m, date_sel)
+                except Exception:
+                    log.exception("sheet data failed for %s @ %s",
+                                  g.get("away_team"), g.get("home_team"))
+                    m, data = {}, {}
                 st.markdown(
                     ui.sharp_sheet_html(
                         sport, g, m, window=window, min_edge=min_edge,
                         gate_table=gate_table(), bankroll=bankroll,
                         props=props, best_line=_best_line_for(sport, g, date_sel),
-                        data=_sheet_data(sport, g, m, date_sel)),
+                        data=data),
                     unsafe_allow_html=True)
             st.caption("Each game's full Sharp Sheet — the dense offense-vs-defense "
                        "tables live under the 'Advanced' fold on each.")
