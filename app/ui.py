@@ -4,6 +4,7 @@ shapes so they're testable without Streamlit."""
 
 from __future__ import annotations
 
+import logging
 import math
 import urllib.parse
 from datetime import datetime
@@ -13,6 +14,8 @@ import pandas as pd
 
 from app import assets
 from project547 import config, odds
+
+log = logging.getLogger(__name__)
 
 ET = ZoneInfo("America/New_York")
 
@@ -1173,7 +1176,26 @@ def _signed_units(v) -> str:
     return f"{float(v):+.1f}u"
 
 
+def _fallback_card(title: str, note: str = "card unavailable") -> str:
+    """Minimal card shown when a rich renderer raises — keeps the page up."""
+    return (f"<div style='background:var(--card);border:1.5px solid var(--line);"
+            f"border-radius:12px;padding:14px 16px;color:var(--text);"
+            f"font-family:var(--font, system-ui, sans-serif);'>"
+            f"<b>{title}</b><br><span style='color:var(--muted);font-size:.72rem;'>"
+            f"{note}</span></div>")
+
+
 def play_card_html(play: dict, *, graded: bool = False) -> str:
+    """Never-raises wrapper around the play card: one bad row degrades to a
+    minimal card (and logs the real error) instead of crashing the whole page."""
+    try:
+        return _play_card_impl(play, graded=graded)
+    except Exception:
+        log.exception("play_card_html failed for %r", (play or {}).get("bet"))
+        return _fallback_card(_g(play or {}, "bet", "pick") or "Play")
+
+
+def _play_card_impl(play: dict, *, graded: bool = False) -> str:
     """One compact, reusable play card (pure st.markdown HTML, themed via CSS
     vars). Used on Today / Plays / Ledger. Pulls every field defensively from
     the play dict (bet/pick, price, model_prob, ev, kelly/stake, sport, game,
@@ -2254,6 +2276,26 @@ def _projection_hero(sport: str, g: dict) -> str:
 def matchup_card_html(sport: str, g: dict, matchup: dict, window: str = "l5",
                       min_edge: float = 0.02, title: str | None = None,
                       gate_table=None, bankroll: float = 0) -> str:
+    """Never-raises wrapper: on any failure fall back to the compact game card
+    (and log the real error) so one bad matchup can't crash the sport page."""
+    try:
+        return _matchup_card_impl(sport, g, matchup, window=window,
+                                  min_edge=min_edge, title=title,
+                                  gate_table=gate_table, bankroll=bankroll)
+    except Exception:
+        log.exception("matchup_card_html failed for %s @ %s",
+                      (g or {}).get("away_team"), (g or {}).get("home_team"))
+        try:
+            return game_card_html(sport, g)
+        except Exception:
+            log.exception("game_card_html fallback also failed")
+            return _fallback_card(
+                f"{(g or {}).get('away_team', '')} @ {(g or {}).get('home_team', '')}")
+
+
+def _matchup_card_impl(sport: str, g: dict, matchup: dict, window: str = "l5",
+                       min_edge: float = 0.02, title: str | None = None,
+                       gate_table=None, bankroll: float = 0) -> str:
     """The full premium matchup graphic. ``matchup`` is teamstats.matchup(...,
     window=window). Safe on an empty matchup (renders the header only).
 
