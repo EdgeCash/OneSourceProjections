@@ -122,3 +122,71 @@ def project(values: list[float], market: str) -> PropProjection | None:
                             prior=cfg["prior"])
     return PropProjection(market=key, proj=round(rate, 2), n=len(values),
                           r=cfg["r"])
+
+
+# ---------------------------------------------------------------------------
+# Opponent adjustment: nudge a player's projection by how much the opposing team
+# allows in that market vs the league. The per-player rate above is opponent-
+# blind; a soft matchup should lift it and a stingy one trim it. Kept small
+# (shrunk by sample, hard-clamped) — a first, conservative pass that ships behind
+# the demonstrated-edge gate like everything else.
+# ---------------------------------------------------------------------------
+DEF_SHRINK = 60.0    # opposing player-appearances of "league-average" prior
+DEF_CLAMP = 0.10     # cap the opponent adjustment at ±10%
+
+
+def defense_factors(rows, markets: dict | None = None) -> dict:
+    """Per-(defending_team, market) opponent-defense multiplier from committed
+    box-score logs. Each ``row`` is a dict with ``team`` — the DEFENDING team
+    (i.e. the log's opponent), already canonicalized by the caller so it matches
+    the slate's team keys — plus the market stat columns. A team's factor for a
+    market is (avg stat it allows per opposing appearance) / league average,
+    shrunk toward 1.0 by the appearance count and clamped. Returns
+    ``{(team, market): factor}``; teams/markets with no data are simply absent
+    (read as neutral 1.0 by :func:`opponent_factor`). ``markets`` defaults to the
+    WNBA table but any sport can pass its own (the NHL model reuses this)."""
+    import collections
+    markets = markets if markets is not None else MARKETS
+    agg: dict = collections.defaultdict(lambda: {"s": 0.0, "n": 0})
+    tot: dict = collections.defaultdict(lambda: {"s": 0.0, "n": 0})
+    for row in rows:
+        team = row.get("team")
+        if not team:
+            continue
+        for mk, cfg in markets.items():
+            v = row.get(cfg["stat"])
+            if v is None:
+                continue
+            try:
+                v = float(v)
+            except (TypeError, ValueError):
+                continue
+            if v != v:                       # NaN (e.g. a skater's goalie stat)
+                continue
+            agg[(team, mk)]["s"] += v
+            agg[(team, mk)]["n"] += 1
+            tot[mk]["s"] += v
+            tot[mk]["n"] += 1
+    league = {mk: (t["s"] / t["n"]) for mk, t in tot.items() if t["n"]}
+    out: dict = {}
+    for (team, mk), a in agg.items():
+        lg = league.get(mk)
+        if not lg or lg <= 0 or not a["n"]:
+            continue
+        raw = (a["s"] / a["n"]) / lg
+        w = a["n"] / (a["n"] + DEF_SHRINK)              # sample-size shrinkage
+        f = 1.0 + (raw - 1.0) * w
+        out[(team, mk)] = round(min(max(f, 1 - DEF_CLAMP), 1 + DEF_CLAMP), 4)
+    return out
+
+
+def opponent_factor(market: str, opponent_team: str | None, table: dict,
+                    canonical=None) -> float:
+    """Opponent-defense multiplier (~0.9–1.1) for a market vs a team; 1.0 when
+    unknown. ``opponent_team`` and the ``table`` keys must share one team
+    canonicalization (the caller's ``teams.canon``). ``canonical`` defaults to
+    the WNBA market vocabulary; the NHL model passes its own."""
+    key = (canonical or canonical_market)(market)
+    if not key or not opponent_team or not table:
+        return 1.0
+    return table.get((opponent_team, key), 1.0)

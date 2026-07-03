@@ -33,16 +33,83 @@ def _handedness() -> dict:
         return {}
 
 
-def throws(name: str) -> str | None:
-    """'L' / 'R' (pitcher throwing hand), or None if unknown."""
+# Live, id-keyed handedness for the current slate, resolved from the StatsAPI
+# people endpoint (see prime_hands). Preferred over the committed name-keyed
+# retrosheet map: a player id can't collide the way normalized names can, and the
+# people endpoint is authoritative for recent call-ups the harvested map lags.
+_LIVE_BY_ID: dict[int, dict] = {}
+
+
+def throws(name: str, player_id=None) -> str | None:
+    """'L' / 'R' (pitcher throwing hand), or None if unknown. Prefers the live
+    id-keyed map (primed from the people endpoint) and falls back to the
+    committed retrosheet name map."""
+    if player_id is not None:
+        rec = _LIVE_BY_ID.get(int(player_id))
+        if rec and rec.get("throws"):
+            return rec["throws"]
     rec = _handedness().get(normalize(name or ""))
     return (rec or {}).get("throws")
 
 
-def bats(name: str) -> str | None:
-    """'L' / 'R' / 'B' (switch), or None if unknown."""
+def bats(name: str, player_id=None) -> str | None:
+    """'L' / 'R' / 'B' (switch), or None if unknown. Live id-keyed first, then
+    the committed name map."""
+    if player_id is not None:
+        rec = _LIVE_BY_ID.get(int(player_id))
+        if rec and rec.get("bats"):
+            return rec["bats"]
     rec = _handedness().get(normalize(name or ""))
     return (rec or {}).get("bats")
+
+
+def _persist(mapping: dict) -> int:
+    """Merge a {norm_name: {bats, throws}} mapping into the committed handedness
+    file, returning the number of newly changed names. Clears the read cache so
+    the name-keyed lookups see the additions."""
+    if not mapping:
+        return 0
+    data = dict(_handedness())
+    added = 0
+    for nm, entry in mapping.items():
+        if nm and entry != data.get(nm):
+            data[nm] = entry
+            added += 1
+    if added:
+        _HAND_PATH.write_text(json.dumps(data, separators=(",", ":"),
+                                         sort_keys=True))
+        _handedness.cache_clear()
+    return added
+
+
+def prime_hands(pairs) -> int:
+    """Resolve live bats/throws **by player id** for a slate from the StatsAPI
+    people endpoint, so the day's handedness doesn't depend on the stale,
+    name-keyed retrosheet map. ``pairs`` is an iterable of ``(player_id, name)``.
+    Populates the in-memory id-keyed map (used first by throws()/bats()) and
+    backfills the committed name map for offline fallback. Returns the number of
+    players fetched. Best-effort: statsapi being unreachable resolves nothing."""
+    from .clients import mlb_statsapi
+
+    ids = []
+    for pid, _name in pairs:
+        if pid and int(pid) not in _LIVE_BY_ID:
+            ids.append(int(pid))
+    if not ids:
+        return 0
+    try:
+        fetched = mlb_statsapi.people_handedness(ids)
+    except Exception:
+        return 0
+    persist: dict = {}
+    for pid, rec in fetched.items():
+        entry = {"bats": rec.get("bats"), "throws": rec.get("throws")}
+        _LIVE_BY_ID[int(pid)] = entry
+        nm = normalize(rec.get("name") or "")
+        if nm and (rec.get("bats") or rec.get("throws")):
+            persist[nm] = entry
+    _persist(persist)
+    return len(fetched)
 
 
 def refresh_handedness(pairs) -> int:
@@ -73,22 +140,17 @@ def refresh_handedness(pairs) -> int:
     except Exception:
         return 0
 
-    added = 0
-    data = dict(current)  # copy the cached map to mutate + persist
-    for rec in fetched.values():
+    persist: dict = {}
+    for pid, rec in fetched.items():
         nm = normalize(rec.get("name") or "")
-        if not nm or not (rec.get("bats") or rec.get("throws")):
+        if not (rec.get("bats") or rec.get("throws")):
             continue
-        prev = data.get(nm)
         entry = {"bats": rec.get("bats"), "throws": rec.get("throws")}
-        if prev != entry:
-            data[nm] = entry
-            added += 1
-    if added:
-        _HAND_PATH.write_text(json.dumps(data, separators=(",", ":"),
-                                         sort_keys=True))
-        _handedness.cache_clear()  # so throws()/bats() see the new names
-    return added
+        if pid:
+            _LIVE_BY_ID[int(pid)] = entry
+        if nm:
+            persist[nm] = entry
+    return _persist(persist)
 
 
 @lru_cache(maxsize=6)
@@ -110,12 +172,35 @@ def _f(v):
         return None
 
 
+def _live_split(player_id, key: str, season: int) -> dict | None:
+    """Current-season vL/vR line straight from the statSplits endpoint (the
+    freshest source), or None. Cached in-process per (id, season)."""
+    cache = _live_split.__dict__.setdefault("_c", {})
+    ck = (int(player_id), season)
+    if ck not in cache:
+        from .clients import mlb_statsapi
+        try:
+            cache[ck] = mlb_statsapi.hitter_platoon_splits_live(int(player_id), season)
+        except Exception:
+            cache[ck] = {}
+    sp = (cache[ck] or {}).get(key)
+    if sp and sp.get("plateAppearances"):
+        return {"avg": _f(sp.get("avg")), "slg": _f(sp.get("slg")),
+                "pa": _f(sp.get("plateAppearances")) or 0.0}
+    return None
+
+
 def hitter_split(player_id, vs_throws: str, season: int) -> dict | None:
-    """The hitter's split line (avg/slg/pa) vs the given hand, from ``season``
-    then the prior season. ``vs_throws`` is the pitcher's hand ('L'/'R')."""
+    """The hitter's split line (avg/slg/pa) vs the given hand. Freshest source
+    wins: the live current-season statSplits feed, then the committed backfill
+    for this season, then the prior season as the stable prior. ``vs_throws`` is
+    the pitcher's hand ('L'/'R')."""
     if player_id is None or vs_throws not in ("L", "R"):
         return None
     key = "vl" if vs_throws == "L" else "vr"
+    live = _live_split(player_id, key, season)
+    if live and (live.get("pa") or 0) > 0:
+        return live
     for s in (season, season - 1):
         row = _hitting_splits(s).get(str(int(player_id))) if player_id else None
         if row and key in row:

@@ -305,6 +305,91 @@ def _to_num(v):
         return None
 
 
+# Tennis is player-vs-player and shaped differently from the team sports: a
+# scoreboard "event" is a tournament whose ``groupings`` hold the individual
+# matches (``competitions``) between two ``athlete`` competitors. ESPN carries no
+# surface field, so we infer it from the tournament name (approximate, for the
+# surface-aware Elo hook — it falls back to overall when unknown).
+_GRASS = ("wimbledon", "halle", "terra wortmann", "queen", "hsbc championship",
+          "eastbourne", "mallorca", "stuttgart", "hertogenbosch", "newport", "libema")
+_CLAY = ("roland garros", "french open", "monte", "madrid", "rome", "italian open",
+         "barcelona", "hamburg", "kitzbuhel", "gstaad", "bastad", "umag", "houston",
+         "estoril", "munich", "bucharest", "cordoba", "santiago", "buenos aires", "rio")
+
+
+def _tennis_surface(tournament: str) -> str:
+    t = (tournament or "").lower()
+    if any(k in t for k in _GRASS):
+        return "grass"
+    if any(k in t for k in _CLAY):
+        return "clay"
+    return "hard"
+
+
+def _parse_tennis(data: dict) -> list[dict]:
+    """Men's-singles matches from a tennis scoreboard payload: two players, the
+    winner (if final), tournament, inferred surface, date, completion."""
+    out = []
+    for ev in data.get("events", []):
+        tournament = ev.get("name") or ev.get("shortName") or ""
+        surface = _tennis_surface(tournament)
+        for grp in ev.get("groupings", []) or []:
+            for c in grp.get("competitions", []) or []:
+                if (c.get("type") or {}).get("slug") != "mens-singles":
+                    continue
+                comps = c.get("competitors") or []
+                if len(comps) != 2:
+                    continue
+                players, winner = [], None
+                for x in comps:
+                    nm = (x.get("athlete") or {}).get("displayName")
+                    if not nm:
+                        break
+                    players.append(nm)
+                    if x.get("winner"):
+                        winner = nm
+                if len(players) != 2:
+                    continue
+                completed = bool((c.get("status") or {}).get("type", {}).get("completed"))
+                out.append({
+                    "match_id": c.get("id"),
+                    "date": (c.get("date") or "")[:10],
+                    "match_time": c.get("date"),
+                    "tournament": tournament,
+                    "surface": surface,
+                    "player1": players[0],
+                    "player2": players[1],
+                    "winner": winner,
+                    "completed": completed,
+                })
+    return out
+
+
+def tennis_matches(sport_key: str, start: str, end: str,
+                   completed_only: bool = False) -> list[dict]:
+    """Men's-singles matches in [start, end] (chunked like results_range).
+    ``completed_only`` keeps only finished matches (for Elo history); otherwise
+    scheduled matches come through too (for a slate)."""
+    from datetime import date, timedelta
+
+    d0, d1 = date.fromisoformat(start), date.fromisoformat(end)
+    out, seen = [], set()
+    while d0 <= d1:
+        chunk_end = min(d0 + timedelta(days=149), d1)
+        rng = f"{d0.strftime('%Y%m%d')}-{chunk_end.strftime('%Y%m%d')}"
+        data = cached_json(f"espn:tennis:{sport_key}:{rng}", _TTL_RESULTS,
+                           lambda rng=rng: _get(sport_key, {"dates": rng}))
+        for m in _parse_tennis(data):
+            if m["match_id"] in seen:
+                continue
+            if completed_only and not (m["completed"] and m["winner"]):
+                continue
+            seen.add(m["match_id"])
+            out.append(m)
+        d0 = chunk_end + timedelta(days=1)
+    return out
+
+
 def results_range(sport_key: str, start: str, end: str) -> list[dict]:
     """Completed games with final scores in [start, end]. ESPN rejects very
     long date ranges (observed 400s past ~1 year), so wide windows are

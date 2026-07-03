@@ -28,7 +28,9 @@ log = logging.getLogger(__name__)
 
 BASE = "https://api.the-odds-api.com/v4"
 
-# our sport key -> The Odds API sport key
+# our sport key -> The Odds API sport key. Soccer leagues have stable keys;
+# tennis is per-tournament (tennis_atp_wimbledon, ...) and discovered at runtime
+# from the /sports list — see tennis_sport_keys / game_odds's tennis branch.
 SPORT_KEYS = {
     "MLB": "baseball_mlb",
     "WNBA": "basketball_wnba",
@@ -36,7 +38,16 @@ SPORT_KEYS = {
     "NHL": "icehockey_nhl",
     "NCAAF": "americanfootball_ncaaf",
     "NFL": "americanfootball_nfl",
+    "MLS": "soccer_usa_mls",
+    "EPL": "soccer_epl",
 }
+
+# our sport key -> The Odds API tennis key prefix (tournaments are per-key)
+_TENNIS_PREFIX = {"ATP": "tennis_atp", "WTA": "tennis_wta"}
+# Only the four Grand Slams are worth the credits (deep, liquid markets that best
+# match our Elo model); regular ATP/WTA tour stops are skipped. The Odds API keys
+# these as e.g. tennis_atp_wimbledon / tennis_atp_us_open.
+_TENNIS_MAJORS = ("aus_open", "french_open", "wimbledon", "us_open")
 
 # The Odds API market key -> our internal market name
 _MARKET = {"h2h": "moneyline", "totals": "total", "spreads": "spread"}
@@ -92,30 +103,91 @@ def _fetch(osk: str, regions: str, markets: str) -> list[dict]:
     return resp.json()
 
 
+def _bucket(ttl: int) -> int:
+    """Cache-key bucket that rotates once per ``ttl`` window, so a longer TTL
+    actually means fewer fetches (an hourly bucket would re-spend every hour no
+    matter the TTL)."""
+    return int(datetime.now(timezone.utc).timestamp() // max(ttl, 1))
+
+
+def _sport_ttl(sport_key: str) -> int:
+    """Refresh cadence for a sport: soccer/tennis are slow, secondary markets
+    (twice a day); the core US sports stay hourly."""
+    if sport_key in _TENNIS_PREFIX or \
+            SPORT_KEYS.get(sport_key, "").startswith("soccer_"):
+        return config.ODDS_API_SLOW_TTL
+    return config.ODDS_API_TTL
+
+
+def _fetch_one(osk: str, regions: str, markets: str, ttl: int) -> list[dict]:
+    key = f"oddsapi:{osk}:{regions}:{markets}:{_bucket(ttl)}"
+    try:
+        return cached_json(key, ttl, lambda: _fetch(osk, regions, markets))
+    except Exception as e:
+        log.warning("Odds API fetch failed for %s: %s", osk, e)
+        return []
+
+
+def list_sports() -> list[dict]:
+    """The Odds API /sports catalogue (which sports/tournaments are in season).
+    Cached at the slow (twice-daily) cadence; [] with no key. Free of odds-credit
+    charge on the API."""
+    if not config.THE_ODDS_API_KEY():
+        return []
+    ttl = config.ODDS_API_SLOW_TTL
+    try:
+        return cached_json(
+            f"oddsapi:sports:{_bucket(ttl)}", ttl,
+            lambda: requests.get(f"{BASE}/sports",
+                                 params={"apiKey": config.THE_ODDS_API_KEY()},
+                                 timeout=30).json())
+    except Exception as e:
+        log.warning("Odds API /sports failed: %s", e)
+        return []
+
+
+def tennis_sport_keys(sport_key: str) -> list[str]:
+    """Active per-tournament tennis keys for a tour (ATP/WTA) from /sports,
+    **restricted to the Grand Slams** — e.g. ['tennis_atp_wimbledon']. The Odds
+    API has no single 'all tennis' key, so we fan out over the majors that are
+    currently live (regular tour stops aren't worth the credits)."""
+    prefix = _TENNIS_PREFIX.get(sport_key)
+    if not prefix:
+        return []
+    out = []
+    for s in list_sports():
+        key = str(s.get("key", ""))
+        if (s.get("active") and key.startswith(prefix)
+                and any(m in key for m in _TENNIS_MAJORS)):
+            out.append(key)
+    return out
+
+
 def game_odds(sport_key: str, regions: str | None = None,
               markets: str | None = None, ttl: int | None = None) -> list[dict]:
     """Raw events with multi-book odds for a sport, or [] when unavailable
     (no key, unmapped sport, credit floor reached, or API error). Cached for
-    ttl seconds so repeated calls within an hour don't spend credits."""
-    if not config.THE_ODDS_API_KEY():
-        return []
-    osk = SPORT_KEYS.get(sport_key)
-    if not osk:
-        return []
-    if _below_floor():
-        log.warning("Odds API credit floor reached (%s left); skipping %s",
-                    credits_remaining(), sport_key)
+    ttl seconds so repeated calls within an hour don't spend credits. Tennis
+    fans out over the tour's live tournament keys and merges the events."""
+    if not config.THE_ODDS_API_KEY() or _below_floor():
+        if _below_floor():
+            log.warning("Odds API credit floor reached (%s left); skipping %s",
+                        credits_remaining(), sport_key)
         return []
     regions = regions or config.ODDS_API_REGIONS
     markets = markets or config.ODDS_API_MARKETS
-    ttl = config.ODDS_API_TTL if ttl is None else ttl
-    bucket = datetime.now(timezone.utc).strftime("%Y%m%d%H")
-    key = f"oddsapi:{osk}:{regions}:{markets}:{bucket}"
-    try:
-        return cached_json(key, ttl, lambda: _fetch(osk, regions, markets))
-    except Exception as e:
-        log.warning("Odds API fetch failed for %s: %s", sport_key, e)
+    ttl = _sport_ttl(sport_key) if ttl is None else ttl
+
+    if sport_key in _TENNIS_PREFIX:
+        events: list[dict] = []
+        for osk in tennis_sport_keys(sport_key):
+            events += _fetch_one(osk, regions, "h2h", ttl)   # tennis: h2h only
+        return events
+
+    osk = SPORT_KEYS.get(sport_key)
+    if not osk:
         return []
+    return _fetch_one(osk, regions, markets, ttl)
 
 
 # ---------------------------------------------------------------------------

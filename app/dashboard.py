@@ -306,7 +306,11 @@ def ev_styler(df: pd.DataFrame, ev_cols: list[str], tier_col: str | None = None)
 data = load_data()
 slates = slates_by_date(data) if data else {}
 
-NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL") if s in SPORTS]
+NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL",
+                          "MLS", "ATP") if s in SPORTS]
+# Player-/goal-based match models (no team offense-vs-defense card, no prop
+# board) — routed to a dedicated renderer instead of render_sport.
+MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 
 # Two-tier navigation, collapsed to five verb-first areas: a top-level area,
 # then (when an area has several pages) a sub-page. Today -> find Plays ->
@@ -531,6 +535,75 @@ def render_sport(sport: str):
                 st.markdown(f"{tag}**{head}**")
                 if n.get("body"):
                     st.caption(n["body"])
+
+
+def _match_title(sport: str, g: dict) -> str:
+    if sport in ("ATP", "WTA"):
+        return f"{g.get('player1', '')} vs {g.get('player2', '')}"
+    return f"{g.get('away_team', '')} @ {g.get('home_team', '')}"
+
+
+def _match_sheet(sport: str, g: dict):
+    """Sharp Sheet body for a soccer/tennis match: the model's read + the priced
+    sides. No team offense/defense splits — these are goal-/Elo-based models."""
+    is_tennis = sport in ("ATP", "WTA")
+    if is_tennis:
+        cols = st.columns(3)
+        cols[0].metric(g.get("player1", "P1"), ui._pct(g.get("player1_win_prob")))
+        cols[1].metric(g.get("player2", "P2"), ui._pct(g.get("player2_win_prob")))
+        cols[2].metric("Surface", str(g.get("surface") or "—").title())
+        st.caption(f"{g.get('tournament', '')} · surface-aware player Elo "
+                   f"(sample: {g.get('p1_matches', '—')} / "
+                   f"{g.get('p2_matches', '—')} matches).")
+    else:
+        cols = st.columns(4)
+        cols[0].metric("Home win", ui._pct(g.get("home_win_prob")))
+        cols[1].metric("Draw", ui._pct(g.get("draw_prob")))
+        cols[2].metric("Away win", ui._pct(g.get("away_win_prob")))
+        cols[3].metric("Over 2.5", ui._pct(g.get("over_2_5")))
+        st.caption(f"Expected goals {ui._num(g.get('home_exp'))} "
+                   f"(home) – {ui._num(g.get('away_exp'))} (away), "
+                   "Dixon-Coles-corrected Poisson scoreline model.")
+    edges = ui.match_edge_table(sport, g)
+    if edges.empty:
+        st.caption("No market prices yet — odds arrive from The Odds API "
+                   "(soccer books; tennis during the majors). The model's "
+                   "probabilities above stand on their own until then.")
+    else:
+        st.markdown("**Priced sides** — model vs the market:")
+        st.dataframe(edges, hide_index=True, width="stretch")
+        st.caption("EV is after shrinking the model toward the de-vigged "
+                   "market; new markets sit in the edge gate's probation tier "
+                   "until they prove CLV.")
+
+
+def render_match_sport(sport: str):
+    """Soccer / tennis: a match-model slate (1X2 + totals for soccer, player
+    match-win for tennis) with a Sharp Sheet per match. No prop board."""
+    q = topbar(sport)
+    date_sel = pick_date()
+    blob = slates.get(date_sel, {}).get(sport, {})
+    games = blob.get("games", []) or []
+    if blob.get("error"):
+        st.caption(f"⚠️ Some {sport} data is temporarily unavailable "
+                   f"({blob['error']}). It refreshes on the next update.")
+    if q:
+        games = [g for g in games if q in _match_title(sport, g).lower()]
+    if not games:
+        st.info(f"No {sport} matches for {date_sel}"
+                + (" matching the search." if q else "."))
+        return
+    is_tennis = sport in ("ATP", "WTA")
+    table = ui.tennis_table(games) if is_tennis else ui.soccer_table(games)
+    st.dataframe(table, hide_index=True, width="stretch")
+    st.caption(("Surface-aware player Elo; win % is the Elo logistic. "
+                if is_tennis else
+                "1X2 + totals from a Dixon-Coles Poisson on each side's expected "
+                "goals. ") + "Odds/EV appear where The Odds API covers the match.")
+    st.markdown("#### 📊 Sharp Sheets")
+    for g in games:
+        with st.expander(_match_title(sport, g)):
+            _match_sheet(sport, g)
 
 
 @st.cache_data(ttl=900, show_spinner=False)
@@ -985,7 +1058,10 @@ def _resolve_game(sport: str, r, date_sel: str) -> dict | None:
         names = {normalize(x) for x in str(r.get("game", "")).split(" vs ")}
     names.discard("")
     for g in games:
-        if {normalize(g.get("home_team", "")), normalize(g.get("away_team", ""))} & names:
+        gnames = {normalize(g.get("home_team", "")), normalize(g.get("away_team", "")),
+                  normalize(g.get("player1", "")), normalize(g.get("player2", ""))}
+        gnames.discard("")
+        if gnames & names:
             return g
     return {"home_team": h, "away_team": a} if isinstance(h, str) else None
 
@@ -995,7 +1071,11 @@ def _sharpsheet(sport: str, g: dict | None, date_sel: str):
     if not g:
         st.info("Couldn't resolve the matchup behind this play.")
         return
-    st.markdown(f"### {g.get('away_team')} @ {g.get('home_team')}")
+    st.markdown(f"### {_match_title(sport, g)}")
+    if sport in MATCH_MODEL_SPORTS:
+        st.caption(f"{sport} · {date_sel} · the model's read and the priced sides.")
+        _match_sheet(sport, g)
+        return
     st.caption(f"{sport} · {date_sel} · the full breakdown behind the play — "
                "offense vs defense, the edges, and the model's read.")
     render_research_card(sport, g, date_sel)
@@ -2817,7 +2897,8 @@ with st.container(key="osp_topnav"):
 if section == "HOME":
     render_home()
 elif section in NAV_SPORTS:
-    render_sport(section)
+    (render_match_sport if section in MATCH_MODEL_SPORTS
+     else render_sport)(section)
 elif section == "SCORES":
     render_scores()
 elif section == "WORKBOOK":

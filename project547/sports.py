@@ -145,6 +145,26 @@ SPORTS: dict[str, Sport] = {
         # Heavy roster turnover -> regress harder toward the mean each season.
         elo_blend=0.50, elo_k=22.0, elo_home_edge=65.0, elo_regress=0.45,
     ),
+    "ATP": Sport(
+        # Player-vs-player: the team fields below are unused (the tennis path uses
+        # a player-Elo model, models/tennis). Kept in the registry so the slate/
+        # results plumbing and active_sports work. Year-round tour.
+        key="ATP", espn_path="tennis/atp", model="normal",
+        league_ppg=0.0, hfa=0.0, sigma_margin=0.0, sigma_total=0.0,
+        in_season_months=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), form_days=540,
+    ),
+    "MLS": Sport(
+        key="MLS", espn_path="soccer/usa.1", model="poisson",
+        # Goals per team per game (MLS runs ~2.9 total). hfa in goals — home
+        # edge in football is worth ~0.3-0.4 goals. Season Feb-Nov (+ Dec
+        # playoffs). Longer form window: teams play ~1-2x/week so 120 days keeps
+        # a usable rating sample. Multiplicative (log5) scoring so a strong attack
+        # vs a leaky defence projects above either mean. 1X2/draw comes from the
+        # soccer scoreline model (models/soccer), not the 2-way generic engine.
+        league_ppg=1.45, hfa=0.32, sigma_margin=0.0, sigma_total=0.0,
+        in_season_months=(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), form_days=120,
+        score_method="multiplicative",
+    ),
     "NHL": Sport(
         key="NHL", espn_path="hockey/nhl", model="poisson",
         league_ppg=3.0, hfa=0.15, sigma_margin=0.0, sigma_total=0.0,

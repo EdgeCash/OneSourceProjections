@@ -26,3 +26,9 @@ gatherUsageStats = false
 
 [server]
 headless = true
+
+[client]
+# Show full tracebacks inline instead of the redacted "error message hidden"
+# card — this is a private, auth-gated analytics tool and we need to see failures
+# to fix them. Set back to "none" if the app is ever exposed publicly.
+showErrorDetails = "full"

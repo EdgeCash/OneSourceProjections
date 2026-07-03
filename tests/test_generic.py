@@ -131,11 +131,13 @@ def test_multiplicative_matches_additive_for_average_teams():
 
 
 def test_sports_registry():
-    assert set(SPORTS) == {"MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL"}
+    assert set(SPORTS) == {"MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL",
+                           "MLS", "ATP"}
     assert in_season("MLB", "2026-06-12")
     assert in_season("WNBA", "2026-06-12")
     assert not in_season("NFL", "2026-06-12")
     june = active_sports("2026-06-12")
     assert "MLB" in june and "WNBA" in june and "NCAAF" not in june
+    assert "MLS" in june and "ATP" in june   # summer soccer + year-round tennis
     december = active_sports("2026-12-01")
     assert {"NBA", "NFL", "NCAAF", "NHL"} <= set(december)

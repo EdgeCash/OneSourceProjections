@@ -67,6 +67,27 @@ def fair_two_way(a_american: float, b_american: float,
     return pa / total, pb / total
 
 
+def fair_multiway(prices: dict, vig_min: float = 0.98, vig_max: float = 1.40
+                  ) -> dict | None:
+    """De-vigged fair probabilities for an N-way market (e.g. soccer 1X2:
+    {'home': -120, 'draw': +260, 'away': +320}). Proportional vig removal.
+    Returns {key: fair_prob} summing to 1, or None if any price is missing or
+    the raw implied probabilities sum outside ``[vig_min, vig_max]`` (stale or
+    mismatched quotes). A 3-way book holds more than a 2-way, so vig_max is
+    looser here."""
+    try:
+        imp = {k: implied_prob(float(v)) for k, v in prices.items()
+               if v is not None}
+    except (TypeError, ValueError, ZeroDivisionError):
+        return None
+    if len(imp) < 2:
+        return None
+    total = sum(imp.values())
+    if total <= 0 or not (vig_min <= total <= vig_max):
+        return None
+    return {k: p / total for k, p in imp.items()}
+
+
 def fair_one_way(american: float, lo: float = 0.01, hi: float = 0.99
                  ) -> float | None:
     """Implied probability of a single quoted side, or None if the price is
