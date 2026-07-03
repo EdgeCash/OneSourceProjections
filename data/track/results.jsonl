@@ -587,3 +587,6 @@
 {"date": "2026-07-02", "sport": "MLB", "game": "Los Angeles Angels @ Seattle Mariners", "market": "model_winprob", "side": "", "pred_home_wp": 0.5334, "home_won": 1, "market_home_wp": 0.6686, "brier": 0.2177, "proj_total": 7.952, "actual_total": 1}
 {"date": "2026-07-02", "sport": "MLB", "game": "Los Angeles Angels @ Seattle Mariners", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5049, "yrfi": 0, "brier": 0.2549}
 {"date": "2026-07-02", "sport": "MLB", "game": "Los Angeles Angels @ Seattle Mariners", "market": "moneyline", "side": "away", "line": null, "price": 199.0, "ev": 0.1354, "won": false, "pnl": -1.0, "clv": -0.0091}
+{"date": "2026-07-02", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.517, "home_won": 1, "market_home_wp": 0.656, "brier": 0.2333, "proj_total": 9.502, "actual_total": 19}
+{"date": "2026-07-02", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5085, "yrfi": 1, "brier": 0.2416}
+{"date": "2026-07-02", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "moneyline", "side": "away", "line": null, "price": 178.0, "ev": 0.12, "won": false, "pnl": -1.0, "clv": -0.0437, "model_prob": 0.483}
