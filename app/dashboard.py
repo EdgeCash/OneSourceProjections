@@ -41,16 +41,20 @@ require_password()
 _PALETTES = {
     # Cream / vintage-white base, graphite type. Team colors are the only
     # decorative accent (applied per-card); green/red are reserved for meaning.
-    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", bg="#f4ead0", card="#fbf5e6",
+    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", link="#8a1f2b", warn="#c8941a",
+                  bg="#f4ead0", card="#fbf5e6",
                   card2="#efe2c2", line="#d8ccab", text="#1f2328",
                   muted="#5a6066", faint="#9b937f", good="#2f7a4a",
                   neg="#b03636", mid="#c8941a", sb1="#efe3c4", sb2="#f4ead0",
                   glow="0.0", shadow="0.10"),
-    "dark": dict(acc="var(--good)", acc2="var(--acc2)", bg="var(--bg)", card="var(--card)",
-                 card2="var(--card2)", line="var(--line)", text="var(--text)",
-                 muted="var(--muted)", faint="var(--faint)", good="var(--good)",
-                 neg="var(--neg)", mid="var(--mid)", sb1="var(--card2)", sb2="#080b12",
-                 glow="0.10", shadow="0.45"),
+    # Cool near-black + blue (the live go-live look). Concrete values — the old
+    # "dark" was a broken self-referential placeholder, so night mode never worked.
+    "dark": dict(acc="#3b82f6", acc2="#6cb6ff", link="#6cb6ff", warn="#e3b341",
+                 bg="#0d1117", card="#161b22",
+                 card2="#1c2431", line="#2a3441", text="#e8eef5",
+                 muted="#9aa7b4", faint="#6b7684", good="#3fb950",
+                 neg="#f0776a", mid="#e3b341", sb1="#111722", sb2="#0a0e15",
+                 glow="0.16", shadow="0.55"),
 }
 
 _THEME_CSS = """
@@ -126,10 +130,10 @@ _THEME_CSS = """
     letter-spacing: 0.03em; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-  a.osp-plink { color: var(--text) !important; text-decoration:none;
-    border-bottom:1px dashed transparent; transition: color .12s ease,
+  a.osp-plink { color: var(--link, var(--acc2)) !important; text-decoration:none;
+    font-weight:600; border-bottom:1px solid transparent; transition: color .12s ease,
     border-color .12s ease; }
-  a.osp-plink:hover { color: var(--acc2) !important; border-bottom-color: var(--acc2); }
+  a.osp-plink:hover { border-bottom-color: currentColor; }
   /* --- responsive nav: left sidebar on desktop, top tab-strip on mobile ---
      The keyed top-strip container is hidden by default (desktop uses the
      sidebar); shown only under the 768px breakpoint where the sidebar
@@ -156,21 +160,22 @@ _THEME_CSS = """
 
 
 def _theme_css(theme: str) -> str:
-    p = _PALETTES.get(theme, _PALETTES["cream"])
+    p = _PALETTES.get(theme, _PALETTES["dark"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
-            + "--disp:'Oswald', system-ui, sans-serif; }")
+            + "--disp:'Oswald', system-ui, sans-serif; "
+            + "--font:'DM Sans', system-ui, -apple-system, sans-serif; }")
     return f"<style>{root}{_THEME_CSS}</style>"
 
 
-st.markdown(_theme_css(st.session_state.get("theme", "cream")),
+st.markdown(_theme_css(st.session_state.get("theme", "dark")),
             unsafe_allow_html=True)
 
 
 def _theme_toggle(key: str):
-    """Cream/Dark master toggle. Cream (vintage) is the default look; both
-    placements (sidebar + landing) stay in sync via the shared ``theme``
-    state, re-seeded from it each render."""
-    st.session_state[key] = (st.session_state.get("theme", "cream") == "dark")
+    """Dark (cool near-black) is the default look; Cream stays as the light
+    alternative. Both placements (sidebar + landing) sync via the shared
+    ``theme`` state, re-seeded from it each render."""
+    st.session_state[key] = (st.session_state.get("theme", "dark") == "dark")
 
     def _cb():
         st.session_state.theme = "dark" if st.session_state[key] else "cream"
@@ -319,11 +324,13 @@ MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 NAV_GROUPS = {
     "🏠 Today": ["HOME"],
     "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
-    "🔬 Research": NAV_SPORTS + ["SHARPSHEET", "DFS", "SCORES", "OTHER_SPORTS"],
-    "📒 Ledger": ["PERFORMANCE"],
-    "🛠️ Lab": ["EDGE_BUILDER", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "EXPERTS",
-               "WORKBOOK", "DOCS"],
+    "🏟️ Sports": NAV_SPORTS,   # the per-sport Sharp Sheets
+    "📊 Scores": ["SCORES"],
+    "⋯ More": ["SHARPSHEET", "OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
+               "EXPERTS", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "WORKBOOK", "DOCS"],
 }
+_SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
+                 "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
 _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "PLAYS_DETAIL": "Plays — full table", "EDGES": "Edge scanner",
                 "DFS": "DFS optimizer", "SCORES": "Live scores",
@@ -331,7 +338,8 @@ _PAGE_LABELS = {"HOME": "Today", "PLAYS": "Curated plays",
                 "OTHER_SPORTS": "Other sports", "BACKTEST": "Backtest",
                 "EXPERTS": "Expert consensus", "TOOLS": "Calculators",
                 "DOCS": "Methodology & docs", "WORKBOOK": "📥 Daily workbook",
-                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine"}
+                "EDGE_BUILDER": "Edge Builder", "PROMPT_ENGINE": "Prompt Engine",
+                **_SPORT_LABELS}
 
 # Responsive-nav handoff. The mobile top strip (rendered later, CSS-shown only
 # on narrow viewports) can't mutate the sidebar radio keys after those widgets
@@ -659,23 +667,125 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         format_func=lambda w: teamstats.WINDOW_LABELS[w], key=wkey,
         help="How much recency to weight — ranks, advantages and strength of "
              "schedule all recompute for the window you pick.")
-    m = _matchup(sport, home, away, date_sel, window)
-    if not m:
-        st.info("Team stat splits aren't available for this matchup yet.")
-        st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-        return
-    st.markdown(ui.matchup_card_html(sport, g, m, window=window, min_edge=min_edge,
-                                     gate_table=gate_table(), bankroll=bankroll),
+    m = _matchup(sport, home, away, date_sel, window) or {}
+    props = slates.get(date_sel, {}).get(sport, {}).get("props", []) or []
+    st.markdown(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
+                                    gate_table=gate_table(), bankroll=bankroll,
+                                    props=props, best_line=_best_line_for(sport, g, date_sel),
+                                    data=_sheet_data(sport, g, m, date_sel)),
                 unsafe_allow_html=True)
-    _shop_line(sport, g, date_sel)
-    _bp_validator(sport, g, date_sel)
-    ai_block(ui.ai_brief_game(sport, g, m, min_edge),
-             key=f"game_{sport}_{date_sel}_{away}_{home}")
     if caption:
         st.caption(f"Offense {teamstats.WINDOW_LABELS[window]} vs the opponent's "
                    "matching defense; rank pills are league ranks (green = top "
-                   "third). ★ = the offense out-ranks the defense it faces. PWR = "
-                   "power rank, SOS = strength-of-schedule rank.")
+                   "third). ★ = the offense out-ranks the defense it faces.")
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _market_stats_cached() -> dict:
+    """edge_gate.market_stats() with string keys (JSON-cacheable)."""
+    try:
+        from project547 import edge_gate
+        return {f"{s}|{m}": v for (s, m), v in edge_gate.market_stats().items()}
+    except Exception:
+        return {}
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _market_calibration(sport: str) -> dict | None:
+    """Per-market {pred, actual, n} for the calibration receipt. Actual hit-rate
+    + n come from the graded ledger (edge_gate.market_stats); the predicted prob
+    is only logged for the win-prob market today, so Total/Run Line show a DATA
+    GAP on predicted (honest, not faked)."""
+    ms = _market_stats_cached()
+    pred_ml = None
+    try:
+        from project547 import results
+        led = [r for r in results.load_ledger()
+               if r.get("sport") == sport
+               and isinstance(r.get("pred_home_wp"), (int, float))
+               and r.get("home_won") is not None]
+        if led:
+            pred_ml = sum(max(r["pred_home_wp"], 1 - r["pred_home_wp"]) for r in led) / len(led)
+    except Exception:
+        pred_ml = None
+    out, any_data = {}, False
+    for label, mk in (("Moneyline", "moneyline"), ("Total", "total"), ("Run Line", "spread")):
+        s = ms.get(f"{sport}|{mk}") or {}
+        actual, n = s.get("win_rate"), s.get("n")
+        pred = pred_ml if mk == "moneyline" else None
+        if actual is not None or pred is not None:
+            any_data = True
+        out[label] = {"pred": pred, "actual": actual, "n": n}
+    return out if any_data else None
+
+
+def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
+    """Assemble the Sharp Sheet v2 ``data`` object from live sources. Missing
+    pieces stay absent so the composer renders DATA GAP chips (never fabricated)."""
+    ms = _market_stats_cached()
+    clv = {}
+    for mk in ("moneyline", "total", "spread"):
+        s = ms.get(f"{sport}|{mk}") or {}
+        if s.get("clv_n"):
+            clv[mk] = {"avg_clv": s.get("avg_clv"), "clv_n": s.get("clv_n")}
+    pitching = None
+    if sport == "MLB":
+        from project547 import platoon
+        try:
+            from project547.pipeline import starter_xfip
+        except Exception:
+            starter_xfip = lambda *_: None  # noqa: E731
+        pitching = {}
+        for side in ("away", "home"):
+            nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
+            if not nm:
+                continue
+            try:
+                xfip = starter_xfip(nm)
+            except Exception:
+                xfip = None
+            try:
+                hand = platoon.throws(nm, pid)
+            except Exception:
+                hand = None
+            pitching[f"{side}_sp"] = {"name": nm, "id": pid, "hand": hand,
+                                      "xfip": xfip, "ip": None, "k9": None,
+                                      "bb9": None, "tto_flag": None}
+            bp = (matchup or {}).get(f"{side}_bullpen") or {}
+            if bp:
+                pitching[f"{side}_bullpen"] = {"fatigue": bp.get("level"),
+                                               "proj_ip": bp.get("proj_ip")}
+    return {"clv": clv or None, "calibration": _market_calibration(sport),
+            "pitching": pitching or None}
+
+
+def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
+    """Best available price per market for the Sharp Sheet's odds strip, shaped
+    {label: {price, book}} from the line-shop. Empty when no coverage."""
+    from project547.names import normalize
+    try:
+        best = load_best_lines(sport, date_sel)
+    except Exception:
+        return {}
+    key = " vs ".join(sorted({normalize(g.get("home_team", "")),
+                              normalize(g.get("away_team", ""))}))
+    rec = best.get(key)
+    if not rec:
+        return {}
+    out: dict = {}
+    ml = rec.get("moneyline") or {}
+    for side in ("away_team", "home_team"):
+        info = ml.get(normalize(g.get(side, "")))
+        if info:
+            out[f"{g.get(side, '').split()[-1]} ML"] = {
+                "price": info.get("price"), "book": info.get("book")}
+    tot = rec.get("total") or {}
+    for side in ("over", "under"):
+        info = tot.get(side)
+        if info:
+            ln = f" {info['line']:g}" if info.get("line") is not None else ""
+            out[f"{side.title()}{ln}"] = {"price": info.get("price"), "book": info.get("book")}
+    return out
 
 
 @st.cache_data(ttl=300, show_spinner=False)

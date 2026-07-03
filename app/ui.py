@@ -1944,7 +1944,7 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
     given) — the 'bet ticket' a bettor needs to actually place and size it."""
     calls = []
 
-    def add(label, gate_key, sides):
+    def add(label, gate_key, sides, line=None):
         # sides: list of (name, prob, ev, american_odds)
         opts = [(n, _mcf(p), _mcf(e), _mcf(o)) for (n, p, e, o) in sides
                 if _mcf(p) is not None]
@@ -1977,6 +1977,7 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
                 units = round(f * 100, 1)                 # 1 unit = 1% of bankroll
                 dollars = round(f * bankroll) if bankroll else None
         calls.append({"label": label, "pick": name, "prob": prob, "ev": ev,
+                      "price": price, "line": line,
                       "decision": decision, "conf": round(conf, 1),
                       "gate": status, "stake_units": units,
                       "stake_dollars": dollars})
@@ -1992,7 +1993,8 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
         ln = f" {tl:g}" if tl is not None else ""
         add("Total", "total", [
             (f"Over{ln}", mover, g.get("over_ev"), g.get("over_odds")),
-            (f"Under{ln}", 1 - mover, g.get("under_ev"), g.get("under_odds"))])
+            (f"Under{ln}", 1 - mover, g.get("under_ev"), g.get("under_odds"))],
+            line=tl)
     hc = _mcf(g.get("model_home_rl") if g.get("model_home_rl") is not None
               else g.get("model_home_cover"))
     if hc is not None:
@@ -2005,7 +2007,7 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
         hn = f"{_last(g.get('home_team'))} {sl:+g}" if sl is not None else _last(g.get("home_team"))
         an = f"{_last(g.get('away_team'))} {-sl:+g}" if sl is not None else _last(g.get("away_team"))
         add("Run Line" if sport == "MLB" else "Spread", "spread",
-            [(hn, hc, h_ev, h_od), (an, 1 - hc, a_ev, a_od)])
+            [(hn, hc, h_ev, h_od), (an, 1 - hc, a_ev, a_od)], line=sl)
     return calls
 
 
@@ -2030,10 +2032,13 @@ def _mc_stat_table(sport, n, window, win_label, title, rows, off_team,
 
     def num(stat, v, em=False):
         w = "700" if em else "500"
+        disp = _gap("") if _mcf(v) is None else _fmtv(stat, v)
         return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
-                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+                f"font-size:.74rem;'>{disp}</td>")
 
     def rank_pill(rank):
+        if _mcf(rank) is None:
+            return f"<td style='padding:5px 7px;text-align:center;'>{_gap('')}</td>"
         c = _rank_color(rank, n)
         return (f"<td style='padding:5px 7px;text-align:center;'>"
                 f"<span style='color:{c};font-weight:700;font-size:.74rem;'>{_ord(rank)}</span></td>")
@@ -2096,7 +2101,7 @@ def _mc_trends(trends, away, home) -> str:
     def cell(v):
         v = _mcf(v)
         if v is None:
-            s = "—"
+            s = _gap("")
         else:
             s = f"{v * 100:.0f}%" if abs(v) <= 1.5 else f"{v:.0f}%"
         return f"<td style='padding:5px 7px;text-align:center;font-weight:600;font-size:.74rem;'>{s}</td>"
@@ -2146,8 +2151,9 @@ def _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp) -> s
 
     def num(stat, v, em=False):
         w = "700" if em else "500"
+        disp = _gap("") if _mcf(v) is None else _fmtv(stat, v)
         return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
-                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+                f"font-size:.74rem;'>{disp}</td>")
 
     def pill(rank, better):
         c = _rank_color(rank, n)
@@ -2433,3 +2439,676 @@ def _matchup_card_impl(sport: str, g: dict, matchup: dict, window: str = "l5",
         f"letter-spacing:.04em;color:var(--text);margin-bottom:10px;'>{hl}"
         f"<span style='color:var(--faint);font-weight:400;'> · {win_label} window</span></div>"
         f"{_projection_hero(sport, g)}{header}{gauges}{top_adv}{tables}{decision}</div>")
+
+
+# ===========================================================================
+# Sharp Sheet — the one-page research view (redesign). Composes the existing
+# section builders into a single scannable sheet: header + markets + best line
+# + matchup breakdown + trends + lineups (external player links) + top props +
+# model read. Sport-adaptive; degrades gracefully on any missing piece.
+# ===========================================================================
+
+def player_ext_link(name, sport: str, player_id=None) -> str:
+    """External advanced-stats link for a player, opening in a new tab. MLB ->
+    Baseball Savant (by id when known, else name search); other sports -> an
+    ESPN search. Plain text when there's no name."""
+    if not name or (isinstance(name, float) and pd.isna(name)):
+        return str(name or "")
+    if sport == "MLB" and player_id is not None and pd.notna(player_id):
+        url = f"https://baseballsavant.mlb.com/savant-player/{int(player_id)}"
+    elif sport == "MLB":
+        url = ("https://baseballsavant.mlb.com/savant-player-search?search="
+               + urllib.parse.quote(str(name)))
+    else:
+        url = "https://www.espn.com/search/results?q=" + urllib.parse.quote(str(name))
+    return (f"<a class='osp-plink' target='_blank' rel='noopener' href='{url}'>{name}"
+            f"<span style='font-size:.62rem;color:var(--faint);'> ↗</span></a>")
+
+
+def top_game_props(sport: str, props, away: str, home: str, limit: int = 6) -> list:
+    """Best-EV props for a single game's two teams (reuses _prop_edge). Returns
+    rows sorted by EV, positive edges first."""
+    from project547.names import normalize
+    names = {normalize(away or ""), normalize(home or "")}
+    names.discard("")
+    out = []
+    for p in props or []:
+        tm = {normalize(p.get("team", "")), normalize(p.get("opponent", ""))}
+        if names and not (tm & names):
+            continue
+        row = _prop_edge(sport, p)
+        if row and row.get("ev") is not None and pd.notna(row["ev"]):
+            out.append(row)
+    out.sort(key=lambda r: r["ev"] if r["ev"] is not None else -9, reverse=True)
+    return out[:limit]
+
+
+def _ss_header(sport: str, g: dict, matchup: dict) -> str:
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    a_badge = assets.team_badge_html(sport, away, 42)
+    h_badge = assets.team_badge_html(sport, home, 42)
+
+    def rec(side):  # records/streak if the data layer has them, else nothing
+        r = matchup.get(f"{side}_record") or g.get(f"{side}_record")
+        s = matchup.get(f"{side}_streak") or g.get(f"{side}_streak")
+        bits = []
+        if r:
+            bits.append(f"<span>{r}</span>")
+        if s:
+            bits.append(f"<span class='osp-ss-pill'>{s}</span>")
+        return ("<div class='osp-ss-sub'>" + "".join(bits) + "</div>") if bits else ""
+
+    when = fmt_time_et(g.get("game_time"))
+    venue = matchup.get("venue") or g.get("venue") or ""
+    wx = _weather_txt(g).lstrip(" ·").strip()
+    meta = []
+    if venue:
+        meta.append(f"🏟️ <b>{venue}</b>")
+    if when:
+        meta.append(f"🕐 <b>{when} ET</b>")
+    if wx:
+        meta.append(wx)
+    # confidence is shown as its own multi-factor strip below the header
+    meta.append("<span style='margin-left:auto;color:var(--warn,#a9791b);"
+                "font-weight:600;'>🔒 Odds lock at first pitch</span>")
+    return (
+        "<div class='osp-ss-head'>"
+        "<div class='osp-ss-teams'>"
+        f"<div class='osp-ss-team'>{a_badge}<div><div class='osp-ss-name'>{away}</div>{rec('away')}</div></div>"
+        f"<div class='osp-ss-hero'>{_projection_hero(sport, g)}</div>"
+        f"<div class='osp-ss-team home'><div><div class='osp-ss-name'>{home}</div>{rec('home')}</div>{h_badge}</div>"
+        "</div>"
+        f"<div class='osp-ss-meta'>{''.join(f'<span>{m}</span>' for m in meta)}</div>"
+        "</div>")
+
+
+def _ss_market_cards(calls: list) -> str:
+    if not calls:
+        return ""
+    tone = {"PLAY": ("good", "PLAY"), "LEAN": ("mid", "LEAN"),
+            "VERIFY": ("neg", "VERIFY"), "PASS": ("faint", "PASS")}
+    cards = []
+    for c in calls:
+        col, tag = tone.get(c["decision"], ("faint", "PASS"))
+        ev = c.get("ev")
+        sub = (f"edge {ev * 100:+.1f}%" if ev is not None and pd.notna(ev)
+               else "no priced edge")
+        stake = (f" · {c['stake_units']:g}u" if c.get("stake_units") else "")
+        prob = _pct(c.get("prob"))
+        cards.append(
+            f"<div class='osp-ss-mk'><span class='osp-ss-tag t-{col}'>{tag}</span>"
+            f"<div class='osp-ss-mklbl'>{c['label']}</div>"
+            f"<div class='osp-ss-mkbig' style='color:var(--{col},var(--muted));'>{prob}</div>"
+            f"<div class='osp-ss-mkpick'>{c['pick']}</div>"
+            f"<div class='osp-ss-mksub'>{sub}{stake}</div></div>")
+    return f"<div class='osp-ss-markets'>{''.join(cards)}</div>"
+
+
+def _ss_bestline(g: dict, best_line: dict | None) -> str:
+    if not best_line:
+        return ""
+    bits = []
+    for label, info in best_line.items():
+        price = fmt_american(info.get("price")) if isinstance(info, dict) else None
+        if price:
+            book = str(info.get("book", "")).replace("_", " ").title()
+            bits.append(f"<b>{label}</b> {price} <span style='color:var(--muted);'>{book}</span>")
+    if not bits:
+        return ""
+    return ("<div class='osp-ss-bl'>🛒 Best available · "
+            + " · ".join(bits) + "</div>")
+
+
+def _ss_lineups(sport: str, g: dict) -> str:
+    lu = g.get("lineups") or {}
+    if not (lu.get("home") or lu.get("away")):
+        return ""
+    pids = g.get("player_ids") or {}
+    gpk = g.get("game_pk")
+
+    def side(which, team, color):
+        rows = lu.get(which) or []
+        if not rows:
+            return ""
+        body = []
+        for i, nm in enumerate(rows, 1):
+            body.append(f"<tr><td><span class='osp-ss-num'>{i}</span> "
+                        f"{player_link(nm, gpk, sport)}</td></tr>")
+        return (f"<div class='osp-ss-lu'><div class='osp-ss-lut' style='color:{color};'>"
+                f"{team}</div><table>{''.join(body)}</table></div>")
+
+    a = side("away", g.get("away_team", ""), "var(--link,#8a1f2b)")
+    h = side("home", g.get("home_team", ""), "var(--good,#2f7a4a)")
+    if not (a or h):
+        return ""
+    return (f"<div class='osp-ss-split'>{a}{h}</div>")
+
+
+def _ss_props(sport: str, prop_rows: list) -> str:
+    if not prop_rows:
+        return ""
+    items = []
+    for r in prop_rows:
+        ev = r.get("ev")
+        col = "good" if (ev or 0) >= 0.04 else "mid" if (ev or 0) > 0 else "faint"
+        stake = f" · {r['kelly']:.1f}u" if r.get("kelly") and pd.notna(r["kelly"]) else ""
+        items.append(
+            f"<div class='osp-ss-prop'><div><div class='osp-ss-pp'>{r.get('bet', '')}</div>"
+            f"<div class='osp-ss-pl'>{fmt_american(r.get('price'))} · model {_pct(r.get('model_prob'))}</div></div>"
+            f"<div class='osp-ss-pev' style='color:var(--{col},var(--muted));'>"
+            f"{ev * 100:+.1f}%<small>{stake}</small></div></div>")
+    return f"<div class='osp-ss-props'>{''.join(items)}</div>"
+
+
+_SS_STYLE = """<style>
+.osp-ss{max-width:1160px;margin:0 auto}
+.osp-ss-sec{margin-top:16px}
+.osp-ss-sh{font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--text);margin:0 2px 8px;display:flex;gap:9px;align-items:baseline}
+.osp-ss-sh .hint{font-family:var(--font);font-weight:400;letter-spacing:0;text-transform:none;
+  font-size:.72rem;color:var(--muted)}
+.osp-ss-head{background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
+.osp-ss-teams{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:16px 20px}
+.osp-ss-team{display:flex;align-items:center;gap:11px}
+.osp-ss-team.home{justify-content:flex-end;flex-direction:row-reverse;text-align:right}
+.osp-ss-name{font-family:var(--disp);font-weight:600;font-size:1.28rem;line-height:1.05}
+.osp-ss-sub{font-size:.72rem;color:var(--muted);margin-top:3px;display:flex;gap:6px}
+.osp-ss-team.home .osp-ss-sub{justify-content:flex-end}
+.osp-ss-pill{font-size:.62rem;font-weight:700;padding:1px 5px;border-radius:5px;background:var(--card2);color:var(--muted)}
+.osp-ss-hero{min-width:210px}
+.osp-ss-meta{display:flex;flex-wrap:wrap;gap:6px 16px;padding:9px 20px;border-top:1px dashed var(--line);
+  font-size:.75rem;color:var(--muted);align-items:center}
+.osp-ss-meta b{color:var(--text)}
+.osp-ss-markets{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.osp-ss-mk{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 10px;
+  text-align:center;position:relative}
+.osp-ss-mklbl{font-family:var(--disp);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.osp-ss-mkbig{font-family:var(--disp);font-weight:700;font-size:1.8rem;line-height:1.05;margin:4px 0 1px}
+.osp-ss-mkpick{font-size:.76rem;font-weight:600}
+.osp-ss-mksub{font-size:.66rem;color:var(--muted);margin-top:3px}
+.osp-ss-tag{position:absolute;top:8px;right:8px;font-size:.56rem;font-weight:700;letter-spacing:.04em;
+  padding:2px 5px;border-radius:5px;text-transform:uppercase}
+.t-good{background:rgba(47,122,74,.14);color:var(--good)} .t-mid{background:rgba(169,121,27,.16);color:var(--mid,#a9791b)}
+.t-neg{background:rgba(162,59,45,.14);color:var(--neg)} .t-faint{background:var(--card2);color:var(--faint)}
+.osp-ss-bl{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 13px;
+  font-size:.78rem;color:var(--text)}
+.osp-ss-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.osp-ss-card{background:var(--card);border:1.5px solid var(--line);border-radius:13px;padding:13px 15px}
+.osp-ss-lu{background:var(--card);border:1.5px solid var(--line);border-radius:13px;padding:11px 14px}
+.osp-ss-lu table{width:100%;border-collapse:collapse;font-size:.82rem}
+.osp-ss-lu td{padding:4px 6px;border-top:1px solid var(--line)}
+.osp-ss-lut{font-family:var(--disp);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.osp-ss-num{color:var(--faint);margin-right:3px}
+.osp-ss-props{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.osp-ss-prop{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line);
+  border-radius:10px;padding:8px 12px}
+.osp-ss-pp{font-weight:600;font-size:.82rem} .osp-ss-pl{font-size:.72rem;color:var(--muted)}
+.osp-ss-pev{margin-left:auto;text-align:right;font-family:var(--disp);font-weight:700}
+.osp-ss-pev small{display:block;font-size:.58rem;color:var(--muted);font-weight:600}
+.osp-plink,.osp-ss-lu a,.osp-ss-spn a{color:var(--link,#8a1f2b);font-weight:600;
+  text-decoration:none;border-bottom:1px solid transparent}
+.osp-plink:hover,.osp-ss-lu a:hover,.osp-ss-spn a:hover{border-bottom-color:currentColor}
+</style>"""
+
+
+def _gap(what: str = "data gap") -> str:
+    """A visible DATA GAP chip — never a silent blank when a field is missing."""
+    return (f"<span class='osp-ss-gap' title='This input is not available; the "
+            f"model does not fabricate it.'>⚠ {what}</span>")
+
+
+def _num_or_gap(v, fmt="{:.2f}", gap="gap"):
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return _gap(gap)
+    try:
+        return fmt.format(float(v))
+    except (TypeError, ValueError):
+        return _gap(gap)
+
+
+def _ss_pitching(sport: str, g: dict, pitching: dict | None) -> str:
+    """Starters (hand, IP, K/9, BB/9, xFIP, times-through-order flag) + a bullpen
+    availability line per team. DATA GAP chips for any missing driver."""
+    if sport != "MLB":
+        return ""
+    p = pitching or {}
+
+    def sp(side, color):
+        d = (p.get(f"{side}_sp") or {})
+        name = d.get("name") or g.get(f"{side}_pitcher")
+        if not name and not d:
+            return f"<div class='osp-ss-sp'>{_gap('starter TBD')}</div>"
+        pid = d.get("id") or g.get(f"{side}_pitcher_id")
+        hand = d.get("hand")
+        hand_txt = f"{hand}HP" if hand else _gap("hand")
+        tto = ("<span class='osp-ss-flag'>3rd-time penalty</span>"
+               if d.get("tto_flag") else "")
+        stats = " · ".join([
+            f"IP {_num_or_gap(d.get('ip'), '{:.1f}')}",
+            f"K/9 {_num_or_gap(d.get('k9'), '{:.1f}')}",
+            f"BB/9 {_num_or_gap(d.get('bb9'), '{:.1f}')}",
+            f"xFIP {_num_or_gap(d.get('xfip'), '{:.2f}')}"])
+        return (f"<div class='osp-ss-sp'>"
+                f"<div class='osp-ss-spn' style='color:{color};'>"
+                f"{player_link(name, g.get('game_pk'), sport)} <small>{hand_txt}</small> {tto}</div>"
+                f"<div class='osp-ss-spd'>{stats}</div></div>")
+
+    def pen(side):
+        d = (p.get(f"{side}_bullpen") or {})
+        fatigue = d.get("fatigue")
+        if fatigue:
+            tone = {"heavy": "neg", "moderate": "mid", "rested": "good"}.get(fatigue, "faint")
+            fat = f"<span class='osp-ss-badge t-{tone}'>{fatigue}</span>"
+        else:
+            fat = _gap("bullpen")
+        ip = f"proj {_num_or_gap(d.get('proj_ip'), '{:.1f}')} IP" if d else ""
+        if "unavailable" in d:
+            un = (f" · out: {', '.join(d['unavailable'])}" if d["unavailable"]
+                  else " · all available")
+        else:
+            un = f" · {_gap('availability')}" if d else ""
+        return f"<div class='osp-ss-pen'>Bullpen {fat} {ip}{un}</div>"
+
+    a, h = g.get("away_team", ""), g.get("home_team", "")
+    return (
+        "<div class='osp-ss-pit'>"
+        f"<div class='osp-ss-pit-col'>{sp('away','var(--link,#8a1f2b)')}{pen('away')}</div>"
+        f"<div class='osp-ss-pit-col right'>{sp('home','var(--good,#2f7a4a)')}{pen('home')}</div>"
+        "</div>")
+
+
+def _ss_markets_clv(sport: str, g: dict, calls: list, clv: dict | None) -> str:
+    """Market table framed the way a bettor reads it: our de-vigged fair prob vs
+    the market's implied prob -> edge% (baseline labelled), plus realized CLV per
+    market (the headline metric). CLV is realized, not a fabricated forecast."""
+    if not calls:
+        return ""
+    clv = clv or {}
+    key = {"Moneyline": "moneyline", "Total": "total",
+           "Run Line": "spread", "Spread": "spread"}
+    head = ("<tr><th>Market</th><th>Pick</th><th>Fair</th><th>Line</th><th>Price</th>"
+            "<th>Implied</th><th>Edge</th><th>CLV (realized)</th></tr>")
+    body = []
+    for c in calls:
+        prob = _mcf(c.get("prob"))
+        price = c.get("price")
+        implied = _implied(price) if price is not None and pd.notna(price) else None
+        edge = (prob - implied) if (prob is not None and implied is not None) else None
+        ecol = ("good" if (edge or 0) > 0.005 else "neg" if (edge or 0) < -0.005 else "faint")
+        cst = clv.get(key.get(c["label"], "")) or {}
+        avg, n = cst.get("avg_clv"), cst.get("clv_n") or cst.get("n")
+        clv_txt = (f"<b style='color:var(--{'good' if (avg or 0)>=0 else 'neg'});'>"
+                   f"{avg*100:+.1f}%</b> <small>n={n}</small>"
+                   if avg is not None else _gap("no sample"))
+        # a moneyline has no line by definition — N/A ("—"), not a DATA GAP
+        line_cell = ("<span style='color:var(--faint);'>—</span>"
+                     if c["label"] == "Moneyline"
+                     else _num_or_gap(c.get("line"), "{:g}", "line"))
+        body.append(
+            f"<tr><td><b>{c['label']}</b></td><td>{c.get('pick','')}</td>"
+            f"<td>{_pct(prob)}</td><td>{line_cell}</td>"
+            f"<td>{fmt_american(price) or _gap('no line')}</td>"
+            f"<td>{_pct(implied) if implied is not None else _gap('')}</td>"
+            f"<td style='color:var(--{ecol},var(--muted));font-weight:700;'>"
+            f"{(f'{edge*100:+.1f}%') if edge is not None else _gap('')}</td>"
+            f"<td>{clv_txt}</td></tr>")
+    return ("<div class='osp-ss-card'><table class='osp-ss-mtab'>"
+            f"{head}{''.join(body)}</table>"
+            "<div class='osp-ss-note'>Edge% = our de-vigged fair probability − the "
+            "market's implied probability. CLV is our realized closing-line value on "
+            "this market to date (the thesis metric), not a forecast.</div></div>")
+
+
+def _total_ci_from_probs(g: dict):
+    """(p10, p50, p90) total from the sim's over-probability curve, or None.
+    over_probs maps line->P(over); we invert that CDF at 0.9/0.5/0.1."""
+    op = g.get("over_probs") or {}
+    pts = []
+    for line, pover in op.items():
+        try:
+            pts.append((float(line), 1.0 - float(pover)))  # P(total <= line)
+        except (TypeError, ValueError):
+            continue
+    if len(pts) < 3:
+        return None
+    pts.sort()
+
+    def q(target):
+        for i in range(1, len(pts)):
+            (x0, c0), (x1, c1) = pts[i - 1], pts[i]
+            if c0 <= target <= c1 and c1 > c0:
+                return x0 + (x1 - x0) * (target - c0) / (c1 - c0)
+        return pts[-1][0] if target > pts[-1][1] else pts[0][0]
+
+    return q(0.10), q(0.50), q(0.90)
+
+
+def _ss_uncertainty(sport: str, g: dict, uncertainty: dict | None) -> str:
+    """Median + 80% interval for the total (and the win-prob split), from the sim
+    spread — replaces the false precision of a single point total."""
+    ci = (uncertainty or {}).get("total_ci") or _total_ci_from_probs(g)
+    hw = _mcf(g.get("home_win_prob"))
+    total_html = (
+        f"<b>{ci[1]:.1f}</b> <span class='osp-ss-ci'>80% CI {ci[0]:.1f}–{ci[2]:.1f}</span>"
+        if ci else _gap("no sim spread"))
+    win_html = (f"{_last(g.get('home_team',''))} <b>{hw*100:.0f}%</b> / "
+                f"{_last(g.get('away_team',''))} <b>{(1-hw)*100:.0f}%</b>"
+                if hw is not None else _gap(""))
+    return ("<div class='osp-ss-unc'>"
+            f"<div><span class='osp-ss-ul'>Projected total</span>{total_html}</div>"
+            f"<div><span class='osp-ss-ul'>Win probability</span>{win_html}</div></div>")
+
+
+def _ss_context(sport: str, g: dict, context: dict | None) -> str:
+    """Park factor, weather (wind vs CF — tied to the Total), and umpire tendency.
+    The levers that move a total before any team stat does."""
+    if sport != "MLB":
+        return ""
+    ctx = context or {}
+    pf = ctx.get("park_factor")
+    if pf is None:
+        try:
+            from project547 import parks
+            pf = parks.factor(g.get("home_team", ""))
+        except Exception:
+            pf = None
+    pf_txt = (f"{pf:.2f}× " + ("hitter" if pf > 1.02 else "pitcher" if pf < 0.98 else "neutral")
+              if pf else _gap("park"))
+    wx = g.get("weather") or ctx.get("weather") or {}
+    temp, wind = wx.get("temp_f"), wx.get("wind_speed_mph")
+    wdir = wx.get("wind_dir")
+    wx_txt = (f"{_num_or_gap(temp, '{:.0f}')}°F · wind "
+              f"{_num_or_gap(wind, '{:.0f}')} mph"
+              + (f" {wdir}" if wdir else "")) if wx else _gap("weather")
+    ump = g.get("umpire") or ctx.get("umpire") or {}
+    ki, ri = ump.get("k_idx") or ump.get("k_index"), ump.get("runs_idx") or ump.get("runs_index")
+    ump_txt = (f"{ump.get('name','ump')} · K {_num_or_gap(ki,'{:.2f}')}× · "
+               f"R {_num_or_gap(ri,'{:.2f}')}×"
+               if ump.get("name") else _gap("umpire TBD"))
+    cells = [("🏟️ Park", pf_txt), ("🌤️ Weather → Total", wx_txt), ("🧑‍⚖️ Umpire", ump_txt)]
+    return ("<div class='osp-ss-ctx'>" + "".join(
+        f"<div class='osp-ss-ctxc'><span class='osp-ss-cl'>{lbl}</span>{val}</div>"
+        for lbl, val in cells) + "</div>")
+
+
+def _ss_calibration(calibration: dict | None) -> str:
+    """Footer receipt: per-market out-of-fold predicted vs actual hit-rate + n —
+    the falsifiable anchor under the confidence score. The table ALWAYS renders;
+    any missing cell is a DATA GAP chip, never a blank (a hollow calibration is a
+    signal, not a no-op — it also caps confidence at LEAN, see _confidence)."""
+    markets = list(calibration.keys()) if calibration else ["Moneyline", "Total", "Run Line"]
+    rows = []
+    for mkt in markets:
+        d = (calibration or {}).get(mkt) or {}
+        pred, act, n = d.get("pred"), d.get("actual"), d.get("n")
+        gapp = (abs(pred - act) if pred is not None and act is not None else None)
+        col = ("good" if gapp is not None and gapp <= 0.03 else
+               "mid" if gapp is not None and gapp <= 0.06 else "neg")
+        rows.append(
+            f"<tr><td><b>{mkt}</b></td>"
+            f"<td>{_pct(pred) if pred is not None else _gap('')}</td>"
+            f"<td>{_pct(act) if act is not None else _gap('')}</td>"
+            f"<td style='color:var(--{col},var(--muted));'>"
+            f"{(f'{gapp*100:.1f} pt') if gapp is not None else _gap('')}</td>"
+            f"<td>{('<small>n='+str(n)+'</small>') if n is not None else _gap('')}</td></tr>")
+    note = ("Predicted vs realized hit-rate on held-out games. A small gap = the "
+            "number means what it says." if calibration else
+            "<b style='color:var(--mid,#a9791b);'>Reliability feed not loaded — "
+            "confidence is capped at LEAN until this is wired.</b>")
+    body = ("<div class='osp-ss-card'><table class='osp-ss-mtab'>"
+            "<tr><th>Market</th><th>Predicted</th><th>Actual</th><th>Gap</th><th>Sample</th></tr>"
+            f"{''.join(rows)}</table><div class='osp-ss-note'>{note}</div></div>")
+    return _section("Calibration Receipt", "out-of-fold reliability per market", body)
+
+
+def _confidence(sport: str, g: dict, calls: list, data: dict) -> dict:
+    """Multi-factor confidence: lineup readiness × edge clarity × calibration ×
+    data completeness. Returns {score, label, cap} where cap is the best tier any
+    market may reach when its key driver is a DATA GAP."""
+    # 1) lineup readiness
+    state = lineup_status(sport, g)["state"]
+    readiness = {"confirmed": 1.0, "partial": 0.7, "pending": 0.45}.get(state, 0.45)
+    # 2) edge clarity — best positive edge, scaled
+    best = max([abs(c.get("ev") or 0) for c in calls], default=0)
+    edge_clarity = min(1.0, best / 0.06) if best else 0.3
+    # 3) calibration quality — small OOF gaps = high
+    cal = data.get("calibration") or {}
+    gaps = [abs(d["pred"] - d["actual"]) for d in cal.values()
+            if d.get("pred") is not None and d.get("actual") is not None]
+    calibration_q = (max(0.0, 1.0 - (sum(gaps) / len(gaps)) / 0.06)) if gaps else 0.5
+    # 4) data completeness — share of key MLB drivers present
+    drivers = []
+    if sport == "MLB":
+        pit = data.get("pitching") or {}
+        drivers = [
+            bool((pit.get("away_sp") or {}).get("xfip") is not None),
+            bool((pit.get("home_sp") or {}).get("xfip") is not None),
+            bool(g.get("umpire")), bool(g.get("weather")),
+            bool(_total_ci_from_probs(g)),
+        ]
+    completeness = (sum(drivers) / len(drivers)) if drivers else 0.6
+    score = round(0.30 * readiness + 0.25 * edge_clarity
+                  + 0.20 * calibration_q + 0.25 * completeness, 2)
+    # tier cap: a missing key driver caps strong plays at LEAN — the tier can't
+    # outrun the data. Blank calibration (no falsifiable anchor) or a missing SP
+    # driver both cap; so does an overall low score.
+    cal_missing = not gaps
+    sp_gap = sport == "MLB" and completeness < 0.6
+    cap = "lean" if sp_gap or cal_missing or score < 0.5 else None
+    label = ("High" if score >= 0.75 else "Moderate" if score >= 0.5 else "Guarded")
+    return {"score": score, "label": label, "cap": cap,
+            "drivers": {"lineups": round(readiness, 2), "edge": round(edge_clarity, 2),
+                        "calibration": round(calibration_q, 2),
+                        "completeness": round(completeness, 2)}}
+
+
+_SS_STYLE2 = """<style>
+.osp-ss-gap{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.03em;
+  color:var(--mid,#a9791b);background:rgba(169,121,27,.12);border:1px solid rgba(169,121,27,.4);
+  border-radius:5px;padding:0 5px;text-transform:uppercase;vertical-align:middle}
+.osp-ss-pit{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:13px;padding:12px 15px}
+.osp-ss-pit-col.right{text-align:right}
+.osp-ss-spn{font-family:var(--disp);font-weight:600;font-size:1rem}
+.osp-ss-spn small{color:var(--muted);font-weight:500;font-size:.72rem}
+.osp-ss-spd{font-size:.76rem;color:var(--muted);margin-top:2px}
+.osp-ss-flag{font-size:.58rem;font-weight:700;color:var(--neg);background:rgba(162,59,45,.12);
+  border-radius:4px;padding:1px 5px;text-transform:uppercase}
+.osp-ss-pen{font-size:.74rem;color:var(--muted);margin-top:6px}
+.osp-ss-badge{font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:5px;text-transform:uppercase}
+.osp-ss-mtab{width:100%;border-collapse:collapse;font-size:.8rem}
+.osp-ss-mtab th{font-family:var(--disp);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);text-align:right;padding:5px 8px;border-bottom:1.5px solid var(--line)}
+.osp-ss-mtab th:first-child,.osp-ss-mtab td:first-child{text-align:left}
+.osp-ss-mtab td{padding:5px 8px;text-align:right;border-top:1px solid var(--line);
+  font-variant-numeric:tabular-nums}
+.osp-ss-note{font-size:.68rem;color:var(--muted);margin-top:8px;line-height:1.5}
+.osp-ss-unc{display:flex;gap:26px;flex-wrap:wrap;background:var(--card2);border:1px solid var(--line);
+  border-radius:11px;padding:11px 15px;font-size:.9rem}
+.osp-ss-ul{display:block;font-family:var(--disp);font-size:.6rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.osp-ss-ci{font-size:.72rem;color:var(--muted);font-weight:500;margin-left:6px}
+.osp-ss-ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.osp-ss-ctxc{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;
+  font-size:.82rem;font-weight:600}
+.osp-ss-cl{display:block;font-family:var(--disp);font-size:.58rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.osp-ss-confbar{display:inline-flex;align-items:center;gap:7px}
+.osp-ss-conftrack{width:74px;height:6px;border-radius:4px;background:var(--card2);overflow:hidden;
+  display:inline-block;vertical-align:middle}
+.osp-ss-conffill{height:100%;background:var(--good,#2f7a4a)}
+.osp-ss-adv{margin-top:16px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.osp-ss-adv>summary{cursor:pointer;list-style:none;padding:12px 16px;font-family:var(--disp);
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.74rem;color:var(--text);
+  display:flex;align-items:center;gap:9px;background:var(--card)}
+.osp-ss-adv>summary::-webkit-details-marker{display:none}
+.osp-ss-adv>summary::after{content:"▸";margin-left:auto;color:var(--muted);transition:transform .15s}
+.osp-ss-adv[open]>summary::after{transform:rotate(90deg)}
+.osp-ss-advbody{padding:0 16px 12px}
+@media (max-width:560px){
+  .osp-ss-pit,.osp-ss-ctx,.osp-ss-props,.osp-ss-split,.osp-ss-markets{grid-template-columns:1fr!important}
+  .osp-ss-teams{grid-template-columns:1fr!important}
+  .osp-ss-mtab{font-size:.72rem} .osp-ss-mtab th,.osp-ss-mtab td{padding:4px 5px}
+  .osp-ss-name{font-size:1.05rem}
+}
+</style>"""
+
+
+def sharp_sheet_html(sport: str, g: dict, matchup: dict, *, window: str = "l5",
+                     min_edge: float = 0.02, gate_table=None, bankroll: float = 0,
+                     props=None, best_line=None, data=None) -> str:
+    """The one-page Sharp Sheet: never-raises wrapper. ``data`` carries the v2
+    extras (pitching, clv, uncertainty, context, calibration, records) per
+    docs/sharpsheet_schema.md; any missing piece renders a DATA GAP chip."""
+    try:
+        return _sharp_sheet_impl(sport, g, matchup or {}, window=window,
+                                 min_edge=min_edge, gate_table=gate_table,
+                                 bankroll=bankroll, props=props, best_line=best_line,
+                                 data=data or {})
+    except Exception:
+        log.exception("sharp_sheet_html failed for %s @ %s",
+                      (g or {}).get("away_team"), (g or {}).get("home_team"))
+        try:
+            return matchup_card_html(sport, g, matchup or {}, window=window,
+                                     min_edge=min_edge, gate_table=gate_table,
+                                     bankroll=bankroll)
+        except Exception:
+            return _fallback_card(
+                f"{(g or {}).get('away_team', '')} @ {(g or {}).get('home_team', '')}")
+
+
+def _section(title: str, hint: str, body: str) -> str:
+    if not body:
+        return ""
+    hint_html = f"<span class='hint'>{hint}</span>" if hint else ""
+    return (f"<div class='osp-ss-sec'><div class='osp-ss-sh'>{title}{hint_html}</div>{body}</div>")
+
+
+def _details(summary: str, inner: str) -> str:
+    """Collapsible block — keeps the sheet short by default; the dense stat
+    tables live one tap away."""
+    if not inner:
+        return ""
+    return (f"<details class='osp-ss-adv'><summary>{summary}</summary>"
+            f"<div class='osp-ss-advbody'>{inner}</div></details>")
+
+
+def _sharp_sheet_impl(sport, g, matchup, *, window, min_edge, gate_table,
+                      bankroll, props, best_line, data=None) -> str:
+    data = data or {}
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    n = matchup.get("n_teams", 30)
+    win_label = matchup.get("window_label", window.upper())
+    calls = _mc_market_calls(sport, g, min_edge, gate_table=gate_table, bankroll=bankroll)
+
+    # confidence: multi-factor (readiness × edge × calibration × completeness); a
+    # missing key driver caps every market at LEAN so the tier can't outrun data.
+    conf = _confidence(sport, g, calls, data)
+    if conf.get("cap") == "lean":
+        for c in calls:
+            if c["decision"] == "PLAY":
+                c["decision"] = "LEAN"
+    conf_strip = (
+        "<div class='osp-ss-sec'><div class='osp-ss-card' style='display:flex;gap:16px;"
+        "align-items:center;flex-wrap:wrap;'>"
+        f"<b class='disp' style='font-family:var(--disp);letter-spacing:.04em;'>Confidence "
+        f"<span style='font-size:1.15rem;'>{conf['label']}</span> · {conf['score']:.2f}</b>"
+        "<span class='osp-ss-confbar'><span class='osp-ss-conftrack'>"
+        f"<span class='osp-ss-conffill' style='width:{int(conf['score']*100)}%;'></span></span></span>"
+        "<span style='font-size:.72rem;color:var(--muted);'>"
+        f"lineups {conf['drivers']['lineups']:.2f} · edge {conf['drivers']['edge']:.2f} · "
+        f"calibration {conf['drivers']['calibration']:.2f} · completeness "
+        f"{conf['drivers']['completeness']:.2f}"
+        + ("  ·  <b style='color:var(--mid,#a9791b);'>capped at LEAN — a key driver is a DATA GAP</b>"
+           if conf.get("cap") == "lean" else "")
+        + "</span></div></div>")
+
+    # pitching strip (MLB) + context strip + uncertainty band
+    pitching = _section("Starting Pitching",
+                        "hand · IP · K/9 · BB/9 · xFIP · times-through-order",
+                        _ss_pitching(sport, g, data.get("pitching")))
+    uncertainty = _section("Projection & Uncertainty", "median + 80% interval from the sim",
+                           _ss_uncertainty(sport, g, data.get("uncertainty")))
+    context = _section("Context — the levers", "park · weather (wind→total) · umpire",
+                       _ss_context(sport, g, data.get("context")))
+
+    # markets: at-a-glance cards + the fair/implied/edge% + CLV table
+    cards = _ss_market_cards(calls)
+    clv_tab = _ss_markets_clv(sport, g, calls, data.get("clv"))
+    markets = _section("Markets & CLV",
+                       "our de-vig fair % vs the market · edge% · realized CLV (the headline)",
+                       (cards + clv_tab))
+    bestln = _section("Best Available", "line-shop across books · locks at first pitch",
+                      _ss_bestline(g, best_line))
+
+    # matchup breakdown (reuse the stat tables + supporting)
+    a_rows = matchup.get("away_off_vs_home_def") or []
+    h_rows = matchup.get("home_off_vs_away_def") or []
+    supp = _supporting_set(sport)
+    a_prim = [r for r in a_rows if r["stat"] not in supp]
+    h_prim = [r for r in h_rows if r["stat"] not in supp]
+    tables = ""
+    if a_prim:
+        tables += _mc_stat_table(sport, n, window, win_label,
+                                 f"{away} offense vs {home} defense", a_prim, away, home)
+    if h_prim:
+        tables += _mc_stat_table(sport, n, window, win_label,
+                                 f"{home} offense vs {away} defense", h_prim, home, away)
+    a_supp = {r["stat"]: r for r in a_rows if r["stat"] in supp}
+    h_supp = {r["stat"]: r for r in h_rows if r["stat"] in supp}
+    tables += _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp)
+    breakdown = _section("Matchup Breakdown",
+                         "offense vs the opponent's matching defense · rank pills are league ranks",
+                         f"<div class='osp-ss-card'>{tables}</div>" if tables else "")
+
+    trends = _section("Game Trends", "",
+                      (f"<div class='osp-ss-card'>{_mc_trends(matchup.get('trends'), away, home)}</div>"
+                       if _mc_trends(matchup.get("trends"), away, home) else ""))
+
+    lineups = _section("Lineups", "tap a name for the player card",
+                       _ss_lineups(sport, g))
+
+    top = top_game_props(sport, props, away, home) if props else []
+    props_sec = _section("Top Props", "best model edges in this game · gate-capped stake",
+                         _ss_props(sport, top))
+
+    # model read (reuse the decision block from _mc_market_calls)
+    read = _ss_read(calls)
+    read_sec = _section("Model Read · Bet Ticket",
+                        "the call, the why, and the ¼-Kelly stake",
+                        f"<div class='osp-ss-card'>{read}</div>" if read else "")
+
+    calib = _ss_calibration(data.get("calibration"))
+    # Lead with the call (markets/CLV + read), then the drivers; tuck the dense
+    # offense-vs-defense tables + calibration behind an "Advanced" fold.
+    advanced = _details("Advanced — full offense-vs-defense breakdown & calibration",
+                        breakdown + calib)
+    return (_SS_STYLE + _SS_STYLE2 + "<div class='osp-ss'>"
+            + _ss_header(sport, g, matchup)
+            + conf_strip
+            + markets + read_sec
+            + pitching + uncertainty + context + bestln
+            + trends + lineups + props_sec
+            + advanced
+            + "</div>")
+
+
+def _ss_read(calls: list) -> str:
+    if not calls:
+        return ""
+    tone = {"PLAY": "good", "LEAN": "mid", "VERIFY": "neg", "PASS": "faint"}
+    rows = []
+    for c in calls:
+        col = tone.get(c["decision"], "faint")
+        ev = c.get("ev")
+        ev_txt = (f"{ev * 100:+.1f}% EV" if ev is not None and pd.notna(ev) else "no priced edge")
+        stake = (f" · {c['stake_units']:g}u" if c.get("stake_units") else "")
+        rows.append(
+            f"<div style='display:flex;gap:12px;align-items:center;padding:8px 4px;"
+            f"border-top:1px solid var(--line);'>"
+            f"<b style='font-family:var(--disp);min-width:88px;color:var(--{col},var(--muted));"
+            f"text-transform:uppercase;font-size:.74rem;letter-spacing:.04em;'>{c['label']}</b>"
+            f"<span style='flex:1;font-size:.82rem;'>{c['pick']} — "
+            f"<span style='color:var(--{col},var(--muted));font-weight:700;'>{c['decision']}</span> "
+            f"<span style='color:var(--muted);'>({ev_txt}, conf {c['conf']:.1f}/10{stake})</span></span></div>")
+    return "".join(rows)

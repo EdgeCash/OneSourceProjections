@@ -1,25 +1,25 @@
-# Default theme is CREAM / vintage (Project 54.7 calm look); a Night-mode toggle
-# on the landing page / sidebar swaps to the dark palette at runtime via CSS.
+# Default is the cool near-black DARK look (go-live). A theme toggle on the
+# landing page / sidebar swaps to the Cream light palette at runtime via CSS.
 [theme]
-base = "light"
-primaryColor = "#2f7a4a"
-backgroundColor = "#f4ead0"
-secondaryBackgroundColor = "#fbf5e6"
-textColor = "#1f2328"
-linkColor = "#8a1f2b"
+base = "dark"
+primaryColor = "#3b82f6"
+backgroundColor = "#0d1117"
+secondaryBackgroundColor = "#161b22"
+textColor = "#e8eef5"
+linkColor = "#6cb6ff"
 # Shape + borders for the clean editorial look (Streamlit >= 1.50).
 baseRadius = "0.4rem"
-borderColor = "#d8ccab"
+borderColor = "#2a3441"
 showWidgetBorder = true
-# Cream-theme every st.dataframe header/border without touching call sites.
-dataframeHeaderBackgroundColor = "#efe2c2"
-dataframeBorderColor = "#d8ccab"
+# Dark-theme every st.dataframe header/border without touching call sites.
+dataframeHeaderBackgroundColor = "#1c2431"
+dataframeBorderColor = "#2a3441"
 
-# The sidebar reads as app chrome (vintage cream).
+# The sidebar reads as app chrome (deep near-black).
 [theme.sidebar]
-backgroundColor = "#efe3c4"
-secondaryBackgroundColor = "#f4ead0"
-borderColor = "#1f2328"
+backgroundColor = "#111722"
+secondaryBackgroundColor = "#0d1117"
+borderColor = "#2a3441"
 
 [browser]
 gatherUsageStats = false
