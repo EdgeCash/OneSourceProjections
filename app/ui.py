@@ -2651,6 +2651,105 @@ _SS_STYLE = """<style>
 </style>"""
 
 
+def _match_market_cards(sport: str, g: dict) -> str:
+    """1X2 (+O/U) cards for soccer, or two player cards for tennis, in the dark
+    osp-ss market-card style."""
+    is_tennis = sport in ("ATP", "WTA")
+
+    def card(lbl, prob, price, ev, tone):
+        sub = (f"edge {ev * 100:+.1f}%" if ev is not None and pd.notna(ev)
+               else "no priced edge")
+        return (f"<div class='osp-ss-mk'><div class='osp-ss-mklbl'>{lbl}</div>"
+                f"<div class='osp-ss-mkbig' style='color:var(--{tone},var(--muted));'>{_pct(prob)}</div>"
+                f"<div class='osp-ss-mkpick'>{fmt_american(price) or '—'}</div>"
+                f"<div class='osp-ss-mksub'>{sub}</div></div>")
+
+    if is_tennis:
+        cards = [
+            card(_last(g.get("player1", "")) or "Player 1", g.get("player1_win_prob"),
+                 g.get("p1_price"), g.get("p1_ev"), "good"),
+            card(_last(g.get("player2", "")) or "Player 2", g.get("player2_win_prob"),
+                 g.get("p2_price"), g.get("p2_ev"), "link")]
+    else:
+        cards = [
+            card(_last(g.get("home_team", "")), g.get("home_win_prob"),
+                 g.get("home_ml"), g.get("home_ev"), "good"),
+            card("Draw", g.get("draw_prob"), g.get("draw_ml"), g.get("draw_ev"), "mid"),
+            card(_last(g.get("away_team", "")), g.get("away_win_prob"),
+                 g.get("away_ml"), g.get("away_ev"), "link"),
+            card("Over 2.5", g.get("over_2_5"), g.get("over_price"),
+                 g.get("over_ev"), "good")]
+    return (f"<div class='osp-ss-markets' style='grid-template-columns:"
+            f"repeat({len(cards)},1fr);'>{''.join(cards)}</div>")
+
+
+def _match_header(sport: str, g: dict) -> str:
+    is_tennis = sport in ("ATP", "WTA")
+    if is_tennis:
+        p1, p2 = g.get("player1", ""), g.get("player2", "")
+        meta = [f"🎾 <b>{g.get('tournament', '')}</b>",
+                f"court <b>{str(g.get('surface') or '').title() or '—'}</b>",
+                fmt_time_et(g.get("match_time"))]
+        teams = (f"<div class='osp-ss-team'><div><div class='osp-ss-name'>{p1}</div></div></div>"
+                 f"<div class='osp-ss-hero' style='text-align:center;'>"
+                 f"<div class='osp-ss-name' style='color:var(--faint);'>vs</div></div>"
+                 f"<div class='osp-ss-team home'><div><div class='osp-ss-name'>{p2}</div></div></div>")
+    else:
+        away, home = g.get("away_team", ""), g.get("home_team", "")
+        meta = [f"⚽ proj <b>{_num(g.get('home_exp'))}–{_num(g.get('away_exp'))}</b> goals",
+                fmt_time_et(g.get("game_time"))]
+        teams = (f"<div class='osp-ss-team'>{assets.team_badge_html(sport, away, 40)}"
+                 f"<div><div class='osp-ss-name'>{away}</div></div></div>"
+                 f"<div class='osp-ss-hero' style='text-align:center;'>"
+                 f"<div class='osp-ss-name'>{_num(g.get('proj_total'))}</div>"
+                 f"<small style='color:var(--muted);font-family:var(--disp);letter-spacing:.05em;'>PROJ GOALS</small></div>"
+                 f"<div class='osp-ss-team home'><div><div class='osp-ss-name'>{home}</div></div>"
+                 f"{assets.team_badge_html(sport, home, 40)}</div>")
+    return (f"<div class='osp-ss-head'><div class='osp-ss-teams'>{teams}</div>"
+            f"<div class='osp-ss-meta'>{''.join(f'<span>{m}</span>' for m in meta)}</div></div>")
+
+
+def _match_priced(sport: str, g: dict) -> str:
+    """Priced-sides table (model % vs market → EV) for a match, from _game_edges."""
+    edges = [e for e in _game_edges(sport, g)
+             if e.get("ev") is not None and pd.notna(e["ev"])]
+    if not edges:
+        return f"<div class='osp-ss-card'>{_gap('no market prices yet')}</div>"
+    rows = []
+    for e in sorted(edges, key=lambda x: -x["ev"]):
+        col = "good" if e["ev"] > 0.005 else "neg" if e["ev"] < -0.005 else "faint"
+        rows.append(
+            f"<tr><td><b>{e['market']}</b></td><td>{e['bet']}</td>"
+            f"<td>{_pct(e.get('model_prob'))}</td>"
+            f"<td>{fmt_american(e['price'])}</td>"
+            f"<td style='color:var(--{col},var(--muted));font-weight:700;'>"
+            f"{e['ev'] * 100:+.1f}%</td></tr>")
+    return ("<div class='osp-ss-card'><table class='osp-ss-mtab'>"
+            "<tr><th>Market</th><th>Bet</th><th>Model</th><th>Price</th><th>EV</th></tr>"
+            f"{''.join(rows)}</table><div class='osp-ss-note'>Projection-only until "
+            "an odds feed is wired; priced sides flow through the edge gate in "
+            "probation.</div></div>")
+
+
+def match_sheet_html(sport: str, g: dict, best_line: dict | None = None) -> str:
+    """Dark Sharp Sheet for the match-model sports (soccer 1X2/totals, tennis
+    player match-win). Never-raises."""
+    try:
+        body = (_match_header(sport, g)
+                + _section("Markets", "model win % · price · edge",
+                           _match_market_cards(sport, g))
+                + _section("Best Available", "line-shop across books",
+                           _ss_bestline(g, best_line))
+                + _section("Priced Sides", "", _match_priced(sport, g)))
+        return _SS_STYLE + _SS_STYLE2 + f"<div class='osp-ss'>{body}</div>"
+    except Exception:
+        log.exception("match_sheet_html failed for %s", sport)
+        title = (f"{g.get('player1', '')} vs {g.get('player2', '')}"
+                 if sport in ("ATP", "WTA")
+                 else f"{g.get('away_team', '')} @ {g.get('home_team', '')}")
+        return _fallback_card(title)
+
+
 def _gap(what: str = "data gap") -> str:
     """A visible DATA GAP chip — never a silent blank when a field is missing."""
     return (f"<span class='osp-ss-gap' title='This input is not available; the "

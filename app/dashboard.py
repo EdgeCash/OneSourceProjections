@@ -600,16 +600,16 @@ def render_match_sport(sport: str):
                 + (" matching the search." if q else "."))
         return
     is_tennis = sport in ("ATP", "WTA")
-    table = ui.tennis_table(games) if is_tennis else ui.soccer_table(games)
-    st.dataframe(table, hide_index=True, width="stretch")
     st.caption(("Surface-aware player Elo; win % is the Elo logistic. "
                 if is_tennis else
                 "1X2 + totals from a Dixon-Coles Poisson on each side's expected "
                 "goals. ") + "Odds/EV appear where The Odds API covers the match.")
-    st.markdown("#### 📊 Sharp Sheets")
+    # Full dark Sharp Sheet per match, stacked (mirrors the team-sport feed).
     for g in games:
-        with st.expander(_match_title(sport, g)):
-            _match_sheet(sport, g)
+        st.markdown(
+            ui.match_sheet_html(sport, g,
+                                best_line=_best_line_for(sport, g, date_sel)),
+            unsafe_allow_html=True)
 
 
 @st.cache_data(ttl=900, show_spinner=False)
