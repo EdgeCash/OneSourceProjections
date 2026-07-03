@@ -3211,3 +3211,58 @@ def _ss_read(calls: list) -> str:
             f"<span style='color:var(--{col},var(--muted));font-weight:700;'>{c['decision']}</span> "
             f"<span style='color:var(--muted);'>({ev_txt}, conf {c['conf']:.1f}/10{stake})</span></span></div>")
     return "".join(rows)
+
+
+# emoji per decision — used in the collapsed expander label so a bettor can
+# scan a whole slate and see which games have a live call without opening each.
+_DECISION_DOT = {"PLAY": "🟢", "LEAN": "🟡", "VERIFY": "🟠", "PASS": "⚪"}
+_DECISION_RANK = {"PLAY": 3, "LEAN": 2, "VERIFY": 1, "PASS": 0}
+
+
+def sheet_headline(sport: str, g: dict, *, min_edge: float = 0.02,
+                   gate_table=None, bankroll: float = 0) -> tuple[str, bool]:
+    """A one-line summary for the collapsed game card: matchup + the single best
+    actionable call. Returns (markdown_label, should_auto_expand). Never raises —
+    a bad game still gets a plain matchup label so the feed keeps rendering."""
+    try:
+        # Match-model sports (tennis player-Elo, soccer Dixon-Coles) don't use the
+        # team-sport market calls — summarise from the model's own probabilities.
+        if sport in ("ATP", "WTA"):
+            p1, p2 = g.get("player1", ""), g.get("player2", "")
+            title = f"{p1} vs {p2}"
+            q1, q2 = _mcf(g.get("player1_win_prob")), _mcf(g.get("player2_win_prob"))
+            if q1 is not None and q2 is not None:
+                fav, fp = (p1, q1) if q1 >= q2 else (p2, q2)
+                return f"⚪  {title}  ·  model **{_last(fav)} {_pct(fp)}**", False
+            return f"⚪  {title}", False
+        if sport in ("MLS",) or ("home_win_prob" in g and "away_win_prob" in g
+                                 and g.get("draw_prob") is not None):
+            away, home = g.get("away_team", ""), g.get("home_team", "")
+            title = f"{away} @ {home}"
+            trio = [(_last(home), _mcf(g.get("home_win_prob"))),
+                    ("Draw", _mcf(g.get("draw_prob"))),
+                    (_last(away), _mcf(g.get("away_win_prob")))]
+            trio = [(n, p) for n, p in trio if p is not None]
+            if trio:
+                n, p = max(trio, key=lambda t: t[1])
+                return f"⚪  {title}  ·  model **{n} {_pct(p)}**", False
+            return f"⚪  {title}", False
+        title = f"{g.get('away_team', '')} @ {g.get('home_team', '')}"
+        calls = _mc_market_calls(sport, g, min_edge, gate_table=gate_table,
+                                 bankroll=bankroll)
+        if not calls:
+            return f"{title}  ·  no priced markets yet", False
+        best = max(calls, key=lambda c: (
+            _DECISION_RANK.get(c["decision"], 0),
+            c["ev"] if c.get("ev") is not None else -9))
+        dot = _DECISION_DOT.get(best["decision"], "⚪")
+        ev = best.get("ev")
+        if best["decision"] in ("PLAY", "LEAN") and ev is not None and pd.notna(ev):
+            tail = (f"**{best['decision']} {best['label']}** {best['pick']} "
+                    f"({ev * 100:+.1f}% EV)")
+            return f"{dot}  {title}  ·  {tail}", True
+        return f"{dot}  {title}  ·  no edge — pass", False
+    except Exception:
+        log.exception("sheet_headline failed")
+        away, home = g.get("away_team", ""), g.get("home_team", "")
+        return f"{away} @ {home}", False

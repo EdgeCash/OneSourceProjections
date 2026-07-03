@@ -24,3 +24,4 @@ data/history/pbp/**/*.parquet
 
 # Local agent scratch tooling (smoke harness, backtest sweeps) — not part of the repo
 scratchpad/
+scratch_sheet.*

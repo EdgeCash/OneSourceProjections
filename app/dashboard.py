@@ -55,7 +55,7 @@ _PALETTES = {
     "dark": dict(acc="#3b82f6", acc2="#6cb6ff", link="#6cb6ff", warn="#e3b341",
                  bg="#0d1117", card="#161b22",
                  card2="#1c2431", line="#2a3441", text="#e8eef5",
-                 muted="#9aa7b4", faint="#6b7684", good="#3fb950",
+                 muted="#9aa7b4", faint="#828f9e", good="#3fb950",
                  neg="#f0776a", mid="#e3b341", sb1="#111722", sb2="#0a0e15",
                  glow="0.16", shadow="0.55"),
 }
@@ -523,28 +523,33 @@ def render_sport(sport: str):
                     key=f"win_{sport}_{date_sel}",
                     help="How much recency to weight — ranks, advantages and "
                          "strength of schedule recompute for the window you pick.")
-            # The feed: every game's full Sharp Sheet, top to bottom. Click the
-            # sport, scroll the sheets — no dropdown, no digging.
+            # The feed: one collapsible Sharp Sheet per game. The label shows the
+            # matchup + the single best call, so a bettor scans the whole slate at
+            # a glance and only opens the games worth a full read. Games with a
+            # live PLAY/LEAN auto-expand; the rest stay tucked.
+            gt = gate_table()
+            st.caption("🟢 play · 🟡 lean · ⚪ pass — tap a game for its full Sharp Sheet.")
             for g in shown:
-                # Never let one game's data-build error blank the whole feed —
-                # degrade to DATA GAP chips (empty data) and keep rendering.
-                try:
-                    m = _matchup(sport, g.get("home_team", ""),
-                                 g.get("away_team", ""), date_sel, window) or {}
-                    data = _sheet_data(sport, g, m, date_sel)
-                except Exception:
-                    log.exception("sheet data failed for %s @ %s",
-                                  g.get("away_team"), g.get("home_team"))
-                    m, data = {}, {}
-                st.markdown(
-                    ui.sharp_sheet_html(
-                        sport, g, m, window=window, min_edge=min_edge,
-                        gate_table=gate_table(), bankroll=bankroll,
-                        props=props, best_line=_best_line_for(sport, g, date_sel),
-                        data=data),
-                    unsafe_allow_html=True)
-            st.caption("Each game's full Sharp Sheet — the dense offense-vs-defense "
-                       "tables live under the 'Advanced' fold on each.")
+                label, auto = ui.sheet_headline(
+                    sport, g, min_edge=min_edge, gate_table=gt, bankroll=bankroll)
+                with st.expander(label, expanded=auto):
+                    # Never let one game's data-build error blank the feed —
+                    # degrade to DATA GAP chips (empty data) and keep rendering.
+                    try:
+                        m = _matchup(sport, g.get("home_team", ""),
+                                     g.get("away_team", ""), date_sel, window) or {}
+                        data = _sheet_data(sport, g, m, date_sel)
+                    except Exception:
+                        log.exception("sheet data failed for %s @ %s",
+                                      g.get("away_team"), g.get("home_team"))
+                        m, data = {}, {}
+                    st.markdown(
+                        ui.sharp_sheet_html(
+                            sport, g, m, window=window, min_edge=min_edge,
+                            gate_table=gt, bankroll=bankroll,
+                            props=props, best_line=_best_line_for(sport, g, date_sel),
+                            data=data),
+                        unsafe_allow_html=True)
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
@@ -622,12 +627,17 @@ def render_match_sport(sport: str):
                 if is_tennis else
                 "1X2 + totals from a Dixon-Coles Poisson on each side's expected "
                 "goals. ") + "Odds/EV appear where The Odds API covers the match.")
-    # Full dark Sharp Sheet per match, stacked (mirrors the team-sport feed).
+    # Collapsible Sharp Sheet per match (mirrors the team-sport feed): the label
+    # carries the matchup + best call so the slate scans at a glance.
+    st.caption("🟢 play · 🟡 lean · ⚪ pass — tap a match for its full Sharp Sheet.")
     for g in games:
-        st.markdown(
-            ui.match_sheet_html(sport, g,
-                                best_line=_best_line_for(sport, g, date_sel)),
-            unsafe_allow_html=True)
+        label, auto = ui.sheet_headline(sport, g, min_edge=min_edge,
+                                        gate_table=gate_table(), bankroll=bankroll)
+        with st.expander(label, expanded=auto):
+            st.markdown(
+                ui.match_sheet_html(sport, g,
+                                    best_line=_best_line_for(sport, g, date_sel)),
+                unsafe_allow_html=True)
 
 
 @st.cache_data(ttl=900, show_spinner=False)
