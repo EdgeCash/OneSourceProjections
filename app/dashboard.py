@@ -659,23 +659,45 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         format_func=lambda w: teamstats.WINDOW_LABELS[w], key=wkey,
         help="How much recency to weight — ranks, advantages and strength of "
              "schedule all recompute for the window you pick.")
-    m = _matchup(sport, home, away, date_sel, window)
-    if not m:
-        st.info("Team stat splits aren't available for this matchup yet.")
-        st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-        return
-    st.markdown(ui.matchup_card_html(sport, g, m, window=window, min_edge=min_edge,
-                                     gate_table=gate_table(), bankroll=bankroll),
+    m = _matchup(sport, home, away, date_sel, window) or {}
+    props = slates.get(date_sel, {}).get(sport, {}).get("props", []) or []
+    st.markdown(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
+                                    gate_table=gate_table(), bankroll=bankroll,
+                                    props=props, best_line=_best_line_for(sport, g, date_sel)),
                 unsafe_allow_html=True)
-    _shop_line(sport, g, date_sel)
-    _bp_validator(sport, g, date_sel)
-    ai_block(ui.ai_brief_game(sport, g, m, min_edge),
-             key=f"game_{sport}_{date_sel}_{away}_{home}")
     if caption:
         st.caption(f"Offense {teamstats.WINDOW_LABELS[window]} vs the opponent's "
                    "matching defense; rank pills are league ranks (green = top "
-                   "third). ★ = the offense out-ranks the defense it faces. PWR = "
-                   "power rank, SOS = strength-of-schedule rank.")
+                   "third). ★ = the offense out-ranks the defense it faces.")
+
+
+def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
+    """Best available price per market for the Sharp Sheet's odds strip, shaped
+    {label: {price, book}} from the line-shop. Empty when no coverage."""
+    from project547.names import normalize
+    try:
+        best = load_best_lines(sport, date_sel)
+    except Exception:
+        return {}
+    key = " vs ".join(sorted({normalize(g.get("home_team", "")),
+                              normalize(g.get("away_team", ""))}))
+    rec = best.get(key)
+    if not rec:
+        return {}
+    out: dict = {}
+    ml = rec.get("moneyline") or {}
+    for side in ("away_team", "home_team"):
+        info = ml.get(normalize(g.get(side, "")))
+        if info:
+            out[f"{g.get(side, '').split()[-1]} ML"] = {
+                "price": info.get("price"), "book": info.get("book")}
+    tot = rec.get("total") or {}
+    for side in ("over", "under"):
+        info = tot.get(side)
+        if info:
+            ln = f" {info['line']:g}" if info.get("line") is not None else ""
+            out[f"{side.title()}{ln}"] = {"price": info.get("price"), "book": info.get("book")}
+    return out
 
 
 @st.cache_data(ttl=300, show_spinner=False)
