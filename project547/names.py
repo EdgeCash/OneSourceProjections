@@ -8,7 +8,9 @@ _SUFFIXES = re.compile(r"\b(jr|sr|ii|iii|iv)\.?$", re.IGNORECASE)
 
 
 def normalize(name: str) -> str:
-    if not name:
+    # Non-strings (None, and crucially pandas NaN — a float, which is *truthy*
+    # so a bare `if not name` lets it through) must never reach unicodedata.
+    if not isinstance(name, str) or not name:
         return ""
     # strip accents (José -> Jose)
     name = unicodedata.normalize("NFKD", name)

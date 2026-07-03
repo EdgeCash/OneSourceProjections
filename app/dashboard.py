@@ -759,7 +759,9 @@ def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
         pitching = {}
         for side in ("away", "home"):
             nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
-            if not nm:
+            # TBD/missing starters come back as pandas NaN (a truthy float), so
+            # guard on the actual string — otherwise NaN reaches normalize().
+            if not isinstance(nm, str) or not nm.strip():
                 continue
             row = pstats.get(normalize(nm)) or {}
             ip_tot, gs = _lf(row, "IP"), _lf(row, "GS")
