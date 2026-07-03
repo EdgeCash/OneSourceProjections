@@ -2032,10 +2032,13 @@ def _mc_stat_table(sport, n, window, win_label, title, rows, off_team,
 
     def num(stat, v, em=False):
         w = "700" if em else "500"
+        disp = _gap("") if _mcf(v) is None else _fmtv(stat, v)
         return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
-                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+                f"font-size:.74rem;'>{disp}</td>")
 
     def rank_pill(rank):
+        if _mcf(rank) is None:
+            return f"<td style='padding:5px 7px;text-align:center;'>{_gap('')}</td>"
         c = _rank_color(rank, n)
         return (f"<td style='padding:5px 7px;text-align:center;'>"
                 f"<span style='color:{c};font-weight:700;font-size:.74rem;'>{_ord(rank)}</span></td>")
@@ -2098,7 +2101,7 @@ def _mc_trends(trends, away, home) -> str:
     def cell(v):
         v = _mcf(v)
         if v is None:
-            s = "—"
+            s = _gap("")
         else:
             s = f"{v * 100:.0f}%" if abs(v) <= 1.5 else f"{v:.0f}%"
         return f"<td style='padding:5px 7px;text-align:center;font-weight:600;font-size:.74rem;'>{s}</td>"
@@ -2148,8 +2151,9 @@ def _mc_supporting(sport, n, window, win_label, away, home, a_supp, h_supp) -> s
 
     def num(stat, v, em=False):
         w = "700" if em else "500"
+        disp = _gap("") if _mcf(v) is None else _fmtv(stat, v)
         return (f"<td style='padding:5px 7px;text-align:center;font-weight:{w};"
-                f"font-size:.74rem;'>{_fmtv(stat, v)}</td>")
+                f"font-size:.74rem;'>{disp}</td>")
 
     def pill(rank, better):
         c = _rank_color(rank, n)
@@ -2736,9 +2740,13 @@ def _ss_markets_clv(sport: str, g: dict, calls: list, clv: dict | None) -> str:
         clv_txt = (f"<b style='color:var(--{'good' if (avg or 0)>=0 else 'neg'});'>"
                    f"{avg*100:+.1f}%</b> <small>n={n}</small>"
                    if avg is not None else _gap("no sample"))
+        # a moneyline has no line by definition — N/A ("—"), not a DATA GAP
+        line_cell = ("<span style='color:var(--faint);'>—</span>"
+                     if c["label"] == "Moneyline"
+                     else _num_or_gap(c.get("line"), "{:g}", "line"))
         body.append(
             f"<tr><td><b>{c['label']}</b></td><td>{c.get('pick','')}</td>"
-            f"<td>{_pct(prob)}</td><td>{_num_or_gap(c.get('line'), '{:g}', 'ml')}</td>"
+            f"<td>{_pct(prob)}</td><td>{line_cell}</td>"
             f"<td>{fmt_american(price) or _gap('no line')}</td>"
             f"<td>{_pct(implied) if implied is not None else _gap('')}</td>"
             f"<td style='color:var(--{ecol},var(--muted));font-weight:700;'>"
@@ -2825,27 +2833,31 @@ def _ss_context(sport: str, g: dict, context: dict | None) -> str:
 
 def _ss_calibration(calibration: dict | None) -> str:
     """Footer receipt: per-market out-of-fold predicted vs actual hit-rate + n —
-    the falsifiable anchor under the confidence score."""
-    if not calibration:
-        return _section("Calibration Receipt",
-                        "out-of-fold reliability per market",
-                        f"<div class='osp-ss-card'>{_gap('reliability not loaded')}</div>")
+    the falsifiable anchor under the confidence score. The table ALWAYS renders;
+    any missing cell is a DATA GAP chip, never a blank (a hollow calibration is a
+    signal, not a no-op — it also caps confidence at LEAN, see _confidence)."""
+    markets = list(calibration.keys()) if calibration else ["Moneyline", "Total", "Run Line"]
     rows = []
-    for mkt, d in calibration.items():
+    for mkt in markets:
+        d = (calibration or {}).get(mkt) or {}
         pred, act, n = d.get("pred"), d.get("actual"), d.get("n")
         gapp = (abs(pred - act) if pred is not None and act is not None else None)
         col = ("good" if gapp is not None and gapp <= 0.03 else
                "mid" if gapp is not None and gapp <= 0.06 else "neg")
         rows.append(
-            f"<tr><td><b>{mkt}</b></td><td>{_pct(pred)}</td><td>{_pct(act)}</td>"
+            f"<tr><td><b>{mkt}</b></td>"
+            f"<td>{_pct(pred) if pred is not None else _gap('')}</td>"
+            f"<td>{_pct(act) if act is not None else _gap('')}</td>"
             f"<td style='color:var(--{col},var(--muted));'>"
             f"{(f'{gapp*100:.1f} pt') if gapp is not None else _gap('')}</td>"
-            f"<td><small>n={n if n is not None else '—'}</small></td></tr>")
+            f"<td>{('<small>n='+str(n)+'</small>') if n is not None else _gap('')}</td></tr>")
+    note = ("Predicted vs realized hit-rate on held-out games. A small gap = the "
+            "number means what it says." if calibration else
+            "<b style='color:var(--mid,#a9791b);'>Reliability feed not loaded — "
+            "confidence is capped at LEAN until this is wired.</b>")
     body = ("<div class='osp-ss-card'><table class='osp-ss-mtab'>"
             "<tr><th>Market</th><th>Predicted</th><th>Actual</th><th>Gap</th><th>Sample</th></tr>"
-            f"{''.join(rows)}</table>"
-            "<div class='osp-ss-note'>Predicted vs realized hit-rate on held-out "
-            "games. A small gap = the number means what it says.</div></div>")
+            f"{''.join(rows)}</table><div class='osp-ss-note'>{note}</div></div>")
     return _section("Calibration Receipt", "out-of-fold reliability per market", body)
 
 
@@ -2877,9 +2889,12 @@ def _confidence(sport: str, g: dict, calls: list, data: dict) -> dict:
     completeness = (sum(drivers) / len(drivers)) if drivers else 0.6
     score = round(0.30 * readiness + 0.25 * edge_clarity
                   + 0.20 * calibration_q + 0.25 * completeness, 2)
-    # tier cap: a missing Total driver (SP) caps strong plays at LEAN
+    # tier cap: a missing key driver caps strong plays at LEAN — the tier can't
+    # outrun the data. Blank calibration (no falsifiable anchor) or a missing SP
+    # driver both cap; so does an overall low score.
+    cal_missing = not gaps
     sp_gap = sport == "MLB" and completeness < 0.6
-    cap = "lean" if sp_gap or score < 0.5 else None
+    cap = "lean" if sp_gap or cal_missing or score < 0.5 else None
     label = ("High" if score >= 0.75 else "Moderate" if score >= 0.5 else "Guarded")
     return {"score": score, "label": label, "cap": cap,
             "drivers": {"lineups": round(readiness, 2), "edge": round(edge_clarity, 2),

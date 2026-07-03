@@ -663,12 +663,92 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
     props = slates.get(date_sel, {}).get(sport, {}).get("props", []) or []
     st.markdown(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
                                     gate_table=gate_table(), bankroll=bankroll,
-                                    props=props, best_line=_best_line_for(sport, g, date_sel)),
+                                    props=props, best_line=_best_line_for(sport, g, date_sel),
+                                    data=_sheet_data(sport, g, m, date_sel)),
                 unsafe_allow_html=True)
     if caption:
         st.caption(f"Offense {teamstats.WINDOW_LABELS[window]} vs the opponent's "
                    "matching defense; rank pills are league ranks (green = top "
                    "third). ★ = the offense out-ranks the defense it faces.")
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _market_stats_cached() -> dict:
+    """edge_gate.market_stats() with string keys (JSON-cacheable)."""
+    try:
+        from project547 import edge_gate
+        return {f"{s}|{m}": v for (s, m), v in edge_gate.market_stats().items()}
+    except Exception:
+        return {}
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _market_calibration(sport: str) -> dict | None:
+    """Per-market {pred, actual, n} for the calibration receipt. Actual hit-rate
+    + n come from the graded ledger (edge_gate.market_stats); the predicted prob
+    is only logged for the win-prob market today, so Total/Run Line show a DATA
+    GAP on predicted (honest, not faked)."""
+    ms = _market_stats_cached()
+    pred_ml = None
+    try:
+        from project547 import results
+        led = [r for r in results.load_ledger()
+               if r.get("sport") == sport
+               and isinstance(r.get("pred_home_wp"), (int, float))
+               and r.get("home_won") is not None]
+        if led:
+            pred_ml = sum(max(r["pred_home_wp"], 1 - r["pred_home_wp"]) for r in led) / len(led)
+    except Exception:
+        pred_ml = None
+    out, any_data = {}, False
+    for label, mk in (("Moneyline", "moneyline"), ("Total", "total"), ("Run Line", "spread")):
+        s = ms.get(f"{sport}|{mk}") or {}
+        actual, n = s.get("win_rate"), s.get("n")
+        pred = pred_ml if mk == "moneyline" else None
+        if actual is not None or pred is not None:
+            any_data = True
+        out[label] = {"pred": pred, "actual": actual, "n": n}
+    return out if any_data else None
+
+
+def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
+    """Assemble the Sharp Sheet v2 ``data`` object from live sources. Missing
+    pieces stay absent so the composer renders DATA GAP chips (never fabricated)."""
+    ms = _market_stats_cached()
+    clv = {}
+    for mk in ("moneyline", "total", "spread"):
+        s = ms.get(f"{sport}|{mk}") or {}
+        if s.get("clv_n"):
+            clv[mk] = {"avg_clv": s.get("avg_clv"), "clv_n": s.get("clv_n")}
+    pitching = None
+    if sport == "MLB":
+        from project547 import platoon
+        try:
+            from project547.pipeline import starter_xfip
+        except Exception:
+            starter_xfip = lambda *_: None  # noqa: E731
+        pitching = {}
+        for side in ("away", "home"):
+            nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
+            if not nm:
+                continue
+            try:
+                xfip = starter_xfip(nm)
+            except Exception:
+                xfip = None
+            try:
+                hand = platoon.throws(nm, pid)
+            except Exception:
+                hand = None
+            pitching[f"{side}_sp"] = {"name": nm, "id": pid, "hand": hand,
+                                      "xfip": xfip, "ip": None, "k9": None,
+                                      "bb9": None, "tto_flag": None}
+            bp = (matchup or {}).get(f"{side}_bullpen") or {}
+            if bp:
+                pitching[f"{side}_bullpen"] = {"fatigue": bp.get("level"),
+                                               "proj_ip": bp.get("proj_ip")}
+    return {"clv": clv or None, "calibration": _market_calibration(sport),
+            "pitching": pitching or None}
 
 
 def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
