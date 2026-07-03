@@ -184,7 +184,8 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                     fair = ml_close.get(normalize(g.get(f"{side}_team", "")))
                     new_rows.append(_bet_row(date, sport, label, "moneyline", side,
                                              price, won, ev,
-                                             clv=clv.clv_pct(price, fair)))
+                                             clv=clv.clv_pct(price, fair),
+                                             model_prob=g.get(f"{side}_win_prob")))
 
             # total bet recommended at projection time
             line = g.get("total_line")
@@ -196,7 +197,8 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                     new_rows.append(_bet_row(date, sport, label, "total", "over",
                                              over_odds, total > line, over_ev,
                                              line=line,
-                                             clv=clv.clv_pct(over_odds, tot_close.get("over"))))
+                                             clv=clv.clv_pct(over_odds, tot_close.get("over")),
+                                             model_prob=g.get("model_over_prob")))
 
     _append(new_rows)
     if new_rows:
@@ -235,12 +237,16 @@ def _closing_lines(sport: str, date: str) -> dict:
 
 
 def _bet_row(date, sport, game, market, side, price, won, ev, line=None,
-             clv=None) -> dict:
+             clv=None, model_prob=None) -> dict:
     dec = odds.american_to_decimal(float(price))
     return {"date": date, "sport": sport, "game": game, "market": market,
             "side": side, "line": line, "price": price, "ev": round(float(ev), 4),
             "won": bool(won), "pnl": round(dec - 1 if won else -1.0, 4),
-            "clv": clv}
+            "clv": clv,
+            # our predicted P(this side wins) — feeds the per-market calibration
+            # receipt (predicted vs realized hit-rate).
+            "model_prob": (round(float(model_prob), 4)
+                           if model_prob is not None else None)}
 
 
 def load_ledger() -> list[dict]:
