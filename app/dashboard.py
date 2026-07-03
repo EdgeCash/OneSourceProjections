@@ -512,23 +512,20 @@ def render_sport(sport: str):
                     key=f"win_{sport}_{date_sel}",
                     help="How much recency to weight — ranks, advantages and "
                          "strength of schedule recompute for the window you pick.")
-            # The feed: every game's full matchup sheet, top to bottom. Click the
+            # The feed: every game's full Sharp Sheet, top to bottom. Click the
             # sport, scroll the sheets — no dropdown, no digging.
             for g in shown:
                 m = _matchup(sport, g.get("home_team", ""),
-                             g.get("away_team", ""), date_sel, window)
-                if m:
-                    st.markdown(
-                        ui.matchup_card_html(sport, g, m, window=window,
-                                             min_edge=min_edge,
-                                             gate_table=gate_table(),
-                                             bankroll=bankroll),
-                        unsafe_allow_html=True)
-                else:
-                    st.markdown(ui.game_card_html(sport, g), unsafe_allow_html=True)
-            st.caption("Offense L5 vs the opponent's matching defense; small "
-                       "numbers are league ranks (green = top third). "
-                       "★ = offense out-ranks the defense.")
+                             g.get("away_team", ""), date_sel, window) or {}
+                st.markdown(
+                    ui.sharp_sheet_html(
+                        sport, g, m, window=window, min_edge=min_edge,
+                        gate_table=gate_table(), bankroll=bankroll,
+                        props=props, best_line=_best_line_for(sport, g, date_sel),
+                        data=_sheet_data(sport, g, m, date_sel)),
+                    unsafe_allow_html=True)
+            st.caption("Each game's full Sharp Sheet — the dense offense-vs-defense "
+                       "tables live under the 'Advanced' fold on each.")
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
@@ -719,6 +716,19 @@ def _market_calibration(sport: str) -> dict | None:
     return out if any_data else None
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def _pitcher_stats(season: int) -> dict:
+    """{norm_name: FanGraphs pitching row} for filling the Sharp Sheet's pitching
+    strip (IP, K/9, BB/9, xFIP). Empty if the table can't be built."""
+    try:
+        from project547 import pipeline
+        df = pipeline._pitcher_table(season)
+        return {r.get("norm_name"): r for r in df.to_dict("records")
+                if r.get("norm_name")}
+    except Exception:
+        return {}
+
+
 def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
     """Assemble the Sharp Sheet v2 ``data`` object from live sources. Missing
     pieces stay absent so the composer renders DATA GAP chips (never fabricated)."""
@@ -731,26 +741,37 @@ def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
     pitching = None
     if sport == "MLB":
         from project547 import platoon
+        from project547.names import normalize
         try:
-            from project547.pipeline import starter_xfip
+            from project547.pipeline import starter_xfip, _lookup_float as _lf
         except Exception:
-            starter_xfip = lambda *_: None  # noqa: E731
+            starter_xfip = lambda *_: None       # noqa: E731
+            _lf = lambda row, *ks: None           # noqa: E731
+        pstats = _pitcher_stats(int(str(date_sel)[:4]))
         pitching = {}
         for side in ("away", "home"):
             nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
             if not nm:
                 continue
-            try:
-                xfip = starter_xfip(nm)
-            except Exception:
-                xfip = None
+            row = pstats.get(normalize(nm)) or {}
+            ip_tot, gs = _lf(row, "IP"), _lf(row, "GS")
+            ip = (ip_tot / gs) if ip_tot and gs else None   # innings per start
+            k9, bb9 = _lf(row, "K/9", "K9"), _lf(row, "BB/9", "BB9")
+            xfip = _lf(row, "xFIP", "FIP")
+            if xfip is None:
+                try:
+                    xfip = starter_xfip(nm)
+                except Exception:
+                    xfip = None
             try:
                 hand = platoon.throws(nm, pid)
             except Exception:
                 hand = None
-            pitching[f"{side}_sp"] = {"name": nm, "id": pid, "hand": hand,
-                                      "xfip": xfip, "ip": None, "k9": None,
-                                      "bb9": None, "tto_flag": None}
+            pitching[f"{side}_sp"] = {
+                "name": nm, "id": pid, "hand": hand, "xfip": xfip, "ip": ip,
+                "k9": k9, "bb9": bb9,
+                # a starter who averages 3 turns through the order (~5.8+ IP)
+                "tto_flag": bool(ip and ip >= 5.8)}
             bp = (matchup or {}).get(f"{side}_bullpen") or {}
             if bp:
                 pitching[f"{side}_bullpen"] = {"fatigue": bp.get("level"),
