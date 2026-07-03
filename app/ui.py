@@ -2572,10 +2572,8 @@ def _ss_lineups(sport: str, g: dict) -> str:
             return ""
         body = []
         for i, nm in enumerate(rows, 1):
-            from project547.names import normalize
-            pid = pids.get(normalize(nm)) if isinstance(pids, dict) else None
             body.append(f"<tr><td><span class='osp-ss-num'>{i}</span> "
-                        f"{player_ext_link(nm, sport, pid)}</td></tr>")
+                        f"{player_link(nm, gpk, sport)}</td></tr>")
         return (f"<div class='osp-ss-lu'><div class='osp-ss-lut' style='color:{color};'>"
                 f"{team}</div><table>{''.join(body)}</table></div>")
 
@@ -2608,7 +2606,7 @@ _SS_STYLE = """<style>
 .osp-ss-sh{font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.09em;
   text-transform:uppercase;color:var(--text);margin:0 2px 8px;display:flex;gap:9px;align-items:baseline}
 .osp-ss-sh .hint{font-family:var(--font);font-weight:400;letter-spacing:0;text-transform:none;
-  font-size:.72rem;color:var(--faint)}
+  font-size:.72rem;color:var(--muted)}
 .osp-ss-head{background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
 .osp-ss-teams{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:16px 20px}
 .osp-ss-team{display:flex;align-items:center;gap:11px}
@@ -2647,7 +2645,9 @@ _SS_STYLE = """<style>
 .osp-ss-pp{font-weight:600;font-size:.82rem} .osp-ss-pl{font-size:.72rem;color:var(--muted)}
 .osp-ss-pev{margin-left:auto;text-align:right;font-family:var(--disp);font-weight:700}
 .osp-ss-pev small{display:block;font-size:.58rem;color:var(--muted);font-weight:600}
-.osp-plink{color:var(--link,#8a1f2b);font-weight:600}
+.osp-plink,.osp-ss-lu a,.osp-ss-spn a{color:var(--link,#8a1f2b);font-weight:600;
+  text-decoration:none;border-bottom:1px solid transparent}
+.osp-plink:hover,.osp-ss-lu a:hover,.osp-ss-spn a:hover{border-bottom-color:currentColor}
 </style>"""
 
 
@@ -2690,7 +2690,7 @@ def _ss_pitching(sport: str, g: dict, pitching: dict | None) -> str:
             f"xFIP {_num_or_gap(d.get('xfip'), '{:.2f}')}"])
         return (f"<div class='osp-ss-sp'>"
                 f"<div class='osp-ss-spn' style='color:{color};'>"
-                f"{player_ext_link(name, sport, pid)} <small>{hand_txt}</small> {tto}</div>"
+                f"{player_link(name, g.get('game_pk'), sport)} <small>{hand_txt}</small> {tto}</div>"
                 f"<div class='osp-ss-spd'>{stats}</div></div>")
 
     def pen(side):
@@ -2922,7 +2922,7 @@ _SS_STYLE2 = """<style>
 .osp-ss-mtab th:first-child,.osp-ss-mtab td:first-child{text-align:left}
 .osp-ss-mtab td{padding:5px 8px;text-align:right;border-top:1px solid var(--line);
   font-variant-numeric:tabular-nums}
-.osp-ss-note{font-size:.66rem;color:var(--faint);margin-top:8px;line-height:1.5}
+.osp-ss-note{font-size:.68rem;color:var(--muted);margin-top:8px;line-height:1.5}
 .osp-ss-unc{display:flex;gap:26px;flex-wrap:wrap;background:var(--card2);border:1px solid var(--line);
   border-radius:11px;padding:11px 15px;font-size:.9rem}
 .osp-ss-ul{display:block;font-family:var(--disp);font-size:.6rem;letter-spacing:.06em;
@@ -3048,7 +3048,7 @@ def _sharp_sheet_impl(sport, g, matchup, *, window, min_edge, gate_table,
                       (f"<div class='osp-ss-card'>{_mc_trends(matchup.get('trends'), away, home)}</div>"
                        if _mc_trends(matchup.get("trends"), away, home) else ""))
 
-    lineups = _section("Lineups", "tap a name for advanced stats (Baseball Savant / ESPN) ↗",
+    lineups = _section("Lineups", "tap a name for the player card",
                        _ss_lineups(sport, g))
 
     top = top_game_props(sport, props, away, home) if props else []
