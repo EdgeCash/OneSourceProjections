@@ -326,7 +326,8 @@ NAV_GROUPS = {
     "🎯 Plays": ["PLAYS"],  # one page; Board/Full table/Edge scanner are an in-page mode toggle
     "🏟️ Sports": NAV_SPORTS,   # the per-sport Sharp Sheets
     "📊 Scores": ["SCORES"],
-    "⋯ More": ["SHARPSHEET", "OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
+    # SHARPSHEET browser retired — the Sharp Sheet now lives on the Sports feed.
+    "⋯ More": ["OTHER_SPORTS", "DFS", "PERFORMANCE", "EDGE_BUILDER",
                "EXPERTS", "TOOLS", "BACKTEST", "PROMPT_ENGINE", "WORKBOOK", "DOCS"],
 }
 _SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
@@ -689,30 +690,30 @@ def _market_stats_cached() -> dict:
 
 @st.cache_data(ttl=600, show_spinner=False)
 def _market_calibration(sport: str) -> dict | None:
-    """Per-market {pred, actual, n} for the calibration receipt. Actual hit-rate
-    + n come from the graded ledger (edge_gate.market_stats); the predicted prob
-    is only logged for the win-prob market today, so Total/Run Line show a DATA
-    GAP on predicted (honest, not faked)."""
-    ms = _market_stats_cached()
-    pred_ml = None
+    """Per-market {pred, actual, n} for the calibration receipt: predicted =
+    mean logged model_prob for the side bet; actual = realized hit-rate; from the
+    graded ledger. Markets without a logged model_prob (older rows / run line,
+    which isn't graded yet) fall back to actual-only + a DATA GAP on predicted."""
     try:
         from project547 import results
         led = [r for r in results.load_ledger()
-               if r.get("sport") == sport
-               and isinstance(r.get("pred_home_wp"), (int, float))
-               and r.get("home_won") is not None]
-        if led:
-            pred_ml = sum(max(r["pred_home_wp"], 1 - r["pred_home_wp"]) for r in led) / len(led)
+               if r.get("sport") == sport and r.get("won") is not None]
     except Exception:
-        pred_ml = None
+        return None
+    ms = _market_stats_cached()
     out, any_data = {}, False
     for label, mk in (("Moneyline", "moneyline"), ("Total", "total"), ("Run Line", "spread")):
-        s = ms.get(f"{sport}|{mk}") or {}
-        actual, n = s.get("win_rate"), s.get("n")
-        pred = pred_ml if mk == "moneyline" else None
-        if actual is not None or pred is not None:
+        rows = [r for r in led if r.get("market") == mk
+                and isinstance(r.get("model_prob"), (int, float))]
+        if rows:
+            pred = sum(r["model_prob"] for r in rows) / len(rows)
+            actual = sum(1 for r in rows if r["won"]) / len(rows)
+            out[label] = {"pred": round(pred, 4), "actual": round(actual, 4), "n": len(rows)}
             any_data = True
-        out[label] = {"pred": pred, "actual": actual, "n": n}
+        else:
+            s = ms.get(f"{sport}|{mk}") or {}
+            out[label] = {"pred": None, "actual": s.get("win_rate"), "n": s.get("n")}
+            any_data = any_data or s.get("win_rate") is not None
     return out if any_data else None
 
 
