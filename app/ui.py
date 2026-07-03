@@ -2937,6 +2937,14 @@ _SS_STYLE2 = """<style>
 .osp-ss-conftrack{width:74px;height:6px;border-radius:4px;background:var(--card2);overflow:hidden;
   display:inline-block;vertical-align:middle}
 .osp-ss-conffill{height:100%;background:var(--good,#2f7a4a)}
+.osp-ss-adv{margin-top:16px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.osp-ss-adv>summary{cursor:pointer;list-style:none;padding:12px 16px;font-family:var(--disp);
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.74rem;color:var(--text);
+  display:flex;align-items:center;gap:9px;background:var(--card)}
+.osp-ss-adv>summary::-webkit-details-marker{display:none}
+.osp-ss-adv>summary::after{content:"▸";margin-left:auto;color:var(--muted);transition:transform .15s}
+.osp-ss-adv[open]>summary::after{transform:rotate(90deg)}
+.osp-ss-advbody{padding:0 16px 12px}
 @media (max-width:560px){
   .osp-ss-pit,.osp-ss-ctx,.osp-ss-props,.osp-ss-split,.osp-ss-markets{grid-template-columns:1fr!important}
   .osp-ss-teams{grid-template-columns:1fr!important}
@@ -2974,6 +2982,15 @@ def _section(title: str, hint: str, body: str) -> str:
         return ""
     hint_html = f"<span class='hint'>{hint}</span>" if hint else ""
     return (f"<div class='osp-ss-sec'><div class='osp-ss-sh'>{title}{hint_html}</div>{body}</div>")
+
+
+def _details(summary: str, inner: str) -> str:
+    """Collapsible block — keeps the sheet short by default; the dense stat
+    tables live one tap away."""
+    if not inner:
+        return ""
+    return (f"<details class='osp-ss-adv'><summary>{summary}</summary>"
+            f"<div class='osp-ss-advbody'>{inner}</div></details>")
 
 
 def _sharp_sheet_impl(sport, g, matchup, *, window, min_edge, gate_table,
@@ -3062,11 +3079,17 @@ def _sharp_sheet_impl(sport, g, matchup, *, window, min_edge, gate_table,
                         f"<div class='osp-ss-card'>{read}</div>" if read else "")
 
     calib = _ss_calibration(data.get("calibration"))
+    # Lead with the call (markets/CLV + read), then the drivers; tuck the dense
+    # offense-vs-defense tables + calibration behind an "Advanced" fold.
+    advanced = _details("Advanced — full offense-vs-defense breakdown & calibration",
+                        breakdown + calib)
     return (_SS_STYLE + _SS_STYLE2 + "<div class='osp-ss'>"
             + _ss_header(sport, g, matchup)
-            + conf_strip + pitching + uncertainty + context
-            + markets + bestln + breakdown + trends + lineups + props_sec + read_sec
-            + calib
+            + conf_strip
+            + markets + read_sec
+            + pitching + uncertainty + context + bestln
+            + trends + lineups + props_sec
+            + advanced
             + "</div>")
 
 

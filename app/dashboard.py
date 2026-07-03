@@ -41,16 +41,20 @@ require_password()
 _PALETTES = {
     # Cream / vintage-white base, graphite type. Team colors are the only
     # decorative accent (applied per-card); green/red are reserved for meaning.
-    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", bg="#f4ead0", card="#fbf5e6",
+    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", link="#8a1f2b", warn="#c8941a",
+                  bg="#f4ead0", card="#fbf5e6",
                   card2="#efe2c2", line="#d8ccab", text="#1f2328",
                   muted="#5a6066", faint="#9b937f", good="#2f7a4a",
                   neg="#b03636", mid="#c8941a", sb1="#efe3c4", sb2="#f4ead0",
                   glow="0.0", shadow="0.10"),
-    "dark": dict(acc="var(--good)", acc2="var(--acc2)", bg="var(--bg)", card="var(--card)",
-                 card2="var(--card2)", line="var(--line)", text="var(--text)",
-                 muted="var(--muted)", faint="var(--faint)", good="var(--good)",
-                 neg="var(--neg)", mid="var(--mid)", sb1="var(--card2)", sb2="#080b12",
-                 glow="0.10", shadow="0.45"),
+    # Cool near-black + blue (the live go-live look). Concrete values — the old
+    # "dark" was a broken self-referential placeholder, so night mode never worked.
+    "dark": dict(acc="#3b82f6", acc2="#6cb6ff", link="#6cb6ff", warn="#e3b341",
+                 bg="#0d1117", card="#161b22",
+                 card2="#1c2431", line="#2a3441", text="#e8eef5",
+                 muted="#9aa7b4", faint="#6b7684", good="#3fb950",
+                 neg="#f0776a", mid="#e3b341", sb1="#111722", sb2="#0a0e15",
+                 glow="0.16", shadow="0.55"),
 }
 
 _THEME_CSS = """
@@ -126,10 +130,10 @@ _THEME_CSS = """
     letter-spacing: 0.03em; }
   .osp-pill.live { animation: osppulse 1.8s ease-in-out infinite; }
   @keyframes osppulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-  a.osp-plink { color: var(--text) !important; text-decoration:none;
-    border-bottom:1px dashed transparent; transition: color .12s ease,
+  a.osp-plink { color: var(--link, var(--acc2)) !important; text-decoration:none;
+    font-weight:600; border-bottom:1px solid transparent; transition: color .12s ease,
     border-color .12s ease; }
-  a.osp-plink:hover { color: var(--acc2) !important; border-bottom-color: var(--acc2); }
+  a.osp-plink:hover { border-bottom-color: currentColor; }
   /* --- responsive nav: left sidebar on desktop, top tab-strip on mobile ---
      The keyed top-strip container is hidden by default (desktop uses the
      sidebar); shown only under the 768px breakpoint where the sidebar
@@ -156,21 +160,22 @@ _THEME_CSS = """
 
 
 def _theme_css(theme: str) -> str:
-    p = _PALETTES.get(theme, _PALETTES["cream"])
+    p = _PALETTES.get(theme, _PALETTES["dark"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
-            + "--disp:'Oswald', system-ui, sans-serif; }")
+            + "--disp:'Oswald', system-ui, sans-serif; "
+            + "--font:'DM Sans', system-ui, -apple-system, sans-serif; }")
     return f"<style>{root}{_THEME_CSS}</style>"
 
 
-st.markdown(_theme_css(st.session_state.get("theme", "cream")),
+st.markdown(_theme_css(st.session_state.get("theme", "dark")),
             unsafe_allow_html=True)
 
 
 def _theme_toggle(key: str):
-    """Cream/Dark master toggle. Cream (vintage) is the default look; both
-    placements (sidebar + landing) stay in sync via the shared ``theme``
-    state, re-seeded from it each render."""
-    st.session_state[key] = (st.session_state.get("theme", "cream") == "dark")
+    """Dark (cool near-black) is the default look; Cream stays as the light
+    alternative. Both placements (sidebar + landing) sync via the shared
+    ``theme`` state, re-seeded from it each render."""
+    st.session_state[key] = (st.session_state.get("theme", "dark") == "dark")
 
     def _cb():
         st.session_state.theme = "dark" if st.session_state[key] else "cream"
