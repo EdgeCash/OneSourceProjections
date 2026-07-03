@@ -1,0 +1,418 @@
+[
+ {
+  "id": "e2774d81aa2ccb9cdb78fa588b62a3d6",
+  "market_id": 371,
+  "event_id": 2626,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "GSV",
+    "name": "Valkyries",
+    "link": "/wnba/teams/golden-state-valkyries/",
+    "team": {
+     "city": "Golden State",
+     "abbreviation": "GSV",
+     "conference": "Western",
+     "division": "",
+     "slug": "golden-state-valkyries"
+    }
+   },
+   {
+    "id": "ATL",
+    "name": "Dream",
+    "link": "/wnba/teams/atlanta-dream/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "atlanta-dream"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "GSV",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 127,
+     "book_id": 73,
+     "created": "2026-06-27 18:06:39"
+    },
+    "label": "Valkyries",
+    "short_label": "GSV",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_06a8759014a121df030a055c954fd4cc",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-03 04:36:12",
+        "cost": 156,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.1809345794392525,
+         "fair_probability": 0.461302570093458,
+         "pm_win_pct": 46.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_06a8759014a121df030a055c954fd4cc",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul04gsatl",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.49
+        }
+       }
+      ]
+     }
+    ],
+    "id": "06a8759014a121df030a055c954fd4cc"
+   },
+   {
+    "participant": "ATL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": -150,
+     "book_id": 73,
+     "created": "2026-06-27 18:06:39"
+    },
+    "label": "Dream",
+    "short_label": "ATL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 58.01
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_ab3632b048270e0d6ac1f9019425f0f3",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:36:12",
+        "cost": -113,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 58.01
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_ab3632b048270e0d6ac1f9019425f0f3",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul04gsatl",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 58.01
+        }
+       }
+      ]
+     }
+    ],
+    "id": "ab3632b048270e0d6ac1f9019425f0f3"
+   }
+  ]
+ },
+ {
+  "id": "6201acf9b87be58a10806274d89afb9e",
+  "market_id": 371,
+  "event_id": 2627,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "SEA",
+    "name": "Storm",
+    "link": "/wnba/teams/seattle-storm/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "Western",
+     "division": "",
+     "slug": "seattle-storm"
+    }
+   },
+   {
+    "id": "PDX",
+    "name": "Fire",
+    "link": "/wnba/teams/portland-fire/",
+    "team": {
+     "city": "Portland",
+     "abbreviation": "PDX",
+     "conference": "Western",
+     "division": "",
+     "slug": "portland-fire"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "SEA",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": -150,
+     "book_id": 73,
+     "created": "2026-06-30 16:36:01"
+    },
+    "label": "Storm",
+    "short_label": "SEA",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -178,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_35e6d3f53238f3c52ae668d1f7d51f21",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-30 19:34:37",
+        "cost": -150,
+        "line": 0,
+        "is_off": true,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_35e6d3f53238f3c52ae668d1f7d51f21",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -178,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul04pdxsea",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "35e6d3f53238f3c52ae668d1f7d51f21"
+   },
+   {
+    "participant": "PDX",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -108,
+     "book_id": 73,
+     "created": "2026-06-30 16:36:01"
+    },
+    "label": "Fire",
+    "short_label": "PDX",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -156,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_e2d4b1947cdea6005c8661a5b9701c4b",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-06-30 19:34:37",
+        "cost": -108,
+        "line": 1,
+        "is_off": true,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_e2d4b1947cdea6005c8661a5b9701c4b",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-03 04:38:22",
+        "cost": -156,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul04pdxsea",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "e2d4b1947cdea6005c8661a5b9701c4b"
+   }
+  ]
+ }
+]

@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99997,
+  "sr_id": "db938810-d1a5-4d63-a753-f82cf5a06caf",
+  "sport": "MLB",
+  "scheduled": "2026-07-04 15:05:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WSH",
+  "visitor": "PIT",
+  "link": "/mlb/matchups/pittsburgh-pirates-vs-washington-nationals/?date=2026-07-04",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6563",
+    "name": "Zack Littell",
+    "link": "/mlb/props/zack-littell/",
+    "player": {
+     "short_name": "Z. Littell",
+     "first_name": "Zack",
+     "last_name": "Littell",
+     "image": "https://images.fantasypros.com/images/players/mlb/6563/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "zack-littell",
+     "jersey_number": 18
+    }
+   },
+   "visitor_probable": {
+    "id": "47807",
+    "name": "Braxton Ashcraft",
+    "link": "/mlb/props/braxton-ashcraft/",
+    "player": {
+     "short_name": "B. Ashcraft",
+     "first_name": "Braxton",
+     "last_name": "Ashcraft",
+     "image": "https://images.fantasypros.com/images/players/mlb/47807/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "braxton-ashcraft",
+     "jersey_number": 35
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "WSH",
+   "season": "2025",
+   "split": "A",
+   "r": "1.011",
+   "1b": "0.976",
+   "2b": "1.004",
+   "3b": "0.889",
+   "hr": "1.054",
+   "name": "Nationals Park"
+  },
+  "venue": {
+   "name": "Nationals Park",
+   "address": "1500 South Capitol Street SE",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20003",
+   "surface": "grass",
+   "capacity": 41376,
+   "stadium_type": "outdoor",
+   "id": "bb062fb1-e268-412e-b3d2-2ddb6acc1822"
+  },
+  "participants": [
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 45,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "washington-nationals",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 44,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 95,
+   "forecast_wind_speed": 5,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 298,
+   "forecast_rain_chance": 27,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1015,
+   "forecast_humidity": 0.52
+  },
+  "broadcasts": [
+   {
+    "network": "NATS",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98391,
+  "sr_id": "31e896ce-d818-4a13-8104-04c6b1dffd92",
+  "sport": "MLB",
+  "scheduled": "2026-07-04 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "NYY",
+  "visitor": "MIN",
+  "link": "/mlb/matchups/minnesota-twins-vs-new-york-yankees/?date=2026-07-04",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "5674",
+    "name": "Carlos Rodon",
+    "link": "/mlb/props/carlos-rodon/",
+    "player": {
+     "short_name": "C. Rodon",
+     "first_name": "Carlos",
+     "last_name": "Rodon",
+     "image": "https://images.fantasypros.com/images/players/mlb/5674/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "carlos-rodon",
+     "jersey_number": 55
+    }
+   },
+   "visitor_probable": {
+    "id": "46293",
+    "name": "Connor Prielipp",
+    "link": "/mlb/props/connor-prielipp/",
+    "player": {
+     "short_name": "C. Prielipp",
+     "first_name": "Connor",
+     "last_name": "Prielipp",
+     "image": "https://images.fantasypros.com/images/players/mlb/46293/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "connor-prielipp",
+     "jersey_number": 61
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "NYY",
+   "season": "2025",
+   "split": "A",
+   "r": "0.994",
+   "1b": "0.931",
+   "2b": "0.961",
+   "3b": "0.613",
+   "hr": "1.134",
+   "name": "Yankee Stadium"
+  },
+  "venue": {
+   "name": "Yankee Stadium",
+   "address": "One East 161st Street",
+   "city": "Bronx",
+   "state": "NY",
+   "country": "USA",
+   "zip": "10451",
+   "surface": "grass",
+   "capacity": 47309,
+   "stadium_type": "outdoor",
+   "id": "706e9828-6687-4ac8-a409-3fb972e8bae9"
+  },
+  "participants": [
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 48,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 42,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "minnesota-twins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 93,
+   "forecast_wind_speed": 14,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 300,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1012,
+   "forecast_humidity": 0.52
+  },
+  "broadcasts": [
+   {
+    "network": "MNNT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
