@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-04T06:12:16.577132-04:00",
+ "generated_at": "2026-07-04T08:12:56.862676-04:00",
  "primary_date": "2026-07-04",
  "dates": [
   "2026-07-04",
@@ -11,8 +11,8 @@
     "games": [
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 3,
+       "temp_f": 97,
+       "wind_mph": 4,
        "wind_dir": "WNW",
        "precip_pct": 0
       },
@@ -33,61 +33,61 @@
       "home_pitcher": "Zack Littell",
       "away_pitcher_id": 677952,
       "home_pitcher_id": 641793,
-      "home_exp_runs": 4.837,
-      "away_exp_runs": 6.914,
-      "proj_total": 11.751,
-      "home_win_prob": 0.3325,
-      "away_win_prob": 0.6675,
+      "home_exp_runs": 4.851,
+      "away_exp_runs": 6.933,
+      "proj_total": 11.784,
+      "home_win_prob": 0.3315,
+      "away_win_prob": 0.6685,
       "over_probs": {
-       "6.0": 0.86995,
-       "6.5": 0.86995,
-       "7.0": 0.7957,
-       "7.5": 0.7957,
-       "8.0": 0.73415,
-       "8.5": 0.73415,
-       "9.0": 0.6425,
-       "9.5": 0.6425,
-       "10.0": 0.57255,
-       "10.5": 0.57255,
-       "11.0": 0.484,
-       "11.5": 0.484,
-       "12.0": 0.4169,
-       "12.5": 0.4169,
-       "13.0": 0.33905,
-       "13.5": 0.33905,
-       "14.0": 0.27915,
-       "14.5": 0.27915,
-       "15.0": 0.21965
+       "6.0": 0.86765,
+       "6.5": 0.86765,
+       "7.0": 0.79375,
+       "7.5": 0.79375,
+       "8.0": 0.73035,
+       "8.5": 0.73035,
+       "9.0": 0.64245,
+       "9.5": 0.64245,
+       "10.0": 0.57285,
+       "10.5": 0.57285,
+       "11.0": 0.48535,
+       "11.5": 0.48535,
+       "12.0": 0.41785,
+       "12.5": 0.41785,
+       "13.0": 0.342,
+       "13.5": 0.342,
+       "14.0": 0.28535,
+       "14.5": 0.28535,
+       "15.0": 0.2246
       },
       "home_rl_cover": {
-       "-1.5": 0.2378,
-       "1.5": 0.44505
+       "-1.5": 0.23595,
+       "1.5": 0.4451
       },
       "model_nrfi_prob": 0.4748,
       "model_yrfi_prob": 0.5252,
       "nrfi_p_top": 0.3427,
       "nrfi_p_bot": 0.2776,
       "home_ml": 144.0,
-      "away_ml": -141.0,
-      "home_ml_ev": -0.0627,
-      "away_ml_ev": 0.0526,
+      "away_ml": -147.0,
+      "home_ml_ev": -0.0701,
+      "away_ml_ev": 0.0399,
       "total_line": 10.5,
-      "over_odds": 114.0,
+      "over_odds": 115.0,
       "under_odds": 113.0,
-      "model_over_prob": 0.5726,
+      "model_over_prob": 0.5728,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.0,
       "rl_home_odds": 119.0,
-      "rl_away_odds": 110.0,
+      "rl_away_odds": 104.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
      },
      {
       "weather": {
-       "temp_f": 96,
-       "wind_mph": 11,
+       "temp_f": 97,
+       "wind_mph": 10,
        "wind_dir": "WNW",
        "precip_pct": 1
       },
@@ -108,61 +108,61 @@
       "home_pitcher": "Brendan Beck",
       "away_pitcher_id": 805673,
       "home_pitcher_id": 694341,
-      "home_exp_runs": 5.042,
-      "away_exp_runs": 4.903,
-      "proj_total": 9.945,
-      "home_win_prob": 0.5084,
-      "away_win_prob": 0.4916,
+      "home_exp_runs": 5.056,
+      "away_exp_runs": 4.917,
+      "proj_total": 9.973,
+      "home_win_prob": 0.5151,
+      "away_win_prob": 0.4849,
       "over_probs": {
-       "6.0": 0.7704,
-       "6.5": 0.7704,
-       "7.0": 0.6721,
-       "7.5": 0.6721,
-       "8.0": 0.59875,
-       "8.5": 0.59875,
-       "9.0": 0.4956,
-       "9.5": 0.4956,
-       "10.0": 0.4236,
-       "10.5": 0.4236,
-       "11.0": 0.3387,
-       "11.5": 0.3387,
-       "12.0": 0.27815,
-       "12.5": 0.27815,
-       "13.0": 0.21395,
-       "13.5": 0.21395,
-       "14.0": 0.17225,
-       "14.5": 0.17225,
-       "15.0": 0.12795
+       "6.0": 0.77675,
+       "6.5": 0.77675,
+       "7.0": 0.6764,
+       "7.5": 0.6764,
+       "8.0": 0.6008,
+       "8.5": 0.6008,
+       "9.0": 0.498,
+       "9.5": 0.498,
+       "10.0": 0.4234,
+       "10.5": 0.4234,
+       "11.0": 0.338,
+       "11.5": 0.338,
+       "12.0": 0.2792,
+       "12.5": 0.2792,
+       "13.0": 0.216,
+       "13.5": 0.216,
+       "14.0": 0.17375,
+       "14.5": 0.17375,
+       "15.0": 0.1283
       },
       "home_rl_cover": {
-       "-1.5": 0.38325,
-       "1.5": 0.63475
+       "-1.5": 0.38605,
+       "1.5": 0.6381
       },
       "model_nrfi_prob": 0.4389,
       "model_yrfi_prob": 0.5611,
       "nrfi_p_top": 0.2803,
       "nrfi_p_bot": 0.3902,
-      "home_ml": -150.0,
+      "home_ml": -146.0,
       "away_ml": 150.0,
-      "home_ml_ev": -0.0534,
-      "away_ml_ev": 0.0802,
-      "total_line": 10.5,
-      "over_odds": 117.0,
-      "under_odds": 111.0,
-      "model_over_prob": 0.4236,
+      "home_ml_ev": -0.042,
+      "away_ml_ev": 0.0785,
+      "total_line": 10.0,
+      "over_odds": 101.0,
+      "under_odds": 108.0,
+      "model_over_prob": 0.4234,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 127.0,
-      "rl_away_odds": 105.0,
-      "model_home_rl": 0.3832,
-      "rl_home_ev": -0.13,
-      "rl_away_ev": 0.2643
+      "rl_home_odds": 130.0,
+      "rl_away_odds": -133.0,
+      "model_home_rl": 0.3861,
+      "rl_home_ev": -0.0428,
+      "rl_away_ev": 0.0228
      },
      {
       "weather": {
        "temp_f": 99,
-       "wind_mph": 4,
+       "wind_mph": 6,
        "wind_dir": "S",
        "precip_pct": 0
       },
@@ -217,10 +217,10 @@
       "model_yrfi_prob": 0.4721,
       "nrfi_p_top": 0.2832,
       "nrfi_p_bot": 0.2635,
-      "home_ml": 104.0,
+      "home_ml": 105.0,
       "away_ml": -103.0,
-      "home_ml_ev": -0.0024,
-      "away_ml_ev": 0.007,
+      "home_ml_ev": 0.0009,
+      "away_ml_ev": 0.0086,
       "total_line": 8.5,
       "over_odds": 122.0,
       "under_odds": 108.0,
@@ -237,8 +237,8 @@
      {
       "weather": {
        "temp_f": 66,
-       "wind_mph": 6,
-       "wind_dir": "WNW",
+       "wind_mph": 5,
+       "wind_dir": "NW",
        "precip_pct": 0
       },
       "umpire": null,
@@ -292,10 +292,10 @@
       "model_yrfi_prob": 0.4808,
       "nrfi_p_top": 0.2613,
       "nrfi_p_bot": 0.2971,
-      "home_ml": -150.0,
-      "away_ml": 147.0,
-      "home_ml_ev": -0.0163,
-      "away_ml_ev": 0.0121,
+      "home_ml": -147.0,
+      "away_ml": 146.0,
+      "home_ml_ev": -0.0114,
+      "away_ml_ev": 0.0127,
       "total_line": 7.5,
       "over_odds": -104.0,
       "under_odds": 100.0,
@@ -303,18 +303,18 @@
       "over_ev": -0.0407,
       "under_ev": 0.0219,
       "rl_home_line": -1.5,
-      "rl_home_odds": 144.0,
-      "rl_away_odds": -105.0,
+      "rl_home_odds": 150.0,
+      "rl_away_odds": -104.0,
       "model_home_rl": 0.4255,
-      "rl_home_ev": 0.0383,
-      "rl_away_ev": 0.1215
+      "rl_home_ev": 0.0639,
+      "rl_away_ev": 0.1268
      },
      {
       "weather": {
        "temp_f": 93,
        "wind_mph": 7,
-       "wind_dir": "WSW",
-       "precip_pct": 24
+       "wind_dir": "W",
+       "precip_pct": 17
       },
       "umpire": null,
       "lineups": {
@@ -367,14 +367,14 @@
       "model_yrfi_prob": 0.507,
       "nrfi_p_top": 0.2704,
       "nrfi_p_bot": 0.3242,
-      "home_ml": -113.0,
-      "away_ml": 113.0,
-      "home_ml_ev": -0.073,
-      "away_ml_ev": 0.0825,
-      "total_line": 10.0,
-      "over_odds": 126.0,
-      "under_odds": 105.0,
-      "model_over_prob": 0.4351,
+      "home_ml": -112.0,
+      "away_ml": 111.0,
+      "home_ml_ev": -0.0733,
+      "away_ml_ev": 0.077,
+      "total_line": 9.5,
+      "over_odds": 108.0,
+      "under_odds": 112.0,
+      "model_over_prob": 0.5108,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
@@ -386,10 +386,10 @@
      },
      {
       "weather": {
-       "temp_f": 92,
-       "wind_mph": 10,
-       "wind_dir": "SSE",
-       "precip_pct": 12
+       "temp_f": 93,
+       "wind_mph": 9,
+       "wind_dir": "SE",
+       "precip_pct": 10
       },
       "umpire": null,
       "lineups": {
@@ -408,35 +408,35 @@
       "home_pitcher": "Hunter Brown",
       "away_pitcher_id": 656876,
       "home_pitcher_id": 686613,
-      "home_exp_runs": 4.646,
-      "away_exp_runs": 4.676,
-      "proj_total": 9.322,
-      "home_win_prob": 0.4961,
-      "away_win_prob": 0.5039,
+      "home_exp_runs": 4.659,
+      "away_exp_runs": 4.689,
+      "proj_total": 9.348,
+      "home_win_prob": 0.494,
+      "away_win_prob": 0.506,
       "over_probs": {
-       "6.0": 0.7292,
-       "6.5": 0.7292,
-       "7.0": 0.6257,
-       "7.5": 0.6257,
-       "8.0": 0.54715,
-       "8.5": 0.54715,
-       "9.0": 0.4471,
-       "9.5": 0.4471,
-       "10.0": 0.37485,
-       "10.5": 0.37485,
-       "11.0": 0.2909,
-       "11.5": 0.2909,
-       "12.0": 0.23725,
-       "12.5": 0.23725,
-       "13.0": 0.17735,
-       "13.5": 0.17735,
-       "14.0": 0.1419,
-       "14.5": 0.1419,
-       "15.0": 0.1027
+       "6.0": 0.7337,
+       "6.5": 0.7337,
+       "7.0": 0.623,
+       "7.5": 0.623,
+       "8.0": 0.54625,
+       "8.5": 0.54625,
+       "9.0": 0.4444,
+       "9.5": 0.4444,
+       "10.0": 0.37495,
+       "10.5": 0.37495,
+       "11.0": 0.28955,
+       "11.5": 0.28955,
+       "12.0": 0.23625,
+       "12.5": 0.23625,
+       "13.0": 0.18025,
+       "13.5": 0.18025,
+       "14.0": 0.1415,
+       "14.5": 0.1415,
+       "15.0": 0.10325
       },
       "home_rl_cover": {
-       "-1.5": 0.3662,
-       "1.5": 0.631
+       "-1.5": 0.36555,
+       "1.5": 0.6257
       },
       "model_nrfi_prob": 0.4797,
       "model_yrfi_prob": 0.5203,
@@ -444,17 +444,17 @@
       "nrfi_p_bot": 0.2912,
       "home_ml": 100.0,
       "away_ml": 100.0,
-      "home_ml_ev": -0.0027,
-      "away_ml_ev": 0.0027,
+      "home_ml_ev": -0.0042,
+      "away_ml_ev": 0.0042,
       "total_line": 7.5,
-      "over_odds": 115.0,
+      "over_odds": 117.0,
       "under_odds": 107.0,
-      "model_over_prob": 0.6257,
+      "model_over_prob": 0.623,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": 1.0,
       "rl_home_odds": -138.0,
-      "rl_away_odds": 170.0,
+      "rl_away_odds": 167.0,
       "model_home_rl": NaN,
       "rl_home_ev": NaN,
       "rl_away_ev": NaN
@@ -516,18 +516,18 @@
       "away_ml": 133.0,
       "home_ml_ev": -0.0326,
       "away_ml_ev": 0.0352,
-      "total_line": 8.0,
-      "over_odds": 109.0,
+      "total_line": 8.5,
+      "over_odds": 128.0,
       "under_odds": 108.0,
       "model_over_prob": 0.4379,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
       "rl_home_odds": 156.0,
-      "rl_away_odds": -112.0,
+      "rl_away_odds": -113.0,
       "model_home_rl": 0.3821,
       "rl_home_ev": -0.0217,
-      "rl_away_ev": 0.1695
+      "rl_away_ev": 0.1646
      },
      {
       "weather": null,
@@ -582,22 +582,22 @@
       "model_yrfi_prob": 0.487,
       "nrfi_p_top": 0.2711,
       "nrfi_p_bot": 0.2962,
-      "home_ml": -144.0,
-      "away_ml": 144.0,
-      "home_ml_ev": -0.0423,
-      "away_ml_ev": 0.0609,
+      "home_ml": -142.0,
+      "away_ml": 140.0,
+      "home_ml_ev": -0.0428,
+      "away_ml_ev": 0.052,
       "total_line": 8.5,
       "over_odds": 113.0,
-      "under_odds": 100.0,
+      "under_odds": 110.0,
       "model_over_prob": 0.6087,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 140.0,
-      "rl_away_odds": -144.0,
+      "rl_home_odds": 147.0,
+      "rl_away_odds": -108.0,
       "model_home_rl": 0.3916,
-      "rl_home_ev": -0.0254,
-      "rl_away_ev": 0.0064
+      "rl_home_ev": -0.0326,
+      "rl_away_ev": 0.1716
      },
      {
       "weather": null,
@@ -652,21 +652,21 @@
       "model_yrfi_prob": 0.4884,
       "nrfi_p_top": 0.2842,
       "nrfi_p_bot": 0.2854,
-      "home_ml": -162.0,
+      "home_ml": -159.0,
       "away_ml": 160.0,
-      "home_ml_ev": -0.0483,
-      "away_ml_ev": 0.0701,
+      "home_ml_ev": -0.0433,
+      "away_ml_ev": 0.0729,
       "total_line": 8.5,
       "over_odds": 113.0,
-      "under_odds": 105.0,
+      "under_odds": 115.0,
       "model_over_prob": 0.3542,
       "over_ev": NaN,
       "under_ev": NaN,
       "rl_home_line": -1.5,
-      "rl_home_odds": 132.0,
-      "rl_away_odds": -133.0,
+      "rl_home_odds": 130.0,
+      "rl_away_odds": -132.0,
       "model_home_rl": 0.378,
-      "rl_home_ev": -0.0442,
+      "rl_home_ev": -0.0481,
       "rl_away_ev": 0.0302
      },
      {
@@ -866,8 +866,8 @@
       "away_ml": 133.0,
       "home_ml_ev": NaN,
       "away_ml_ev": 0.2873,
-      "total_line": 8.0,
-      "over_odds": 109.0,
+      "total_line": 8.5,
+      "over_odds": 128.0,
       "under_odds": 108.0,
       "model_over_prob": 0.5101,
       "over_ev": NaN,
@@ -956,9 +956,9 @@
      },
      {
       "weather": {
-       "temp_f": 106,
-       "wind_mph": 10,
-       "wind_dir": "W",
+       "temp_f": 105,
+       "wind_mph": 9,
+       "wind_dir": "WNW",
        "precip_pct": 2
       },
       "umpire": null,
@@ -6429,6 +6429,48 @@
     ],
     "news": [
      {
+      "title": "Trent Grisham homers in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 12:06:11"
+     },
+     {
+      "title": "David Bednar slams door for another save in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 12:02:33"
+     },
+     {
+      "title": "Gerrit Cole steady on mound in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:57:56"
+     },
+     {
+      "title": "Kody Clemens clubs homer, double in loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:33:00"
+     },
+     {
+      "title": "Mike Paredes labors early, tagged with loss vs. Yankees",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:30:33"
+     },
+     {
+      "title": "Gavin Williams labors early, Guardians still squeak by",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:27:40"
+     },
+     {
+      "title": "David Peterson gives up 10 runs Friday",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 10:08:08"
+     },
+     {
       "title": "Shea Langeliers (thumb) has X-rays return negative",
       "body": "",
       "player": "",
@@ -6475,48 +6517,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-04 09:25:45"
-     },
-     {
-      "title": "Otto Lopez swipes bag Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:21:02"
-     },
-     {
-      "title": "Owen Caissie hits one over fence Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:17:55"
-     },
-     {
-      "title": "Heriberto Hernandez goes yard Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:13:27"
-     },
-     {
-      "title": "Kyle Stowers hits two dingers Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:07:13"
-     },
-     {
-      "title": "Jakob Marsee goes yard Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:03:30"
-     },
-     {
-      "title": "Tyler Phillips struggles in short outing Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:00:05"
-     },
-     {
-      "title": "Bryan Reynolds goes deep Friday ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 05:56:03"
      }
     ],
     "injuries": [
@@ -7933,7 +7933,7 @@
     "games": [
      {
       "match_id": "177479",
-      "match_time": "2026-07-04T10:00Z",
+      "match_time": "2026-07-04T10:05Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Zachary Svajda",
@@ -7942,16 +7942,16 @@
       "player2_win_prob": 0.655,
       "p1_matches": 55,
       "p2_matches": 111,
-      "p1_price": 480.0,
-      "p2_price": -549.0,
-      "p1_ev": 0.4915,
-      "p2_ev": -0.1218,
-      "kelly": 0.0256,
+      "p1_price": 1200.0,
+      "p2_price": -910.0,
+      "p1_ev": NaN,
+      "p2_ev": NaN,
+      "kelly": NaN,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177477",
-      "match_time": "2026-07-04T11:30Z",
+      "match_time": "2026-07-04T12:10Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Flavio Cobolli",
@@ -7960,16 +7960,16 @@
       "player2_win_prob": 0.4366,
       "p1_matches": 92,
       "p2_matches": 85,
-      "p1_price": 135.0,
-      "p2_price": -156.0,
-      "p1_ev": 0.1451,
-      "p2_ev": -0.1586,
-      "kelly": 0.0269,
+      "p1_price": 134.0,
+      "p2_price": -150.0,
+      "p1_ev": 0.1459,
+      "p2_ev": -0.1495,
+      "kelly": 0.0272,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177487",
-      "match_time": "2026-07-04T11:30Z",
+      "match_time": "2026-07-04T12:15Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Jaume Munar",
@@ -7979,15 +7979,15 @@
       "p1_matches": 70,
       "p2_matches": 88,
       "p1_price": 275.0,
-      "p2_price": -323.0,
-      "p1_ev": 0.1748,
-      "p2_ev": -0.1007,
-      "kelly": 0.0159,
+      "p2_price": -320.0,
+      "p1_ev": 0.1755,
+      "p2_ev": -0.0989,
+      "kelly": 0.016,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177475",
-      "match_time": "2026-07-04T13:00Z",
+      "match_time": "2026-07-04T13:15Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Arthur Fery",
@@ -7997,9 +7997,9 @@
       "p1_matches": 25,
       "p2_matches": 80,
       "p1_price": 115.0,
-      "p2_price": -130.0,
-      "p1_ev": -0.0185,
-      "p2_ev": -0.0384,
+      "p2_price": -128.0,
+      "p1_ev": -0.0167,
+      "p2_ev": -0.0334,
       "kelly": NaN,
       "market": "tennis_moneyline"
      },
@@ -8014,11 +8014,11 @@
       "player2_win_prob": 0.7328,
       "p1_matches": 71,
       "p2_matches": 96,
-      "p1_price": 587.0,
+      "p1_price": 550.0,
       "p2_price": -700.0,
-      "p1_ev": 0.4078,
-      "p2_ev": -0.0913,
-      "kelly": 0.0174,
+      "p1_ev": 0.3544,
+      "p2_ev": -0.0953,
+      "kelly": 0.0161,
       "market": "tennis_moneyline"
      },
      {
@@ -8050,10 +8050,10 @@
       "player2_win_prob": 0.5498,
       "p1_matches": 95,
       "p2_matches": 88,
-      "p1_price": 101.0,
-      "p2_price": -118.0,
-      "p1_ev": -0.0662,
-      "p2_ev": -0.0108,
+      "p1_price": 105.0,
+      "p2_price": -120.0,
+      "p1_ev": -0.0546,
+      "p2_ev": -0.0121,
       "kelly": NaN,
       "market": "tennis_moneyline"
      },
@@ -8140,11 +8140,11 @@
       "player2_win_prob": 0.5549,
       "p1_matches": 70,
       "p2_matches": 43,
-      "p1_price": 255.0,
+      "p1_price": 260.0,
       "p2_price": -300.0,
-      "p1_ev": 0.2747,
-      "p2_ev": -0.1454,
-      "kelly": 0.0269,
+      "p1_ev": 0.2877,
+      "p2_ev": -0.1436,
+      "kelly": 0.0277,
       "market": "tennis_moneyline"
      },
      {
@@ -8361,12 +8361,7 @@
    "MLB": {
     "games": [
      {
-      "weather": {
-       "temp_f": 91,
-       "wind_mph": 3,
-       "wind_dir": "WNW",
-       "precip_pct": 7
-      },
+      "weather": null,
       "umpire": null,
       "lineups": {
        "home": [],
@@ -8384,35 +8379,35 @@
       "home_pitcher": "Mart\u00edn P\u00e9rez",
       "away_pitcher_id": 690997.0,
       "home_pitcher_id": 527048,
-      "home_exp_runs": 4.067,
-      "away_exp_runs": 4.425,
-      "proj_total": 8.492,
-      "home_win_prob": 0.4606,
-      "away_win_prob": 0.5394,
+      "home_exp_runs": 3.851,
+      "away_exp_runs": 4.183,
+      "proj_total": 8.034,
+      "home_win_prob": 0.4662,
+      "away_win_prob": 0.5338,
       "over_probs": {
-       "6.0": 0.6646,
-       "6.5": 0.6646,
-       "7.0": 0.5523,
-       "7.5": 0.5523,
-       "8.0": 0.46985,
-       "8.5": 0.46985,
-       "9.0": 0.37045,
-       "9.5": 0.37045,
-       "10.0": 0.30455,
-       "10.5": 0.30455,
-       "11.0": 0.23215,
-       "11.5": 0.23215,
-       "12.0": 0.18465,
-       "12.5": 0.18465,
-       "13.0": 0.13075,
-       "13.5": 0.13075,
-       "14.0": 0.10205,
-       "14.5": 0.10205,
-       "15.0": 0.07265
+       "6.0": 0.623,
+       "6.5": 0.623,
+       "7.0": 0.50725,
+       "7.5": 0.50725,
+       "8.0": 0.42875,
+       "8.5": 0.42875,
+       "9.0": 0.32975,
+       "9.5": 0.32975,
+       "10.0": 0.26345,
+       "10.5": 0.26345,
+       "11.0": 0.1987,
+       "11.5": 0.1987,
+       "12.0": 0.15625,
+       "12.5": 0.15625,
+       "13.0": 0.1124,
+       "13.5": 0.1124,
+       "14.0": 0.08565,
+       "14.5": 0.08565,
+       "15.0": 0.0596
       },
       "home_rl_cover": {
-       "-1.5": 0.3233,
-       "1.5": 0.60375
+       "-1.5": 0.3269,
+       "1.5": 0.6156
       },
       "model_nrfi_prob": 0.4928,
       "model_yrfi_prob": 0.5072,
@@ -8420,8 +8415,8 @@
       "nrfi_p_bot": 0.2861,
       "home_ml": -117.0,
       "away_ml": 122.0,
-      "home_ml_ev": -0.0442,
-      "away_ml_ev": 0.0759,
+      "home_ml_ev": -0.0406,
+      "away_ml_ev": 0.0716,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -8576,7 +8571,12 @@
       "rl_away_ev": null
      },
      {
-      "weather": null,
+      "weather": {
+       "temp_f": 87,
+       "wind_mph": 4,
+       "wind_dir": "SW",
+       "precip_pct": 10
+      },
       "umpire": null,
       "lineups": {
        "home": [],
@@ -8594,35 +8594,35 @@
       "home_pitcher": "Ryan Weathers",
       "away_pitcher_id": 657746.0,
       "home_pitcher_id": 677960,
-      "home_exp_runs": 4.133,
-      "away_exp_runs": 4.5,
-      "proj_total": 8.633,
-      "home_win_prob": 0.4618,
-      "away_win_prob": 0.5382,
+      "home_exp_runs": 4.316,
+      "away_exp_runs": 4.705,
+      "proj_total": 9.021,
+      "home_win_prob": 0.4585,
+      "away_win_prob": 0.5415,
       "over_probs": {
-       "6.0": 0.6722,
-       "6.5": 0.6722,
-       "7.0": 0.5601,
-       "7.5": 0.5601,
-       "8.0": 0.4815,
-       "8.5": 0.4815,
-       "9.0": 0.3863,
-       "9.5": 0.3863,
-       "10.0": 0.31995,
-       "10.5": 0.31995,
-       "11.0": 0.24245,
-       "11.5": 0.24245,
-       "12.0": 0.19155,
-       "12.5": 0.19155,
-       "13.0": 0.1407,
-       "13.5": 0.1407,
-       "14.0": 0.1084,
-       "14.5": 0.1084,
-       "15.0": 0.07675
+       "6.0": 0.70635,
+       "6.5": 0.70635,
+       "7.0": 0.5974,
+       "7.5": 0.5974,
+       "8.0": 0.51875,
+       "8.5": 0.51875,
+       "9.0": 0.4183,
+       "9.5": 0.4183,
+       "10.0": 0.34575,
+       "10.5": 0.34575,
+       "11.0": 0.27065,
+       "11.5": 0.27065,
+       "12.0": 0.2197,
+       "12.5": 0.2197,
+       "13.0": 0.16375,
+       "13.5": 0.16375,
+       "14.0": 0.1268,
+       "14.5": 0.1268,
+       "15.0": 0.08955
       },
       "home_rl_cover": {
-       "-1.5": 0.3293,
-       "1.5": 0.6047
+       "-1.5": 0.33255,
+       "1.5": 0.59825
       },
       "model_nrfi_prob": 0.4419,
       "model_yrfi_prob": 0.5581,
@@ -8630,8 +8630,8 @@
       "nrfi_p_bot": 0.3689,
       "home_ml": -133.0,
       "away_ml": 144.0,
-      "home_ml_ev": -0.054,
-      "away_ml_ev": 0.1224,
+      "home_ml_ev": -0.056,
+      "away_ml_ev": 0.1253,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -8650,7 +8650,7 @@
        "temp_f": 78,
        "wind_mph": 7,
        "wind_dir": "NE",
-       "precip_pct": 33
+       "precip_pct": 17
       },
       "umpire": null,
       "lineups": {
@@ -8725,7 +8725,7 @@
        "temp_f": 70,
        "wind_mph": 11,
        "wind_dir": "N",
-       "precip_pct": 10
+       "precip_pct": 4
       },
       "umpire": null,
       "lineups": {
@@ -8800,7 +8800,7 @@
        "temp_f": 89,
        "wind_mph": 3,
        "wind_dir": "NE",
-       "precip_pct": 3
+       "precip_pct": 5
       },
       "umpire": null,
       "lineups": {
@@ -8875,7 +8875,7 @@
        "temp_f": 92,
        "wind_mph": 4,
        "wind_dir": "WNW",
-       "precip_pct": 3
+       "precip_pct": 2
       },
       "umpire": null,
       "lineups": {
@@ -8928,9 +8928,9 @@
       "nrfi_p_top": 0.33,
       "nrfi_p_bot": 0.2897,
       "home_ml": 122.0,
-      "away_ml": -113.0,
-      "home_ml_ev": 0.051,
-      "away_ml_ev": -0.0075,
+      "away_ml": -115.0,
+      "home_ml_ev": 0.0481,
+      "away_ml_ev": -0.0131,
       "total_line": null,
       "over_odds": null,
       "under_odds": null,
@@ -9168,7 +9168,7 @@
        "temp_f": 79,
        "wind_mph": 7,
        "wind_dir": "SW",
-       "precip_pct": 0
+       "precip_pct": 1
       },
       "umpire": null,
       "lineups": {
@@ -9313,7 +9313,7 @@
        "temp_f": 76,
        "wind_mph": 9,
        "wind_dir": "WSW",
-       "precip_pct": 0
+       "precip_pct": 2
       },
       "umpire": null,
       "lineups": {
@@ -9457,6 +9457,48 @@
     "props": [],
     "news": [
      {
+      "title": "Trent Grisham homers in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 12:06:11"
+     },
+     {
+      "title": "David Bednar slams door for another save in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 12:02:33"
+     },
+     {
+      "title": "Gerrit Cole steady on mound in win over Twins",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:57:56"
+     },
+     {
+      "title": "Kody Clemens clubs homer, double in loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:33:00"
+     },
+     {
+      "title": "Mike Paredes labors early, tagged with loss vs. Yankees",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:30:33"
+     },
+     {
+      "title": "Gavin Williams labors early, Guardians still squeak by",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 11:27:40"
+     },
+     {
+      "title": "David Peterson gives up 10 runs Friday",
+      "body": "",
+      "player": "",
+      "when": "2026-07-04 10:08:08"
+     },
+     {
       "title": "Shea Langeliers (thumb) has X-rays return negative",
       "body": "",
       "player": "",
@@ -9503,48 +9545,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-04 09:25:45"
-     },
-     {
-      "title": "Otto Lopez swipes bag Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:21:02"
-     },
-     {
-      "title": "Owen Caissie hits one over fence Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:17:55"
-     },
-     {
-      "title": "Heriberto Hernandez goes yard Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:13:27"
-     },
-     {
-      "title": "Kyle Stowers hits two dingers Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:07:13"
-     },
-     {
-      "title": "Jakob Marsee goes yard Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:03:30"
-     },
-     {
-      "title": "Tyler Phillips struggles in short outing Friday",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 09:00:05"
-     },
-     {
-      "title": "Bryan Reynolds goes deep Friday ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-04 05:56:03"
      }
     ],
     "injuries": [
@@ -10961,7 +10961,7 @@
     "games": [
      {
       "match_id": "177479",
-      "match_time": "2026-07-04T10:00Z",
+      "match_time": "2026-07-04T10:05Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Zachary Svajda",
@@ -10970,16 +10970,16 @@
       "player2_win_prob": 0.6548,
       "p1_matches": 55,
       "p2_matches": 111,
-      "p1_price": 480.0,
-      "p2_price": -549.0,
-      "p1_ev": 0.4921,
-      "p2_ev": -0.122,
-      "kelly": 0.0256,
+      "p1_price": 1200.0,
+      "p2_price": -910.0,
+      "p1_ev": NaN,
+      "p2_ev": NaN,
+      "kelly": NaN,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177477",
-      "match_time": "2026-07-04T11:30Z",
+      "match_time": "2026-07-04T12:10Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Flavio Cobolli",
@@ -10988,16 +10988,16 @@
       "player2_win_prob": 0.4333,
       "p1_matches": 91,
       "p2_matches": 85,
-      "p1_price": 135.0,
-      "p2_price": -156.0,
-      "p1_ev": 0.149,
-      "p2_ev": -0.1613,
-      "kelly": 0.0276,
+      "p1_price": 134.0,
+      "p2_price": -150.0,
+      "p1_ev": 0.1497,
+      "p2_ev": -0.1522,
+      "kelly": 0.0279,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177487",
-      "match_time": "2026-07-04T11:30Z",
+      "match_time": "2026-07-04T12:15Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Jaume Munar",
@@ -11007,15 +11007,15 @@
       "p1_matches": 70,
       "p2_matches": 88,
       "p1_price": 275.0,
-      "p2_price": -323.0,
-      "p1_ev": 0.1733,
-      "p2_ev": -0.1001,
+      "p2_price": -320.0,
+      "p1_ev": 0.174,
+      "p2_ev": -0.0984,
       "kelly": 0.0158,
       "market": "tennis_moneyline"
      },
      {
       "match_id": "177475",
-      "match_time": "2026-07-04T13:00Z",
+      "match_time": "2026-07-04T13:15Z",
       "tournament": "Wimbledon",
       "surface": "grass",
       "player1": "Arthur Fery",
@@ -11025,10 +11025,10 @@
       "p1_matches": 25,
       "p2_matches": 73,
       "p1_price": 115.0,
-      "p2_price": -130.0,
-      "p1_ev": -0.0017,
-      "p2_ev": -0.0522,
-      "kelly": NaN,
+      "p2_price": -128.0,
+      "p1_ev": 0.0001,
+      "p2_ev": -0.0473,
+      "kelly": 0.0,
       "market": "tennis_moneyline"
      },
      {
@@ -11042,11 +11042,11 @@
       "player2_win_prob": 0.7317,
       "p1_matches": 69,
       "p2_matches": 96,
-      "p1_price": 587.0,
+      "p1_price": 550.0,
       "p2_price": -700.0,
-      "p1_ev": 0.4115,
-      "p2_ev": -0.092,
-      "kelly": 0.0175,
+      "p1_ev": 0.358,
+      "p2_ev": -0.0959,
+      "kelly": 0.0163,
       "market": "tennis_moneyline"
      },
      {
@@ -11078,10 +11078,10 @@
       "player2_win_prob": 0.5512,
       "p1_matches": 95,
       "p2_matches": 88,
-      "p1_price": 101.0,
-      "p2_price": -118.0,
-      "p1_ev": -0.0676,
-      "p2_ev": -0.0095,
+      "p1_price": 105.0,
+      "p2_price": -120.0,
+      "p1_ev": -0.0561,
+      "p2_ev": -0.0108,
       "kelly": NaN,
       "market": "tennis_moneyline"
      },
@@ -11168,11 +11168,11 @@
       "player2_win_prob": 0.5556,
       "p1_matches": 68,
       "p2_matches": 43,
-      "p1_price": 255.0,
+      "p1_price": 260.0,
       "p2_price": -300.0,
-      "p1_ev": 0.2735,
-      "p2_ev": -0.145,
-      "kelly": 0.0268,
+      "p1_ev": 0.2864,
+      "p2_ev": -0.1431,
+      "kelly": 0.0275,
       "market": "tennis_moneyline"
      },
      {
@@ -11444,5 +11444,5 @@
   "base_brier": 0.2468,
   "actual_yrfi": 0.557
  },
- "odds_api_credits": 99730
+ "odds_api_credits": 99720
 }
