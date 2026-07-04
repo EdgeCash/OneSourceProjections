@@ -42,26 +42,30 @@ for _k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "OSP_AI_MODEL"):
 require_password()
 
 _PALETTES = {
-    # Cream / vintage-white base, graphite type. Team colors are the only
-    # decorative accent (applied per-card); green/red are reserved for meaning.
-    "cream": dict(acc="#2f7a4a", acc2="#8a1f2b", link="#8a1f2b", warn="#c8941a",
-                  bg="#f4ead0", card="#fbf5e6",
-                  card2="#efe2c2", line="#d8ccab", text="#1f2328",
-                  muted="#5a6066", faint="#9b937f", good="#2f7a4a",
-                  neg="#b03636", mid="#c8941a", sb1="#efe3c4", sb2="#f4ead0",
+    # 360Five brand palettes — one system, two surfaces, identical keys. Brass
+    # (acc) is the ONLY decorative accent, which frees good/neg (green/red) to
+    # mean exactly one thing: money on or money off. A cool info-teal (acc2)
+    # carries links and section kickers. Swapping this dict re-skins every
+    # `var(--…)` in the app — no call-site changes.
+    #
+    # Almanac paper — warm off-white stock, graphite ink, dark-brass accent.
+    "cream": dict(acc="#8f6a1a", acc2="#2f7d93", link="#2f7d93", warn="#a87d22",
+                  bg="#ece5d5", card="#faf6ec",
+                  card2="#f2ebda", line="#dbd1bb", text="#1a2226",
+                  muted="#586158", faint="#8a8472", good="#2c8854",
+                  neg="#bd463d", mid="#a87d22", sb1="#e5ddca", sb2="#ece5d5",
                   glow="0.0", shadow="0.10"),
-    # Cool near-black + blue (the live go-live look). Concrete values — the old
-    # "dark" was a broken self-referential placeholder, so night mode never worked.
-    "dark": dict(acc="#3b82f6", acc2="#6cb6ff", link="#6cb6ff", warn="#e3b341",
-                 bg="#0d1117", card="#161b22",
-                 card2="#1c2431", line="#2a3441", text="#e8eef5",
-                 muted="#9aa7b4", faint="#828f9e", good="#3fb950",
-                 neg="#f0776a", mid="#e3b341", sb1="#111722", sb2="#0a0e15",
-                 glow="0.16", shadow="0.55"),
+    # Petrol ink — deep cool near-black with a brass edge (the go-live look).
+    "dark": dict(acc="#d3ac57", acc2="#6cc4dd", link="#6cc4dd", warn="#e0a63e",
+                 bg="#0a1216", card="#0f1b21",
+                 card2="#14242c", line="#1e333c", text="#e8f0f0",
+                 muted="#93aaae", faint="#5f767c", good="#4cc07e",
+                 neg="#e46a60", mid="#d9a441", sb1="#0c171c", sb2="#080f13",
+                 glow="0.14", shadow="0.5"),
 }
 
 _THEME_CSS = """
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
   .stApp, body { color: var(--text); font-family: 'DM Sans', system-ui, sans-serif; }
   /* --- hide default Streamlit chrome (premium product, not scaffolding).
          Keep stHeader itself (transparent) so the mobile sidebar toggle lives. */
@@ -166,7 +170,9 @@ def _theme_css(theme: str) -> str:
     p = _PALETTES.get(theme, _PALETTES["dark"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
             + "--disp:'Oswald', system-ui, sans-serif; "
-            + "--font:'DM Sans', system-ui, -apple-system, sans-serif; }")
+            + "--font:'DM Sans', system-ui, -apple-system, sans-serif; "
+            + "--mono:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, "
+              "Consolas, monospace; }")
     return f"<style>{root}{_THEME_CSS}</style>"
 
 

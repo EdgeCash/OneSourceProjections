@@ -1,0 +1,788 @@
+<title>360Five — the 360° research card</title>
+<style>
+  /* ============================================================= TOKENS */
+  :root{
+    /* light "almanac paper" — the secondary surface */
+    --ground:#ece5d5; --ground-2:#e5ddca; --panel:#faf6ec; --panel-2:#f2ebda;
+    --inset:#efe7d4; --line:#dbd1bb; --line-2:#c7ba9c;
+    --ink:#1a2226; --ink-2:#586158; --ink-3:#8a8472;
+    --brass:#8f6a1a; --brass-2:#725412; --brass-bg:rgba(143,106,26,.11);
+    --pos:#2c8854; --pos-bg:rgba(44,136,84,.12);
+    --neg:#bd463d; --neg-bg:rgba(189,70,61,.10);
+    --warn:#a87d22; --warn-bg:rgba(168,125,34,.12);
+    --info:#2f7d93;
+    --shadow:0 1px 2px rgba(60,48,16,.10),0 18px 40px rgba(60,48,16,.12);
+    --f-display:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --f-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --f-mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#080f13; --ground-2:#0a141a; --panel:#0f1b21; --panel-2:#14242c;
+      --inset:#0b161b; --line:#1e333c; --line-2:#2b4653;
+      --ink:#e8f0f0; --ink-2:#93aaae; --ink-3:#5f767c;
+      --brass:#d3ac57; --brass-2:#ecca84; --brass-bg:rgba(211,172,87,.12);
+      --pos:#4cc07e; --pos-bg:rgba(76,192,126,.13);
+      --neg:#e46a60; --neg-bg:rgba(228,106,96,.13);
+      --warn:#e3b551; --warn-bg:rgba(227,181,81,.13);
+      --info:#5bb3c9;
+      --shadow:0 1px 2px rgba(0,0,0,.5),0 22px 48px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#ece5d5; --ground-2:#e5ddca; --panel:#faf6ec; --panel-2:#f2ebda;
+    --inset:#efe7d4; --line:#dbd1bb; --line-2:#c7ba9c;
+    --ink:#1a2226; --ink-2:#586158; --ink-3:#8a8472;
+    --brass:#8f6a1a; --brass-2:#725412; --brass-bg:rgba(143,106,26,.11);
+    --pos:#2c8854; --pos-bg:rgba(44,136,84,.12);
+    --neg:#bd463d; --neg-bg:rgba(189,70,61,.10);
+    --warn:#a87d22; --warn-bg:rgba(168,125,34,.12);
+    --info:#2f7d93; --shadow:0 1px 2px rgba(60,48,16,.10),0 18px 40px rgba(60,48,16,.12);
+  }
+  :root[data-theme="dark"]{
+    --ground:#080f13; --ground-2:#0a141a; --panel:#0f1b21; --panel-2:#14242c;
+    --inset:#0b161b; --line:#1e333c; --line-2:#2b4653;
+    --ink:#e8f0f0; --ink-2:#93aaae; --ink-3:#5f767c;
+    --brass:#d3ac57; --brass-2:#ecca84; --brass-bg:rgba(211,172,87,.12);
+    --pos:#4cc07e; --pos-bg:rgba(76,192,126,.13);
+    --neg:#e46a60; --neg-bg:rgba(228,106,96,.13);
+    --warn:#e3b551; --warn-bg:rgba(227,181,81,.13);
+    --info:#5bb3c9; --shadow:0 1px 2px rgba(0,0,0,.5),0 22px 48px rgba(0,0,0,.55);
+  }
+
+  /* ============================================================= BASE */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--f-body);line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(120% 80% at 50% -10%,var(--ground-2),var(--ground) 60%);}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  h1,h2,h3{text-wrap:balance;margin:0}
+  b{font-weight:600}
+  .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+  .pos{color:var(--pos)} .neg{color:var(--neg)} .warn{color:var(--warn)}
+  .brass{color:var(--brass)} .faint{color:var(--ink-3)}
+  a{color:var(--info);text-decoration:none}
+  a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+    outline:2px solid var(--brass);outline-offset:2px;border-radius:3px}
+  .eyebrow{font-family:var(--f-display);font-weight:700;font-size:.68rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+
+  /* ============================================================= MASTHEAD */
+  header.top{border-bottom:1px solid var(--line);
+    background:color-mix(in srgb,var(--ground) 80%,transparent);
+    position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+  .top__in{max-width:1120px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;gap:16px}
+  .seal{width:42px;height:42px;border-radius:50%;flex:0 0 auto;position:relative;
+    border:1.5px solid var(--brass);color:var(--brass);background:var(--brass-bg);
+    display:flex;align-items:center;justify-content:center}
+  .seal .five{font-family:var(--f-display);font-weight:800;font-size:1.2rem;line-height:1}
+  .seal .deg{position:absolute;top:-6px;right:-9px;font-family:var(--f-mono);font-size:.5rem;
+    color:var(--brass);background:var(--ground);padding:1px 3px;border-radius:6px;
+    border:1px solid var(--brass);letter-spacing:-.03em}
+  .brandname{font-family:var(--f-display);font-weight:800;letter-spacing:.02em;
+    font-size:1.02rem}
+  .brandname span{color:var(--brass)}
+  .brandsub{font-size:.72rem;color:var(--ink-3);letter-spacing:.03em}
+  .top__sp{margin-left:auto}
+  .tbtn{font-family:var(--f-display);font-size:.68rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-2);background:var(--panel-2);
+    border:1px solid var(--line);border-radius:20px;padding:7px 14px;cursor:pointer}
+  .tbtn:hover{color:var(--ink);border-color:var(--line-2)}
+
+  /* ============================================================= INTRO */
+  .intro{padding:56px 0 34px;text-align:center}
+  .intro h1{font-family:var(--f-display);font-weight:800;letter-spacing:-.01em;
+    font-size:clamp(2rem,5vw,3.15rem);line-height:1.02}
+  .intro h1 em{font-style:normal;color:var(--brass)}
+  .intro p.lead{max-width:60ch;margin:18px auto 0;color:var(--ink-2);
+    font-size:1.06rem;line-height:1.55}
+  .thesis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    max-width:760px;margin:34px auto 0;background:var(--line);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .thesis div{background:var(--panel);padding:16px 18px;text-align:left}
+  .thesis .n{font-family:var(--f-mono);color:var(--brass);font-size:.8rem}
+  .thesis h3{font-family:var(--f-display);font-size:.9rem;margin:6px 0 4px;letter-spacing:.01em}
+  .thesis p{margin:0;font-size:.82rem;color:var(--ink-2);line-height:1.45}
+  @media(max-width:640px){.thesis{grid-template-columns:1fr}}
+
+  section.blk{padding:38px 0}
+  .sectlabel{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
+  .sectlabel .bar{height:1px;background:var(--line);flex:1}
+  .sectlabel h2{font-family:var(--f-display);font-weight:800;font-size:1.15rem;letter-spacing:.01em}
+
+  /* ============================================================= EDGE CARD */
+  .stage{display:flex;justify-content:center}
+  .sheet{width:100%;max-width:720px;background:var(--panel);
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    box-shadow:var(--shadow)}
+  .sheet__top{padding:16px 20px 14px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+  .sheet__tag{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+  .sheet__brand{font-family:var(--f-display);font-weight:800;font-size:.82rem;letter-spacing:.02em;color:var(--ink-2)}
+  .sheet__brand b{color:var(--brass);font-weight:800}
+  .matchup{font-family:var(--f-display);font-weight:800;font-size:1.16rem;
+    letter-spacing:.01em;line-height:1.1}
+  .matchup .at{color:var(--ink-3);font-weight:600;margin:0 7px}
+  .metarow{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:9px;
+    font-size:.74rem;color:var(--ink-2);font-family:var(--f-mono)}
+  .metarow .k{color:var(--ink-3)}
+  .live{color:var(--pos);font-weight:600}
+  .live::before{content:"●";margin-right:4px;font-size:.7em;vertical-align:1px}
+
+  /* --- THE PLAY / bet ticket --- */
+  .ticket{padding:16px 20px;background:
+    linear-gradient(180deg,var(--brass-bg),transparent);
+    border-bottom:1px solid var(--line)}
+  .ticket__lab{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+  .ticket__lab .eyebrow{color:var(--brass)}
+  .ticket__lab .bar{height:1px;background:var(--brass);opacity:.35;flex:1}
+  .tk{display:grid;grid-template-columns:1fr auto auto auto;gap:14px;align-items:center}
+  .tk__bet{font-family:var(--f-display);font-weight:800;font-size:1.55rem;line-height:1;
+    letter-spacing:-.01em}
+  .tk__betsub{font-size:.74rem;color:var(--ink-2);margin-top:4px}
+  .tk__cell{text-align:center}
+  .tk__cell .big{font-family:var(--f-mono);font-weight:700;font-size:1.28rem;
+    font-variant-numeric:tabular-nums;line-height:1}
+  .tk__cell .lbl{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-3);margin-top:5px}
+  .grade{display:flex;flex-direction:column;align-items:center;gap:5px;
+    padding-left:14px;border-left:1px solid var(--line)}
+  .grade .g{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;
+    justify-content:center;font-family:var(--f-display);font-weight:800;font-size:1.3rem;
+    color:#0b1216;background:var(--pos)}
+  .grade .t{font-family:var(--f-display);font-size:.64rem;letter-spacing:.1em;
+    font-weight:700;color:var(--pos)}
+  .tk__math{margin-top:13px;padding-top:12px;border-top:1px dashed var(--line);
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;
+    font-family:var(--f-mono);font-size:.78rem;color:var(--ink-2)}
+  .tk__math b{color:var(--ink)}
+  .gate{margin-left:auto;font-size:.72rem;color:var(--pos);
+    background:var(--pos-bg);border:1px solid color-mix(in srgb,var(--pos) 40%,transparent);
+    padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .gate::before{content:"●";margin-right:5px;font-size:.72em;vertical-align:1px}
+  @media(max-width:560px){
+    .tk{grid-template-columns:1fr 1fr;gap:12px}
+    .tk__bet{grid-column:1/-1}
+    .grade{border-left:0;padding-left:0}
+  }
+
+  /* --- THE RECEIPTS: calibration / stress test / line move --- */
+  .rcpt__lab{display:flex;align-items:baseline;gap:9px;padding:12px 20px 0;
+    font-size:.8rem;color:var(--ink-2)}
+  .rcpt__lab .eyebrow{color:var(--brass)}
+  .rcpt__lab b{color:var(--ink)}
+  .receipts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:10px}
+  .rc{background:var(--inset);padding:11px 15px}
+  .rc .k{font-family:var(--f-display);font-weight:700;font-size:.6rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+  .rc .k .led{width:6px;height:6px;border-radius:50%;background:var(--pos)}
+  .rc .v{font-family:var(--f-mono);font-size:.82rem;color:var(--ink);margin-top:6px;line-height:1.3}
+  .rc .v .ar{color:var(--ink-3)}
+  .rc .d{font-family:var(--f-mono);color:var(--ink-3);font-size:.68rem;margin-top:4px;line-height:1.3}
+  .rc .d b{color:var(--warn)}
+  @media(max-width:560px){.receipts{grid-template-columns:1fr}}
+
+  /* --- per-market conviction line --- */
+  .convict{display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:1px solid var(--line)}
+  .cv{padding:11px 14px;border-right:1px solid var(--line)}
+  .cv:last-child{border-right:0}
+  .cv--muted{opacity:.5}
+  .cv--play{background:var(--brass-bg)}
+  .cv .m{font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+  .cv .row{display:flex;align-items:baseline;gap:8px;margin-top:4px}
+  .cv .sc{font-family:var(--f-mono);font-weight:700;font-size:1.15rem}
+  .cv .tier{font-family:var(--f-display);font-size:.72rem;font-weight:700;letter-spacing:.03em}
+  .cv .pk{font-size:.72rem;color:var(--ink-2);margin-top:2px;font-family:var(--f-mono)}
+
+  /* --- WHY prose --- */
+  .why{display:flex;gap:13px;padding:15px 20px;border-bottom:1px solid var(--line);
+    background:var(--inset)}
+  .why .k{font-family:var(--f-display);font-weight:800;font-size:.66rem;letter-spacing:.16em;
+    color:var(--brass);flex:0 0 auto;padding-top:3px}
+  .why p{margin:0;font-size:.9rem;line-height:1.55;color:var(--ink)}
+  .why .cite{color:var(--brass);cursor:help;border-bottom:1px dotted var(--brass);
+    font-variant-numeric:tabular-nums}
+
+  /* --- WHO: teams --- */
+  .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;
+    border-bottom:1px solid var(--line)}
+  .team{padding:15px 18px}
+  .team.away{text-align:left} .team.home{text-align:right}
+  .team__id{display:flex;align-items:center;gap:11px}
+  .team.home .team__id{flex-direction:row-reverse}
+  .logo{width:44px;height:44px;border-radius:11px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:#fff;
+    border:2px solid rgba(255,255,255,.14)}
+  .team__name{font-family:var(--f-display);font-weight:800;font-size:1.14rem;line-height:1}
+  .team__rec{font-family:var(--f-mono);font-size:.74rem;color:var(--ink-2);margin-top:4px}
+  .form{display:flex;gap:3px;margin-top:8px}
+  .team.home .form{justify-content:flex-end}
+  .pip{width:15px;height:15px;border-radius:4px}
+  .pip.w{background:var(--pos)} .pip.l{background:var(--neg)}
+  .team__sp{margin-top:9px;font-size:.76rem;color:var(--ink-2)}
+  .team__sp .hand{font-family:var(--f-mono);color:var(--ink-3)}
+  .team__sp b{color:var(--ink)}
+  .vs{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 10px;border-left:1px solid var(--line);border-right:1px solid var(--line);
+    background:var(--inset);min-width:96px}
+  .vs .proj{font-family:var(--f-mono);font-weight:700;font-size:1.5rem;letter-spacing:-.02em}
+  .vs .projk{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:3px}
+  .vs .wp{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2);margin-top:8px}
+  @media(max-width:560px){
+    .teams{grid-template-columns:1fr}
+    .vs{flex-direction:row;gap:14px;border-left:0;border-right:0;
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px}
+    .team.home,.team.home .team__id,.team.home .form{text-align:left;flex-direction:row;justify-content:flex-start}
+  }
+
+  /* --- WHERE: conditions --- */
+  .cond{display:flex;flex-wrap:wrap;gap:2px;background:var(--line);
+    border-bottom:1px solid var(--line)}
+  .cond div{flex:1 1 120px;background:var(--panel);padding:10px 14px}
+  .cond .k{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .cond .v{font-family:var(--f-mono);font-size:.86rem;margin-top:3px;color:var(--ink)}
+  .cond .v small{color:var(--ink-2);font-size:.74rem}
+
+  /* --- WHO deep: lineups → props --- */
+  .lu-head{display:flex;align-items:center;gap:9px;padding:13px 20px 4px}
+  .lu-head .eyebrow{color:var(--ink-2)}
+  .lu-head .hint{margin-left:auto;font-size:.7rem;color:var(--ink-3)}
+  .lus{display:grid;grid-template-columns:1fr 1fr;gap:0 1px;background:var(--line);
+    border-bottom:1px solid var(--line);border-top:1px solid var(--line);margin-top:8px}
+  .lucol{background:var(--panel);padding:8px 6px}
+  .lucap{font-family:var(--f-mono);font-size:.66rem;color:var(--ink-3);
+    padding:2px 10px 6px;letter-spacing:.02em}
+  .lurow{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:7px;
+    cursor:pointer;position:relative}
+  .lurow:hover{background:var(--panel-2)}
+  .lurow .no{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3);width:14px}
+  .lurow .pos{font-family:var(--f-mono);font-size:.66rem;color:var(--info);width:22px}
+  .lurow .nm{font-size:.82rem;font-weight:500}
+  .lurow .tag{margin-left:auto;font-family:var(--f-mono);font-size:.66rem;
+    color:var(--brass);opacity:0;transition:opacity .12s}
+  .lurow:hover .tag{opacity:1}
+  .lurow .tag.live{opacity:1;color:var(--pos)}
+  /* prop popover */
+  .pop{margin:2px 8px 8px;border:1px solid var(--brass);border-radius:10px;
+    background:var(--inset);padding:11px 13px;box-shadow:var(--shadow)}
+  .pop__nm{display:flex;align-items:baseline;gap:8px}
+  .pop__nm b{font-family:var(--f-display);font-weight:800;font-size:.92rem}
+  .pop__nm small{font-family:var(--f-mono);font-size:.68rem;color:var(--ink-2)}
+  .pr{display:grid;grid-template-columns:1fr auto auto auto;gap:6px 10px;
+    margin-top:9px;font-family:var(--f-mono);font-size:.76rem;align-items:center}
+  .pr .pn{font-family:var(--f-body);color:var(--ink-2)}
+  .pr .px{color:var(--ink)} .pr b{color:var(--ink)}
+  .pchip{font-family:var(--f-display);font-size:.6rem;font-weight:700;letter-spacing:.06em;
+    padding:2px 7px;border-radius:5px;text-align:center}
+  .pchip.lean{color:var(--warn);background:var(--warn-bg)}
+  .pchip.pass{color:var(--ink-3);background:var(--panel-2)}
+  .pop__note{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);
+    font-family:var(--f-mono);font-size:.7rem;color:var(--ink-2)}
+  @media(max-width:560px){.lus{grid-template-columns:1fr}}
+
+  /* --- WHY evidence: curated stat table --- */
+  .num-head{display:flex;align-items:center;gap:9px;padding:14px 20px 0}
+  .num-head .l{font-family:var(--f-display);font-weight:700;font-size:.74rem;
+    letter-spacing:.04em;color:var(--pos)}
+  .num-head .r{font-family:var(--f-display);font-weight:700;font-size:.74rem;
+    letter-spacing:.04em;color:var(--info);margin-left:auto}
+  .tblwrap{overflow-x:auto;padding:6px 12px 4px}
+  table.st{width:100%;border-collapse:collapse;font-family:var(--f-mono);
+    font-variant-numeric:tabular-nums;min-width:520px}
+  table.st th{font-family:var(--f-body);font-weight:600;font-size:.6rem;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);
+    padding:6px 6px;text-align:right}
+  table.st th.stat{text-align:center}
+  table.st td{padding:6px 6px;text-align:right;font-size:.8rem;
+    border-top:1px solid var(--line)}
+  table.st td.stat{text-align:center;font-family:var(--f-body);font-weight:600;
+    color:var(--ink-2);font-size:.74rem;white-space:nowrap}
+  table.st td.best{color:var(--ink);font-weight:700}
+  table.st td.szn{color:var(--ink-3)}
+  .adv{text-align:center;width:44px}
+  .adv span{font-size:.7rem;letter-spacing:-1px}
+  .adv .a-l{color:var(--pos)} .adv .a-r{color:var(--info)} .adv .a-0{color:var(--ink-3)}
+  .stat-note{padding:8px 20px 0;font-size:.72rem;color:var(--ink-3);line-height:1.5}
+  .stat-note b{color:var(--ink-2)}
+
+  /* --- footer of card --- */
+  .sheet__foot{padding:13px 20px 16px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .lm{display:flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2)}
+  .lm svg{display:block}
+  .disc{margin-left:auto;font-size:.68rem;color:var(--ink-3);font-style:italic;max-width:44ch;text-align:right}
+
+  /* ============================================================= ANATOMY */
+  .ana{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .ana>div{background:var(--panel);padding:16px 15px}
+  .ana .w{font-family:var(--f-display);font-weight:800;font-size:1.5rem;color:var(--brass);
+    letter-spacing:.01em}
+  .ana .q{font-size:.82rem;font-weight:600;margin:2px 0 9px}
+  .ana ul{margin:0;padding:0;list-style:none}
+  .ana li{font-size:.76rem;color:var(--ink-2);padding:3px 0 3px 14px;position:relative;line-height:1.4}
+  .ana li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;
+    border-radius:50%;background:var(--brass)}
+  @media(max-width:820px){.ana{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.ana{grid-template-columns:1fr}}
+
+  /* ============================================================= KEPT/CUT/ADDED */
+  .kca{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .kcacard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px}
+  .kcacard h3{font-family:var(--f-display);font-size:.92rem;display:flex;align-items:center;gap:8px}
+  .kcacard h3 .dot{width:9px;height:9px;border-radius:50%}
+  .kcacard.keep .dot{background:var(--info)} .kcacard.cut .dot{background:var(--neg)}
+  .kcacard.add .dot{background:var(--pos)}
+  .kcacard ul{margin:12px 0 10px;padding:0;list-style:none}
+  .kcacard li{font-size:.82rem;color:var(--ink-2);padding:7px 0;border-top:1px solid var(--line);line-height:1.45}
+  .kcacard li b{color:var(--ink);font-weight:600}
+  @media(max-width:760px){.kca{grid-template-columns:1fr}}
+
+  /* ============================================================= SYSTEM */
+  .sys{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+  @media(max-width:760px){.sys{grid-template-columns:1fr}}
+  .panelbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .panelbox h3{font-family:var(--f-display);font-size:.82rem;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+  .swatches{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .sw{display:flex;align-items:center;gap:10px}
+  .sw .chip{width:34px;height:34px;border-radius:8px;flex:0 0 auto;border:1px solid rgba(128,128,128,.2)}
+  .sw .nm{font-size:.76rem;font-weight:600}
+  .sw .hx{font-family:var(--f-mono);font-size:.68rem;color:var(--ink-3)}
+  .typerow{padding:9px 0;border-top:1px solid var(--line)}
+  .typerow:first-of-type{border-top:0}
+  .typerow .role{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .ty-disp{font-family:var(--f-display);font-weight:800;font-size:1.5rem;letter-spacing:-.01em}
+  .ty-body{font-family:var(--f-body);font-size:1rem}
+  .ty-mono{font-family:var(--f-mono);font-size:1.05rem;font-variant-numeric:tabular-nums}
+
+  /* conviction ladder component */
+  .ladder{margin-top:6px}
+  .ladder__bar{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+  .ladder__seg{text-align:center;padding:9px 4px;border-radius:6px;
+    font-family:var(--f-display);font-weight:700;font-size:.64rem;letter-spacing:.05em;
+    background:var(--panel-2);color:var(--ink-3);border:1px solid var(--line)}
+  .ladder__seg.on{color:#0b1216}
+  .ladder__seg.pass.on{background:var(--ink-3)}
+  .ladder__seg.lean.on{background:var(--warn)}
+  .ladder__seg.core.on{background:var(--pos)}
+  .ladder__seg.watch.on{background:var(--warn)}
+  .ladder__seg.verify.on{background:var(--neg);color:#fff}
+  .ladder__cap{display:flex;justify-content:space-between;margin-top:8px;
+    font-family:var(--f-mono);font-size:.68rem;color:var(--ink-3)}
+  .ladder__note{margin-top:12px;font-size:.78rem;color:var(--ink-2);line-height:1.5}
+  .ladder__note b{color:var(--ink)}
+
+  /* voice */
+  .voice{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  @media(max-width:560px){.voice{grid-template-columns:1fr}}
+  .vq{border-radius:10px;padding:13px 15px;font-size:.86rem;line-height:1.5}
+  .vq.say{background:var(--pos-bg);border:1px solid color-mix(in srgb,var(--pos) 30%,transparent)}
+  .vq.no{background:var(--neg-bg);border:1px solid color-mix(in srgb,var(--neg) 28%,transparent)}
+  .vq .h{font-family:var(--f-display);font-weight:700;font-size:.64rem;letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:8px}
+  .vq.say .h{color:var(--pos)} .vq.no .h{color:var(--neg)}
+  .vq ul{margin:0;padding-left:16px} .vq li{margin:5px 0}
+
+  /* ============================================================= PLAYS BOARD */
+  .board{max-width:720px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .board__h{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);
+    background:var(--panel-2)}
+  .board__h .eyebrow{color:var(--brass)}
+  .board__h .ct{margin-left:auto;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3)}
+  .bgroup{font-family:var(--f-display);font-weight:700;font-size:.66rem;letter-spacing:.14em;
+    color:var(--ink-3);padding:11px 18px 5px}
+  .brow{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;
+    padding:9px 18px;border-top:1px solid var(--line)}
+  .brow .mu{font-size:.86rem;font-weight:500}
+  .brow .mu small{color:var(--ink-3);font-family:var(--f-mono);font-size:.7rem;margin-left:6px}
+  .brow .play{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+  .brow .ev{font-family:var(--f-mono);font-size:.78rem}
+  .brow .g{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--f-display);font-weight:800;font-size:.72rem;color:#0b1216}
+  .brow .g.a{background:var(--pos)} .brow .g.b{background:var(--pos)}
+  .brow .g.c{background:var(--warn)}
+  @media(max-width:520px){.brow{grid-template-columns:1fr auto}.brow .ev,.brow .play{display:none}}
+
+  footer.end{padding:44px 0 60px;text-align:center;color:var(--ink-3);font-size:.8rem;border-top:1px solid var(--line);margin-top:20px}
+  footer.end .note{max-width:64ch;margin:0 auto 14px;color:var(--ink-2);line-height:1.6;font-size:.86rem}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="top__in">
+    <div class="seal" aria-label="360Five"><span class="deg">360°</span><span class="five">5</span></div>
+    <div>
+      <div class="brandname">360<span>Five</span></div>
+      <div class="brandsub">360&deg; of research &middot; the 5 W&rsquo;s &middot; 365 days a year</div>
+    </div>
+    <div class="top__sp"></div>
+    <button class="tbtn" id="themeBtn" type="button">Flip theme</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="intro">
+    <div class="eyebrow" style="margin-bottom:14px">Brand &amp; product direction · v1</div>
+    <h1>The card <em>is</em> the brand.</h1>
+    <p class="lead">Not a dashboard, not a feed — a single research sheet that answers every question a bet raises, in the order a sharp actually asks them. Lead with the play. Back it with everything.</p>
+    <p style="max-width:58ch;margin:22px auto 0;font-size:.92rem;color:var(--ink-2);line-height:1.55"><b class="brass">Why 360Five?</b> 360&deg; of research plus the 5 W&rsquo;s — and 360&nbsp;+&nbsp;5&nbsp;=&nbsp;<b style="color:var(--ink)">365</b>. Full-coverage cards, every day the model runs.</p>
+
+    <div class="thesis">
+      <div><div class="n">01 · The answer</div><h3>Lead with the play</h3><p>Side, price, book, stake and grade sit at the top. A two-second read for anyone who just wants the number.</p></div>
+      <div><div class="n">02 · The receipts</div><h3>Trust the number</h3><p>Calibration, EV, closing-line record and a stress test — proof the 55% is earned, not an opinion.</p></div>
+      <div><div class="n">03 · The proof</div><h3>Show the work</h3><p>The full matchup data stays on the card. You came for analysis, not just a pick — so we never hide it.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== HERO EDGE CARD ===================== -->
+  <section class="blk">
+    <div class="sectlabel"><h2>The Edge Card</h2><div class="bar"></div><span class="eyebrow">MLB · exemplar</span></div>
+    <div class="stage">
+      <article class="sheet" aria-label="Edge Card: Yankees at Red Sox">
+
+        <!-- top: WHO + WHEN + WHERE at a glance -->
+        <div class="sheet__top">
+          <div class="sheet__tag"><span class="eyebrow">MLB · Edge Card</span><span class="sheet__brand">360<b>Five</b></span></div>
+          <div class="matchup">New York Yankees <span class="at">@</span> Boston Red Sox</div>
+          <div class="metarow">
+            <span><span class="k">SAT</span> Jul 4</span>
+            <span>7:10 PM ET</span>
+            <span><span class="k">Fenway Park</span> · Boston</span>
+            <span class="live">Lineups set 5:47 PM</span>
+          </div>
+        </div>
+
+        <!-- WHAT: the bet ticket -->
+        <div class="ticket">
+          <div class="ticket__lab"><span class="eyebrow">The Play</span><span class="bar"></span></div>
+          <div class="tk">
+            <div>
+              <div class="tk__bet">Under 9.0</div>
+              <div class="tk__betsub">Game total · full game</div>
+            </div>
+            <div class="tk__cell"><div class="big">−105</div><div class="lbl">DraftKings</div></div>
+            <div class="tk__cell"><div class="big">1.2u</div><div class="lbl">$60 · ¼-Kelly</div></div>
+            <div class="grade"><div class="g">B</div><div class="t">CORE</div></div>
+          </div>
+          <div class="tk__math">
+            <span>Model <b>55.1%</b> <em style="font-style:normal;color:var(--ink-3);font-size:.82em">cal.</em></span>
+            <span>Fair <b>51.9%</b></span>
+            <span>Implied <b>51.2%</b></span>
+            <span>EV <b class="pos">+3.4%</b></span>
+            <span class="gate">MLB totals · 9.0±0.5 · +1.8% CLV · n=210</span>
+          </div>
+        </div>
+
+        <!-- THE RECEIPTS: proof the number is earned -->
+        <div class="rcpt__lab"><span class="eyebrow">The receipts</span><span>why you can trust <b>55.1%</b></span></div>
+        <div class="receipts">
+          <div class="rc">
+            <div class="k"><span class="led"></span>Calibration · Brier .243</div>
+            <div class="v">raw 56.4% <span class="ar">→</span> cal 55.1%</div>
+            <div class="d">pred 54% → act 53% · trailing 250</div>
+          </div>
+          <div class="rc">
+            <div class="k"><span class="led" style="background:var(--warn)"></span>Stress test</div>
+            <div class="v">strip wind <span class="ar">→</span> proj 8.7</div>
+            <div class="d">edge <b>+3.4% → +1.1%</b> · wind-led</div>
+          </div>
+          <div class="rc">
+            <div class="k"><span class="led"></span>Closing value</div>
+            <div class="v">8.5 <span class="ar">→</span> 9.0 · <span class="pos">+0.5</span></div>
+            <div class="d">vs open, on Under · reads − when late</div>
+          </div>
+        </div>
+
+        <!-- per-market conviction (our confidence ladder, per market) -->
+        <div class="convict">
+          <div class="cv cv--muted"><div class="m">Moneyline</div><div class="row"><span class="sc warn">3.1</span><span class="tier warn">LEAN</span></div><div class="pk">Yankees −128</div></div>
+          <div class="cv cv--muted"><div class="m">Run Line</div><div class="row"><span class="sc faint">—</span><span class="tier faint">NO PRICE</span></div><div class="pk">−1.5 unpriced</div></div>
+          <div class="cv cv--play"><div class="m brass">Total · the play</div><div class="row"><span class="sc pos">6.2</span><span class="tier pos">CORE</span></div><div class="pk">Under 9.0</div></div>
+        </div>
+
+        <!-- WHY: the reasoning, in one breath -->
+        <div class="why">
+          <span class="k">WHY</span>
+          <p>Two bat-missers on the hill — Cole at <span class="cite" title="Called-strike + whiff rate">31% CSW</span> and Bello at 28% — and both bullpens are rested off an off-day. A <b>12 mph wind in from center</b> trims ~0.4 runs off the projection. The model settles at 8.3; the market hung 9.0. Small, clean, and the kind of total we've been paid on.</p>
+        </div>
+
+        <!-- WHO: teams -->
+        <div class="teams">
+          <div class="team away">
+            <div class="team__id">
+              <div class="logo" style="background:#132448">NY</div>
+              <div><div class="team__name">Yankees</div><div class="team__rec">54–34 · W3 · 2nd AL East</div></div>
+            </div>
+            <div class="form"><span class="pip w"></span><span class="pip w"></span><span class="pip l"></span><span class="pip w"></span><span class="pip w"></span></div>
+            <div class="team__sp"><span class="hand">RHP</span> <b>G. Cole</b> · 2.94 ERA · 0.98 WHIP</div>
+          </div>
+          <div class="vs">
+            <div class="proj">4.1</div><div class="projk">proj runs</div>
+            <div class="proj" style="font-size:1.5rem">4.2</div>
+            <div class="wp">win 51% / 49%</div>
+          </div>
+          <div class="team home">
+            <div class="team__id">
+              <div class="logo" style="background:#bd3039">B</div>
+              <div><div class="team__name">Red Sox</div><div class="team__rec">47–41 · L1 · 3rd AL East</div></div>
+            </div>
+            <div class="form"><span class="pip l"></span><span class="pip w"></span><span class="pip w"></span><span class="pip l"></span><span class="pip w"></span></div>
+            <div class="team__sp"><span class="hand">RHP</span> <b>B. Bello</b> · 3.51 ERA · 1.21 WHIP</div>
+          </div>
+        </div>
+
+        <!-- WHERE: conditions -->
+        <div class="cond">
+          <div><div class="k">Weather</div><div class="v">71°F · <small>clear</small></div></div>
+          <div><div class="k">Wind</div><div class="v">12 mph <small>in from CF</small></div></div>
+          <div><div class="k">Park factor</div><div class="v">104 <small>runs, 3-yr</small></div></div>
+          <div><div class="k">Plate umpire</div><div class="v">−0.3 <small>runs, K+</small></div></div>
+        </div>
+
+        <!-- WHO deep: clickable lineups -> props -->
+        <div class="lu-head"><span class="eyebrow">Lineups</span><span class="hint">tap a batter → prop card</span></div>
+        <div class="lus">
+          <div class="lucol">
+            <div class="lucap">NYY · vs RHP</div>
+            <div class="lurow"><span class="no">1</span><span class="pos">LF</span><span class="nm">Trent Grisham</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">2</span><span class="pos">RF</span><span class="nm">Aaron Judge</span><span class="tag live">edge ›</span></div>
+            <div class="pop">
+              <div class="pop__nm"><b>Aaron Judge</b> <small>RF · R · vs RHP Bello</small></div>
+              <div class="pr">
+                <span class="pn">Total bases</span><span class="px">o1.5 <b>−135</b></span><span>58% <span class="pos">+2.1%</span></span><span class="pchip lean">LEAN</span>
+                <span class="pn">Home run</span><span class="px">Yes <b>+300</b></span><span>23% <span class="faint">−1%</span></span><span class="pchip pass">PASS</span>
+              </div>
+              <div class="pop__note">.318 / 44 HR · L10 .350 · Barrel 21% · HR/FB 32% · Bello allows 1.4 HR/9</div>
+            </div>
+            <div class="lurow"><span class="no">3</span><span class="pos">DH</span><span class="nm">Giancarlo Stanton</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">4</span><span class="pos">1B</span><span class="nm">Ben Rice</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">5</span><span class="pos">3B</span><span class="nm">Jazz Chisholm Jr.</span><span class="tag">props ›</span></div>
+          </div>
+          <div class="lucol">
+            <div class="lucap">BOS · vs RHP</div>
+            <div class="lurow"><span class="no">1</span><span class="pos">CF</span><span class="nm">Jarren Duran</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">2</span><span class="pos">3B</span><span class="nm">Rafael Devers</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">3</span><span class="pos">SS</span><span class="nm">Trevor Story</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">4</span><span class="pos">1B</span><span class="nm">Triston Casas</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">5</span><span class="pos">RF</span><span class="nm">Wilyer Abreu</span><span class="tag">props ›</span></div>
+            <div class="lurow"><span class="no">6</span><span class="pos">LF</span><span class="nm">Ceddanne Rafaela</span><span class="tag">props ›</span></div>
+          </div>
+        </div>
+
+        <!-- WHY evidence: curated mirrored stat table -->
+        <div class="rcpt__lab" style="padding-top:14px"><span class="eyebrow">The proof</span><span>see it for yourself — no pick without the work</span></div>
+        <div class="num-head" style="padding-top:8px"><span class="l">Yankees offense</span><span class="r">Red Sox arms (Bello + pen)</span></div>
+        <div class="tblwrap">
+          <table class="st">
+            <thead>
+              <tr>
+                <th>Szn</th><th>vs RHP</th><th>L15</th><th>Rk</th>
+                <th class="stat">Matchup</th>
+                <th>Rk</th><th>L15</th><th>vs</th><th>Szn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="szn">4.9</td><td>5.1</td><td class="best">5.4</td><td class="brass">6</td>
+                <td class="stat">Runs / G</td>
+                <td class="brass">11</td><td class="best">4.6</td><td>4.4</td><td class="szn">4.7</td>
+              </tr>
+              <tr>
+                <td class="szn">.331</td><td>.338</td><td class="best">.345</td><td class="brass">4</td>
+                <td class="stat">wOBA</td>
+                <td class="brass">18</td><td class="best">.322</td><td>.318</td><td class="szn">.320</td>
+              </tr>
+              <tr>
+                <td class="szn">24.1</td><td>23.0</td><td class="best">22.4</td><td class="brass">9</td>
+                <td class="stat">K %</td>
+                <td class="brass">14</td><td class="best">24.8</td><td>25.6</td><td class="szn">23.9</td>
+              </tr>
+              <tr>
+                <td class="szn">3.6</td><td>3.4</td><td class="best">3.2</td><td class="brass">12</td>
+                <td class="stat">Bullpen rest<br><small style="color:var(--ink-3)">days, avg</small></td>
+                <td class="brass">8</td><td class="best">3.9</td><td>3.9</td><td class="szn">3.7</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="stat-note"><b>Read:</b> Ranks are league-wide (1 = best). Bold = last-15 form, the number the model weighs most. Four rows, all run-environment — <b>runs/G, wOBA, K%, bullpen rest</b>. We cut the per-game duplicates, the 5-star ratings, and barrel% (a prop signal, not a totals one) so the table doesn't out-weigh the receipts above it. The data stays because you came for analysis, not just a pick.</div>
+
+        <!-- footer: WHEN detail + disclaimer -->
+        <div class="sheet__foot">
+          <div class="lm">
+            <svg width="72" height="22" viewBox="0 0 72 22" aria-hidden="true">
+              <polyline points="2,16 24,14 46,9 70,6" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="70" cy="6" r="3" fill="var(--brass)"/>
+            </svg>
+            <span>Model run <b style="color:var(--ink)">6:02 PM ET</b> · re-grades on every lineup &amp; line move</span>
+          </div>
+          <div class="disc">360Five — model estimates, not financial advice. Personal research. Bet responsibly.</div>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== ANATOMY: 5 Ws ===================== -->
+  <section class="blk">
+    <div class="sectlabel"><h2>Anatomy of the answer</h2><div class="bar"></div><span class="eyebrow">the five W&rsquo;s, mapped</span></div>
+    <div class="ana">
+      <div>
+        <div class="w">Who</div><div class="q">is playing, and pitching?</div>
+        <ul><li>Teams, records, streak &amp; last-5 form</li><li>Confirmed starters + ERA/WHIP</li><li>Clickable lineups → player props</li><li>Injuries &amp; late scratches</li></ul>
+      </div>
+      <div>
+        <div class="w">What</div><div class="q">exactly do I bet?</div>
+        <ul><li>Recommended side + number</li><li>Best price &amp; the book holding it</li><li>¼-Kelly stake in units and $</li><li>Letter grade + tier</li></ul>
+      </div>
+      <div>
+        <div class="w">When</div><div class="q">and is it still live?</div>
+        <ul><li>Date / first pitch, ET</li><li>Lineup-lock timestamp</li><li>Line movement (opened → now)</li><li>Days rest / schedule spot</li></ul>
+      </div>
+      <div>
+        <div class="w">Where</div><div class="q">do conditions tilt it?</div>
+        <ul><li>Venue + park factor</li><li>Weather &amp; wind vector</li><li>Plate-umpire tendency</li><li>Home / away, travel</li></ul>
+      </div>
+      <div>
+        <div class="w">Why</div><div class="q">does the edge exist?</div>
+        <ul><li>Model % vs de-vigged fair %</li><li>EV % and conviction</li><li>Curated matchup stats</li><li>Our real CLV record here</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== KEPT / CUT / ADDED ===================== -->
+  <section class="blk">
+    <div class="sectlabel"><h2>What we kept, cut &amp; added</h2><div class="bar"></div><span class="eyebrow">vs. the field</span></div>
+    <div class="kca">
+      <div class="kcacard keep">
+        <h3><span class="dot"></span>Kept — the simplicity</h3>
+        <ul>
+          <li><b>Mirrored stat tables.</b> Offense vs. the arm it faces, advantage down the middle. The clearest idea in the category.</li>
+          <li><b>One dark sheet per matchup.</b> No feed, no infinite scroll — a document you read and act on.</li>
+          <li><b>A confidence number per market.</b> But re-based on EV, not a black box.</li>
+        </ul>
+      </div>
+      <div class="kcacard cut">
+        <h3><span class="dot"></span>Cut — the noise</h3>
+        <ul>
+          <li><b>The 5-star ratings.</b> Stars read as a tout screaming. Advantage is now a measured edge, not hype.</li>
+          <li><b>Duplicate per-game columns.</b> Season / vs-hand / L15 / rank is enough; the rest was visual weight.</li>
+          <li><b>The buried decision.</b> No more hunting the bottom of the sheet for the actual play.</li>
+        </ul>
+      </div>
+      <div class="kcacard add">
+        <h3><span class="dot"></span>Added — trust &amp; the 5 W&rsquo;s</h3>
+        <ul>
+          <li><b>The bet ticket.</b> Side, price, book, stake, grade — the whole <em>What</em>, up top.</li>
+          <li><b>Clickable lineups → props.</b> Your ask: a batter opens a model'd prop card.</li>
+          <li><b>A receipts band.</b> Calibration (pred vs. actual), a stress test on the biggest lever, and the closing-line story — proof the number is earned.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DESIGN SYSTEM ===================== -->
+  <section class="blk">
+    <div class="sectlabel"><h2>The system</h2><div class="bar"></div><span class="eyebrow">tokens · type · confidence</span></div>
+    <div class="sys">
+      <div class="panelbox">
+        <h3>Palette</h3>
+        <div class="swatches">
+          <div class="sw"><span class="chip" style="background:#0f1b21"></span><div><div class="nm">Sheet</div><div class="hx mono">petrol ink</div></div></div>
+          <div class="sw"><span class="chip" style="background:#d3ac57"></span><div><div class="nm">Brass</div><div class="hx mono">accent · edge</div></div></div>
+          <div class="sw"><span class="chip" style="background:#4cc07e"></span><div><div class="nm">Edge</div><div class="hx mono">positive EV</div></div></div>
+          <div class="sw"><span class="chip" style="background:#e46a60"></span><div><div class="nm">Fade</div><div class="hx mono">negative</div></div></div>
+          <div class="sw"><span class="chip" style="background:#e3b551"></span><div><div class="nm">Caution</div><div class="hx mono">lean / watch</div></div></div>
+          <div class="sw"><span class="chip" style="background:#5bb3c9"></span><div><div class="nm">Info</div><div class="hx mono">links · nav</div></div></div>
+        </div>
+        <p style="font-size:.78rem;color:var(--ink-2);margin:15px 0 0;line-height:1.5">Brass is the only decorative accent — which frees <b class="pos">green</b> and <b class="neg">red</b> to mean exactly one thing: money on or money off. A warm almanac paper mode ships as the light theme.</p>
+      </div>
+      <div class="panelbox">
+        <h3>Type</h3>
+        <div class="typerow"><div class="role">Display · scoreboard caps</div><div class="ty-disp">UNDER 9.0 · CORE</div></div>
+        <div class="typerow"><div class="role">Body · analysis</div><div class="ty-body">The model settles at 8.3; the market hung 9.0.</div></div>
+        <div class="typerow"><div class="role">Mono · every number, tabular</div><div class="ty-mono">−105 · +3.4% EV · 1.2u · .345 wOBA</div></div>
+        <p style="font-size:.78rem;color:var(--ink-2);margin:14px 0 0;line-height:1.5">Setting all data in monospace is what makes the sheet read as a <b>precision instrument</b>, not a marketing card — and it keeps odds columns perfectly aligned.</p>
+      </div>
+    </div>
+
+    <div class="panelbox" style="margin-top:20px">
+      <h3>Confidence — one ladder, not four</h3>
+      <div class="ladder">
+        <div class="ladder__bar">
+          <div class="ladder__seg pass">PASS</div>
+          <div class="ladder__seg lean">LEAN</div>
+          <div class="ladder__seg core on">CORE</div>
+          <div class="ladder__seg watch">WATCH</div>
+          <div class="ladder__seg verify">VERIFY</div>
+        </div>
+        <div class="ladder__cap"><span>no edge</span><span>+2%</span><span class="brass">+2–6% · the 54.7% band</span><span>+6%</span><span>+8% — too big, market knows</span></div>
+      </div>
+      <p class="ladder__note">Today the app shows conviction four different ways — conic <b>dials</b>, speedometer <b>gauges</b>, calm <b>rings</b>, and A–F <b>letter grades</b>, sometimes on one screen. This collapses them into a single ladder tied to EV, centered on the <b>+2–6%</b> band where a <b>54.7%</b> win rate lives — the line between break-even and pro, and the number the model is named for. The anti-tout twist: a <b>huge</b> edge isn't a lock, it's a <b class="neg">VERIFY</b> flag — on efficient markets a +8% model edge usually means we're missing news, not that the book is wrong.</p>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="voice">
+        <div class="vq say">
+          <div class="h">Say this</div>
+          <ul>
+            <li>"Model 55%, market implies 51%. Small edge, quarter-Kelly."</li>
+            <li>"Passed the slate — nothing cleared the bar."</li>
+            <li>"We were wrong here; graded and logged."</li>
+          </ul>
+        </div>
+        <div class="vq no">
+          <div class="h">Never this</div>
+          <ul>
+            <li>"Lock of the day." "Can't-miss." "Easy money."</li>
+            <li>"Turn $100 into $10K."</li>
+            <li>Quietly deleting a losing pick.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLAYS BOARD ===================== -->
+  <section class="blk">
+    <div class="sectlabel"><h2>The Plays board</h2><div class="bar"></div><span class="eyebrow">the index into the sheets</span></div>
+    <div class="board">
+      <div class="board__h"><span class="eyebrow">Today&rsquo;s plays</span><span class="ct">Jul 4 · 4 cleared the bar</span></div>
+      <div class="bgroup">MLB</div>
+      <div class="brow"><span class="mu">Yankees @ Red Sox <small>7:10 PM</small></span><span class="play">Under 9.0 −105</span><span class="ev pos">+3.4%</span><span class="g b">B</span></div>
+      <div class="bgroup">WNBA</div>
+      <div class="brow"><span class="mu">Storm @ Aces <small>10:00 PM</small></span><span class="play">Aces −6.5 −108</span><span class="ev pos">+2.9%</span><span class="g b">B</span></div>
+      <div class="brow"><span class="mu">Fever @ Sky <small>8:00 PM</small></span><span class="play">Over 168.5 −110</span><span class="ev warn">+2.1%</span><span class="g c">C</span></div>
+      <div class="bgroup">SOCCER</div>
+      <div class="brow"><span class="mu">Morocco v Canada <small>1:00 PM</small></span><span class="play">Morocco ML −130</span><span class="ev pos">+4.1%</span><span class="g a">A</span></div>
+    </div>
+    <p style="text-align:center;font-size:.8rem;color:var(--ink-3);margin-top:16px;max-width:56ch;margin-inline:auto">Same discipline as the card: matchup, the play, the edge, the grade. A row opens its full Edge Card. When nothing clears the bar, the sport reads <b style="color:var(--ink-2)">No plays</b> — and that&rsquo;s a feature.</p>
+  </section>
+
+  <footer class="end">
+    <p class="note">Name locked: <b class="brass">360Five</b>. Next passes: the logo/mark system, per-sport stat curation (NBA / soccer / tennis), the live prop-card interaction — then into the Streamlit app to retire the three competing palettes.</p>
+    <div>360<span class="brass">Five</span> · <span class="mono">360° + 5 = 365</span> · the model never rests</div>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    btn.addEventListener('click',function(){
+      var root=document.documentElement;
+      var cur=root.getAttribute('data-theme');
+      if(!cur){cur=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+      root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+    });
+  })();
+</script>
