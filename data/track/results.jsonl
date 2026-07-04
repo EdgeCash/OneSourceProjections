@@ -612,3 +612,11 @@
 {"date": "2026-07-03", "sport": "MLB", "game": "Tampa Bay Rays @ Houston Astros", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5644, "yrfi": 0, "brier": 0.3185}
 {"date": "2026-07-03", "sport": "MLB", "game": "Boston Red Sox @ Los Angeles Angels", "market": "model_winprob", "side": "", "pred_home_wp": 0.5434, "home_won": 0, "market_home_wp": 0.4581, "brier": 0.2953, "proj_total": 8.577, "actual_total": 7}
 {"date": "2026-07-03", "sport": "MLB", "game": "Boston Red Sox @ Los Angeles Angels", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5406, "yrfi": 0, "brier": 0.2922}
+{"date": "2026-07-03", "sport": "MLB", "game": "Miami Marlins @ Athletics", "market": "model_winprob", "side": "", "pred_home_wp": 0.5543, "home_won": 0, "market_home_wp": 0.5221, "brier": 0.3072, "proj_total": 9.598, "actual_total": 17}
+{"date": "2026-07-03", "sport": "MLB", "game": "Miami Marlins @ Athletics", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5553, "yrfi": 1, "brier": 0.1978}
+{"date": "2026-07-03", "sport": "MLB", "game": "Milwaukee Brewers @ Arizona Diamondbacks", "market": "model_winprob", "side": "", "pred_home_wp": 0.3382, "home_won": 0, "market_home_wp": 0.4282, "brier": 0.1144, "proj_total": 8.453, "actual_total": 11}
+{"date": "2026-07-03", "sport": "MLB", "game": "Milwaukee Brewers @ Arizona Diamondbacks", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5376, "yrfi": 0, "brier": 0.289}
+{"date": "2026-07-03", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.6069, "home_won": 1, "market_home_wp": 0.7921, "brier": 0.1545, "proj_total": 8.366, "actual_total": 7}
+{"date": "2026-07-03", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4857, "yrfi": 1, "brier": 0.2645}
+{"date": "2026-07-03", "sport": "MLB", "game": "Toronto Blue Jays @ Seattle Mariners", "market": "model_winprob", "side": "", "pred_home_wp": 0.4583, "home_won": 0, "market_home_wp": 0.5221, "brier": 0.21, "proj_total": 7.095, "actual_total": 2}
+{"date": "2026-07-03", "sport": "MLB", "game": "Toronto Blue Jays @ Seattle Mariners", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4807, "yrfi": 0, "brier": 0.2311}
