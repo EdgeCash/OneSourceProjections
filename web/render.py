@@ -390,7 +390,14 @@ def edge_card(sport: str, g: dict, mu: dict, data: dict, best_line: dict,
         lu = _section("Lineups", "", _lineups(sport, g)) if sport == "MLB" else ""
         pr = _section("Top Props", "best model edges in this game", _props(sport, props, g))
 
-        body = f"{head}{confh}{markets}{ticket}{pit}{ctx}{lu}{pr}"
+        # Copy-for-AI: an embedded clean-markdown rendition + a button. The whole
+        # value prop is "save the card, paste it into your AI" — markdown ingests
+        # far better than saved HTML.
+        md = _card_markdown(sport, g, calls, conf, data)
+        copybar = (f"<div class='copybar'><button class='copy-btn' data-copy-ai>"
+                   f"⧉ Copy for AI</button></div>"
+                   f"<div id='ai-markdown' hidden>{esc(md)}</div>")
+        body = f"{copybar}{head}{confh}{markets}{ticket}{pit}{ctx}{lu}{pr}"
         return body
     except Exception:
         ui.log.exception("edge_card failed for %s", sport) if hasattr(ui, "log") else None
@@ -405,6 +412,51 @@ def slate_row(sport: str, g: dict, headline: tuple[str, bool]) -> str:
     return (f"<a class='srow' href='{card_href(sport, g)}'>"
             f"<span class='srow-label'>{_render_headline(label)}</span>"
             f"<span class='srow-go'>→</span></a>")
+
+
+def _card_markdown(sport: str, g: dict, calls: list, conf: dict, data: dict) -> str:
+    """Plain-markdown rendition of the Edge Card for the Copy-for-AI button —
+    everything an AI needs to reason about the wager, no HTML."""
+    L = [f"# EDGE CARD · {sport} · {matchup_title(sport, g)}"]
+    # projection
+    if sport in ("ATP", "WTA"):
+        L.append(f"- Model: {_last(g.get('player1',''))} {_pct(g.get('player1_win_prob'))} "
+                 f"/ {_last(g.get('player2',''))} {_pct(g.get('player2_win_prob'))} "
+                 f"(surface-aware Elo, {g.get('surface','?')})")
+    elif sport == "MLS":
+        L.append(f"- Projected goals: {_num(g.get('home_exp'))}–{_num(g.get('away_exp'))}; "
+                 f"1X2 {_pct(g.get('home_win_prob'))}/{_pct(g.get('draw_prob'))}/{_pct(g.get('away_win_prob'))}")
+    else:
+        L.append(f"- Projection: {_last(g.get('away_team',''))} {_num(g.get('away_exp_runs', g.get('away_exp')))} "
+                 f"@ {_last(g.get('home_team',''))} {_num(g.get('home_exp_runs', g.get('home_exp')))}; "
+                 f"total {_num(g.get('proj_total'))}; "
+                 f"home win {_pct(g.get('home_win_prob'))}")
+    if conf:
+        L.append(f"- Confidence: {conf.get('label','')} {conf.get('score',0):.2f}"
+                 + (" (capped LEAN — key driver is a DATA GAP)" if conf.get("cap") == "lean" else ""))
+    # markets
+    L.append("\n## Markets")
+    for c in calls:
+        ev = c.get("ev")
+        evtxt = (f"{ev*100:+.1f}% edge" if isinstance(ev, (int, float)) else "unpriced")
+        line = c.get("line")
+        ln = f" {line:g}" if isinstance(line, (int, float)) else ""
+        stake = f", {c['stake_units']:g}u" if c.get("stake_units") else ""
+        L.append(f"- {c.get('label','')}{ln}: {c.get('pick','')} — "
+                 f"{c.get('decision','')} (model {_pct(c.get('prob'))}, "
+                 f"{evtxt}, price {fmt_american(c.get('price')) or 'n/a'}{stake})")
+    # pitching (MLB)
+    pit = (data or {}).get("pitching")
+    if sport == "MLB" and pit:
+        L.append("\n## Starting pitching")
+        for side in ("away", "home"):
+            sp = pit.get(f"{side}_sp")
+            if sp:
+                L.append(f"- {sp.get('name','')} ({sp.get('hand','?')}HP): "
+                         f"IP {sp.get('ip') or 'NA'}, K/9 {sp.get('k9') or 'NA'}, "
+                         f"BB/9 {sp.get('bb9') or 'NA'}, xFIP {sp.get('xfip') or 'NA'}")
+    L.append("\n_Project 54.7 · model output, not financial advice._")
+    return "\n".join(L)
 
 
 def _render_headline(label: str) -> str:

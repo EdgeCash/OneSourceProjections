@@ -42,4 +42,4 @@ jobs:
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git add data/output/latest.json
           git diff --cached --quiet || git commit -m "data: offline rebuild $(date -u +'%F %H:%MZ')"
-          git push
+          git push   # triggers pages.yml to redeploy the Edge Card site

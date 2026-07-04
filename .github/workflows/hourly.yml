@@ -57,3 +57,5 @@ jobs:
           git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track
           git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"
           git push
+          # the commit to latest.json triggers pages.yml, which rebuilds and
+          # deploys the Edge Card site (no build output committed to the repo).

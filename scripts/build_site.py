@@ -195,7 +195,7 @@ def _performance_page(perf, updated):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default=str(ROOT / "data/output/latest.json"))
-    ap.add_argument("--out", default=str(ROOT / "docs"))
+    ap.add_argument("--out", default=str(ROOT / "_site"))
     args = ap.parse_args()
     w = build(Path(args.data), Path(args.out))
     print(f"built {w['pages']} pages + {w['cards']} edge cards → {args.out}")

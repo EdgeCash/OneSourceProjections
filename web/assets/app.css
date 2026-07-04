@@ -200,6 +200,14 @@ small { font-size: .82em; color: var(--muted); }
 .tile-v { font-family: var(--disp); font-weight: 700; font-size: 1.7rem; }
 .tile-k { font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 
+/* --- copy-for-AI --- */
+.copybar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+.copy-btn { background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 7px 13px; cursor: pointer; font-family: var(--disp);
+  font-weight: 600; font-size: .74rem; letter-spacing: .05em; text-transform: uppercase;
+  transition: all .14s ease; }
+.copy-btn:hover { border-color: var(--accent); color: var(--accent-soft); }
+
 /* --- soft gate --- */
 .gate-overlay { position: fixed; inset: 0; z-index: 100; background: var(--bg);
   display: flex; align-items: center; justify-content: center; }

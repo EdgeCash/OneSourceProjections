@@ -1,0 +1,58 @@
+name: Deploy Edge Card site
+
+# Builds the static Edge Card site from the committed data/output/latest.json
+# and deploys it to GitHub Pages. Triggered whenever the data or the site
+# source changes (the hourly/rebuild jobs commit latest.json → this fires), or
+# manually. No build output is committed to the repo — Pages serves the
+# uploaded artifact.
+#
+# ONE-TIME SETUP: repo Settings → Pages → Build and deployment → Source =
+# "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/output/latest.json"
+      - "web/**"
+      - "scripts/build_site.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish, but only keep the latest queued one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - uses: actions/configure-pages@v5
+
+      - name: Build Edge Card site
+        run: python scripts/build_site.py --out _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
