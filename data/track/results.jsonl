@@ -623,3 +623,6 @@
 {"date": "2026-07-04", "sport": "MLB", "game": "Pittsburgh Pirates @ Washington Nationals", "market": "model_winprob", "side": "", "pred_home_wp": 0.4363, "home_won": 0, "market_home_wp": 0.4786, "brier": 0.1904, "proj_total": 10.245, "actual_total": 8}
 {"date": "2026-07-04", "sport": "MLB", "game": "Pittsburgh Pirates @ Washington Nationals", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5363, "yrfi": 1, "brier": 0.215}
 {"date": "2026-07-04", "sport": "MLB", "game": "Pittsburgh Pirates @ Washington Nationals", "market": "moneyline", "side": "home", "line": null, "price": 144.0, "ev": 0.0226, "won": false, "pnl": -1.0, "clv": 0.1678, "model_prob": 0.4363}
+{"date": "2026-07-04", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_winprob", "side": "", "pred_home_wp": 0.4982, "home_won": 0, "market_home_wp": 0.4298, "brier": 0.2482, "proj_total": 10.032, "actual_total": 15}
+{"date": "2026-07-04", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5582, "yrfi": 1, "brier": 0.1952}
+{"date": "2026-07-04", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "moneyline", "side": "away", "line": null, "price": 140.0, "ev": 0.0704, "won": true, "pnl": 1.4, "clv": 0.3685, "model_prob": 0.5018}
