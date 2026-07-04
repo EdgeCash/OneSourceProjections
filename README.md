@@ -1,18 +1,23 @@
-# Project 54.7
+# 360Five
 
-**52.4% pays the house. 54.7% pays you.**
+**360° of research. 5 questions. 365 days.**
 
 A straight-shooting, multi-sport projection engine — **MLB, WNBA, NBA, NFL,
 NCAAF, NHL** — projecting games (moneyline / total / spread) and player props,
 with edges computed against market lines and a private Streamlit dashboard.
-Data, projections, and tools mixed with a little wagering advice — every pick
-graded in public, wins and losses, and the trigger is always yours.
+Every game is a full-circle **Edge Card** that answers the 5 W's — Who, What,
+When, Where, Why — so there's nothing left to look up. Data, projections, and
+tools mixed with a little wagering advice; every pick graded in public, wins and
+losses, and the trigger is always yours.
 
 **Personal research. Not financial advice. No bankroll promises. Bet responsibly.**
 
-> **Brand & voice:** see [`docs/BRAND.md`](docs/BRAND.md). The product brand is
-> *Project 54.7*; the Python package is `project547` (renamed from `onesource`).
-> The GitHub repo stays `OneSourceProjections` to preserve history/links.
+> **Brand & voice:** see [`docs/BRAND.md`](docs/BRAND.md); the visual system and
+> Edge Card spec are in [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) (with a
+> reference render at [`docs/design/edge-card.html`](docs/design/edge-card.html)).
+> The product brand is *360Five* (by EdgeCash); **54.7** — the break-even-to-pro
+> win rate — is kept as the methodology number. The Python package stays
+> `project547`; the GitHub repo stays `OneSourceProjections` for history/links.
 
 > **Consolidation note (June 2026):** this repo is now the canonical home for
 > EdgeCash's projection work — the best modules from the older repos were

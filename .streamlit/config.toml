@@ -1,25 +1,26 @@
-# Default is the cool near-black DARK look (go-live). A theme toggle on the
-# landing page / sidebar swaps to the Cream light palette at runtime via CSS.
+# 360Five — the petrol-ink "dark" look is the go-live default; a theme toggle
+# swaps to the warm almanac-paper "cream" palette at runtime via CSS. Brass is
+# the single brand accent; green/red are reserved for meaning (money on / off).
 [theme]
 base = "dark"
-primaryColor = "#3b82f6"
-backgroundColor = "#0d1117"
-secondaryBackgroundColor = "#161b22"
-textColor = "#e8eef5"
-linkColor = "#6cb6ff"
+primaryColor = "#d3ac57"
+backgroundColor = "#0a1216"
+secondaryBackgroundColor = "#0f1b21"
+textColor = "#e8f0f0"
+linkColor = "#6cc4dd"
 # Shape + borders for the clean editorial look (Streamlit >= 1.50).
 baseRadius = "0.4rem"
-borderColor = "#2a3441"
+borderColor = "#1e333c"
 showWidgetBorder = true
 # Dark-theme every st.dataframe header/border without touching call sites.
-dataframeHeaderBackgroundColor = "#1c2431"
-dataframeBorderColor = "#2a3441"
+dataframeHeaderBackgroundColor = "#14242c"
+dataframeBorderColor = "#1e333c"
 
-# The sidebar reads as app chrome (deep near-black).
+# The sidebar reads as app chrome (deepest petrol ink).
 [theme.sidebar]
-backgroundColor = "#111722"
-secondaryBackgroundColor = "#0d1117"
-borderColor = "#2a3441"
+backgroundColor = "#0c171c"
+secondaryBackgroundColor = "#080f13"
+borderColor = "#1e333c"
 
 [browser]
 gatherUsageStats = false

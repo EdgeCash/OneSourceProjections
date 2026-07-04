@@ -2422,10 +2422,14 @@ def _matchup_card_impl(sport: str, g: dict, matchup: dict, window: str = "l5",
               "🟢 proven edge (full stake) · 🟡 unproven, tracking (½) · "
               "🔴 no proven edge (no bet) · stake = ¼-Kelly, 1u = 1% bankroll"
               "</div>") if any_gate else ""
-    decision = (f"<div style='margin-top:12px;padding-top:9px;border-top:1px solid var(--line);'>"
+    # Answer first: the bet ticket is a self-contained panel that LEADS the card
+    # (a two-second read for anyone who just wants the play), not a footnote at
+    # the bottom. The brass left-rail marks it as the headline of the sheet.
+    decision = (f"<div style='margin-bottom:14px;padding:11px 14px;border:1px solid var(--line);"
+                f"border-left:3px solid var(--acc);border-radius:10px;background:var(--card2);'>"
                 f"<div style='font-family:var(--disp);font-size:.64rem;font-weight:700;"
-                f"letter-spacing:.08em;text-transform:uppercase;color:var(--text);"
-                f"margin-bottom:4px;'>Model read · bet ticket</div>" + "".join(dec_bits)
+                f"letter-spacing:.08em;text-transform:uppercase;color:var(--acc);"
+                f"margin-bottom:5px;'>Model read · bet ticket</div>" + "".join(dec_bits)
                 + legend
                 + "<div style='font-size:.58rem;color:var(--faint);margin-top:6px;'>"
                 "Personal research · not financial advice · the trigger is always yours."
@@ -2438,7 +2442,7 @@ def _matchup_card_impl(sport: str, g: dict, matchup: dict, window: str = "l5",
         f"<div style='font-family:var(--disp);font-weight:700;font-size:1rem;"
         f"letter-spacing:.04em;color:var(--text);margin-bottom:10px;'>{hl}"
         f"<span style='color:var(--faint);font-weight:400;'> · {win_label} window</span></div>"
-        f"{_projection_hero(sport, g)}{header}{gauges}{top_adv}{tables}{decision}</div>")
+        f"{decision}{_projection_hero(sport, g)}{header}{gauges}{top_adv}{tables}</div>")
 
 
 # ===========================================================================
