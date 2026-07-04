@@ -3261,7 +3261,11 @@ def sheet_headline(sport: str, g: dict, *, min_edge: float = 0.02,
             tail = (f"**{best['decision']} {best['label']}** {best['pick']} "
                     f"({ev * 100:+.1f}% EV)")
             return f"{dot}  {title}  ·  {tail}", True
-        return f"{dot}  {title}  ·  no edge — pass", False
+        if best["decision"] == "VERIFY":
+            # edge too big to trust — flag it distinctly, don't call it "no edge"
+            return (f"{dot}  {title}  ·  **VERIFY {best['label']}** — edge too "
+                    f"big to trust", False)
+        return f"⚪  {title}  ·  no edge — pass", False
     except Exception:
         log.exception("sheet_headline failed")
         away, home = g.get("away_team", ""), g.get("home_team", "")
