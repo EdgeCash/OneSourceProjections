@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99269,
+  "sr_id": "91610ae7-b4ed-4055-bb80-5ecf05135954",
+  "sport": "MLB",
+  "scheduled": "2026-07-05 16:30:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "ATL",
+  "visitor": "NYM",
+  "link": "/mlb/matchups/atlanta-braves-vs-new-york-mets/?date=2026-07-05",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "3501",
+    "name": "Martin Perez",
+    "link": "/mlb/props/martin-perez/",
+    "player": {
+     "short_name": "M. Perez",
+     "first_name": "Martin",
+     "last_name": "Perez",
+     "image": "https://images.fantasypros.com/images/players/mlb/3501/headshot/210x210.webp",
+     "position": "SP",
+     "team": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "slug": "martin-perez",
+     "jersey_number": 33
+    }
+   },
+   "visitor_probable": {
+    "id": "47159",
+    "name": "Nolan McLean",
+    "link": "/mlb/props/nolan-mclean/",
+    "player": {
+     "short_name": "N. McLean",
+     "first_name": "Nolan",
+     "last_name": "McLean",
+     "image": "https://images.fantasypros.com/images/players/mlb/47159/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYM",
+     "conference": "NL",
+     "division": "East",
+     "slug": "nolan-mclean",
+     "jersey_number": 26
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "ATL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.977",
+   "1b": "1.037",
+   "2b": "0.952",
+   "3b": "1.105",
+   "hr": "0.931",
+   "name": "Truist Park"
+  },
+  "venue": {
+   "name": "Truist Park",
+   "address": "755 Battery Avenue",
+   "city": "Atlanta",
+   "state": "GA",
+   "country": "USA",
+   "zip": "30339",
+   "surface": "grass",
+   "capacity": 41149,
+   "stadium_type": "outdoor",
+   "id": "3ca8b577-5844-42ed-81a5-bd5d5cbe350c"
+  },
+  "participants": [
+   {
+    "id": "ATL",
+    "name": "Braves",
+    "link": "/mlb/teams/atlanta-braves/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 51,
+      "L": 35,
+      "T": 0
+     },
+     "slug": "atlanta-braves",
+     "stadium_deg_offset": "160"
+    }
+   },
+   {
+    "id": "NYM",
+    "name": "Mets",
+    "link": "/mlb/teams/new-york-mets/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYM",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 36,
+      "L": 52,
+      "T": 0
+     },
+     "slug": "new-york-mets",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 88,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 288,
+   "forecast_rain_chance": 1,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1015,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "NBC/Peacock",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99104,
+  "sr_id": "7eaecaf8-7235-4773-910e-33fabcfcadd9",
+  "sport": "MLB",
+  "scheduled": "2026-07-05 17:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WSH",
+  "visitor": "PIT",
+  "link": "/mlb/matchups/pittsburgh-pirates-vs-washington-nationals/?date=2026-07-05",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "5408",
+    "name": "Miles Mikolas",
+    "link": "/mlb/props/miles-mikolas/",
+    "player": {
+     "short_name": "M. Mikolas",
+     "first_name": "Miles",
+     "last_name": "Mikolas",
+     "image": "https://images.fantasypros.com/images/players/mlb/5408/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "miles-mikolas",
+     "jersey_number": 36
+    }
+   },
+   "visitor_probable": {
+    "id": "44682",
+    "name": "Bubba Chandler",
+    "link": "/mlb/props/bubba-chandler/",
+    "player": {
+     "short_name": "B. Chandler",
+     "first_name": "Bubba",
+     "last_name": "Chandler",
+     "image": "https://images.fantasypros.com/images/players/mlb/44682/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "bubba-chandler",
+     "jersey_number": 36
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "WSH",
+   "season": "2025",
+   "split": "A",
+   "r": "1.011",
+   "1b": "0.976",
+   "2b": "1.004",
+   "3b": "0.889",
+   "hr": "1.054",
+   "name": "Nationals Park"
+  },
+  "venue": {
+   "name": "Nationals Park",
+   "address": "1500 South Capitol Street SE",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20003",
+   "surface": "grass",
+   "capacity": 41376,
+   "stadium_type": "outdoor",
+   "id": "bb062fb1-e268-412e-b3d2-2ddb6acc1822"
+  },
+  "participants": [
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 46,
+      "L": 43,
+      "T": 0
+     },
+     "slug": "washington-nationals",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 44,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 92,
+   "forecast_wind_speed": 4,
+   "forecast_wind_direction": "SSE",
+   "forecast_wind_degree": 167,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1013,
+   "forecast_humidity": 0.59
+  },
+  "broadcasts": [
+   {
+    "network": "Peacock",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nbc-peacock-alt-us.png"
+   }
+  ]
+ }
+]
