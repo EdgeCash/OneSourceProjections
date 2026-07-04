@@ -1,7 +1,7 @@
 """Build Your Own Edge — Streamlit page.
 
 Lets you weight team stats into a custom edge, pick a market/model/staking rule,
-and walk-forward backtest it on Project 54.7's historical games. Engine:
+and walk-forward backtest it on 360Five's historical games. Engine:
 ``project547/byoe.py``; data adapter: ``project547/byoe_data.py``.
 
 Run standalone:  streamlit run app/byoe.py

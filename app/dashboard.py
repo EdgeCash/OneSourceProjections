@@ -1,4 +1,4 @@
-"""Project 54.7 — research dashboard.
+"""360Five — research dashboard.
 
 Run locally:  streamlit run app/dashboard.py
 Data source:  data/output/latest.json (rewritten hourly by the GitHub
@@ -27,7 +27,7 @@ from app.auth import require_password  # noqa: E402
 from project547 import ai, config, dfs, edge, playerlogs, plays, results, teamstats, workbook  # noqa: E402
 from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
-st.set_page_config(page_title="Project 54.7", page_icon="🎯",
+st.set_page_config(page_title="360Five", page_icon="🎯",
                    layout="wide", initial_sidebar_state="expanded")
 
 # Streamlit Cloud exposes secrets via st.secrets; mirror the AI keys into the
@@ -372,8 +372,8 @@ if _pending_nav:
             st.session_state[f"nav_{_pa}"] = _ps
 
 with st.sidebar:
-    st.markdown("<div class='osp-brand'>🎯 Project 54.7</div>", unsafe_allow_html=True)
-    st.caption("52.4% pays the house. 54.7% pays you.")
+    st.markdown("<div class='osp-brand'>🎯 360Five</div>", unsafe_allow_html=True)
+    st.caption("360° research · 5 W's · 365 days")
     _theme_toggle("theme_sb")
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
                     label_visibility="collapsed", key="nav_area")
@@ -405,8 +405,8 @@ with st.sidebar:
         st.rerun()
 
 if not slates:
-    st.title("🎯 Project 54.7")
-    st.caption("52.4% pays the house. 54.7% pays you.")
+    st.title("🎯 360Five")
+    st.caption("360° of research. 5 questions. 365 days.")
     st.info("No data yet. The hourly GitHub Action publishes "
             "data/output/latest.json, or click **↻ Refresh** (needs API keys).")
     st.stop()
@@ -2117,9 +2117,9 @@ def _heroes_html(m: dict) -> str:
 
 
 def render_home():
-    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 Project 54.7"
+    st.markdown("<div class='osp-hero'><div class='osp-title'>🎯 360Five"
                 "</div></div>", unsafe_allow_html=True)
-    st.caption("52.4% pays the house. 54.7% pays you. · "
+    st.caption("360° of research. 5 questions. 365 days. · "
                f"Updated {gen} ET · model estimates, not financial advice")
 
     # --- The 54.7 heroes: front and center, glowing by where we stand -------
@@ -2736,7 +2736,7 @@ def _render_replay_research_card(sport: str, gd: dict):
 
 
 # ---------------------------------------------------------------------------
-# Edge Builder · Prompt Engine · Research Hub docs (Project 54.7 tabs)
+# Edge Builder · Prompt Engine · Research Hub docs (360Five tabs)
 # ---------------------------------------------------------------------------
 
 def render_edge_builder():
@@ -2962,7 +2962,7 @@ def render_ticker():
         "<div style='display:flex;align-items:center;gap:22px;"
         "border-bottom:1.5px solid var(--text);padding:4px 2px 8px;margin-bottom:10px;'>"
         "<span style='margin-right:auto;font-family:var(--disp);font-weight:700;"
-        "letter-spacing:.06em;font-size:.92rem;'>PROJECT 54.7</span>"
+        "letter-spacing:.06em;font-size:.92rem;'>360FIVE</span>"
         f"{chip('Engine', m['engine_pct'])}"
         "<span style='color:var(--line);'>|</span>"
         f"{chip('Curated 2–6%', m['curated_pct'])}"
