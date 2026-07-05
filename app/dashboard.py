@@ -704,6 +704,22 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
              "schedule all recompute for the window you pick.")
     m = _matchup(sport, home, away, date_sel, window) or {}
     props = slates.get(date_sel, {}).get(sport, {}).get("props", []) or []
+    # Terminal card (beta) — the new interactive 360Five research card, mounted
+    # via components.html so its JS (Research↔Share, prop drawers, Ask AI) runs.
+    # MLB-only for now (the stat-matrix section labels are MLB-specific); A/B
+    # against the Sharp Sheet so the live card path is untouched.
+    if sport == "MLB":
+        _style = st.radio(
+            "Card style", ["Sharp Sheet", "Terminal (beta)"], index=0,
+            horizontal=True, key=f"style_{wkey}",
+            help="Terminal is the new interactive research card — Research↔Share, "
+                 "tappable pitcher/hitter prop drawers, and one-click Ask AI.")
+        if _style.startswith("Terminal"):
+            import streamlit.components.v1 as components
+            from app import terminal_card
+            components.html(terminal_card.terminal_card_html(sport, g, m, props),
+                            height=1700, scrolling=True)
+            return
     st.markdown(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
                                     gate_table=gate_table(), bankroll=bankroll,
                                     props=props, best_line=_best_line_for(sport, g, date_sel),
