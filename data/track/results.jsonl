@@ -659,3 +659,11 @@
 {"date": "2026-07-04", "sport": "MLB", "game": "Milwaukee Brewers @ Arizona Diamondbacks", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5544, "yrfi": 1, "brier": 0.1986}
 {"date": "2026-07-04", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.5809, "home_won": 1, "market_home_wp": 0.8167, "brier": 0.1756, "proj_total": 8.673, "actual_total": 3}
 {"date": "2026-07-04", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_nrfi", "side": "", "pred_yrfi": 0.513, "yrfi": 0, "brier": 0.2632}
+{"date": "2026-07-05", "sport": "MLB", "game": "Pittsburgh Pirates @ Washington Nationals", "market": "model_winprob", "side": "", "pred_home_wp": 0.5585, "home_won": 0, "market_home_wp": 0.0769, "brier": 0.3119, "proj_total": 10.494, "actual_total": 16}
+{"date": "2026-07-05", "sport": "MLB", "game": "Pittsburgh Pirates @ Washington Nationals", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5441, "yrfi": 0, "brier": 0.296}
+{"date": "2026-07-05", "sport": "MLB", "game": "Baltimore Orioles @ Cincinnati Reds", "market": "model_winprob", "side": "", "pred_home_wp": 0.3718, "home_won": 1, "market_home_wp": 0.8592, "brier": 0.3946, "proj_total": 9.937, "actual_total": 5}
+{"date": "2026-07-05", "sport": "MLB", "game": "Baltimore Orioles @ Cincinnati Reds", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5493, "yrfi": 0, "brier": 0.3017}
+{"date": "2026-07-05", "sport": "MLB", "game": "Baltimore Orioles @ Cincinnati Reds", "market": "moneyline", "side": "away", "line": null, "price": -108.0, "ev": 0.0735, "won": false, "pnl": -1.0, "clv": -0.7288, "model_prob": 0.6282}
+{"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_winprob", "side": "", "pred_home_wp": 0.4369, "home_won": 0, "market_home_wp": 0.0435, "brier": 0.1909, "proj_total": 8.761, "actual_total": 7}
+{"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5444, "yrfi": 1, "brier": 0.2076}
+{"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "moneyline", "side": "away", "line": null, "price": 125.0, "ev": 0.0922, "won": true, "pnl": 1.25, "clv": 1.1521, "model_prob": 0.5632}
