@@ -1132,13 +1132,15 @@ def research_card_html(sport: str, g: dict, matchup: dict, min_edge: float = 0.0
 
 
 def _pf_cell(label, value, hl=False, color=None) -> str:
-    bg = "background:rgba(47,122,74,.06);" if hl else ""
+    bg = "background:var(--card2);" if hl else ""
     col = f"color:{color};" if color else ""
+    # Numbers set in mono, tabular — the "precision instrument" read that makes
+    # the card feel like a bet ticket, not a marketing card, and keeps columns aligned.
     return (f"<div style='padding:11px 8px;text-align:center;border-right:1px solid var(--line);{bg}'>"
             f"<div style='font-family:var(--disp);font-size:.58rem;letter-spacing:.06em;"
             f"color:var(--muted);'>{label}</div>"
-            f"<div style='font-family:var(--disp);font-weight:600;font-size:1.1rem;"
-            f"margin-top:3px;{col}'>{value}</div></div>")
+            f"<div style='font-family:var(--mono);font-weight:600;font-size:1.02rem;"
+            f"font-variant-numeric:tabular-nums;margin-top:4px;{col}'>{value}</div></div>")
 
 
 def _vmeta(label, value, color=None) -> str:
@@ -1234,11 +1236,11 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
     # ---- hero: the pick + price, big Oswald ----
     price_txt = fmt_american(price) or "—"
     hero = (
-        "<div style='display:flex;align-items:baseline;gap:10px;margin-bottom:10px;'>"
-        f"<span style='font-family:var(--disp);font-weight:700;font-size:1.3rem;"
+        "<div style='display:flex;align-items:baseline;gap:10px;margin-bottom:11px;'>"
+        f"<span style='font-family:var(--disp);font-weight:700;font-size:1.32rem;"
         f"letter-spacing:.01em;line-height:1.1;'>{bet}</span>"
-        f"<span style='margin-left:auto;font-family:var(--disp);font-weight:700;"
-        f"font-size:1.3rem;color:var(--text);'>{price_txt}</span></div>")
+        f"<span style='margin-left:auto;font-family:var(--mono);font-weight:700;"
+        f"font-size:1.2rem;font-variant-numeric:tabular-nums;color:var(--text);'>{price_txt}</span></div>")
 
     # ---- the 4-cell MARKET / IMPLIED / MODEL / EDGE grid (reuse _pf_cell) ----
     ev_col = None
@@ -1272,8 +1274,8 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
         "font-size:.74rem;color:var(--muted);'>"
         f"{tier_chip}{grade_chip}"
         f"<span style='margin-left:auto;'>Stake "
-        f"<b style='color:var(--text);'>{stake_txt}</b></span>"
-        f"<span>Conv <b style='color:{_conv_color(conv)};'>{conv:g}</b></span></div>")
+        f"<b style='color:var(--text);font-family:var(--mono);'>{stake_txt}</b></span>"
+        f"<span>Conv <b style='color:{_conv_color(conv)};font-family:var(--mono);'>{conv:g}</b></span></div>")
 
     # ---- optional one-line WHY, loosely-held numeric voice ----
     why = ""
@@ -1303,9 +1305,12 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
                 "padding-top:9px;border-top:1px solid var(--line);font-size:.78rem;'>"
                 + "".join(bits) + "</div>")
 
+    # Brass left-rail marks this as the play (the answer-first ticket signature
+    # from the Edge Card); soft theme-aware shadow lifts it off the page.
     return (
         "<div style='background:var(--card);border:1px solid var(--line);"
-        "border-radius:12px;padding:14px 16px;margin-bottom:12px;'>"
+        "border-left:3px solid var(--acc);border-radius:12px;padding:14px 16px 15px;"
+        "margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,var(--shadow));'>"
         f"{kicker}{hero}{grid}{tier_row}{why}{graded_row}</div>")
 
 
