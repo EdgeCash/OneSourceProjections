@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98100,
+  "sr_id": "12f896d9-d685-47b5-9ed1-ec451195f607",
+  "sport": "MLB",
+  "scheduled": "2026-07-06 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "KC",
+  "visitor": "PHI",
+  "link": "/mlb/matchups/kansas-city-royals-vs-philadelphia-phillies/?date=2026-07-06",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47086",
+    "name": "Noah Cameron",
+    "link": "/mlb/props/noah-cameron/",
+    "player": {
+     "short_name": "N. Cameron",
+     "first_name": "Noah",
+     "last_name": "Cameron",
+     "image": "https://images.fantasypros.com/images/players/mlb/47086/headshot/210x210.webp",
+     "position": "SP",
+     "team": "KC",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "noah-cameron",
+     "jersey_number": 65
+    }
+   },
+   "visitor_probable": {
+    "id": "39312",
+    "name": "Cristopher Sanchez",
+    "link": "/mlb/props/cristopher-sanchez/",
+    "player": {
+     "short_name": "C. Sanchez",
+     "first_name": "Cristopher",
+     "last_name": "Sanchez",
+     "image": "https://images.fantasypros.com/images/players/mlb/39312/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "cristopher-sanchez",
+     "jersey_number": 61
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "KC",
+   "season": "2025",
+   "split": "A",
+   "r": "1.101",
+   "1b": "1.080",
+   "2b": "1.238",
+   "3b": "1.457",
+   "hr": "0.897",
+   "name": "Kauffman Stadium"
+  },
+  "venue": {
+   "name": "Kauffman Stadium",
+   "address": "One Royal Way",
+   "city": "Kansas City",
+   "state": "MO",
+   "country": "USA",
+   "zip": "64129",
+   "surface": "grass",
+   "capacity": 38427,
+   "stadium_type": "outdoor",
+   "id": "6fca95c9-7f2c-4acb-a9f3-02ef96340d2a"
+  },
+  "participants": [
+   {
+    "id": "KC",
+    "name": "Royals",
+    "link": "/mlb/teams/kansas-city-royals/",
+    "team": {
+     "city": "Kansas City",
+     "abbreviation": "KC",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 35,
+      "L": 54,
+      "T": 0
+     },
+     "slug": "kansas-city-royals",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 50,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 85,
+   "forecast_wind_speed": 9,
+   "forecast_wind_direction": "ENE",
+   "forecast_wind_degree": 74,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.61
+  },
+  "broadcasts": [
+   {
+    "network": "ROYL",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98238,
+  "sr_id": "22189b3f-f712-4320-ba82-089ff0a1ce59",
+  "sport": "MLB",
+  "scheduled": "2026-07-06 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TB",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/new-york-yankees-vs-tampa-bay-rays/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7487",
+    "name": "Shane McClanahan",
+    "link": "/mlb/props/shane-mcclanahan/",
+    "player": {
+     "short_name": "S. McClanahan",
+     "first_name": "Shane",
+     "last_name": "McClanahan",
+     "image": "https://images.fantasypros.com/images/players/mlb/7487/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TB",
+     "conference": "AL",
+     "division": "East",
+     "slug": "shane-mcclanahan",
+     "jersey_number": 18
+    }
+   },
+   "visitor_probable": {
+    "id": "7355019",
+    "name": "Cam Schlittler",
+    "link": "/mlb/props/cam-schlittler/",
+    "player": {
+     "short_name": "C. Schlittler",
+     "first_name": "Cam",
+     "last_name": "Schlittler",
+     "image": "https://images.fantasypros.com/images/players/mlb/7355019/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "cam-schlittler",
+     "jersey_number": 31
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TB",
+   "season": "2025",
+   "split": "A",
+   "r": "0.953",
+   "1b": "0.906",
+   "2b": "0.951",
+   "3b": "1.224",
+   "hr": "0.980",
+   "name": "George M. Steinbrenner Field"
+  },
+  "venue": {
+   "name": "Tropicana Field",
+   "address": "One Tropicana Drive",
+   "city": "St. Petersburg",
+   "state": "FL",
+   "country": "USA",
+   "zip": "33705",
+   "surface": "turf",
+   "capacity": 25025,
+   "stadium_type": "indoor",
+   "id": "3aaaf4af-0f8c-49c1-8bf1-1780bb5a5f5c"
+  },
+  "participants": [
+   {
+    "id": "TB",
+    "name": "Rays",
+    "link": "/mlb/teams/tampa-bay-rays/",
+    "team": {
+     "city": "Tampa Bay",
+     "abbreviation": "TB",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 52,
+      "L": 34,
+      "T": 0
+     },
+     "slug": "tampa-bay-rays",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 49,
+      "L": 39,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 87,
+   "forecast_wind_speed": 13,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 239,
+   "forecast_rain_chance": 8,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.72
+  },
+  "broadcasts": [
+   {
+    "network": "YES",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
