@@ -16,22 +16,26 @@ One system, two surfaces. Both palettes carry **identical keys**, so every
 `app/dashboard.py`). Brass (`--acc`) is the **only** decorative accent, which
 frees `--good`/`--neg` to mean exactly one thing each: money on / money off.
 
-### Dark — "petrol ink" (go-live default)
+### Dark — "Terminal" (go-live default)
 
 | Token | Hex | Role |
 |---|---|---|
-| `--bg` | `#0a1216` | page ground |
-| `--card` | `#0f1b21` | card surface |
-| `--card2` | `#14242c` | raised / inset |
-| `--line` | `#1e333c` | hairline borders |
-| `--text` | `#e8f0f0` | primary text |
-| `--muted` | `#93aaae` | secondary text |
-| `--faint` | `#5f767c` | tertiary text |
-| `--acc` | `#d3ac57` | **brass** — brand accent, the play, "edge" |
-| `--acc2` | `#6cc4dd` | info teal — links, section kickers |
-| `--good` | `#4cc07e` | positive EV / over / win |
-| `--neg` | `#e46a60` | negative / fade / loss |
-| `--mid` / `--warn` | `#d9a441` / `#e0a63e` | caution — lean / watch |
+| `--bg` | `#000000` | page ground (pure black) |
+| `--card` | `#0a0a0a` | panel / card surface |
+| `--card2` | `#141414` | raised / inset |
+| `--line` | `#1f1f1f` | hairline borders |
+| `--text` | `#EAEAEA` | primary text |
+| `--muted` | `#8a8a8a` | secondary text |
+| `--faint` | `#4d4d4d` | tertiary text |
+| `--acc` | `#F5B841` | **copper** — brand accent, the play, "edge" |
+| `--acc2` | `#3d9fff` | blue — links, section kickers |
+| `--good` | `#3ddc84` | positive EV / over / win |
+| `--neg` | `#ff5b4a` | negative / fade / loss |
+| `--mid` / `--warn` | `#ffc93c` | caution — lean / watch (amber) |
+
+Key numbers (L5-column stats, market odds) render pure `#FFFFFF`, weight 700, to
+pop off the muted grid. `card2` is `#141414` (a raised surface), not the reference's
+`#050505`, because existing call sites use it as a lifted inset on black.
 
 ### Light — "almanac paper"
 
@@ -47,9 +51,9 @@ frees `--good`/`--neg` to mean exactly one thing each: money on / money off.
 
 | Role | Family (`--var`) | Use |
 |---|---|---|
-| Display | Oswald (`--disp`) | scoreboard headings, team names, section kickers — uppercase, tracked |
-| Body | DM Sans (`--font`) | analysis prose, labels |
-| Mono | JetBrains Mono (`--mono`) | **every number** — odds, %, EV, units, stat cells. Always `tabular-nums`. |
+| Display | Archivo (`--disp`) | headings, team names, section kickers |
+| Body | Archivo (`--font`) | analysis prose, labels |
+| Mono | Spline Sans Mono (`--mono`) | **every number** — odds, %, EV, units, stat cells. Always `tabular-nums`. |
 
 Setting all data in monospace is what makes the sheet read as a **precision
 instrument**, not a marketing card, and keeps odds columns aligned. When adding
@@ -125,7 +129,7 @@ per-sport stat backlog (what's `[HAVE]` / `[DERIVE]` / `[NEW DATA]`).
 ## 4. Build status & roadmap
 
 **Shipped in this refresh:**
-- Unified palette to one 360Five system (petrol ink + almanac paper, brass
+- Unified palette to one 360Five system (Terminal black + almanac paper, copper
   accent); `config.toml` + `_PALETTES` + `--mono` token. Rebrands all sports.
 - Bet ticket **reordered to lead** the matchup card (answer-first).
 - Brand + design locked in `docs/BRAND.md` + this file + the reference render.

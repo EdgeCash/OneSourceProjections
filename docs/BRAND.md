@@ -130,10 +130,10 @@ If a reader can't answer all five from the graphic alone, the card isn't done.
 
 ## Visual cues (summary — full system in `docs/DESIGN_SPEC.md`)
 - **Mark:** the 360Five seal — a 360° ring around a **5**.
-- **Ground:** petrol ink `#0a1216` (dark, go-live) / almanac paper `#ece5d5` (light).
-- **Accent:** brass `#d3ac57` — the *only* decorative accent, so green (`#4cc07e`,
-  edge) and red (`#e46a60`, fade) mean exactly one thing each.
-- **Type:** Oswald display · DM Sans body · JetBrains Mono for every number
+- **Ground:** Terminal black `#000000` (dark, go-live) / almanac paper `#ece5d5` (light).
+- **Accent:** copper `#F5B841` — the *only* decorative accent, so green (`#3ddc84`,
+  edge) and red (`#ff5b4a`, fade) mean exactly one thing each.
+- **Type:** Archivo display · Archivo body · Spline Sans Mono for every number
   (the "precision instrument" read), always tabular.
 
 ## Legal footer (use everywhere bets are shown)

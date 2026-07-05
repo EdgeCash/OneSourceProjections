@@ -55,17 +55,20 @@ _PALETTES = {
                   muted="#586158", faint="#8a8472", good="#2c8854",
                   neg="#bd463d", mid="#a87d22", sb1="#e5ddca", sb2="#ece5d5",
                   glow="0.0", shadow="0.10"),
-    # Petrol ink — deep cool near-black with a brass edge (the go-live look).
-    "dark": dict(acc="#d3ac57", acc2="#6cc4dd", link="#6cc4dd", warn="#e0a63e",
-                 bg="#0a1216", card="#0f1b21",
-                 card2="#14242c", line="#1e333c", text="#e8f0f0",
-                 muted="#93aaae", faint="#5f767c", good="#4cc07e",
-                 neg="#e46a60", mid="#d9a441", sb1="#0c171c", sb2="#080f13",
-                 glow="0.14", shadow="0.5"),
+    # Terminal — pure black with a copper edge (the go-live look). Copper (acc)
+    # is the brand accent; green/red mean money on/off; blue (acc2) carries
+    # links. card2 maps to #141414 (a raised surface on black), not the spec's
+    # #050505, because existing call sites use card2 as a lifted inset.
+    "dark": dict(acc="#F5B841", acc2="#3d9fff", link="#3d9fff", warn="#ffc93c",
+                 bg="#000000", card="#0a0a0a",
+                 card2="#141414", line="#1f1f1f", text="#EAEAEA",
+                 muted="#8a8a8a", faint="#4d4d4d", good="#3ddc84",
+                 neg="#ff5b4a", mid="#ffc93c", sb1="#050505", sb2="#000000",
+                 glow="0.20", shadow="0.6"),
 }
 
 _THEME_CSS = """
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap');
   .stApp, body { color: var(--text); font-family: 'DM Sans', system-ui, sans-serif; }
   /* --- hide default Streamlit chrome (premium product, not scaffolding).
          Keep stHeader itself (transparent) so the mobile sidebar toggle lives. */
@@ -169,10 +172,10 @@ _THEME_CSS = """
 def _theme_css(theme: str) -> str:
     p = _PALETTES.get(theme, _PALETTES["dark"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
-            + "--disp:'Oswald', system-ui, sans-serif; "
-            + "--font:'DM Sans', system-ui, -apple-system, sans-serif; "
-            + "--mono:'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, "
-              "Consolas, monospace; }")
+            + "--disp:'Archivo', system-ui, -apple-system, sans-serif; "
+            + "--font:'Archivo', system-ui, -apple-system, sans-serif; "
+            + "--mono:'Spline Sans Mono', ui-monospace, 'JetBrains Mono', "
+              "Menlo, Consolas, monospace; }")
     return f"<style>{root}{_THEME_CSS}</style>"
 
 
