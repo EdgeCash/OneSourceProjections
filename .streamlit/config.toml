@@ -1,26 +1,26 @@
-# 360Five — the petrol-ink "dark" look is the go-live default; a theme toggle
-# swaps to the warm almanac-paper "cream" palette at runtime via CSS. Brass is
+# 360Five — the pure-black "Terminal" look is the go-live default; a theme toggle
+# swaps to the warm almanac-paper "cream" palette at runtime via CSS. Copper is
 # the single brand accent; green/red are reserved for meaning (money on / off).
 [theme]
 base = "dark"
-primaryColor = "#d3ac57"
-backgroundColor = "#0a1216"
-secondaryBackgroundColor = "#0f1b21"
-textColor = "#e8f0f0"
-linkColor = "#6cc4dd"
-# Shape + borders for the clean editorial look (Streamlit >= 1.50).
+primaryColor = "#F5B841"
+backgroundColor = "#000000"
+secondaryBackgroundColor = "#0a0a0a"
+textColor = "#EAEAEA"
+linkColor = "#3d9fff"
+# Shape + borders for the clean terminal look (Streamlit >= 1.50).
 baseRadius = "0.4rem"
-borderColor = "#1e333c"
+borderColor = "#1f1f1f"
 showWidgetBorder = true
 # Dark-theme every st.dataframe header/border without touching call sites.
-dataframeHeaderBackgroundColor = "#14242c"
-dataframeBorderColor = "#1e333c"
+dataframeHeaderBackgroundColor = "#141414"
+dataframeBorderColor = "#1f1f1f"
 
-# The sidebar reads as app chrome (deepest petrol ink).
+# The sidebar reads as app chrome (deepest black).
 [theme.sidebar]
-backgroundColor = "#0c171c"
-secondaryBackgroundColor = "#080f13"
-borderColor = "#1e333c"
+backgroundColor = "#050505"
+secondaryBackgroundColor = "#000000"
+borderColor = "#1f1f1f"
 
 [browser]
 gatherUsageStats = false
