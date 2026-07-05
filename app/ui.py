@@ -1233,14 +1233,38 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
         f"{chip}<span>{game}</span>"
         f"<span style='margin-left:auto;'>{time}</span></div>")
 
-    # ---- hero: the pick + price, big Oswald ----
+    # ---- THE PLAY: a brass-tinted ticket band — the answer, up top ----
     price_txt = fmt_american(price) or "—"
-    hero = (
-        "<div style='display:flex;align-items:baseline;gap:10px;margin-bottom:11px;'>"
-        f"<span style='font-family:var(--disp);font-weight:700;font-size:1.32rem;"
-        f"letter-spacing:.01em;line-height:1.1;'>{bet}</span>"
-        f"<span style='margin-left:auto;font-family:var(--mono);font-weight:700;"
-        f"font-size:1.2rem;font-variant-numeric:tabular-nums;color:var(--text);'>{price_txt}</span></div>")
+    stake = _g(play, "stake", "kelly")
+    stake_txt = (f"{float(stake):.1f}u" if (stake is not None and pd.notna(stake))
+                 else "—")
+    tier_chip = (
+        f"<span style='font-family:var(--disp);font-size:.62rem;letter-spacing:.06em;"
+        f"font-weight:700;padding:2px 8px;border-radius:4px;color:var(--bg);"
+        f"background:{tier['color']};'>{tier['label']}</span>")
+    grade_seal = (
+        f"<span style='display:inline-flex;width:30px;height:30px;border-radius:8px;"
+        f"flex:0 0 auto;background:{_tier_color(tier['letter'])};color:var(--bg);"
+        f"font-family:var(--disp);font-size:1.05rem;font-weight:800;"
+        f"align-items:center;justify-content:center;'>{tier['letter']}</span>")
+    ticket = (
+        "<div style='display:flex;align-items:center;gap:11px;margin-bottom:10px;"
+        "padding:10px 12px;border-radius:10px;"
+        "border:1px solid color-mix(in srgb, var(--acc) 34%, var(--line));"
+        "background:color-mix(in srgb, var(--acc) 9%, transparent);'>"
+        "<div style='min-width:0;flex:1;'>"
+        "<div style='font-family:var(--disp);font-size:.58rem;letter-spacing:.14em;"
+        "text-transform:uppercase;font-weight:700;color:var(--acc);margin-bottom:3px;'>"
+        "The play</div>"
+        f"<div style='font-family:var(--disp);font-weight:700;font-size:1.24rem;"
+        f"line-height:1.08;'>{bet}</div>"
+        f"<div style='margin-top:6px;'>{tier_chip}</div></div>"
+        "<div style='text-align:right;'>"
+        f"<div style='font-family:var(--mono);font-weight:700;font-size:1.3rem;"
+        f"font-variant-numeric:tabular-nums;line-height:1;'>{price_txt}</div>"
+        f"<div style='font-family:var(--mono);font-size:.66rem;color:var(--muted);"
+        f"margin-top:4px;'>{stake_txt} · ¼-Kelly</div></div>"
+        f"{grade_seal}</div>")
 
     # ---- the 4-cell MARKET / IMPLIED / MODEL / EDGE grid (reuse _pf_cell) ----
     ev_col = None
@@ -1248,34 +1272,11 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
         ev_col = "var(--good)" if float(ev) >= 0 else "var(--neg)"
     grid = (
         "<div style='display:grid;grid-template-columns:repeat(4,1fr);"
-        "border:1.5px solid var(--line);border-radius:6px;overflow:hidden;'>"
+        "border:1px solid var(--line);border-radius:8px;overflow:hidden;'>"
         + _pf_cell("MARKET", price_txt)
         + _pf_cell("IMPLIED", _pct(imp))
         + _pf_cell("OUR MODEL", _pct(model_prob), True)
         + _pf_cell("EDGE", _signed_pct(ev), True, ev_col) + "</div>")
-
-    # ---- tier row: play_tier chip + ¼-Kelly stake + conviction ----
-    stake = _g(play, "stake", "kelly")
-    if stake is not None and pd.notna(stake):
-        stake_txt = f"{float(stake):.1f}u"
-    else:
-        stake_txt = "—"
-    conv = _conviction(ev)
-    tier_chip = (
-        f"<span style='font-family:var(--disp);font-size:.7rem;letter-spacing:.06em;"
-        f"font-weight:600;padding:3px 10px;border-radius:3px;color:var(--bg);"
-        f"background:{tier['color']};'>{tier['label']}</span>")
-    grade_chip = (
-        f"<span style='display:inline-flex;width:20px;height:20px;border-radius:6px;"
-        f"background:{_tier_color(tier['letter'])};color:var(--bg);font-size:0.72rem;"
-        f"font-weight:800;align-items:center;justify-content:center;'>{tier['letter']}</span>")
-    tier_row = (
-        "<div style='display:flex;align-items:center;gap:10px;margin-top:10px;"
-        "font-size:.74rem;color:var(--muted);'>"
-        f"{tier_chip}{grade_chip}"
-        f"<span style='margin-left:auto;'>Stake "
-        f"<b style='color:var(--text);font-family:var(--mono);'>{stake_txt}</b></span>"
-        f"<span>Conv <b style='color:{_conv_color(conv)};font-family:var(--mono);'>{conv:g}</b></span></div>")
 
     # ---- optional one-line WHY, loosely-held numeric voice ----
     why = ""
@@ -1311,7 +1312,7 @@ def _play_card_impl(play: dict, *, graded: bool = False) -> str:
         "<div style='background:var(--card);border:1px solid var(--line);"
         "border-left:3px solid var(--acc);border-radius:12px;padding:14px 16px 15px;"
         "margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,var(--shadow));'>"
-        f"{kicker}{hero}{grid}{tier_row}{why}{graded_row}</div>")
+        f"{kicker}{ticket}{grid}{why}{graded_row}</div>")
 
 
 def _weather_txt(g: dict) -> str:
