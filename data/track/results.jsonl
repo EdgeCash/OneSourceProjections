@@ -667,3 +667,11 @@
 {"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_winprob", "side": "", "pred_home_wp": 0.4369, "home_won": 0, "market_home_wp": 0.0435, "brier": 0.1909, "proj_total": 8.761, "actual_total": 7}
 {"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5444, "yrfi": 1, "brier": 0.2076}
 {"date": "2026-07-05", "sport": "MLB", "game": "Minnesota Twins @ New York Yankees", "market": "moneyline", "side": "away", "line": null, "price": 125.0, "ev": 0.0922, "won": true, "pnl": 1.25, "clv": 1.1521, "model_prob": 0.5632}
+{"date": "2026-07-05", "sport": "MLB", "game": "New York Mets @ Atlanta Braves", "market": "model_winprob", "side": "", "pred_home_wp": 0.478, "home_won": 0, "market_home_wp": 0.3987, "brier": 0.2285, "proj_total": 8.553, "actual_total": 19}
+{"date": "2026-07-05", "sport": "MLB", "game": "New York Mets @ Atlanta Braves", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5301, "yrfi": 1, "brier": 0.2208}
+{"date": "2026-07-05", "sport": "MLB", "game": "New York Mets @ Atlanta Braves", "market": "moneyline", "side": "away", "line": null, "price": 100.0, "ev": 0.0281, "won": true, "pnl": 1.0, "clv": 0.2026, "model_prob": 0.522}
+{"date": "2026-07-05", "sport": "MLB", "game": "St. Louis Cardinals @ Chicago Cubs", "market": "model_winprob", "side": "", "pred_home_wp": 0.5312, "home_won": 1, "market_home_wp": 0.5634, "brier": 0.2198, "proj_total": 10.469, "actual_total": 10}
+{"date": "2026-07-05", "sport": "MLB", "game": "St. Louis Cardinals @ Chicago Cubs", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5324, "yrfi": 1, "brier": 0.2186}
+{"date": "2026-07-05", "sport": "MLB", "game": "St. Louis Cardinals @ Chicago Cubs", "market": "moneyline", "side": "away", "line": null, "price": 133.0, "ev": 0.036, "won": false, "pnl": -1.0, "clv": 0.0173, "model_prob": 0.4688}
+{"date": "2026-07-05", "sport": "MLB", "game": "Philadelphia Phillies @ Kansas City Royals", "market": "model_winprob", "side": "", "pred_home_wp": 0.4101, "home_won": 1, "market_home_wp": 0.399, "brier": 0.348, "proj_total": 11.358, "actual_total": 7}
+{"date": "2026-07-05", "sport": "MLB", "game": "Philadelphia Phillies @ Kansas City Royals", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5604, "yrfi": 1, "brier": 0.1932}
