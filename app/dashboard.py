@@ -55,10 +55,11 @@ _PALETTES = {
                   muted="#586158", faint="#8a8472", good="#2c8854",
                   neg="#bd463d", mid="#a87d22", sb1="#e5ddca", sb2="#ece5d5",
                   glow="0.0", shadow="0.10"),
-    # Terminal — pure black with a copper edge (the go-live look). Copper (acc)
-    # is the brand accent; green/red mean money on/off; blue (acc2) carries
-    # links. card2 maps to #141414 (a raised surface on black), not the spec's
-    # #050505, because existing call sites use card2 as a lifted inset.
+    # Terminal — pure black with a copper edge: the Sharp Sheet's own palette,
+    # so the app shell and the research cards read as one system (rather than
+    # cloning the reference site's teal). Copper (acc) is the single decorative
+    # accent — logo, section kickers, group headers, links — which frees
+    # green/red to mean exactly one thing: money on / money off.
     "dark": dict(acc="#F5B841", acc2="#3d9fff", link="#3d9fff", warn="#ffc93c",
                  bg="#000000", card="#0a0a0a",
                  card2="#141414", line="#1f1f1f", text="#EAEAEA",
@@ -89,12 +90,62 @@ _THEME_CSS = """
   .osp-sec .tag { margin-left: auto; font-size: 0.66rem; font-weight: 600;
     text-transform: none; letter-spacing: 0; color: var(--muted); }
   section[data-testid="stSidebar"] {
-    background: var(--sb1); border-right: 1.5px solid var(--text); }
+    background: var(--sb1); border-right: 1.5px solid var(--line); }
+  /* --- clean nav rows (BettorSheets look): full-width rows, muted by default,
+         lifted-fill + bright text on the active row; the radio dot is hidden --- */
+  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] { gap: 2px; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label {
-    border-radius: 8px; padding: 5px 10px; font-weight: 600;
-    font-family: var(--disp); letter-spacing: 0.02em; transition: background .15s ease; }
+    display: flex; align-items: center; width: 100%; margin: 0;
+    border-radius: 9px; padding: 9px 12px; font-weight: 600;
+    font-family: var(--disp); font-size: 0.94rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); cursor: pointer;
+    transition: background .12s ease, color .12s ease; }
+  /* hide the radio glyph (a nested div before the label text), leaving a clean
+     text row; the real <input> is already visually-hidden by BaseWeb */
+  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > div:last-child > div > div:first-child {
+    display: none !important; }
   section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:hover {
+    background: var(--card); color: var(--text); }
+  section[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label:has(input:checked) {
+    background: var(--card2); color: var(--text);
+    box-shadow: inset 3px 0 0 var(--acc); }
+  /* account chip pinned to the foot of the sidebar */
+  .osp-acct { display: flex; align-items: center; gap: 10px; margin-top: 8px;
+    padding: 10px 6px 2px; border-top: 1.5px solid var(--line); }
+  .osp-acct .av { width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+    font-family: var(--disp); font-size: 0.9rem; color: var(--bg);
+    background: var(--acc); }
+  .osp-acct .nm { font-family: var(--disp); font-weight: 600; font-size: 0.92rem;
+    color: var(--text); }
+  /* brand lockup */
+  .osp-logo { display: flex; align-items: center; gap: 10px; margin: 2px 0 2px; }
+  .osp-logo .mk { width: 30px; height: 30px; border-radius: 8px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    color: var(--bg); font-weight: 800;
+    background: linear-gradient(135deg, var(--acc), var(--acc2)); }
+  /* --- PLAYS board: one clean scannable table (matchup | play) --- */
+  .pl-board { border: 1.5px solid var(--line); border-radius: 12px;
+    overflow: hidden; background: var(--card); margin-top: 4px; }
+  .pl-head, .pl-row { display: grid; grid-template-columns: 1.35fr 1fr;
+    align-items: center; }
+  .pl-head { padding: 12px 18px; border-bottom: 1.5px solid var(--line);
     background: var(--card2); }
+  .pl-head span { font-family: var(--disp); font-size: 0.7rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+  .pl-grp { padding: 9px 18px; text-align: center; background: var(--sb1);
+    border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line);
+    font-family: var(--disp); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.16em; color: var(--acc); }
+  .pl-row { padding: 13px 18px; border-bottom: 1px solid var(--line); }
+  .pl-row:last-child { border-bottom: none; }
+  .pl-row .m { font-weight: 600; color: var(--text); }
+  .pl-row .p { font-family: var(--mono); font-weight: 600; color: var(--good);
+    font-variant-numeric: tabular-nums; }
+  .pl-none { padding: 13px 18px; color: var(--muted); font-weight: 600;
+    border-bottom: 1px solid var(--line); }
+  /* rounded pill search to match the mock */
+  .stTextInput input { border-radius: 999px !important; padding-left: 15px; }
   [data-testid="stMetric"] { position: relative; overflow: hidden;
     background: var(--card); border: 1.5px solid var(--line); border-radius: 8px;
     padding: 13px 15px 11px 16px; box-shadow: none; }
@@ -392,14 +443,24 @@ def _build_stamp() -> str:
     return os.environ.get("BUILD_SHA", "")
 
 
+def _nav_display(label: str) -> str:
+    """Strip a leading emoji/symbol token for display ("🎯 Plays" → "Plays");
+    plain labels like "MLB" pass through. Keeps NAV_GROUPS keys (the routing
+    codes) intact while the sidebar reads clean like the reference."""
+    parts = label.split(" ", 1)
+    if len(parts) == 2 and not parts[0][:1].isascii():
+        return parts[1]
+    return label
+
+
 with st.sidebar:
-    st.markdown("<div class='osp-brand'>🎯 360Five</div>", unsafe_allow_html=True)
-    st.caption("360° research · 5 W's · 365 days")
-    _sha = _build_stamp()
-    st.caption(f"⬢ Terminal build{f' · {_sha}' if _sha else ''}")
-    _theme_toggle("theme_sb")
+    st.markdown(
+        "<div class='osp-logo'><span class='mk'>◈</span>"
+        "<span class='osp-brand'>360Five</span></div>",
+        unsafe_allow_html=True)
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
-                    label_visibility="collapsed", key="nav_area")
+                    label_visibility="collapsed", key="nav_area",
+                    format_func=_nav_display)
     pages = NAV_GROUPS[area]
     if len(pages) == 1:
         section = pages[0]
@@ -413,19 +474,30 @@ with st.sidebar:
         section = st.radio(
             area, pages, label_visibility="collapsed", key=f"nav_{area}",
             format_func=lambda p: _PAGE_LABELS.get(p, p.title()))
-    st.divider()
-    min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
-                         format="%.3f")
-    bankroll = st.number_input("Bankroll ($)", min_value=0, value=1000, step=100)
-    show_all = st.checkbox("Show rows without edges", value=False)
-    hide_wild = st.checkbox("Hide implausible edges (≥30%)", value=True)
-    st.caption(f"Stakes are {config.KELLY_FRACTION:.0%}-Kelly × bankroll.")
-    credits = (data or {}).get("odds_api_credits")
-    if credits is not None:
-        st.caption(f"📊 Odds API: {int(credits):,} credits left")
-    if st.button("↻ Refresh", width="stretch"):
-        refresh()
-        st.rerun()
+
+    # Bankroll + filters live under a collapsed control so the nav reads clean;
+    # they still drive the board and every card exactly as before.
+    with st.expander("⚙ Filters & bankroll", expanded=False):
+        _theme_toggle("theme_sb")
+        min_edge = st.slider("Min edge (EV)", 0.0, 0.15, config.MIN_EDGE, 0.005,
+                             format="%.3f")
+        bankroll = st.number_input("Bankroll ($)", min_value=0, value=1000, step=100)
+        show_all = st.checkbox("Show rows without edges", value=False)
+        hide_wild = st.checkbox("Hide implausible edges (≥30%)", value=True)
+        st.caption(f"Stakes are {config.KELLY_FRACTION:.0%}-Kelly × bankroll.")
+        credits = (data or {}).get("odds_api_credits")
+        if credits is not None:
+            st.caption(f"📊 Odds API: {int(credits):,} credits left")
+        _sha = _build_stamp()
+        st.caption(f"⬢ Terminal build{f' · {_sha}' if _sha else ''}")
+        if st.button("↻ Refresh", width="stretch"):
+            refresh()
+            st.rerun()
+
+    st.markdown(
+        "<div class='osp-acct'><span class='av'>E</span>"
+        "<span class='nm'>EdgeCash</span></div>",
+        unsafe_allow_html=True)
 
 if not slates:
     st.title("🎯 360Five")
@@ -1324,9 +1396,13 @@ def render_plays():
 
 
 def render_plays_board():
-    """Curated plays — simple and scannable (matchup | play), grouped by sport,
-    with a Sharp Sheet chip on every row for the deep breakdown. Passes shown."""
-    q = topbar("Curated plays")
+    """Curated plays as one clean, scannable table (matchup | play), grouped by
+    sport — the BettorSheets board. A pass shows as 'No Plays' so the whole
+    slate reads at a glance; the deep Sharp Sheet opens from the selector below,
+    keeping the table itself uncluttered."""
+    import html as _html
+
+    q = topbar("Plays")
     date_sel = pick_date()
     day = slates.get(date_sel, {})
     board = ui.build_best_bets(day, min_edge)
@@ -1335,29 +1411,44 @@ def render_plays_board():
     if q and not board.empty:
         board = board[board["bet"].str.lower().str.contains(q)
                       | board["game"].str.lower().str.contains(q)]
-    st.caption("The model's edges, plain. Hit **📊 Sharp Sheet** on any row for "
-               "the full breakdown. We show the passes too.")
     sports_in_slate = [s for s in NAV_SPORTS if s in day]
     if not sports_in_slate:
         st.info("No slate loaded yet.")
         return
+
+    html_rows = ["<div class='pl-board'>",
+                 "<div class='pl-head'><span>Matchup</span><span>Play</span></div>"]
+    picker: list[tuple[str, str, object]] = []  # (label, sport, row)
     for sport in sports_in_slate:
         rows = (board[board["sport"] == sport] if not board.empty
                 else board.iloc[0:0])
-        section_header(sport)
+        html_rows.append(
+            f"<div class='pl-grp'>{_html.escape(_SPORT_LABELS.get(sport, sport))}</div>")
         if rows.empty:
-            st.caption("No plays — nothing cleared the bar. "
-                       "(A pass is a position, not a bug.)")
+            html_rows.append("<div class='pl-none'>No Plays</div>")
             continue
-        for i, r in rows.reset_index(drop=True).iterrows():
-            cM, cP, cB = st.columns([5, 4, 2], vertical_alignment="center")
-            cM.markdown(f"**{r['game']}**")
+        for _, r in rows.reset_index(drop=True).iterrows():
             price = ui.fmt_american(r["price"]) if pd.notna(r.get("price")) else ""
-            cP.markdown(f"<span style='color:var(--good);font-weight:600'>{r['bet']} "
-                        f"{price}</span>", unsafe_allow_html=True)
-            if cB.button("📊 Sharp Sheet", key=f"ss_{sport}_{date_sel}_{i}",
-                         width="stretch"):
-                _sharpsheet(sport, _resolve_game(sport, r, date_sel), date_sel)
+            play = f"{r['bet']} {price}".strip()
+            html_rows.append(
+                f"<div class='pl-row'><span class='m'>{_html.escape(str(r['game']))}</span>"
+                f"<span class='p'>{_html.escape(play)}</span></div>")
+            picker.append((f"{sport} · {r['game']} — {play}", sport, r))
+    html_rows.append("</div>")
+    st.markdown("".join(html_rows), unsafe_allow_html=True)
+    st.caption("The model's edges, plain — passes shown too. Not financial advice.")
+
+    # Deep dive: open the Sharp Sheet behind any listed play from a single
+    # selector, so the board stays a clean table (no per-row buttons). The
+    # button is a one-shot event, which avoids the dialog re-opening on rerun.
+    if picker:
+        labels = [p[0] for p in picker]
+        c1, c2 = st.columns([6, 1], vertical_alignment="bottom")
+        pick = c1.selectbox("Sharp Sheet", ["📊 Open a Sharp Sheet…"] + labels,
+                            label_visibility="collapsed")
+        if c2.button("Open", width="stretch") and pick in labels:
+            _, sport, r = picker[labels.index(pick)]
+            _sharpsheet(sport, _resolve_game(sport, r, date_sel), date_sel)
 
 
 # ---------------------------------------------------------------------------

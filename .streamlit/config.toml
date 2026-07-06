@@ -1,6 +1,8 @@
-# 360Five — the pure-black "Terminal" look is the go-live default; a theme toggle
-# swaps to the warm almanac-paper "cream" palette at runtime via CSS. Copper is
-# the single brand accent; green/red are reserved for meaning (money on / off).
+# 360Five — the pure-black "Terminal" look is the go-live default; a theme
+# toggle swaps to the warm almanac-paper "cream" palette at runtime via CSS.
+# Copper is the single brand accent (matching the Sharp Sheet cards); green/red
+# are reserved for meaning (money on / off). Keep these in sync with
+# _PALETTES["dark"] in app/dashboard.py.
 [theme]
 base = "dark"
 primaryColor = "#F5B841"
