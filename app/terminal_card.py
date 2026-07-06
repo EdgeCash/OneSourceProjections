@@ -140,20 +140,18 @@ def _conf_cell(kind_ev) -> dict:
     return {"v": v, "tag": tag, "c": c}
 
 
-def _matrix(matchup: dict) -> tuple[list, list]:
-    """Recombine the two engine perspectives into (battingMatrix, pitchingMatrix)
-    in the reference row shape. Batting = each team's offense; Pitching = each
-    team's runs/hits *allowed* (the opponent-defense side). Bullpen has no engine
-    source -> caller renders it as a DATA GAP row."""
+def _matrix(matchup: dict, ac: str, hc: str) -> tuple[list, list]:
+    """Recombine the two engine perspectives into (offense, defense) matrices in
+    the reference row shape. Offense = each team's own stat; Defense = each team's
+    opponent-allowed stat. ``adv`` carries the real team code so the badge colors
+    correctly. Works for any team sport (STAT_SPECS drives the stat rows)."""
     a_off = matchup.get("away_off_vs_home_def") or []
     h_off = matchup.get("home_off_vs_away_def") or []
     n = matchup.get("n_teams", 30)
     if not a_off or not h_off:
         return [], []
 
-    def side5(row, side, order):
-        # order 'awy' -> [season, situ, l10, l5, rank]; 'hm' -> [rank, l5, l10, situ, season]
-        p = side  # "off" or "def"
+    def side5(row, p, order):
         season, l10, l5, situ = (row.get(f"{p}_season"), row.get(f"{p}_l10"),
                                  row.get(f"{p}_l5"), row.get(f"{p}_situ"))
         rank = _rank(row.get(f"{p}_rank"), n)
@@ -161,28 +159,74 @@ def _matrix(matchup: dict) -> tuple[list, list]:
             return [_n(season), _n(situ), _n(l10), _n(l5), rank]
         return [rank, _n(l5), _n(l10), _n(situ), _n(season)]
 
-    def adv(a_rank, h_rank, away_code, home_code):
+    def adv(a_rank, h_rank):
         if a_rank is None or h_rank is None or pd.isna(a_rank) or pd.isna(h_rank):
             return GAP
-        if int(a_rank) < int(h_rank):
-            return away_code
-        if int(h_rank) < int(a_rank):
-            return home_code
-        return GAP
+        return ac if int(a_rank) < int(h_rank) else hc if int(h_rank) < int(a_rank) else GAP
 
-    ac = _code("", "")  # codes are injected via G.away.code; adv only needs match
-    bat, pit = [], []
+    offense, defense = [], []
     for ao, ho in zip(a_off, h_off):
         label = ao.get("stat", "")
-        # batting: away offense vs home offense
-        bat.append([label, side5(ao, "off", "awy"),
-                    adv(ao.get("off_rank"), ho.get("off_rank"), "AWY", "HM"),
-                    side5(ho, "off", "hm")])
-        # pitching (allowed): away defense vs home defense
-        pit.append([f"{label} Allowed", side5(ho, "def", "awy"),
-                    adv(ho.get("def_rank"), ao.get("def_rank"), "AWY", "HM"),
-                    side5(ao, "def", "hm")])
-    return bat, pit
+        offense.append([label, side5(ao, "off", "awy"),
+                        adv(ao.get("off_rank"), ho.get("off_rank")),
+                        side5(ho, "off", "hm")])
+        if ao.get("def_rank") is not None or ho.get("def_rank") is not None:
+            defense.append([label, side5(ho, "def", "awy"),
+                            adv(ho.get("def_rank"), ao.get("def_rank")),
+                            side5(ao, "def", "hm")])
+    return offense, defense
+
+
+_GAP_ROWS = [[GAP, [GAP] * 5, GAP, [GAP] * 5]]
+
+
+def _sections(sport: str, matchup: dict, away: str, home: str,
+              ac: str, hc: str) -> list:
+    """Sport-appropriate stat-matrix sections. MLB keeps batting/pitching/bullpen;
+    other team sports get offense/defense. Empty when there's no matchup."""
+    off, deff = _matrix(matchup, ac, hc)
+    if not off:
+        return []
+    if sport == "MLB":
+        return [{"label": f"Batting — {away} vs {home}", "cls": "bat", "rows": off},
+                {"label": f"Pitching allowed — {away} vs {home}", "cls": "",
+                 "rows": deff or _GAP_ROWS},
+                {"label": f"Bullpen — {away} vs {home}", "cls": "pen", "rows": _GAP_ROWS}]
+    return [{"label": f"Offense — {away} vs {home}", "cls": "bat", "rows": off},
+            {"label": f"Defense — {away} vs {home}", "cls": "pen",
+             "rows": deff or _GAP_ROWS}]
+
+
+def _meta(sport: str, g: dict, matchup: dict, ac: str, hc: str) -> list:
+    def rp(a, h):
+        af = f"{ac} {int(a)}th" if a is not None and pd.notna(a) else f"{ac} {GAP}"
+        hf = f"{hc} {int(h)}th" if h is not None and pd.notna(h) else f"{hc} {GAP}"
+        return f"{af} / {hf}"
+    ar, hr = matchup.get("away_rest"), matchup.get("home_rest")
+    rest = f"{ac} {ar if ar is not None else GAP} / {hc} {hr if hr is not None else GAP}"
+    meta = [{"k": "Date/Time", "v": _dt(g.get("game_time"))}]
+    if sport in ("MLB", "NFL", "NCAAF"):
+        meta.append({"k": "Weather", "v": _weather(g)})
+    if sport == "MLB":
+        meta.append({"k": "Park Factor", "v": _park(sport, g.get("home_team", ""))})
+    meta.append({"k": "Power Rank",
+                 "v": rp(matchup.get("away_power_rank"), matchup.get("home_power_rank"))})
+    meta.append({"k": "Days Rest", "v": rest})
+    return meta
+
+
+def _starters(sport: str, g: dict) -> dict | None:
+    """The tappable starter strip — pitchers (MLB), goalies (NHL), QBs (NFL/NCAAF);
+    None for sports without one (the odds strip then centers)."""
+    def one(name):
+        return {"name": name, "role": GAP, "line": GAP, "key": name} if name else None
+    pick = {"MLB": ("away_pitcher", "home_pitcher"),
+            "NHL": ("away_goalie", "home_goalie"),
+            "NFL": ("away_qb", "home_qb"), "NCAAF": ("away_qb", "home_qb")}.get(sport)
+    if not pick:
+        return None
+    a, h = one(g.get(pick[0])), one(g.get(pick[1]))
+    return {"away": a, "home": h} if (a or h) else None
 
 
 def _prop_tag(p: dict) -> str:
@@ -235,8 +279,11 @@ def _prop_drawer(sport: str, p: dict) -> dict:
 
 def build_g(sport: str, g: dict, matchup: dict | None = None,
             props: list | None = None) -> dict:
-    """Build the Terminal card's ``G`` object from real engine data. Pure; safe
-    on empty matchup/props (fields degrade to DATA GAP)."""
+    """Build the Terminal card's ``G`` from real engine data. Pure; safe on empty
+    matchup/props. Tennis (player vs player) routes to a match variant; other team
+    sports share the offense/defense path."""
+    if sport in ("ATP", "WTA"):
+        return _build_g_tennis(sport, g)
     matchup = matchup or {}
     props = props or []
     away, home = g.get("away_team", ""), g.get("home_team", "")
@@ -246,14 +293,9 @@ def build_g(sport: str, g: dict, matchup: dict | None = None,
     ml = conv.get("Moneyline", {})
     rl = conv.get("Run Line", conv.get("Spread", {}))
     tot = conv.get("Total", {})
-    conf = {
-        "ml": _conf_cell((ml.get("score"), ml.get("ev"))),
-        "rl": _conf_cell((rl.get("score"), rl.get("ev"))),
-        "tot": _conf_cell((tot.get("score"), tot.get("ev"))),
-    }
-
-    bat, pit = _matrix(matchup)
-    gap_row = [[GAP, [GAP] * 5, GAP, [GAP] * 5]]
+    conf = {"ml": _conf_cell((ml.get("score"), ml.get("ev"))),
+            "rl": _conf_cell((rl.get("score"), rl.get("ev"))),
+            "tot": _conf_cell((tot.get("score"), tot.get("ev")))}
 
     from project547.names import normalize
     prop_by_player: dict = {}
@@ -264,16 +306,12 @@ def build_g(sport: str, g: dict, matchup: dict | None = None,
             prop_by_player[key] = p
 
     lu = g.get("lineups") or {}
-    ap = g.get("away_pitcher") or ""
-    hp = g.get("home_pitcher") or ""
+    ap, hp = g.get("away_pitcher") or "", g.get("home_pitcher") or ""
     lineups = {
         "away": _lineup_side(sport, ac, lu.get("away") or [],
                              f"vs {hp}" if hp else "", prop_by_player),
         "home": _lineup_side(sport, hc, lu.get("home") or [],
-                             f"vs {ap}" if ap else "", prop_by_player),
-    }
-
-    # props map keyed by both "name" and "n name" forms the template taps with
+                             f"vs {ap}" if ap else "", prop_by_player)}
     props_map: dict = {}
     for side in (lineups["away"], lineups["home"]):
         for b in side["order"]:
@@ -281,68 +319,103 @@ def build_g(sport: str, g: dict, matchup: dict | None = None,
             p = prop_by_player.get(normalize(nm))
             if p:
                 props_map[b["n"]] = _prop_drawer(sport, p)
-    for who, nm in (("away", ap), ("home", hp)):
+    for nm in (ap, hp):
         p = prop_by_player.get(normalize(nm or ""))
         if p:
             props_map[nm] = _prop_drawer(sport, p)
 
-    # ranks strings for the meta strip
-    def rankpair(a, h):
-        a = f"{ac} {int(a)}th" if a is not None and pd.notna(a) else f"{ac} {GAP}"
-        h = f"{hc} {int(h)}th" if h is not None and pd.notna(h) else f"{hc} {GAP}"
-        return f"{a} / {h}"
-
-    # calibration receipt (real, from the ledger if present)
     cal = _calibration_receipt(g)
-
-    # the headline play -> Share view + overall grade
-    best = max((c for c in (("Moneyline", ml), ("Run Line", rl), ("Total", tot))),
+    best = max((("Moneyline", ml), ("Run Line", rl), ("Total", tot)),
                key=lambda kv: (kv[1].get("ev") or -9))
     best_ev = best[1].get("ev")
     grade = ui.play_tier(best_ev)["letter"]
+    tags = f"ML {conf['ml']['tag']} · RL {conf['rl']['tag']} · TOT {conf['tot']['tag']}"
     share = {
-        "side": f"{best[1].get('side', GAP)}",
-        "mk": f"{best[0]} · confidence {best[1].get('score', GAP):g}/10"
-              if best[1].get("score") is not None else best[0],
+        "side": best[1].get("side", GAP),
+        "mk": (f"{best[0]} · confidence {best[1].get('score'):g}/10"
+               if best[1].get("score") is not None else best[0]),
         "price": f"edge {best_ev * 100:+.1f}%" if best_ev is not None and pd.notna(best_ev) else GAP,
         "why": (f"Model's top lean is {best[1].get('side', '')} "
-                f"({best[0]}, {best_ev * 100:+.1f}% EV). "
-                "Other markets grade lower — no forced play."
-                if best_ev is not None and pd.notna(best_ev) else
-                "No market cleared the edge bar today — pass."),
-        "calLine": cal["h"] + " · " + cal["s"],
-        "tags": (f"ML {conf['ml']['tag']} · RL {conf['rl']['tag']} · "
-                 f"TOT {conf['tot']['tag']}"),
-    }
+                f"({best[0]}, {best_ev * 100:+.1f}% EV). Other markets grade lower — "
+                "no forced play." if best_ev is not None and pd.notna(best_ev) else
+                "No market cleared the edge bar — pass."),
+        "calLine": f"{cal['h']} · {cal['s']}", "tags": tags}
 
     return {
         "league": sport, "grade": grade or GAP,
         "date": _dt(g.get("game_time")), "loc": matchup.get("venue") or GAP,
-        "weather": _weather(g), "park": _park(sport, home),
-        "power": rankpair(matchup.get("away_power_rank"), matchup.get("home_power_rank")),
-        "pen": GAP,  # no bullpen *rank* in the engine — honest DATA GAP
-        "rest": rankpair(matchup.get("away_rest"), matchup.get("home_rest")).replace("th", ""),
         "away": _team(sport, away, matchup.get("away_form"), matchup.get("away_sos_rank")),
         "home": _team(sport, home, matchup.get("home_form"), matchup.get("home_sos_rank")),
         "odds": {"awayML": ui.fmt_american(g.get("away_ml")) or GAP,
                  "ou": _n(g.get("total_line"), 1),
                  "homeML": ui.fmt_american(g.get("home_ml")) or GAP},
-        "pitchers": {
-            "away": {"name": ap or GAP, "role": GAP, "line": GAP},
-            "home": {"name": hp or GAP, "role": GAP, "line": GAP}},
-        "pitchMatrix": pit or gap_row,
-        "batMatrix": bat or gap_row,
-        "penMatrix": gap_row,   # DATA GAP — no engine bullpen matrix
+        "meta": _meta(sport, g, matchup, ac, hc),
+        "starters": _starters(sport, g),
+        "sections": _sections(sport, matchup, away, home, ac, hc),
+        "lineups": lineups,
+        "lineupLabel": ("Lineups — tap any hitter for prop projection" if sport == "MLB"
+                        else "Lineups — tap any player for prop projection"),
         "conf": conf,
         "keyEdges": _key_edges(matchup, ac, hc),
-        "lineups": lineups,
-        "receipts": {
-            "cal": cal,
-            "stress": {"h": GAP, "s": "stress test not yet wired"},
-            "line": {"h": share["tags"], "s": "per-market grade from live EV"}},
-        "share": share,
-        "props": props_map,
+        "receipts": {"cal": cal,
+                     "stress": {"h": GAP, "s": "stress test not yet wired"},
+                     "line": {"h": tags, "s": "per-market grade from live EV"}},
+        "share": share, "props": props_map,
     }
+
+
+def _build_g_tennis(sport: str, g: dict) -> dict:
+    """Match-sport variant: player vs player, one market (match winner), no stat
+    matrix or lineups — renders through the same template (empty sections degrade
+    cleanly to a lightweight card)."""
+    p1, p2 = g.get("player1", ""), g.get("player2", "")
+    c1, c2 = _code(sport, p1), _code(sport, p2)
+    p1_ev, p2_ev = g.get("p1_ev"), g.get("p2_ev")
+    evs = [e for e in (p1_ev, p2_ev) if e is not None and pd.notna(e)]
+    best_ev = max(evs) if evs else None
+    fav = p1 if (p1_ev is not None and (p2_ev is None or (p1_ev or -9) >= (p2_ev or -9))) else p2
+    fav_c = c1 if fav == p1 else c2
+    score = ui._conviction(best_ev)
+    tier = ui.play_tier(best_ev)
+    c = "play" if tier["kind"] == "core" else "lean" if tier["kind"] in ("lean", "watch") else "pass"
+    ml = {"v": f"{score:g}" if score is not None else GAP,
+          "tag": f"{tier['label'].replace(' PLAY', '')} {fav_c}", "c": c}
+    gap_cell = {"v": GAP, "tag": GAP, "c": "pass"}
+
+    def player(nm, matches, prob):
+        rec = f"{matches} matches" if matches else GAP
+        if prob is not None and pd.notna(prob):
+            rec += f" · win {ui._pct(prob)}"
+        return {"code": _code(sport, nm), "name": nm, "rec": rec, "form": []}
+
+    tags = f"MATCH {ml['tag']}"
+    share = {
+        "side": f"{fav} to win",
+        "mk": f"Match winner · confidence {score:g}/10" if score is not None else "Match winner",
+        "price": f"edge {best_ev * 100:+.1f}%" if best_ev is not None and pd.notna(best_ev) else GAP,
+        "why": (f"Model favours {fav} ({best_ev * 100:+.1f}% EV on the moneyline)."
+                if best_ev is not None and pd.notna(best_ev) else "No priced edge in this match."),
+        "calLine": GAP, "tags": tags}
+    return {
+        "league": sport, "grade": tier["letter"] or GAP,
+        "date": _dt(g.get("match_time")), "loc": g.get("tournament") or GAP,
+        "away": player(p1, g.get("p1_matches"), g.get("player1_win_prob")),
+        "home": player(p2, g.get("p2_matches"), g.get("player2_win_prob")),
+        "odds": {"awayML": ui.fmt_american(g.get("p1_price")) or GAP, "ou": GAP,
+                 "homeML": ui.fmt_american(g.get("p2_price")) or GAP},
+        "meta": [{"k": "Date/Time", "v": _dt(g.get("match_time"))},
+                 {"k": "Tournament", "v": g.get("tournament") or GAP},
+                 {"k": "Surface", "v": str(g.get("surface") or "").title() or GAP},
+                 {"k": "Format", "v": "Best of 3"}],
+        "starters": None, "sections": [],
+        "lineups": {"away": {"code": c1, "vs": "", "order": []},
+                    "home": {"code": c2, "vs": "", "order": []}},
+        "lineupLabel": "", "conf": {"ml": ml, "rl": gap_cell, "tot": gap_cell},
+        "keyEdges": [],
+        "receipts": {"cal": {"h": GAP, "s": "tennis calibration pending"},
+                     "stress": {"h": GAP, "s": GAP},
+                     "line": {"h": tags, "s": "match-winner grade from EV"}},
+        "share": share, "props": {}}
 
 
 def _key_edges(matchup: dict, ac: str, hc: str) -> list:
