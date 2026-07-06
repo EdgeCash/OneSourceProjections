@@ -374,9 +374,29 @@ if _pending_nav:
         if _ps and _ps in NAV_GROUPS[_pa]:
             st.session_state[f"nav_{_pa}"] = _ps
 
+@st.cache_data(show_spinner=False)
+def _build_stamp() -> str:
+    """Short git SHA of the running checkout, so the sidebar shows exactly which
+    commit is live. The stamp's mere presence also confirms the new build
+    deployed (the old build has no stamp)."""
+    import os
+    import subprocess
+    try:
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=root,
+                             capture_output=True, text=True, timeout=3).stdout.strip()
+        if sha:
+            return sha
+    except Exception:
+        pass
+    return os.environ.get("BUILD_SHA", "")
+
+
 with st.sidebar:
     st.markdown("<div class='osp-brand'>🎯 360Five</div>", unsafe_allow_html=True)
     st.caption("360° research · 5 W's · 365 days")
+    _sha = _build_stamp()
+    st.caption(f"⬢ Terminal build{f' · {_sha}' if _sha else ''}")
     _theme_toggle("theme_sb")
     area = st.radio("Section", [g for g in NAV_GROUPS if NAV_GROUPS[g]],
                     label_visibility="collapsed", key="nav_area")
