@@ -1,0 +1,932 @@
+[
+ {
+  "sport": "MLB",
+  "seasons": [
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "current_shrink": 0.65,
+  "recommended_shrink": 0.8,
+  "drift": true,
+  "recommendation": "move 0.65 -> 0.8",
+  "matched_bets": 419,
+  "n_games": 8443,
+  "brier": 0.2479,
+  "favorite_hit_rate": 0.538,
+  "total_mae": 3.566,
+  "total_bias": -0.109,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 134,
+    "total_units": 44.53,
+    "total_bets": 410,
+    "ml": {
+     "bets": 158,
+     "win_rate": 0.462,
+     "units": 15.12,
+     "roi_pct": 9.57
+    },
+    "total": {
+     "bets": 114,
+     "win_rate": 0.4912,
+     "units": 0.32,
+     "roi_pct": 0.28
+    },
+    "spread": {
+     "bets": 138,
+     "win_rate": 0.5,
+     "units": 29.09,
+     "roi_pct": 21.08
+    },
+    "avg_clv": -0.0475
+   },
+   {
+    "shrink": 0.5,
+    "matched": 134,
+    "total_units": 49.82,
+    "total_bets": 419,
+    "ml": {
+     "bets": 162,
+     "win_rate": 0.4815,
+     "units": 19.57,
+     "roi_pct": 12.08
+    },
+    "total": {
+     "bets": 106,
+     "win_rate": 0.4811,
+     "units": -1.19,
+     "roi_pct": -1.12
+    },
+    "spread": {
+     "bets": 151,
+     "win_rate": 0.4901,
+     "units": 31.44,
+     "roi_pct": 20.82
+    },
+    "avg_clv": -0.0475
+   },
+   {
+    "shrink": 0.65,
+    "matched": 134,
+    "total_units": 53.97,
+    "total_bets": 411,
+    "ml": {
+     "bets": 160,
+     "win_rate": 0.4938,
+     "units": 22.12,
+     "roi_pct": 13.82
+    },
+    "total": {
+     "bets": 99,
+     "win_rate": 0.4747,
+     "units": -1.86,
+     "roi_pct": -1.87
+    },
+    "spread": {
+     "bets": 152,
+     "win_rate": 0.4868,
+     "units": 33.71,
+     "roi_pct": 22.18
+    },
+    "avg_clv": -0.0475
+   },
+   {
+    "shrink": 0.8,
+    "matched": 134,
+    "total_units": 65.29,
+    "total_bets": 377,
+    "ml": {
+     "bets": 139,
+     "win_rate": 0.5036,
+     "units": 23.37,
+     "roi_pct": 16.82
+    },
+    "total": {
+     "bets": 90,
+     "win_rate": 0.4889,
+     "units": 1.55,
+     "roi_pct": 1.72
+    },
+    "spread": {
+     "bets": 148,
+     "win_rate": 0.5,
+     "units": 40.37,
+     "roi_pct": 27.28
+    },
+    "avg_clv": -0.0475
+   }
+  ],
+  "best": {
+   "shrink": 0.8,
+   "matched": 134,
+   "total_units": 65.29,
+   "total_bets": 377,
+   "ml": {
+    "bets": 139,
+    "win_rate": 0.5036,
+    "units": 23.37,
+    "roi_pct": 16.82
+   },
+   "total": {
+    "bets": 90,
+    "win_rate": 0.4889,
+    "units": 1.55,
+    "roi_pct": 1.72
+   },
+   "spread": {
+    "bets": 148,
+    "win_rate": 0.5,
+    "units": 40.37,
+    "roi_pct": 27.28
+   },
+   "avg_clv": -0.0475
+  },
+  "current_row": {
+   "shrink": 0.65,
+   "matched": 134,
+   "total_units": 53.97,
+   "total_bets": 411,
+   "ml": {
+    "bets": 160,
+    "win_rate": 0.4938,
+    "units": 22.12,
+    "roi_pct": 13.82
+   },
+   "total": {
+    "bets": 99,
+    "win_rate": 0.4747,
+    "units": -1.86,
+    "roi_pct": -1.87
+   },
+   "spread": {
+    "bets": 152,
+    "win_rate": 0.4868,
+    "units": 33.71,
+    "roi_pct": 22.18
+   },
+   "avg_clv": -0.0475
+  }
+ },
+ {
+  "sport": "WNBA",
+  "seasons": [
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "current_shrink": 0.5,
+  "recommended_shrink": 0.5,
+  "drift": false,
+  "recommendation": "hold 0.5 (sample<150)",
+  "matched_bets": 104,
+  "n_games": 846,
+  "brier": 0.2154,
+  "favorite_hit_rate": 0.6608,
+  "total_mae": 13.445,
+  "total_bias": -0.32,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 40,
+    "total_units": 0.08,
+    "total_bets": 104,
+    "ml": {
+     "bets": 43,
+     "win_rate": 0.3953,
+     "units": 2.05,
+     "roi_pct": 4.78
+    },
+    "total": {
+     "bets": 27,
+     "win_rate": 0.4815,
+     "units": -1.62,
+     "roi_pct": -6.01
+    },
+    "spread": {
+     "bets": 34,
+     "win_rate": 0.5,
+     "units": -0.35,
+     "roi_pct": -1.03
+    },
+    "avg_clv": 0.0634
+   },
+   {
+    "shrink": 0.5,
+    "matched": 40,
+    "total_units": 5.07,
+    "total_bets": 98,
+    "ml": {
+     "bets": 41,
+     "win_rate": 0.439,
+     "units": 6.9,
+     "roi_pct": 16.84
+    },
+    "total": {
+     "bets": 26,
+     "win_rate": 0.5,
+     "units": -0.62,
+     "roi_pct": -2.4
+    },
+    "spread": {
+     "bets": 31,
+     "win_rate": 0.4839,
+     "units": -1.21,
+     "roi_pct": -3.91
+    },
+    "avg_clv": 0.0634
+   },
+   {
+    "shrink": 0.65,
+    "matched": 40,
+    "total_units": 2.65,
+    "total_bets": 93,
+    "ml": {
+     "bets": 40,
+     "win_rate": 0.425,
+     "units": 6.32,
+     "roi_pct": 15.79
+    },
+    "total": {
+     "bets": 25,
+     "win_rate": 0.44,
+     "units": -3.5,
+     "roi_pct": -14.01
+    },
+    "spread": {
+     "bets": 28,
+     "win_rate": 0.5,
+     "units": -0.17,
+     "roi_pct": -0.59
+    },
+    "avg_clv": 0.0634
+   },
+   {
+    "shrink": 0.8,
+    "matched": 40,
+    "total_units": -0.99,
+    "total_bets": 77,
+    "ml": {
+     "bets": 36,
+     "win_rate": 0.3889,
+     "units": 2.33,
+     "roi_pct": 6.46
+    },
+    "total": {
+     "bets": 20,
+     "win_rate": 0.45,
+     "units": -2.35,
+     "roi_pct": -11.77
+    },
+    "spread": {
+     "bets": 21,
+     "win_rate": 0.4762,
+     "units": -0.97,
+     "roi_pct": -4.62
+    },
+    "avg_clv": 0.0634
+   }
+  ],
+  "best": null,
+  "current_row": null
+ },
+ {
+  "sport": "NBA",
+  "seasons": [
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "current_shrink": 0.5,
+  "recommended_shrink": 0.8,
+  "drift": true,
+  "recommendation": "move 0.5 -> 0.8",
+  "matched_bets": 5485,
+  "n_games": 4092,
+  "brier": 0.2071,
+  "favorite_hit_rate": 0.672,
+  "total_mae": 15.215,
+  "total_bias": -0.438,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 4000,
+    "total_units": -376.47,
+    "total_bets": 5485,
+    "ml": {
+     "bets": 2494,
+     "win_rate": 0.3268,
+     "units": -378.92,
+     "roi_pct": -15.19
+    },
+    "total": {
+     "bets": 2991,
+     "win_rate": 0.5242,
+     "units": 2.45,
+     "roi_pct": 0.08
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0192
+   },
+   {
+    "shrink": 0.5,
+    "matched": 4000,
+    "total_units": -383.01,
+    "total_bets": 4814,
+    "ml": {
+     "bets": 2201,
+     "win_rate": 0.3026,
+     "units": -374.01,
+     "roi_pct": -16.99
+    },
+    "total": {
+     "bets": 2613,
+     "win_rate": 0.522,
+     "units": -9.0,
+     "roi_pct": -0.34
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0192
+   },
+   {
+    "shrink": 0.65,
+    "matched": 4000,
+    "total_units": -366.57,
+    "total_bets": 3918,
+    "ml": {
+     "bets": 1845,
+     "win_rate": 0.2753,
+     "units": -328.66,
+     "roi_pct": -17.81
+    },
+    "total": {
+     "bets": 2073,
+     "win_rate": 0.5142,
+     "units": -37.91,
+     "roi_pct": -1.83
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0192
+   },
+   {
+    "shrink": 0.8,
+    "matched": 4000,
+    "total_units": -307.16,
+    "total_bets": 2323,
+    "ml": {
+     "bets": 1261,
+     "win_rate": 0.2276,
+     "units": -268.43,
+     "roi_pct": -21.29
+    },
+    "total": {
+     "bets": 1062,
+     "win_rate": 0.5047,
+     "units": -38.73,
+     "roi_pct": -3.65
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0192
+   }
+  ],
+  "best": {
+   "shrink": 0.8,
+   "matched": 4000,
+   "total_units": -307.16,
+   "total_bets": 2323,
+   "ml": {
+    "bets": 1261,
+    "win_rate": 0.2276,
+    "units": -268.43,
+    "roi_pct": -21.29
+   },
+   "total": {
+    "bets": 1062,
+    "win_rate": 0.5047,
+    "units": -38.73,
+    "roi_pct": -3.65
+   },
+   "spread": {
+    "bets": 0,
+    "win_rate": null,
+    "units": 0.0,
+    "roi_pct": null
+   },
+   "avg_clv": 0.0192
+  },
+  "current_row": {
+   "shrink": 0.5,
+   "matched": 4000,
+   "total_units": -383.01,
+   "total_bets": 4814,
+   "ml": {
+    "bets": 2201,
+    "win_rate": 0.3026,
+    "units": -374.01,
+    "roi_pct": -16.99
+   },
+   "total": {
+    "bets": 2613,
+    "win_rate": 0.522,
+    "units": -9.0,
+    "roi_pct": -0.34
+   },
+   "spread": {
+    "bets": 0,
+    "win_rate": null,
+    "units": 0.0,
+    "roi_pct": null
+   },
+   "avg_clv": 0.0192
+  }
+ },
+ {
+  "sport": "NFL",
+  "seasons": [
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "current_shrink": 0.5,
+  "recommended_shrink": 0.8,
+  "drift": true,
+  "recommendation": "move 0.5 -> 0.8",
+  "matched_bets": 1816,
+  "n_games": 976,
+  "brier": 0.2183,
+  "favorite_hit_rate": 0.6465,
+  "total_mae": 10.51,
+  "total_bias": -0.26,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 976,
+    "total_units": -135.56,
+    "total_bets": 1816,
+    "ml": {
+     "bets": 648,
+     "win_rate": 0.3287,
+     "units": -89.76,
+     "roi_pct": -13.85
+    },
+    "total": {
+     "bets": 614,
+     "win_rate": 0.5033,
+     "units": -22.38,
+     "roi_pct": -3.65
+    },
+    "spread": {
+     "bets": 554,
+     "win_rate": 0.4982,
+     "units": -23.42,
+     "roi_pct": -4.23
+    },
+    "avg_clv": 0.006
+   },
+   {
+    "shrink": 0.5,
+    "matched": 976,
+    "total_units": -124.16,
+    "total_bets": 1480,
+    "ml": {
+     "bets": 566,
+     "win_rate": 0.3127,
+     "units": -85.48,
+     "roi_pct": -15.1
+    },
+    "total": {
+     "bets": 500,
+     "win_rate": 0.5,
+     "units": -21.21,
+     "roi_pct": -4.24
+    },
+    "spread": {
+     "bets": 414,
+     "win_rate": 0.4976,
+     "units": -17.47,
+     "roi_pct": -4.22
+    },
+    "avg_clv": 0.006
+   },
+   {
+    "shrink": 0.65,
+    "matched": 976,
+    "total_units": -102.22,
+    "total_bets": 1084,
+    "ml": {
+     "bets": 459,
+     "win_rate": 0.2876,
+     "units": -74.39,
+     "roi_pct": -16.21
+    },
+    "total": {
+     "bets": 360,
+     "win_rate": 0.4889,
+     "units": -22.6,
+     "roi_pct": -6.28
+    },
+    "spread": {
+     "bets": 265,
+     "win_rate": 0.5094,
+     "units": -5.23,
+     "roi_pct": -1.97
+    },
+    "avg_clv": 0.006
+   },
+   {
+    "shrink": 0.8,
+    "matched": 976,
+    "total_units": -43.23,
+    "total_bets": 425,
+    "ml": {
+     "bets": 255,
+     "win_rate": 0.2471,
+     "units": -40.98,
+     "roi_pct": -16.07
+    },
+    "total": {
+     "bets": 100,
+     "win_rate": 0.47,
+     "units": -9.81,
+     "roi_pct": -9.81
+    },
+    "spread": {
+     "bets": 70,
+     "win_rate": 0.5714,
+     "units": 7.56,
+     "roi_pct": 10.8
+    },
+    "avg_clv": 0.006
+   }
+  ],
+  "best": {
+   "shrink": 0.8,
+   "matched": 976,
+   "total_units": -43.23,
+   "total_bets": 425,
+   "ml": {
+    "bets": 255,
+    "win_rate": 0.2471,
+    "units": -40.98,
+    "roi_pct": -16.07
+   },
+   "total": {
+    "bets": 100,
+    "win_rate": 0.47,
+    "units": -9.81,
+    "roi_pct": -9.81
+   },
+   "spread": {
+    "bets": 70,
+    "win_rate": 0.5714,
+    "units": 7.56,
+    "roi_pct": 10.8
+   },
+   "avg_clv": 0.006
+  },
+  "current_row": {
+   "shrink": 0.5,
+   "matched": 976,
+   "total_units": -124.16,
+   "total_bets": 1480,
+   "ml": {
+    "bets": 566,
+    "win_rate": 0.3127,
+    "units": -85.48,
+    "roi_pct": -15.1
+   },
+   "total": {
+    "bets": 500,
+    "win_rate": 0.5,
+    "units": -21.21,
+    "roi_pct": -4.24
+   },
+   "spread": {
+    "bets": 414,
+    "win_rate": 0.4976,
+    "units": -17.47,
+    "roi_pct": -4.22
+   },
+   "avg_clv": 0.006
+  }
+ },
+ {
+  "sport": "NCAAF",
+  "seasons": [
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "current_shrink": 0.5,
+  "recommended_shrink": 0.5,
+  "drift": false,
+  "recommendation": "hold 0.5 (sample<150)",
+  "matched_bets": 0,
+  "n_games": 44,
+  "brier": 0.2518,
+  "favorite_hit_rate": 0.5682,
+  "total_mae": 12.018,
+  "total_bias": 2.003,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 0,
+    "total_units": 0.0,
+    "total_bets": 0,
+    "ml": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "total": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": null
+   },
+   {
+    "shrink": 0.5,
+    "matched": 0,
+    "total_units": 0.0,
+    "total_bets": 0,
+    "ml": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "total": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": null
+   },
+   {
+    "shrink": 0.65,
+    "matched": 0,
+    "total_units": 0.0,
+    "total_bets": 0,
+    "ml": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "total": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": null
+   },
+   {
+    "shrink": 0.8,
+    "matched": 0,
+    "total_units": 0.0,
+    "total_bets": 0,
+    "ml": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "total": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": null
+   }
+  ],
+  "best": null,
+  "current_row": null
+ },
+ {
+  "sport": "NHL",
+  "seasons": [
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "current_shrink": 0.5,
+  "recommended_shrink": 0.8,
+  "drift": true,
+  "recommendation": "move 0.5 -> 0.8",
+  "matched_bets": 4856,
+  "n_games": 4532,
+  "brier": 0.2413,
+  "favorite_hit_rate": 0.5724,
+  "total_mae": 1.866,
+  "total_bias": -0.213,
+  "sweep": [
+   {
+    "shrink": 0.3,
+    "matched": 4178,
+    "total_units": -298.76,
+    "total_bets": 4856,
+    "ml": {
+     "bets": 2051,
+     "win_rate": 0.3642,
+     "units": -225.67,
+     "roi_pct": -11.0
+    },
+    "total": {
+     "bets": 2805,
+     "win_rate": 0.5102,
+     "units": -73.09,
+     "roi_pct": -2.61
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0106
+   },
+   {
+    "shrink": 0.5,
+    "matched": 4178,
+    "total_units": -203.54,
+    "total_bets": 3915,
+    "ml": {
+     "bets": 1582,
+     "win_rate": 0.3489,
+     "units": -159.54,
+     "roi_pct": -10.08
+    },
+    "total": {
+     "bets": 2333,
+     "win_rate": 0.5139,
+     "units": -44.0,
+     "roi_pct": -1.89
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0106
+   },
+   {
+    "shrink": 0.65,
+    "matched": 4178,
+    "total_units": -132.38,
+    "total_bets": 2756,
+    "ml": {
+     "bets": 1084,
+     "win_rate": 0.3192,
+     "units": -128.93,
+     "roi_pct": -11.89
+    },
+    "total": {
+     "bets": 1672,
+     "win_rate": 0.5227,
+     "units": -3.45,
+     "roi_pct": -0.21
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0106
+   },
+   {
+    "shrink": 0.8,
+    "matched": 4178,
+    "total_units": -44.27,
+    "total_bets": 1010,
+    "ml": {
+     "bets": 437,
+     "win_rate": 0.2563,
+     "units": -45.91,
+     "roi_pct": -10.51
+    },
+    "total": {
+     "bets": 573,
+     "win_rate": 0.5253,
+     "units": 1.64,
+     "roi_pct": 0.29
+    },
+    "spread": {
+     "bets": 0,
+     "win_rate": null,
+     "units": 0.0,
+     "roi_pct": null
+    },
+    "avg_clv": 0.0106
+   }
+  ],
+  "best": {
+   "shrink": 0.8,
+   "matched": 4178,
+   "total_units": -44.27,
+   "total_bets": 1010,
+   "ml": {
+    "bets": 437,
+    "win_rate": 0.2563,
+    "units": -45.91,
+    "roi_pct": -10.51
+   },
+   "total": {
+    "bets": 573,
+    "win_rate": 0.5253,
+    "units": 1.64,
+    "roi_pct": 0.29
+   },
+   "spread": {
+    "bets": 0,
+    "win_rate": null,
+    "units": 0.0,
+    "roi_pct": null
+   },
+   "avg_clv": 0.0106
+  },
+  "current_row": {
+   "shrink": 0.5,
+   "matched": 4178,
+   "total_units": -203.54,
+   "total_bets": 3915,
+   "ml": {
+    "bets": 1582,
+    "win_rate": 0.3489,
+    "units": -159.54,
+    "roi_pct": -10.08
+   },
+   "total": {
+    "bets": 2333,
+    "win_rate": 0.5139,
+    "units": -44.0,
+    "roi_pct": -1.89
+   },
+   "spread": {
+    "bets": 0,
+    "win_rate": null,
+    "units": 0.0,
+    "roi_pct": null
+   },
+   "avg_clv": 0.0106
+  }
+ }
+]
