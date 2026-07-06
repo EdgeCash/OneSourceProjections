@@ -1,26 +1,27 @@
-# 360Five — the pure-black "Terminal" look is the go-live default; a theme toggle
-# swaps to the warm almanac-paper "cream" palette at runtime via CSS. Copper is
-# the single brand accent; green/red are reserved for meaning (money on / off).
+# 360Five — the cool near-black "Terminal" look is the go-live default; a theme
+# toggle swaps to the warm almanac-paper "cream" palette at runtime via CSS.
+# Teal is the single brand accent; green/red are reserved for meaning (money on
+# / off). Keep these in sync with _PALETTES["dark"] in app/dashboard.py.
 [theme]
 base = "dark"
-primaryColor = "#F5B841"
-backgroundColor = "#000000"
-secondaryBackgroundColor = "#0a0a0a"
-textColor = "#EAEAEA"
-linkColor = "#3d9fff"
+primaryColor = "#2dd4bf"
+backgroundColor = "#0a0d13"
+secondaryBackgroundColor = "#0f141c"
+textColor = "#e7ebf0"
+linkColor = "#38bdf8"
 # Shape + borders for the clean terminal look (Streamlit >= 1.50).
 baseRadius = "0.4rem"
-borderColor = "#1f1f1f"
+borderColor = "#1f2732"
 showWidgetBorder = true
 # Dark-theme every st.dataframe header/border without touching call sites.
-dataframeHeaderBackgroundColor = "#141414"
-dataframeBorderColor = "#1f1f1f"
+dataframeHeaderBackgroundColor = "#161d28"
+dataframeBorderColor = "#1f2732"
 
-# The sidebar reads as app chrome (deepest black).
+# The sidebar reads as app chrome (deepest ink).
 [theme.sidebar]
-backgroundColor = "#050505"
-secondaryBackgroundColor = "#000000"
-borderColor = "#1f1f1f"
+backgroundColor = "#0c1017"
+secondaryBackgroundColor = "#0a0d13"
+borderColor = "#1f2732"
 
 [browser]
 gatherUsageStats = false
