@@ -1,0 +1,654 @@
+[
+ {
+  "id": 98673,
+  "sr_id": "4fa5ff07-5f7b-4def-a271-2e45b1faa5fe",
+  "sport": "MLB",
+  "scheduled": "2026-07-07 18:15:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "STL",
+  "visitor": "MIL",
+  "link": "/mlb/matchups/milwaukee-brewers-vs-st-louis-cardinals/?date=2026-07-07",
+  "series_summary": null,
+  "popularity": 144,
+  "double_header": true,
+  "pitchers": {
+   "home_probable": {
+    "id": "44689",
+    "name": "Michael McGreevy",
+    "link": "/mlb/props/mike-mcgreevy/",
+    "player": {
+     "short_name": "M. McGreevy",
+     "first_name": "Michael",
+     "last_name": "McGreevy",
+     "image": "https://images.fantasypros.com/images/players/mlb/44689/headshot/210x210.webp",
+     "position": "SP",
+     "team": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "mike-mcgreevy",
+     "jersey_number": 36
+    }
+   },
+   "visitor_probable": {
+    "id": "46366",
+    "name": "Jacob Misiorowski",
+    "link": "/mlb/props/jacob-misiorowski/",
+    "player": {
+     "short_name": "J. Misiorowski",
+     "first_name": "Jacob",
+     "last_name": "Misiorowski",
+     "image": "https://images.fantasypros.com/images/players/mlb/46366/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "jacob-misiorowski",
+     "jersey_number": 32
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": [
+    {
+     "slot": 1,
+     "position": "2B",
+     "participant": {
+      "id": "7354366",
+      "name": "JJ Wetherholt",
+      "link": "/mlb/props/jj-wetherholt/",
+      "player": {
+       "short_name": "JJ Wetherholt",
+       "first_name": "JJ",
+       "last_name": "Wetherholt",
+       "image": "https://images.fantasypros.com/images/players/mlb/7354366/headshot/210x210.webp",
+       "position": "2B,3B,SS",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "jj-wetherholt",
+       "jersey_number": 26
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "C",
+     "participant": {
+      "id": "43691",
+      "name": "Ivan Herrera",
+      "link": "/mlb/props/ivan-herrera/",
+      "player": {
+       "short_name": "I. Herrera",
+       "first_name": "Ivan",
+       "last_name": "Herrera",
+       "image": "https://images.fantasypros.com/images/players/mlb/43691/headshot/210x210.webp",
+       "position": "C,DH",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "ivan-herrera",
+       "jersey_number": 48
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "1B",
+     "participant": {
+      "id": "43889",
+      "name": "Alec Burleson",
+      "link": "/mlb/props/alec-burleson/",
+      "player": {
+       "short_name": "A. Burleson",
+       "first_name": "Alec",
+       "last_name": "Burleson",
+       "image": "https://images.fantasypros.com/images/players/mlb/43889/headshot/210x210.webp",
+       "position": "1B,LF,RF,DH",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "alec-burleson",
+       "jersey_number": 41
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "RF",
+     "participant": {
+      "id": "43830",
+      "name": "Jordan Walker",
+      "link": "/mlb/props/jordan-walker/",
+      "player": {
+       "short_name": "J. Walker",
+       "first_name": "Jordan",
+       "last_name": "Walker",
+       "image": "https://images.fantasypros.com/images/players/mlb/43830/headshot/210x210.webp",
+       "position": "LF,RF",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "jordan-walker",
+       "jersey_number": 18
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "DH",
+     "participant": {
+      "id": "7471",
+      "name": "Nolan Gorman",
+      "link": "/mlb/props/nolan-gorman/",
+      "player": {
+       "short_name": "N. Gorman",
+       "first_name": "Nolan",
+       "last_name": "Gorman",
+       "image": "https://images.fantasypros.com/images/players/mlb/7471/headshot/210x210.webp",
+       "position": "2B,3B,DH",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "nolan-gorman",
+       "jersey_number": 16
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "SS",
+     "participant": {
+      "id": "43906",
+      "name": "Masyn Winn",
+      "link": "/mlb/props/masyn-winn-p/",
+      "player": {
+       "short_name": "M. Winn",
+       "first_name": "Masyn",
+       "last_name": "Winn",
+       "image": "https://images.fantasypros.com/images/players/mlb/43906/headshot/210x210.webp",
+       "position": "SS",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "masyn-winn-p",
+       "jersey_number": 0
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "LF",
+     "participant": {
+      "id": "47315",
+      "name": "Nathan Church",
+      "link": "/mlb/props/nathan-church/",
+      "player": {
+       "short_name": "N. Church",
+       "first_name": "Nathan",
+       "last_name": "Church",
+       "image": "https://images.fantasypros.com/images/players/mlb/47315/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "nathan-church",
+       "jersey_number": 27
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "3B",
+     "participant": {
+      "id": "45928",
+      "name": "Cesar Prieto",
+      "link": "/mlb/props/cesar-prieto/",
+      "player": {
+       "short_name": "C. Prieto",
+       "first_name": "Cesar",
+       "last_name": "Prieto",
+       "image": "https://images.fantasypros.com/images/players/mlb/45928/headshot/210x210.webp",
+       "position": "2B,3B,SS",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "cesar-prieto",
+       "jersey_number": 31
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "CF",
+     "participant": {
+      "id": "46622",
+      "name": "Victor Scott",
+      "link": "/mlb/props/victor-scott/",
+      "player": {
+       "short_name": "V. Scott",
+       "first_name": "Victor",
+       "last_name": "Scott",
+       "image": "https://images.fantasypros.com/images/players/mlb/46622/headshot/210x210.webp",
+       "position": "CF",
+       "team": "STL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "victor-scott",
+       "jersey_number": 11
+      }
+     }
+    }
+   ],
+   "visitor_lineup": [
+    {
+     "slot": 1,
+     "position": "CF",
+     "participant": {
+      "id": "6859",
+      "name": "Garrett Mitchell",
+      "link": "/mlb/props/garrett-mitchell/",
+      "player": {
+       "short_name": "G. Mitchell",
+       "first_name": "Garrett",
+       "last_name": "Mitchell",
+       "image": "https://images.fantasypros.com/images/players/mlb/6859/headshot/210x210.webp",
+       "position": "CF,RF",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "garrett-mitchell",
+       "jersey_number": 5
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "DH",
+     "participant": {
+      "id": "7659",
+      "name": "William Contreras",
+      "link": "/mlb/props/william-contreras/",
+      "player": {
+       "short_name": "W. Contreras",
+       "first_name": "William",
+       "last_name": "Contreras",
+       "image": "https://images.fantasypros.com/images/players/mlb/7659/headshot/210x210.webp",
+       "position": "C,DH",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "william-contreras",
+       "jersey_number": 24
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "2B",
+     "participant": {
+      "id": "6817",
+      "name": "Brice Turang",
+      "link": "/mlb/props/brice-turang/",
+      "player": {
+       "short_name": "B. Turang",
+       "first_name": "Brice",
+       "last_name": "Turang",
+       "image": "https://images.fantasypros.com/images/players/mlb/6817/headshot/210x210.webp",
+       "position": "2B",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "brice-turang",
+       "jersey_number": 2
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "C",
+     "participant": {
+      "id": "4670",
+      "name": "Gary Sanchez",
+      "link": "/mlb/props/gary-sanchez/",
+      "player": {
+       "short_name": "G. Sanchez",
+       "first_name": "Gary",
+       "last_name": "Sanchez",
+       "image": "https://images.fantasypros.com/images/players/mlb/4670/headshot/210x210.webp",
+       "position": "C,1B,DH",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "gary-sanchez",
+       "jersey_number": 99
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "1B",
+     "participant": {
+      "id": "5090",
+      "name": "Jake Bauers",
+      "link": "/mlb/props/jake-bauers/",
+      "player": {
+       "short_name": "J. Bauers",
+       "first_name": "Jake",
+       "last_name": "Bauers",
+       "image": "https://images.fantasypros.com/images/players/mlb/5090/headshot/210x210.webp",
+       "position": "1B,LF,RF",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "jake-bauers",
+       "jersey_number": 9
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "3B",
+     "participant": {
+      "id": "8153",
+      "name": "Luis Rengifo",
+      "link": "/mlb/props/luis-rengifo/",
+      "player": {
+       "short_name": "L. Rengifo",
+       "first_name": "Luis",
+       "last_name": "Rengifo",
+       "image": "https://images.fantasypros.com/images/players/mlb/8153/headshot/210x210.webp",
+       "position": "2B,3B,OF",
+       "team": "SD",
+       "conference": "NL",
+       "division": "West",
+       "slug": "luis-rengifo",
+       "jersey_number": 0
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "RF",
+     "participant": {
+      "id": "44675",
+      "name": "Sal Frelick",
+      "link": "/mlb/props/sal-frelick/",
+      "player": {
+       "short_name": "S. Frelick",
+       "first_name": "Sal",
+       "last_name": "Frelick",
+       "image": "https://images.fantasypros.com/images/players/mlb/44675/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "sal-frelick",
+       "jersey_number": 10
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "LF",
+     "participant": {
+      "id": "45610",
+      "name": "Brandon Lockridge",
+      "link": "/mlb/props/brandon-lockridge/",
+      "player": {
+       "short_name": "B. Lockridge",
+       "first_name": "Brandon",
+       "last_name": "Lockridge",
+       "image": "https://images.fantasypros.com/images/players/mlb/45610/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "brandon-lockridge",
+       "jersey_number": 20
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "SS",
+     "participant": {
+      "id": "45029",
+      "name": "David Hamilton",
+      "link": "/mlb/props/david-hamilton/",
+      "player": {
+       "short_name": "D. Hamilton",
+       "first_name": "David",
+       "last_name": "Hamilton",
+       "image": "https://images.fantasypros.com/images/players/mlb/45029/headshot/210x210.webp",
+       "position": "2B,3B,SS",
+       "team": "MIL",
+       "conference": "NL",
+       "division": "Central",
+       "slug": "david-hamilton",
+       "jersey_number": 6
+      }
+     }
+    }
+   ],
+   "home_lineup_type": "confirmed",
+   "visitor_lineup_type": "projected"
+  },
+  "park_factors": {
+   "team_id": "STL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.992",
+   "1b": "1.028",
+   "2b": "0.953",
+   "3b": "0.870",
+   "hr": "0.917",
+   "name": "Busch Stadium"
+  },
+  "venue": {
+   "name": "Busch Stadium",
+   "address": "700 Clark Street",
+   "city": "St. Louis",
+   "state": "MO",
+   "country": "USA",
+   "zip": "63102",
+   "surface": "grass",
+   "capacity": 44494,
+   "stadium_type": "outdoor",
+   "id": "83cc591a-1096-4383-a6ca-e2bd6f8db629"
+  },
+  "participants": [
+   {
+    "id": "STL",
+    "name": "Cardinals",
+    "link": "/mlb/teams/st-louis-cardinals/",
+    "team": {
+     "city": "St. Louis",
+     "abbreviation": "STL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 47,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "st-louis-cardinals",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 55,
+      "L": 33,
+      "T": 0
+     },
+     "slug": "milwaukee-brewers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 84,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "NE",
+   "forecast_wind_degree": 36,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.67
+  },
+  "broadcasts": [
+   {
+    "network": "BREW",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 97935,
+  "sr_id": "01438196-9b9d-4844-898f-0b0644bf9a84",
+  "sport": "MLB",
+  "scheduled": "2026-07-07 22:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "CHC",
+  "link": "/mlb/matchups/baltimore-orioles-vs-chicago-cubs/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7158",
+    "name": "Shane Baz",
+    "link": "/mlb/props/shane-baz/",
+    "player": {
+     "short_name": "S. Baz",
+     "first_name": "Shane",
+     "last_name": "Baz",
+     "image": "https://images.fantasypros.com/images/players/mlb/7158/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "shane-baz",
+     "jersey_number": 34
+    }
+   },
+   "visitor_probable": {
+    "id": "5003",
+    "name": "Matthew Boyd",
+    "link": "/mlb/props/matt-boyd/",
+    "player": {
+     "short_name": "M. Boyd",
+     "first_name": "Matthew",
+     "last_name": "Boyd",
+     "image": "https://images.fantasypros.com/images/players/mlb/5003/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "matt-boyd",
+     "jersey_number": 16
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 42,
+      "L": 49,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 50,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 84,
+   "forecast_wind_speed": 7,
+   "forecast_wind_direction": "ENE",
+   "forecast_wind_degree": 74,
+   "forecast_rain_chance": 24,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.69
+  },
+  "broadcasts": [
+   {
+    "network": "MASN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
