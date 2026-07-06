@@ -644,13 +644,15 @@ def render_sport(sport: str):
                         log.exception("sheet data failed for %s @ %s",
                                       g.get("away_team"), g.get("home_team"))
                         m, data = {}, {}
-                    st.markdown(
+                    # st.html (not st.markdown) — the sheet's two <style> blocks
+                    # get mangled by markdown processing (content swallowed into a
+                    # <style>, rendering at height 0); st.html emits raw HTML.
+                    st.html(
                         ui.sharp_sheet_html(
                             sport, g, m, window=window, min_edge=min_edge,
                             gate_table=gt, bankroll=bankroll,
                             props=props, best_line=_best_line_for(sport, g, date_sel),
-                            data=data),
-                        unsafe_allow_html=True)
+                            data=data))
 
     with tab_p:
         render_props(sport, props, q, blob.get("injuries") or [])
@@ -823,11 +825,10 @@ def render_research_card(sport: str, g: dict, date_sel: str, caption: bool = Tru
         components.html(terminal_card.terminal_card_html(sport, g, m, props),
                         height=1700, scrolling=True)
         return
-    st.markdown(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
-                                    gate_table=gate_table(), bankroll=bankroll,
-                                    props=props, best_line=_best_line_for(sport, g, date_sel),
-                                    data=_sheet_data(sport, g, m, date_sel)),
-                unsafe_allow_html=True)
+    st.html(ui.sharp_sheet_html(sport, g, m, window=window, min_edge=min_edge,
+                                gate_table=gate_table(), bankroll=bankroll,
+                                props=props, best_line=_best_line_for(sport, g, date_sel),
+                                data=_sheet_data(sport, g, m, date_sel)))
     if caption:
         st.caption(f"Offense {teamstats.WINDOW_LABELS[window]} vs the opponent's "
                    "matching defense; rank pills are league ranks (green = top "
