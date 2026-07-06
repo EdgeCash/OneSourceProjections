@@ -547,19 +547,19 @@ function openProp(key, tag){
 /* ---------------- ASK AI GENERATOR ---------------- */
 function gamePrompt(){
   const g=G;
-  return `You are a sports betting analyst. Review this MLB matchup and give me your independent read — do you agree with the model, and would you bet any side?
+  const ctx=(g.meta||[]).filter(m=>m.k!=='Date/Time').map(m=>`${m.k}: ${m.v}`).join(' · ');
+  const one=s=>s?`${s.name} (${s.role}) — ${s.line}`:'—';
+  const st=g.starters?`\nSTARTERS:\n- ${g.away.name}: ${one(g.starters.away)}\n- ${g.home.name}: ${one(g.starters.home)}\n`:'';
+  const ou=(g.odds.ou&&g.odds.ou!=='—')?` / Total O-U ${g.odds.ou}`:'';
+  return `You are a sports betting analyst. Review this ${g.league} matchup and give me your independent read — do you agree with the model, and would you bet any side?
 
-MATCHUP: ${g.away.name} vs ${g.home.name} — ${g.date}, ${g.loc}
-CONDITIONS: ${g.weather} · Park: ${g.park} · Rest: ${g.rest}
-LINE: ${g.away.code} ML ${g.odds.awayML} / ${g.home.code} ML ${g.odds.homeML} / Total O-U ${g.odds.ou}
-
-PITCHERS:
-- ${g.away.name}: ${g.pitchers.away.name} (${g.pitchers.away.role}) — ${g.pitchers.away.line}
-- ${g.home.name}: ${g.pitchers.home.name} (${g.pitchers.home.role}) — ${g.pitchers.home.line}
-
-KEY EDGES (L5 rank, lower = better):
+MATCHUP: ${g.away.name} vs ${g.home.name} — ${g.date}${g.loc&&g.loc!=='—'?', '+g.loc:''}
+CONTEXT: ${ctx}
+LINE: ${g.away.code} ML ${g.odds.awayML} / ${g.home.code} ML ${g.odds.homeML}${ou}
+${st}
+KEY EDGES:
 ${(g.keyEdges&&g.keyEdges.length?g.keyEdges:['— matchup stat ranks pending']).map(e=>`- ${e}`).join("\n")}
-- ${g.away.name} recent form: ${g.away.form.join('')} · ${g.home.name}: ${g.home.form.join('')}
+- ${g.away.name} recent form: ${g.away.form.join('')||'—'} · ${g.home.name}: ${g.home.form.join('')||'—'}
 
 MODEL CONFIDENCE (0-10): Moneyline ${g.conf.ml.v} (${g.conf.ml.tag}) · Run Line ${g.conf.rl.v} (${g.conf.rl.tag}) · Total ${g.conf.tot.v} (${g.conf.tot.tag})
 CALIBRATION: ${g.receipts.cal.h} (${g.receipts.cal.s})
@@ -567,7 +567,7 @@ CALIBRATION: ${g.receipts.cal.h} (${g.receipts.cal.s})
 Do you agree? What would you bet, at what stake, and why?`;
 }
 function propPrompt(p){
-  return `You are a sports betting analyst. Evaluate this MLB player prop projection.
+  return `You are a sports betting analyst. Evaluate this ${G.league} player prop projection.
 
 PLAYER: ${p.player} (${p.team}, ${p.role})
 MARKET: ${p.market} — line ${p.line} at ${p.price}
