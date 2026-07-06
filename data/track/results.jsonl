@@ -685,3 +685,11 @@
 {"date": "2026-07-05", "sport": "MLB", "game": "Detroit Tigers @ Texas Rangers", "market": "moneyline", "side": "away", "line": null, "price": -115.0, "ev": 0.0417, "won": true, "pnl": 0.8696, "clv": 0.7421, "model_prob": 0.5922}
 {"date": "2026-07-05", "sport": "MLB", "game": "Milwaukee Brewers @ Arizona Diamondbacks", "market": "model_winprob", "side": "", "pred_home_wp": 0.4598, "home_won": 0, "market_home_wp": 0.6732, "brier": 0.2114, "proj_total": 8.921, "actual_total": 5}
 {"date": "2026-07-05", "sport": "MLB", "game": "Milwaukee Brewers @ Arizona Diamondbacks", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5524, "yrfi": 1, "brier": 0.2003}
+{"date": "2026-07-05", "sport": "MLB", "game": "San Francisco Giants @ Colorado Rockies", "market": "model_winprob", "side": "", "pred_home_wp": 0.5555, "home_won": 1, "market_home_wp": 0.4732, "brier": 0.1976, "proj_total": 12.409, "actual_total": 13}
+{"date": "2026-07-05", "sport": "MLB", "game": "San Francisco Giants @ Colorado Rockies", "market": "model_nrfi", "side": "", "pred_yrfi": 0.644, "yrfi": 1, "brier": 0.1267}
+{"date": "2026-07-05", "sport": "MLB", "game": "Miami Marlins @ Athletics", "market": "model_winprob", "side": "", "pred_home_wp": 0.5552, "home_won": 0, "market_home_wp": 0.0332, "brier": 0.3082, "proj_total": 10.0, "actual_total": 17}
+{"date": "2026-07-05", "sport": "MLB", "game": "Miami Marlins @ Athletics", "market": "model_nrfi", "side": "", "pred_yrfi": 0.557, "yrfi": 1, "brier": 0.1962}
+{"date": "2026-07-05", "sport": "MLB", "game": "Toronto Blue Jays @ Seattle Mariners", "market": "model_winprob", "side": "", "pred_home_wp": 0.5427, "home_won": 1, "market_home_wp": 0.5195, "brier": 0.2091, "proj_total": 7.266, "actual_total": 4}
+{"date": "2026-07-05", "sport": "MLB", "game": "Toronto Blue Jays @ Seattle Mariners", "market": "model_nrfi", "side": "", "pred_yrfi": 0.4595, "yrfi": 0, "brier": 0.2111}
+{"date": "2026-07-05", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.5845, "home_won": 0, "market_home_wp": 0.4235, "brier": 0.3416, "proj_total": 9.734, "actual_total": 7}
+{"date": "2026-07-05", "sport": "MLB", "game": "San Diego Padres @ Los Angeles Dodgers", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5126, "yrfi": 0, "brier": 0.2628}
