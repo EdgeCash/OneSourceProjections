@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>360Five — MLB Research Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Archivo+Expanded:wght@600;700;800&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Terminal palette — true black, bright amber accent, saturated data */
+    --bg:#000000; --panel:#0a0a0a; --panel2:#050505; --row:#0a0a0a; --rowalt:#070707;
+    --ink:#EAEAEA; --muted:#8a8a8a; --faint:#4d4d4d; --copper:#F5B841; --copper-dim:#8a6620;
+    --line:#1f1f1f; --hair:#141414; --green:#3ddc84; --red:#ff5b4a; --amber:#ffc93c;
+    --chip:#0f0f0f; --blue:#3d9fff;
+    --disp:'Archivo',system-ui,sans-serif; --exp:'Archivo Expanded','Archivo',sans-serif;
+    --mono:'Spline Sans Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#000;color:var(--ink);
+    font-family:var(--disp);-webkit-font-smoothing:antialiased}
+  body{padding:16px 10px 80px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .mono{font-family:var(--mono)}
+
+  /* ---- top control bar ---- */
+  .controls{width:min(880px,100%);display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .seg button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    background:transparent;border:0;padding:8px 14px;cursor:pointer;transition:.15s}
+  .seg button[aria-selected=true]{background:var(--copper);color:var(--bg);font-weight:600}
+  .seg button:focus-visible{outline:2px solid var(--copper);outline-offset:-2px}
+  .btn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
+    background:var(--panel);border:1px solid var(--copper-dim);border-radius:3px;padding:8px 14px;cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--copper);color:var(--copper)}
+  .subseg{display:none}
+  .subseg.show{display:inline-flex}
+
+  /* ---- card shell ---- */
+  .wrap{width:min(880px,100%)}
+  .card{background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);border:1px solid var(--line);
+    border-radius:6px;overflow:hidden;box-shadow:0 24px 60px -34px #000}
+  .head{display:flex;justify-content:space-between;align-items:center;padding:11px 16px}
+  .brand{font-family:var(--exp);font-weight:800;font-size:14px;color:var(--copper);letter-spacing:.02em}
+  .brand small{color:var(--faint)}
+  .lg{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted)}
+  .rule{height:1px;background:var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--copper);font-weight:500}
+
+  h1.match{font-family:var(--exp);font-weight:700;font-size:20px;margin:0;padding:6px 16px 2px;letter-spacing:.01em}
+  h1.match .at{color:var(--copper);font-weight:600;margin:0 6px}
+  .subline{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap}
+  .subline b{color:var(--ink);font-weight:500}
+  .dot{color:var(--faint)}
+
+  /* team headers */
+  .teamrow{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+  .th{background:var(--panel2);padding:11px 14px;display:flex;align-items:center;gap:10px}
+  .th.r{justify-content:flex-end;text-align:right}
+  .th .badge{width:30px;height:30px;border-radius:4px;background:var(--copper);color:var(--bg);display:grid;place-items:center;
+    font-family:var(--exp);font-weight:800;font-size:11px;flex:0 0 30px}
+  .th .nm{font-family:var(--exp);font-weight:700;font-size:15px}
+  .th .rec{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:2px}
+  .form{display:inline-flex;gap:3px;margin-top:4px}
+  .form span{font-family:var(--mono);font-size:8px;padding:1px 4px;border-radius:2px}
+  .w{background:rgba(95,159,78,.16);color:var(--green)} .l{background:rgba(192,90,74,.16);color:var(--red)}
+
+  /* meta strip */
+  .meta{display:flex;flex-wrap:wrap;gap:0;background:#0d0d0d;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .meta .m{padding:7px 12px;border-right:1px solid rgba(255,255,255,.04)}
+  .meta .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+  .meta .v{font-family:var(--mono);font-size:10px;color:var(--ink);margin-top:2px}
+
+  /* pitcher strip — tappable */
+  .pitchers{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:11px 14px;background:var(--panel2)}
+  .pitcher{display:flex;align-items:center;gap:9px;cursor:pointer;border-radius:4px;padding:5px;transition:.15s}
+  .pitcher:hover{background:rgba(193,127,58,.07)}
+  .pitcher.r{flex-direction:row-reverse;text-align:right}
+  .pitcher .pic{width:34px;height:34px;border-radius:5px;background:#1c1a17;border:1px solid var(--line);flex:0 0 34px;
+    display:grid;place-items:center;font-family:var(--mono);font-size:8px;color:var(--faint)}
+  .pitcher .pn{font-family:var(--disp);font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+  .pitcher.r .pn{flex-direction:row-reverse}
+  .pitcher .role{font-family:var(--mono);font-size:7px;color:var(--copper);border:1px solid var(--copper-dim);border-radius:2px;padding:1px 4px}
+  .pitcher .pl{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px}
+  .tapcue{font-family:var(--mono);font-size:7px;color:var(--copper-dim);letter-spacing:.08em;margin-top:2px}
+  .odds3{display:flex;gap:6px;align-items:center}
+  .oc{background:var(--chip);border:1px solid var(--line);border-radius:4px;padding:5px 9px;text-align:center;min-width:52px}
+  .oc .ok{font-family:var(--mono);font-size:7px;color:var(--faint);letter-spacing:.06em}
+  .oc .ov{font-family:var(--mono);font-size:13px;color:#FFFFFF;font-weight:700;margin-top:2px}
+
+  /* dense stat matrix */
+  .matrix{width:100%;border-collapse:collapse;font-family:var(--mono);table-layout:fixed}
+  .matrix .sec td{white-space:nowrap}
+  .matrix .sec td{background:#0f0f0f;padding:6px 12px;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700}
+  .matrix .sec.bat td{background:#0f0f0f;color:var(--amber)}
+  .matrix .sec.pen td{background:#0f0f0f;color:var(--green)}
+  .matrix thead td{font-size:7px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);padding:5px 4px;text-align:center;background:var(--panel2)}
+  .matrix thead td.lbl{text-align:right}
+  .matrix td{font-size:10px;color:var(--muted);text-align:center;padding:5px 4px;border-bottom:1px solid var(--hair)}
+  .matrix tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+  .matrix td.stat{color:var(--ink);font-weight:600;text-align:right;font-size:9.5px}
+  .matrix td.statR{color:var(--ink);font-weight:600;text-align:left;font-size:9.5px}
+  .matrix td.hi{color:#FFFFFF;font-weight:700}
+  .matrix .adv{width:20px}
+  .matrix .adv .a{width:15px;height:15px;border-radius:3px;display:inline-grid;place-items:center;font-family:var(--exp);font-size:7px;font-weight:800;color:var(--bg)}
+  .rk-g{color:var(--green)} .rk-a{color:var(--amber)} .rk-r{color:var(--red)}
+
+  /* confidence footer */
+  .conf{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line)}
+  .cf{background:var(--panel2);padding:11px 12px;text-align:center}
+  .cf .k{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .cf .v{font-family:var(--exp);font-size:20px;font-weight:700;margin-top:5px}
+  .cf .tag{font-family:var(--mono);font-size:8px;letter-spacing:.1em;margin-top:3px;text-transform:uppercase}
+  .pass{color:var(--red)} .lean{color:var(--amber)} .play{color:var(--green)}
+
+  /* receipts (shared) */
+  .receipts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);margin:0}
+  .rc{background:var(--panel2);padding:10px 12px}
+  .rc .lbl{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--copper);font-weight:500}
+  .rc .val{font-family:var(--mono);font-size:11px;color:var(--ink);margin-top:5px;font-weight:500;line-height:1.25}
+  .rc .sub{font-family:var(--mono);font-size:8.5px;color:var(--muted);margin-top:4px;line-height:1.3}
+
+  .foot{display:flex;justify-content:space-between;padding:10px 16px;font-family:var(--mono);font-size:8px;color:var(--faint)}
+  .foot b{color:var(--copper)}
+
+  /* lineups */
+  .lineups{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+  .lu{background:var(--panel2);padding:0}
+  .lu .luh{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px 7px;border-bottom:1px solid var(--hair)}
+  .lu .lut{font-family:var(--exp);font-weight:700;font-size:12px}
+  .lu .luv{font-family:var(--mono);font-size:8.5px;color:var(--muted)}
+  .bat{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;border-bottom:1px solid var(--hair);transition:.12s}
+  .bat:last-child{border-bottom:0}
+  .bat:hover{background:rgba(193,127,58,.07)}
+  .bat .no{font-family:var(--mono);font-size:10px;color:var(--faint);width:12px;flex:0 0 12px}
+  .bat .bn{font-family:var(--disp);font-size:12px;font-weight:600;flex:1;line-height:1.1}
+  .bat .bh{font-family:var(--mono);font-size:8px;color:var(--muted);flex:0 0 auto}
+  .bat .bpos{font-family:var(--mono);font-size:8px;color:var(--faint);width:22px;flex:0 0 22px;text-align:center}
+  .bat .btag{font-family:var(--mono);font-size:8.5px;color:var(--copper);background:var(--chip);border:1px solid var(--line);
+    border-radius:2px;padding:2px 6px;flex:0 0 auto}
+  .bat .btag.none{color:var(--faint);border-color:var(--hair)}
+  .lu-note{font-family:var(--mono);font-size:8px;color:var(--faint);padding:7px 12px;text-align:center}
+
+  /* ================= SHARE VIEW ================= */
+  .share{display:none}
+  .share.show{display:block}
+  .research.hide{display:none}
+  .sharecard{margin:0 auto;background:#000;border:1px solid var(--copper-dim);
+    border-radius:8px;overflow:hidden;box-shadow:0 20px 60px -30px #000}
+  .sharecard.square{width:min(560px,100%)}
+  .sharecard.portrait{width:min(420px,100%)}
+  .sh-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 6px}
+  .sh-play{padding:6px 18px 14px}
+  .sh-side{font-family:var(--exp);font-weight:800;font-size:30px;line-height:1;letter-spacing:-.01em}
+  .sh-mk{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px}
+  .sh-price{font-family:var(--mono);font-size:15px;color:var(--copper);font-weight:600;margin-top:2px}
+  .sh-match{font-family:var(--exp);font-weight:700;font-size:13px;padding:0 18px 10px;color:var(--muted)}
+  .sh-match b{color:var(--ink)}
+  .sh-why{background:var(--panel2);border-left:2px solid var(--copper);margin:0 18px 14px;padding:10px 12px;
+    font-size:12px;line-height:1.5;color:#cbc5ba;border-radius:0 4px 4px 0}
+  .sh-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 14px;border-top:1px solid var(--line)}
+  .sh-grade{width:38px;height:38px;border:1.5px solid var(--copper);border-radius:4px;display:grid;place-items:center;
+    font-family:var(--exp);font-weight:800;font-size:18px;color:var(--copper)}
+
+  /* ================= MODAL (prop drawer + Ask AI) ================= */
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px);display:none;z-index:50;
+    align-items:flex-end;justify-content:center;padding:0}
+  .scrim.show{display:flex}
+  @media(min-width:640px){.scrim{align-items:center;padding:20px}}
+  .modal{width:min(560px,100%);max-height:88vh;overflow-y:auto;background:linear-gradient(180deg,#141216,#0c0b0d);
+    border:1px solid var(--copper-dim);border-radius:12px 12px 0 0;box-shadow:0 -20px 60px -20px #000}
+  @media(min-width:640px){.modal{border-radius:12px}}
+  .modal .mh{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;
+    background:linear-gradient(180deg,#171418,#141216);border-bottom:1px solid var(--line);z-index:2}
+  .modal .mh .t{font-family:var(--exp);font-weight:700;font-size:15px}
+  .modal .mh .x{background:var(--panel);border:1px solid var(--line);border-radius:50%;width:30px;height:30px;
+    color:var(--muted);cursor:pointer;font-size:15px;line-height:1}
+  .mbody{padding:16px}
+
+  /* prop projection hero */
+  .projhero{display:flex;gap:12px;align-items:stretch;margin-bottom:14px}
+  .projbox{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:12px;text-align:center}
+  .projbox .k{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .projbox .v{font-family:var(--exp);font-size:24px;font-weight:800;margin-top:6px}
+  .projbox .s{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px}
+  .projbox.edge{border-color:var(--copper-dim);background:linear-gradient(180deg,rgba(193,127,58,.08),var(--panel2))}
+  .projbox.edge .v{color:var(--copper)}
+
+  .msec{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--copper);
+    margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .splits{width:100%;border-collapse:collapse;font-family:var(--mono)}
+  .splits td{font-size:10px;padding:6px 4px;border-bottom:1px solid var(--hair);text-align:center;color:var(--muted)}
+  .splits td:first-child{text-align:left;color:var(--ink);font-weight:500}
+  .splits thead td{font-size:7.5px;text-transform:uppercase;color:var(--faint);letter-spacing:.06em}
+  .splits td b{color:var(--copper)}
+  .formstrip{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+  .fs{font-family:var(--mono);font-size:10px;padding:5px 8px;border-radius:4px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+  .fs b{color:var(--ink)}
+  .fs.hit{border-color:var(--green);color:var(--green)}
+  .fs.miss{border-color:var(--red);color:var(--red)}
+
+  /* Ask AI */
+  .aibox{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:12px;
+    font-family:var(--mono);font-size:10.5px;line-height:1.55;color:#c5bfb4;white-space:pre-wrap;max-height:280px;overflow-y:auto}
+  .airow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .copied{color:var(--green);font-family:var(--mono);font-size:10px;align-self:center}
+  .aihint{font-family:var(--mono);font-size:9px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+</style>
+
+<!-- CONTROL BAR -->
+<div class="controls">
+  <div class="seg" role="tablist" id="viewseg">
+    <button data-v="research" aria-selected="true" role="tab">Research</button>
+    <button data-v="share" role="tab">Share</button>
+  </div>
+  <div class="seg subseg" id="fmtseg">
+    <button data-f="square" aria-selected="true">Square</button>
+    <button data-f="portrait">Portrait</button>
+  </div>
+  <button class="btn" id="askai">⚡ Ask AI</button>
+</div>
+
+<div class="wrap">
+  <!-- ============ RESEARCH VIEW ============ -->
+  <div class="research" id="research"></div>
+  <!-- ============ SHARE VIEW ============ -->
+  <div class="share" id="share"></div>
+</div>
+
+<!-- MODAL -->
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const G = {
+  league:"MLB", grade:"B", date:"Jul 5 · 2:15 PM", loc:"Atlanta, GA",
+  weather:"86°F · 2% rain · 4mph out", park:"Neutral",
+  power:"NYM 25th / ATL 15th", pen:"NYM 21st / ATL 16th", rest:"NYM 0 / ATL 0",
+  away:{code:"NYM", name:"NY Mets", rec:"36–53 · L3 · 17th SOS", form:["L","L","L","W","L"]},
+  home:{code:"ATL", name:"Atlanta", rec:"52–35 · W2 · 7th SOS", form:["W","W","L","W","L"]},
+  odds:{awayML:"−115", ou:"8.5", homeML:"+100"},
+  pitchers:{
+    away:{name:"N. McLean", role:"RHP", line:"5–5 · 95.1 IP · 3.78 ERA · 1.12 WHIP"},
+    home:{name:"M. Pérez", role:"LHP", line:"6–5 · 77.0 IP · 3.27 ERA · 1.16 WHIP"}
+  },
+  // matrix sections: label, away[season,away,l10,l5,rank], advWho, home[rank,l5,l10,home,season]
+  pitchMatrix:[
+    ["Earned Runs/G",["2.35","1.63","2.70","1.80","45g"],"NYM",["90a","2.40","1.90","1.11","1.65"]],
+    ["K/G",["6.65","6.25","6.20","7.20","12g"],"NYM",["143r","3.80","3.70","3.00","3.59"]],
+    ["Hits/G",["4.18","3.88","4.50","4.20","59g"],"ATL",["72g","4.40","3.60","2.78","3.47"]],
+    ["Walks/G",["2.12","1.75","2.50","2.40","176r"],"—",["176r","2.40","1.90","1.78","1.76"]],
+    ["HomeRuns/A",["0.59","0.38","0.80","0.40","37g"],"NYM",["69g","0.60","0.50","0.33","0.53"]],
+    ["1st Inning R/G",["0.35","0.25","0.30","0.00","29r"],"ATL",["2g","0.00","0.30","0.17","0.38"]]
+  ],
+  batMatrix:[
+    ["BattingAvg",[".239",".227",".226",".218","24a"],"ATL",["18g",".236",".248",".250",".242"]],
+    ["Runs/G",["1.41","2.83","3.61","2.60","27r"],"ATL",["6g","6.40","4.52","3.23","1.82"]],
+    ["Hits/G",["2.73","5.55","7.67","7.40","22a"],"ATL",["21r","7.60","7.95","5.27","3.47"]],
+    ["Strikeouts/G",["2.88","6.03","8.46","8.40","13g"],"ATL",["10g","7.80","7.61","4.94","3.33"]],
+    ["Walks/G",["0.96","2.24","2.67","2.40","24a"],"ATL",["8g","4.40","2.75","1.93","1.20"]],
+    ["1st Inning R/G",["0.12","0.38","0.30","0.00","28r"],"ATL",["8g","1.20","0.45","0.35","0.23"]]
+  ],
+  penMatrix:[
+    ["BA Allow",[".227",".229",".244",".270","21r"],"ATL",["16g",".250",".222",".232",".214"]],
+    ["Opp Runs/G",["2.27","2.24","2.82","2.80","21r"],"ATL",["15a","2.00","1.60","1.58","1.40"]],
+    ["Opp Hits/G",["3.67","3.50","3.82","3.40","14g"],"NYM",["20a","3.80","3.20","3.23","2.83"]],
+    ["Pitcher K/G",["4.31","3.76","4.18","2.80","21r"],"ATL",["9g","4.00","3.50","3.63","3.54"]],
+    ["BB Allowed/G",["1.48","1.30","1.36","1.40","17a"],"ATL",["16g","1.20","1.30","1.05","1.18"]]
+  ],
+  conf:{ml:{v:"4.7",tag:"PASS",c:"pass"}, rl:{v:"5.7",tag:"LEAN ATL",c:"lean"}, tot:{v:"3.2",tag:"PASS",c:"pass"}},
+  // batting orders — each hitter tappable → prop drawer. bats: L/R/S, pos, best prop tag
+  lineups:{
+    away:{ code:"NYM", vs:"vs LHP Pérez", order:[
+      {n:"1 F. Lindor", bats:"S", pos:"SS", tag:"O1.5 TB"},
+      {n:"2 J. McNeil", bats:"L", pos:"2B", tag:"O0.5 H"},
+      {n:"3 J. Soto", bats:"L", pos:"RF", tag:"O1.5 TB"},
+      {n:"4 P. Alonso", bats:"R", pos:"1B", tag:"O0.5 HRR"},
+      {n:"5 B. Nimmo", bats:"L", pos:"LF", tag:"O0.5 H"},
+      {n:"6 M. Vientos", bats:"R", pos:"3B", tag:"O0.5 HRR"},
+      {n:"7 L. Torrens", bats:"R", pos:"C", tag:"—"},
+      {n:"8 T. Waller", bats:"R", pos:"CF", tag:"—"},
+      {n:"9 N. McLean", bats:"R", pos:"P", tag:"O4.5 K"}
+    ]},
+    home:{ code:"ATL", vs:"vs RHP McLean", order:[
+      {n:"1 R. Acuña Jr.", bats:"R", pos:"RF", tag:"O0.5 HRR"},
+      {n:"2 M. Ozuna", bats:"R", pos:"DH", tag:"O0.5 HRR"},
+      {n:"3 A. Riley", bats:"R", pos:"3B", tag:"O1.5 TB"},
+      {n:"4 M. Olson", bats:"L", pos:"1B", tag:"O0.5 HRR"},
+      {n:"5 O. Albies", bats:"S", pos:"2B", tag:"O0.5 H"},
+      {n:"6 S. Murphy", bats:"R", pos:"C", tag:"O0.5 H"},
+      {n:"7 J. Bell", bats:"S", pos:"DH", tag:"O1.5 HRR"},
+      {n:"8 M. Harris II", bats:"L", pos:"CF", tag:"O0.5 H"},
+      {n:"9 M. Pérez", bats:"L", pos:"P", tag:"O4.5 K"}
+    ]}
+  },
+  receipts:{
+    cal:{h:"pred 54% · act 51%", s:"Brier 0.243 · n=250 · runs hot ~3pts"},
+    stress:{h:"strip park → 8.1", s:"neutral park, edge holds"},
+    line:{h:"no strong edge", s:"ML pass · RL lean ATL only"}
+  },
+  // prop drawers keyed by pitcher
+  props:{
+    "M. Pérez":{
+      player:"M. Pérez", team:"Atlanta", role:"LHP",
+      market:"Strikeouts", line:"O 4.5", price:"−120",
+      proj:"5.4", edge:"+18%", conf:"LEAN",
+      splits:[
+        ["Split","K/9","IP","Sample"],
+        ["Season","5.8","77.0","17 GS"],
+        ["Last 5","6.2","28.1","5 GS"],
+        ["vs NYM lineup","6.6","—","proj"],
+        ["Home","6.1","41.0","8 GS"]
+      ],
+      form:[["6K","hit"],["4K","miss"],["5K","hit"],["7K","hit"],["3K","miss"]],
+      note:"Mets rank 13th L5 in K/G (strike out often) and Pérez's swinging-strike rate ticked up last 5. Projection 5.4 clears 4.5 but the whiff volume is matchup-driven, not dominant stuff — hence LEAN not CORE."
+    },
+    "N. McLean":{
+      player:"N. McLean", team:"NY Mets", role:"RHP",
+      market:"Strikeouts", line:"O 5.5", price:"−105",
+      proj:"5.1", edge:"−4%", conf:"PASS",
+      splits:[
+        ["Split","K/9","IP","Sample"],
+        ["Season","6.7","95.1","17 GS"],
+        ["Last 5","7.2","31.0","5 GS"],
+        ["vs ATL lineup","5.9","—","proj"],
+        ["Away","6.3","47.2","9 GS"]
+      ],
+      form:[["7K","hit"],["5K","miss"],["8K","hit"],["4K","miss"],["6K","hit"]],
+      note:"McLean's L5 K-rate is strong, but Atlanta's lineup strikes out less than league average and the projection (5.1) lands under the 5.5 line. No edge — documented pass."
+    },
+    "4 P. Alonso":{
+      player:"P. Alonso", team:"NY Mets", role:"1B · bats R",
+      market:"Hits+Runs+RBI", line:"O 1.5", price:"−125",
+      proj:"1.9", edge:"+14%", conf:"LEAN",
+      splits:[
+        ["Split","HRR/G","AB","Sample"],
+        ["Season","1.7","312","89 G"],
+        ["Last 5","2.2","19","5 G"],
+        ["vs LHP","2.0","—","split"],
+        ["vs Pérez career","2.3","13 AB","hist"]
+      ],
+      form:[["2","hit"],["1","miss"],["3","hit"],["2","hit"],["0","miss"]],
+      note:"Alonso rakes vs left-handed pitching (2.0 HRR/G vs LHP) and Pérez is a lefty. Small career sample vs Pérez leans favorable. Projection 1.9 clears 1.5 — LEAN, sized modestly on the platoon edge."
+    },
+    "1 R. Acuña Jr.":{
+      player:"R. Acuña Jr.", team:"Atlanta", role:"RF · bats R",
+      market:"Hits+Runs+RBI", line:"O 0.5", price:"−240",
+      proj:"1.6", edge:"+9%", conf:"CORE",
+      splits:[
+        ["Split","HRR/G","AB","Sample"],
+        ["Season","1.8","341","92 G"],
+        ["Last 5","2.4","21","5 G"],
+        ["vs RHP","1.9","—","split"],
+        ["Home","2.0","168","46 G"]
+      ],
+      form:[["2","hit"],["3","hit"],["1","hit"],["2","hit"],["1","hit"]],
+      note:"Leadoff, hot, at home vs a RHP he handles well. The 0.5 line is heavily juiced (−240) but the projection (1.6) and a 5-for-5 recent HRR streak back a CORE grade. Low-payout, high-hit-rate anchor leg."
+    }
+  }
+};
+
+/* ---------------- HELPERS ---------------- */
+const advBadge = who => who==="—" ? '<span class="faint">—</span>' :
+  `<span class="a" style="background:${who===G.away.code?'#3d9fff':'#ff5b4a'};color:#000">${(who||'?')[0]}</span>`;
+const rkClass = r => r.endsWith('g')?'rk-g':r.endsWith('a')?'rk-a':r.endsWith('r')?'rk-r':'';
+const rkNum = r => r.replace(/[gar]$/,'');
+
+function matrixRows(rows){
+  return rows.map(([lbl,a,who,h])=>`<tr>
+    <td class="stat">${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td class="hi">${a[3]}</td>
+    <td class="${rkClass(a[4])}">${rkNum(a[4])}</td>
+    <td class="adv">${advBadge(who)}</td>
+    <td class="${rkClass(h[0])}">${rkNum(h[0])}</td>
+    <td class="hi">${h[1]}</td><td>${h[2]}</td><td>${h[3]}</td><td class="statR">${h[4]}</td>
+    <td style="text-align:left;color:var(--muted);font-size:9px;padding-left:8px">${lbl}</td>
+  </tr>`).join("");
+}
+const mHead = `<thead><tr><td class="lbl">SEA</td><td>AWY</td><td>L10</td><td>L5</td><td>RK</td><td>ADV</td><td>RK</td><td>L5</td><td>L10</td><td>HM</td><td style="text-align:left">SEA</td><td style="text-align:left;padding-left:8px">STAT</td></tr></thead>`;
+// fixed column widths so data spreads evenly across the card (no left gutter)
+// and colspan section headers still span full width. Sums to 100.
+const mCols = `<colgroup><col style="width:9%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:7%"><col style="width:6%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:9%"><col style="width:14%"></colgroup>`;
+
+function lineupCol(side){
+  const rows = side.order.map(b=>{
+    const none = b.tag==="—";
+    return `<div class="bat" data-prop="${b.n}" data-tag="${b.tag}">
+      <span class="no">${b.n.match(/^\d+/)[0]}</span>
+      <span class="bn">${b.n.replace(/^\d+\s/,'')}</span>
+      <span class="bh">${b.bats}</span>
+      <span class="bpos">${b.pos}</span>
+      <span class="btag ${none?'none':''}">${b.tag}</span>
+    </div>`;
+  }).join("");
+  return `<div class="lu">
+    <div class="luh"><span class="lut">${side.code}</span><span class="luv">${side.vs}</span></div>
+    ${rows}
+    <div class="lu-note">▸ projected order · confirm at lineup lock</div>
+  </div>`;
+}
+
+/* ---------------- RESEARCH VIEW ---------------- */
+function renderResearch(){
+  const g=G;
+  const form=(arr)=>arr.map(x=>`<span class="${x==='W'?'w':'l'}">${x}</span>`).join("");
+  document.getElementById('research').innerHTML = `
+  <div class="card">
+    <div class="head"><span class="lg">${g.league} · EDGE CARD</span><span class="brand">360<small>FIVE</small></span></div>
+    <div class="rule"></div>
+    <h1 class="match">${g.away.name}<span class="at">vs</span>${g.home.name}</h1>
+    <div class="subline"><b>${g.date}</b><span class="dot">·</span>${g.loc}</div>
+
+    <div class="teamrow">
+      <div class="th"><span class="badge">${g.away.code}</span><div><div class="nm">${g.away.name}</div>
+        <div class="rec">${g.away.rec}</div><div class="form">${form(g.away.form)}</div></div></div>
+      <div class="th r"><div><div class="nm">${g.home.name}</div><div class="rec">${g.home.rec}</div>
+        <div class="form">${form(g.home.form)}</div></div><span class="badge">${g.home.code}</span></div>
+    </div>
+
+    <div class="meta">
+      <div class="m"><div class="k">Date/Time</div><div class="v">${g.date}</div></div>
+      <div class="m"><div class="k">Weather</div><div class="v">${g.weather}</div></div>
+      <div class="m"><div class="k">Park Factor</div><div class="v">${g.park}</div></div>
+      <div class="m"><div class="k">Power Rank</div><div class="v">${g.power}</div></div>
+      <div class="m"><div class="k">Bullpen Rank</div><div class="v">${g.pen}</div></div>
+      <div class="m"><div class="k">Days Rest</div><div class="v">${g.rest}</div></div>
+    </div>
+
+    <!-- tappable pitcher strip -->
+    <div class="pitchers">
+      <div class="pitcher" data-prop="N. McLean">
+        <div class="pic">IMG</div>
+        <div><div class="pn">${g.pitchers.away.name}<span class="role">${g.pitchers.away.role}</span></div>
+          <div class="pl">${g.pitchers.away.line}</div><div class="tapcue">▸ TAP FOR PROP PROJECTION</div></div>
+      </div>
+      <div class="odds3">
+        <div class="oc"><div class="ok">${g.away.code} ML</div><div class="ov">${g.odds.awayML}</div></div>
+        <div class="oc"><div class="ok">O/U</div><div class="ov">${g.odds.ou}</div></div>
+        <div class="oc"><div class="ok">${g.home.code} ML</div><div class="ov">${g.odds.homeML}</div></div>
+      </div>
+      <div class="pitcher r" data-prop="M. Pérez">
+        <div class="pic">IMG</div>
+        <div><div class="pn">${g.pitchers.home.name}<span class="role">${g.pitchers.home.role}</span></div>
+          <div class="pl">${g.pitchers.home.line}</div><div class="tapcue">▸ TAP FOR PROP PROJECTION</div></div>
+      </div>
+    </div>
+
+    <table class="matrix">${mCols}
+      <tr class="sec"><td colspan="12">◆ ${g.away.name} Pitching vs ${g.home.name}</td></tr>
+      ${mHead}${matrixRows(g.pitchMatrix)}
+      <tr class="sec bat"><td colspan="12">◆ Batting — ${g.away.name} vs ${g.home.name}</td></tr>
+      ${mHead}${matrixRows(g.batMatrix)}
+      <tr class="sec pen"><td colspan="12">◆ Bullpen — ${g.away.name} vs ${g.home.name}</td></tr>
+      ${mHead}${matrixRows(g.penMatrix)}
+    </table>
+
+    <div class="rule"></div>
+    <div style="padding:11px 16px 0"><div class="eyebrow">Lineups — tap any hitter for prop projection</div></div>
+    <div class="lineups" style="margin-top:9px">
+      ${lineupCol(g.lineups.away)}
+      ${lineupCol(g.lineups.home)}
+    </div>
+
+    <div class="rule"></div>
+    <div style="padding:9px 16px 0"><div class="eyebrow">Statistical Confidence Levels</div></div>
+    <div class="conf" style="margin-top:9px">
+      <div class="cf"><div class="k">Moneyline</div><div class="v ${g.conf.ml.c}">${g.conf.ml.v}</div><div class="tag ${g.conf.ml.c}">${g.conf.ml.tag}</div></div>
+      <div class="cf"><div class="k">Run Line</div><div class="v ${g.conf.rl.c}">${g.conf.rl.v}</div><div class="tag ${g.conf.rl.c}">${g.conf.rl.tag}</div></div>
+      <div class="cf"><div class="k">Total</div><div class="v ${g.conf.tot.c}">${g.conf.tot.v}</div><div class="tag ${g.conf.tot.c}">${g.conf.tot.tag}</div></div>
+    </div>
+
+    <div style="padding:11px 16px 0"><div class="eyebrow">The Receipts — why you can trust it</div></div>
+    <div class="receipts" style="margin-top:9px">
+      <div class="rc"><div class="lbl">Calibration</div><div class="val">${g.receipts.cal.h}</div><div class="sub">${g.receipts.cal.s}</div></div>
+      <div class="rc"><div class="lbl">Stress test</div><div class="val">${g.receipts.stress.h}</div><div class="sub">${g.receipts.stress.s}</div></div>
+      <div class="rc"><div class="lbl">Line read</div><div class="val">${g.receipts.line.h}</div><div class="sub">${g.receipts.line.s}</div></div>
+    </div>
+
+    <div class="foot"><span>360° research · re-grades on lineup & line move</span><span><b>360Five</b> — model estimates, not advice</span></div>
+  </div>`;
+  // wire prop taps (pitchers + batters)
+  document.querySelectorAll('[data-prop]').forEach(el=>el.onclick=()=>openProp(el.dataset.prop, el.dataset.tag));
+}
+
+/* ---------------- SHARE VIEW ---------------- */
+function renderShare(fmt){
+  const g=G; const s=g.share||{};
+  document.getElementById('share').innerHTML = `
+  <div class="sharecard ${fmt}">
+    <div class="sh-head"><span class="brand">360<small>FIVE</small></span><span class="lg">${g.league} · ${g.date}</span></div>
+    <div class="sh-play">
+      <div class="sh-side">${s.side||'—'}</div>
+      <div class="sh-mk">${s.mk||''}</div>
+      <div class="sh-price">${s.price||''}</div>
+    </div>
+    <div class="sh-match"><b>${g.away.name}</b> vs <b>${g.home.name}</b> · ${g.loc}</div>
+    <div class="sh-why">${s.why||''}</div>
+    <div class="sh-foot">
+      <span class="mono" style="font-size:9px;color:var(--muted)">${(s.calLine||'—')}<br>${(s.tags||'')}</span>
+      <div class="sh-grade">${g.grade}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- PROP DRAWER ---------------- */
+let curProp=null;
+function fallbackProp(key, tag){
+  const name = key.replace(/^\d+\s/,'');
+  return { player:name, team:"", role:"", market: tag && tag!=="—" ? tag : "Player prop",
+    line:"—", price:"—", proj:"—", edge:"—", conf:"DATA GAP",
+    splits:[["Split","Rate","Sample","—"],["Season","—","—","—"],["Last 5","—","—","—"]],
+    form:[["—","miss"],["—","miss"],["—","miss"]],
+    note:"Projection not yet wired for this hitter. The lineup slot is live and tappable; the prop feed fills this drawer once connected. Design-first placeholder — no invented numbers." };
+}
+function openProp(key, tag){
+  let p=G.props[key];
+  if(!p) p = fallbackProp(key, tag);
+  curProp=p;
+  const splitRows = p.splits.map((r,i)=> i===0
+    ? `<thead><tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr></thead>`
+    : `<tr>${r.map((c,j)=>j===0?`<td>${c}</td>`:`<td${c.includes('proj')?' style="color:var(--copper)"':''}>${c}</td>`).join("")}</tr>`
+  ).join("");
+  const formStrip = p.form.map(([k,c])=>`<span class="fs ${c}"><b>${k}</b></span>`).join("");
+  document.getElementById('modal').innerHTML = `
+    <div class="mh"><div class="t">${p.player} · ${p.market}</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="mbody">
+      <div class="projhero">
+        <div class="projbox"><div class="k">Our Projection</div><div class="v">${p.proj}</div><div class="s">${p.market.toLowerCase()}</div></div>
+        <div class="projbox"><div class="k">Market Line</div><div class="v">${p.line}</div><div class="s">${p.price}</div></div>
+        <div class="projbox edge"><div class="k">Edge · Grade</div><div class="v">${p.edge}</div><div class="s">${p.conf}</div></div>
+      </div>
+      <div class="msec">Matchup splits</div>
+      <table class="splits">${splitRows}</table>
+      <div class="msec">Recent form · last 5 starts</div>
+      <div class="formstrip">${formStrip}</div>
+      <div class="msec">Why this projection</div>
+      <p style="font-family:var(--disp);font-size:12.5px;line-height:1.55;color:#cbc5ba;margin:0">${p.note}</p>
+      <div class="airow"><button class="btn" onclick="openAI(curProp)">⚡ Ask AI about this prop</button></div>
+    </div>`;
+  showScrim();
+}
+
+/* ---------------- ASK AI GENERATOR ---------------- */
+function gamePrompt(){
+  const g=G;
+  return `You are a sports betting analyst. Review this MLB matchup and give me your independent read — do you agree with the model, and would you bet any side?
+
+MATCHUP: ${g.away.name} vs ${g.home.name} — ${g.date}, ${g.loc}
+CONDITIONS: ${g.weather} · Park: ${g.park} · Rest: ${g.rest}
+LINE: ${g.away.code} ML ${g.odds.awayML} / ${g.home.code} ML ${g.odds.homeML} / Total O-U ${g.odds.ou}
+
+PITCHERS:
+- ${g.away.name}: ${g.pitchers.away.name} (${g.pitchers.away.role}) — ${g.pitchers.away.line}
+- ${g.home.name}: ${g.pitchers.home.name} (${g.pitchers.home.role}) — ${g.pitchers.home.line}
+
+KEY EDGES (L5 rank, lower = better):
+${(g.keyEdges&&g.keyEdges.length?g.keyEdges:['— matchup stat ranks pending']).map(e=>`- ${e}`).join("\n")}
+- ${g.away.name} recent form: ${g.away.form.join('')} · ${g.home.name}: ${g.home.form.join('')}
+
+MODEL CONFIDENCE (0-10): Moneyline ${g.conf.ml.v} (${g.conf.ml.tag}) · Run Line ${g.conf.rl.v} (${g.conf.rl.tag}) · Total ${g.conf.tot.v} (${g.conf.tot.tag})
+CALIBRATION: ${g.receipts.cal.h} (${g.receipts.cal.s})
+
+Do you agree? What would you bet, at what stake, and why?`;
+}
+function propPrompt(p){
+  return `You are a sports betting analyst. Evaluate this MLB player prop projection.
+
+PLAYER: ${p.player} (${p.team}, ${p.role})
+MARKET: ${p.market} — line ${p.line} at ${p.price}
+OUR PROJECTION: ${p.proj} (edge ${p.edge}, graded ${p.conf})
+
+SPLITS (${p.market} rate):
+${p.splits.slice(1).map(r=>`- ${r[0]}: ${r[1]} over ${r[2]} (${r[3]})`).join("\n")}
+
+LAST 5 STARTS: ${p.form.map(f=>f[0]).join(", ")}
+
+MODEL REASONING: ${p.note}
+
+Do you agree with the ${p.proj} projection? Would you play ${p.line} at ${p.price}, and at what stake? Flag anything the model might be missing.`;
+}
+function openAI(p){
+  const text = p ? propPrompt(p) : gamePrompt();
+  document.getElementById('modal').innerHTML = `
+    <div class="mh"><div class="t">⚡ Ask AI — copy & send</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="mbody">
+      <p class="aihint">Copy this structured prompt and paste into ChatGPT, Claude, or Grok. Text keeps every number intact — no lost data from a screenshot.</p>
+      <div class="aibox" id="aitext">${text.replace(/</g,'&lt;')}</div>
+      <div class="airow">
+        <button class="btn" onclick="copyAI()">⧉ Copy prompt</button>
+        <span class="copied" id="copied" style="display:none">✓ Copied</span>
+      </div>
+    </div>`;
+  showScrim();
+}
+function copyAI(){
+  const t=document.getElementById('aitext').innerText;
+  navigator.clipboard.writeText(t).then(()=>{
+    const c=document.getElementById('copied'); c.style.display='inline'; setTimeout(()=>c.style.display='none',1800);
+  }).catch(()=>{ // fallback
+    const r=document.createRange(); r.selectNode(document.getElementById('aitext'));
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+    try{document.execCommand('copy'); const c=document.getElementById('copied'); c.style.display='inline'; setTimeout(()=>c.style.display='none',1800);}catch(e){}
+  });
+}
+
+/* ---------------- MODAL PLUMBING ---------------- */
+function showScrim(){document.getElementById('scrim').classList.add('show')}
+function closeModal(){document.getElementById('scrim').classList.remove('show')}
+document.getElementById('scrim').onclick=e=>{if(e.target.id==='scrim')closeModal()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* ---------------- VIEW SWITCHING ---------------- */
+let curFmt='square';
+const viewseg=document.getElementById('viewseg'), fmtseg=document.getElementById('fmtseg');
+function setView(v){
+  [...viewseg.children].forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
+  const isShare=v==='share';
+  document.getElementById('research').classList.toggle('hide',isShare);
+  document.getElementById('share').classList.toggle('show',isShare);
+  fmtseg.classList.toggle('show',isShare);
+  if(isShare) renderShare(curFmt);
+}
+viewseg.querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+fmtseg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  curFmt=b.dataset.f; [...fmtseg.children].forEach(x=>x.setAttribute('aria-selected',x.dataset.f===curFmt));
+  renderShare(curFmt);
+});
+document.getElementById('askai').onclick=()=>openAI(null);
+
+/* init */
+renderResearch();
+</script>
+</html>
