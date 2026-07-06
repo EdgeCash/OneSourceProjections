@@ -37,8 +37,12 @@ _MKT_ABBR = {
 }
 
 
+def _notna(v) -> bool:
+    return v is not None and not (isinstance(v, float) and pd.isna(v))
+
+
 def _n(v, dp: int = 2) -> str:
-    if v is None or (isinstance(v, float) and pd.isna(v)):
+    if not _notna(v):
         return GAP
     try:
         return f"{float(v):.{dp}f}"
@@ -230,13 +234,17 @@ def _starters(sport: str, g: dict) -> dict | None:
 
 
 def _prop_tag(p: dict) -> str:
-    mkt = ui.short_market(p.get("market", "")).lower()
-    abbr = _MKT_ABBR.get(p.get("market", ""), _MKT_ABBR.get(mkt, "PROP"))
-    line = p.get("line")
-    side = "O" if (p.get("ev_under") is None or
-                   (p.get("ev_over") or p.get("ev") or 0) >= (p.get("ev_under") or -9)) else "U"
-    lt = "" if line is None or pd.isna(line) else f"{line:g}"
-    return f"{side}{lt} {abbr}".strip()
+    """Compact lineup tag: 'O1.5 TB' with a book line, else the projection
+    ('1.1 H'), else just the market abbreviation."""
+    mkt = ui.short_market(p.get("market", ""))
+    abbr = (_MKT_ABBR.get(p.get("market", "")) or _MKT_ABBR.get(mkt.lower())
+            or "".join(w[0] for w in mkt.split()[:2]).upper() or "PROP")
+    line, proj = p.get("line"), p.get("projection")
+    if _notna(line):
+        return f"O{line:g} {abbr}"
+    if _notna(proj):
+        return f"{proj:g} {abbr}"
+    return abbr
 
 
 def _lineup_side(sport: str, code: str, names: list, vs: str,
@@ -251,29 +259,51 @@ def _lineup_side(sport: str, code: str, names: list, vs: str,
 
 
 def _prop_drawer(sport: str, p: dict) -> dict:
-    """Real prop drawer from a props-row. Splits/last-5 that the feed doesn't
-    carry render as DATA GAP rows — never invented."""
-    tier = ui.play_tier(p.get("ev"), gate=p.get("gate"))
-    ev = p.get("ev")
-    edge = f"{ev * 100:+.0f}%" if ev is not None and pd.notna(ev) else GAP
-    mp = p.get("model_over_prob")
+    """Prop drawer from a props-row. Populates every field the feed carries and
+    DATA GAPs the rest — never invents. Many slates are projection-only until book
+    lines attach on game day, so line/edge legitimately show — until then."""
+    ev, mp = p.get("ev"), p.get("model_over_prob")
+    line, proj = p.get("line"), p.get("projection")
+    tier = ui.play_tier(ev, gate=p.get("gate"))
+    edge = f"{ev * 100:+.0f}%" if _notna(ev) else GAP
+    market = ui.short_market(p.get("market", ""))
+
+    # only rows the feed actually carries — no invented splits
+    splits = [["Split", "Value", "Detail"]]
+    if _notna(proj):
+        splits.append(["Projection", _n(proj, 1), market.lower()])
+    if _notna(mp):
+        splits.append(["Model over%", ui._pct(mp),
+                       f"line {line:g}" if _notna(line) else GAP])
+    plat = p.get("platoon")
+    if isinstance(plat, str) and plat.strip():
+        splits.append(["Platoon", plat, ""])
+    for lbl, key in (("L5", "hr_l5"), ("L10", "hr_l10"), ("Season", "hr_season")):
+        if _notna(p.get(key)):
+            splits.append([f"HR {lbl}", _n(p[key], 2), "per game"])
+    if _notna(p.get("bp_projection")):
+        side = str(p.get("bp_recommended_side") or "").upper()
+        splits.append(["BettingPros", _n(p["bp_projection"], 1),
+                       f"lean {side}" if side else ""])
+    if len(splits) == 1:
+        splits.append(["—", GAP, GAP])
+
+    note = ("Projection pending in the prop feed." if not _notna(proj) else
+            f"Model projects {_n(proj, 1)} {market.lower()}"
+            + (f"; {ui._pct(mp)} to clear {line:g}, edge {edge}."
+               if _notna(mp) and _notna(line) else
+               ". Book line attaches on game day."))
     return {
         "player": p.get("player", GAP), "team": p.get("team", ""),
-        "role": p.get("opponent") and f"vs {p.get('opponent')}" or "",
-        "market": ui.short_market(p.get("market", "")),
-        "line": f"O {p['line']:g}" if p.get("line") is not None else GAP,
+        "role": f"vs {p.get('opponent')}" if p.get("opponent") else "",
+        "market": market,
+        "line": f"O {line:g}" if _notna(line) else GAP,
         "price": ui.fmt_american(p.get("odds") or p.get("over_odds")) or GAP,
-        "proj": _n(p.get("projection") or p.get("bp_projection"), 1),
+        "proj": _n(proj, 1),
         "edge": edge, "conf": tier["label"].replace(" PLAY", ""),
-        "splits": [["Split", "Model%", "Line", "Sample"],
-                   ["Season", GAP, _n(p.get("line"), 1), GAP],
-                   ["Model", ui._pct(mp) if mp is not None else GAP, GAP,
-                    f"n={p.get('n')}" if p.get("n") else GAP]],
+        "splits": splits,
         "form": [[GAP, "miss"], [GAP, "miss"], [GAP, "miss"]],
-        "note": (f"Model {ui._pct(mp)} vs the {p.get('line')} line; edge {edge}. "
-                 "Splits and last-5 game log not yet wired into this drawer."
-                 if mp is not None else
-                 "Projection wired; supporting splits pending in the prop feed."),
+        "note": note,
     }
 
 
@@ -325,21 +355,30 @@ def build_g(sport: str, g: dict, matchup: dict | None = None,
             props_map[nm] = _prop_drawer(sport, p)
 
     cal = _calibration_receipt(g)
-    best = max((("Moneyline", ml), ("Run Line", rl), ("Total", tot)),
-               key=lambda kv: (kv[1].get("ev") or -9))
-    best_ev = best[1].get("ev")
-    grade = ui.play_tier(best_ev)["letter"]
     tags = f"ML {conf['ml']['tag']} · RL {conf['rl']['tag']} · TOT {conf['tot']['tag']}"
-    share = {
-        "side": best[1].get("side", GAP),
-        "mk": (f"{best[0]} · confidence {best[1].get('score'):g}/10"
-               if best[1].get("score") is not None else best[0]),
-        "price": f"edge {best_ev * 100:+.1f}%" if best_ev is not None and pd.notna(best_ev) else GAP,
-        "why": (f"Model's top lean is {best[1].get('side', '')} "
-                f"({best[0]}, {best_ev * 100:+.1f}% EV). Other markets grade lower — "
-                "no forced play." if best_ev is not None and pd.notna(best_ev) else
-                "No market cleared the edge bar — pass."),
-        "calLine": f"{cal['h']} · {cal['s']}", "tags": tags}
+    # Share headline = the best *plausible* play. Skip VERIFY (edge too big, market
+    # knows something) and PASS so the social card never leads with a tout-looking
+    # implausible edge — an honest "pass" is preferable.
+    cand = [(lbl, m) for lbl, m in (("Moneyline", ml), ("Run Line", rl), ("Total", tot))
+            if _notna(m.get("ev")) and ui.play_tier(m.get("ev"))["kind"] in ("core", "lean", "watch")]
+    if cand:
+        blabel, bm = max(cand, key=lambda t: t[1].get("ev"))
+        best_ev = bm.get("ev")
+        grade = ui.play_tier(best_ev)["letter"]
+        share = {
+            "side": bm.get("side", GAP),
+            "mk": (f"{blabel} · confidence {bm.get('score'):g}/10"
+                   if bm.get("score") is not None else blabel),
+            "price": f"edge {best_ev * 100:+.1f}%",
+            "why": (f"Model's top play is {bm.get('side', '')} ({blabel}, "
+                    f"{best_ev * 100:+.1f}% EV). Other markets grade lower — no forced play."),
+            "calLine": f"{cal['h']} · {cal['s']}", "tags": tags}
+    else:
+        grade = GAP
+        share = {"side": "No clean edge", "mk": "Pass — nothing cleared the bar",
+                 "price": GAP,
+                 "why": "No market cleared the edge bar today. A pass is a position.",
+                 "calLine": f"{cal['h']} · {cal['s']}", "tags": tags}
 
     return {
         "league": sport, "grade": grade or GAP,
