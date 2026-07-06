@@ -55,16 +55,17 @@ _PALETTES = {
                   muted="#586158", faint="#8a8472", good="#2c8854",
                   neg="#bd463d", mid="#a87d22", sb1="#e5ddca", sb2="#ece5d5",
                   glow="0.0", shadow="0.10"),
-    # Terminal — cool near-black with a teal edge (the BettorSheets look). Teal
-    # (acc) is the single decorative accent — logo, section kickers, links, and
-    # the play values on the board — which frees green/red to keep meaning money
-    # on/off. Grounds step bg → card → card2 as lifted surfaces on the ink.
-    "dark": dict(acc="#2dd4bf", acc2="#22d3ee", link="#38bdf8", warn="#fbbf24",
-                 bg="#0a0d13", card="#0f141c",
-                 card2="#161d28", line="#1f2732", text="#e7ebf0",
-                 muted="#8b95a4", faint="#4b5563", good="#34d399",
-                 neg="#f2555a", mid="#fbbf24", sb1="#0c1017", sb2="#0a0d13",
-                 glow="0.18", shadow="0.55"),
+    # Terminal — pure black with a copper edge: the Sharp Sheet's own palette,
+    # so the app shell and the research cards read as one system (rather than
+    # cloning the reference site's teal). Copper (acc) is the single decorative
+    # accent — logo, section kickers, group headers, links — which frees
+    # green/red to mean exactly one thing: money on / money off.
+    "dark": dict(acc="#F5B841", acc2="#3d9fff", link="#3d9fff", warn="#ffc93c",
+                 bg="#000000", card="#0a0a0a",
+                 card2="#141414", line="#1f1f1f", text="#EAEAEA",
+                 muted="#8a8a8a", faint="#4d4d4d", good="#3ddc84",
+                 neg="#ff5b4a", mid="#ffc93c", sb1="#050505", sb2="#000000",
+                 glow="0.20", shadow="0.6"),
 }
 
 _THEME_CSS = """
@@ -139,7 +140,7 @@ _THEME_CSS = """
   .pl-row { padding: 13px 18px; border-bottom: 1px solid var(--line); }
   .pl-row:last-child { border-bottom: none; }
   .pl-row .m { font-weight: 600; color: var(--text); }
-  .pl-row .p { font-family: var(--mono); font-weight: 600; color: var(--acc);
+  .pl-row .p { font-family: var(--mono); font-weight: 600; color: var(--good);
     font-variant-numeric: tabular-nums; }
   .pl-none { padding: 13px 18px; color: var(--muted); font-weight: 600;
     border-bottom: 1px solid var(--line); }
