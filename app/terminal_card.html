@@ -359,6 +359,15 @@ const G = {
   }
 };
 
+/* --- demo defaults for the data-driven fields (real cards inject these) --- */
+G.meta = G.meta || [{k:"Date/Time",v:G.date},{k:"Weather",v:G.weather},{k:"Park Factor",v:G.park},{k:"Power Rank",v:G.power},{k:"Bullpen Rank",v:G.pen},{k:"Days Rest",v:G.rest}];
+G.starters = G.starters || {away:{...G.pitchers.away,key:G.pitchers.away.name},home:{...G.pitchers.home,key:G.pitchers.home.name}};
+G.sections = G.sections || [
+  {label:`${G.away.name} Pitching vs ${G.home.name}`,cls:"",rows:G.pitchMatrix},
+  {label:`Batting — ${G.away.name} vs ${G.home.name}`,cls:"bat",rows:G.batMatrix},
+  {label:`Bullpen — ${G.away.name} vs ${G.home.name}`,cls:"pen",rows:G.penMatrix}];
+G.lineupLabel = G.lineupLabel || "Lineups — tap any hitter for prop projection";
+
 /* ---------------- HELPERS ---------------- */
 const advBadge = who => who==="—" ? '<span class="faint">—</span>' :
   `<span class="a" style="background:${who===G.away.code?'#3d9fff':'#ff5b4a'};color:#000">${(who||'?')[0]}</span>`;
@@ -398,6 +407,28 @@ function lineupCol(side){
   </div>`;
 }
 
+// odds cells (ML / total / ML) — labels are sport-driven via g.odds
+function oddsCells(g){
+  return `<div class="odds3">
+    <div class="oc"><div class="ok">${g.away.code} ${g.odds.mlLabel||'ML'}</div><div class="ov">${g.odds.awayML}</div></div>
+    <div class="oc"><div class="ok">${g.odds.ouLabel||'O/U'}</div><div class="ov">${g.odds.ou}</div></div>
+    <div class="oc"><div class="ok">${g.home.code} ${g.odds.mlLabel||'ML'}</div><div class="ov">${g.odds.homeML}</div></div>
+  </div>`;
+}
+// starter (pitcher / goalie / QB) — tappable; omitted for sports without one
+function starterSide(s, right){
+  if(!s) return '<div></div>';
+  return `<div class="pitcher${right?' r':''}" data-prop="${s.key||s.name}">
+    <div class="pic">IMG</div>
+    <div><div class="pn">${s.name}<span class="role">${s.role}</span></div>
+      <div class="pl">${s.line}</div><div class="tapcue">▸ TAP FOR PROP PROJECTION</div></div>
+  </div>`;
+}
+function startersStrip(g){
+  if(g.starters) return `<div class="pitchers">${starterSide(g.starters.away,false)}${oddsCells(g)}${starterSide(g.starters.home,true)}</div>`;
+  return `<div class="pitchers" style="grid-template-columns:1fr;justify-items:center">${oddsCells(g)}</div>`;
+}
+
 /* ---------------- RESEARCH VIEW ---------------- */
 function renderResearch(){
   const g=G;
@@ -417,48 +448,22 @@ function renderResearch(){
     </div>
 
     <div class="meta">
-      <div class="m"><div class="k">Date/Time</div><div class="v">${g.date}</div></div>
-      <div class="m"><div class="k">Weather</div><div class="v">${g.weather}</div></div>
-      <div class="m"><div class="k">Park Factor</div><div class="v">${g.park}</div></div>
-      <div class="m"><div class="k">Power Rank</div><div class="v">${g.power}</div></div>
-      <div class="m"><div class="k">Bullpen Rank</div><div class="v">${g.pen}</div></div>
-      <div class="m"><div class="k">Days Rest</div><div class="v">${g.rest}</div></div>
+      ${(g.meta||[]).map(m=>`<div class="m"><div class="k">${m.k}</div><div class="v">${m.v}</div></div>`).join("")}
     </div>
 
-    <!-- tappable pitcher strip -->
-    <div class="pitchers">
-      <div class="pitcher" data-prop="N. McLean">
-        <div class="pic">IMG</div>
-        <div><div class="pn">${g.pitchers.away.name}<span class="role">${g.pitchers.away.role}</span></div>
-          <div class="pl">${g.pitchers.away.line}</div><div class="tapcue">▸ TAP FOR PROP PROJECTION</div></div>
-      </div>
-      <div class="odds3">
-        <div class="oc"><div class="ok">${g.away.code} ML</div><div class="ov">${g.odds.awayML}</div></div>
-        <div class="oc"><div class="ok">O/U</div><div class="ov">${g.odds.ou}</div></div>
-        <div class="oc"><div class="ok">${g.home.code} ML</div><div class="ov">${g.odds.homeML}</div></div>
-      </div>
-      <div class="pitcher r" data-prop="M. Pérez">
-        <div class="pic">IMG</div>
-        <div><div class="pn">${g.pitchers.home.name}<span class="role">${g.pitchers.home.role}</span></div>
-          <div class="pl">${g.pitchers.home.line}</div><div class="tapcue">▸ TAP FOR PROP PROJECTION</div></div>
-      </div>
-    </div>
+    ${startersStrip(g)}
 
-    <table class="matrix">${mCols}
-      <tr class="sec"><td colspan="12">◆ ${g.away.name} Pitching vs ${g.home.name}</td></tr>
-      ${mHead}${matrixRows(g.pitchMatrix)}
-      <tr class="sec bat"><td colspan="12">◆ Batting — ${g.away.name} vs ${g.home.name}</td></tr>
-      ${mHead}${matrixRows(g.batMatrix)}
-      <tr class="sec pen"><td colspan="12">◆ Bullpen — ${g.away.name} vs ${g.home.name}</td></tr>
-      ${mHead}${matrixRows(g.penMatrix)}
-    </table>
+    ${(g.sections&&g.sections.length)?`<table class="matrix">${mCols}
+      ${g.sections.map(s=>`<tr class="sec ${s.cls||''}"><td colspan="12">◆ ${s.label}</td></tr>${mHead}${matrixRows(s.rows)}`).join("")}
+    </table>`:''}
 
+    ${(g.lineups&&(g.lineups.away.order.length||g.lineups.home.order.length))?`
     <div class="rule"></div>
-    <div style="padding:11px 16px 0"><div class="eyebrow">Lineups — tap any hitter for prop projection</div></div>
+    <div style="padding:11px 16px 0"><div class="eyebrow">${g.lineupLabel||'Lineups — tap any player for prop projection'}</div></div>
     <div class="lineups" style="margin-top:9px">
       ${lineupCol(g.lineups.away)}
       ${lineupCol(g.lineups.home)}
-    </div>
+    </div>`:''}
 
     <div class="rule"></div>
     <div style="padding:9px 16px 0"><div class="eyebrow">Statistical Confidence Levels</div></div>

@@ -45,26 +45,48 @@ def _props():
 
 def test_build_g_shapes_all_keys():
     g = tc.build_g("MLB", _game(), _matchup(), _props())
-    for k in ("league", "grade", "away", "home", "odds", "pitchers",
-              "batMatrix", "pitchMatrix", "penMatrix", "conf", "lineups",
-              "receipts", "share", "props"):
+    for k in ("league", "grade", "away", "home", "odds", "meta", "starters",
+              "sections", "conf", "lineups", "receipts", "share", "props"):
         assert k in g, k
     assert g["league"] == "MLB"
     assert g["away"]["name"] == "New York Mets"
     assert g["odds"]["ou"] == "8.5"
-    # matrix reconstructed from the two engine perspectives
-    assert len(g["batMatrix"]) == 2 and len(g["batMatrix"][0]) == 4
-    # confidence cells carry a tag/class from play_tier
+    # MLB gets batting / pitching / bullpen sections from the two perspectives
+    labels = [s["label"] for s in g["sections"]]
+    assert any("Batting" in x for x in labels) and any("Bullpen" in x for x in labels)
+    assert len(g["sections"][0]["rows"][0]) == 4       # reference row shape
+    assert g["starters"]["away"]["name"] == "N. McLean"
     assert g["conf"]["ml"]["c"] in ("play", "lean", "pass")
 
 
 def test_build_g_data_gap_on_empty_matchup():
     g = tc.build_g("MLB", _game(), {}, [])
-    # no matchup -> matrices are a single DATA GAP row, never fabricated numbers
-    assert g["batMatrix"] == [["—", ["—"] * 5, "—", ["—"] * 5]]
-    assert g["penMatrix"][0][0] == "—"
-    # bullpen rank has no engine source -> honest gap
-    assert g["pen"] == "—"
+    # no matchup -> no matrix sections at all (never fabricated numbers)
+    assert g["sections"] == []
+    # meta still renders the fields it can, DATA GAP the rest
+    assert any(m["k"] == "Power Rank" for m in g["meta"])
+
+
+def test_non_mlb_uses_offense_defense_sections():
+    g = tc.build_g("WNBA", {**_game(), "away_team": "Aces", "home_team": "Liberty",
+                            "away_pitcher": None, "home_pitcher": None}, _matchup(), [])
+    labels = [s["label"] for s in g["sections"]]
+    assert any("Offense" in x for x in labels)
+    assert g["starters"] is None            # no pitcher/goalie/QB for WNBA
+
+
+def test_tennis_match_variant():
+    tg = {"player1": "A. Zverev", "player2": "T. Fritz", "match_time": "2026-07-05T12:00:00Z",
+          "player1_win_prob": 0.61, "player2_win_prob": 0.39,
+          "p1_price": -135, "p2_price": 115, "p1_ev": 0.03, "p2_ev": -0.03,
+          "p1_matches": 40, "p2_matches": 38, "tournament": "Wimbledon", "surface": "grass"}
+    g = tc.build_g("ATP", tg)
+    assert g["away"]["name"] == "A. Zverev" and g["home"]["name"] == "T. Fritz"
+    assert g["sections"] == [] and g["starters"] is None    # no matrix / starter
+    assert g["conf"]["ml"]["v"] != "—"                      # match-winner conviction
+    assert any(m["k"] == "Surface" for m in g["meta"])
+    html = tc.terminal_card_html("ATP", tg)
+    assert "A. Zverev" in html and "Wimbledon" in html
 
 
 def test_lineup_joins_props_and_gaps():
