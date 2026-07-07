@@ -69,8 +69,16 @@ Nothing below can be judged without it. All [HAVE], low effort.
 ### TIER 2 — Per-sport structural wins (bigger, high value, mostly no new feed)
 - **T2.1 NBA/WNBA pace-and-efficiency engine** — points = `poss × (adj ORtg vs adj
   DRtg)/100`, total from projected possessions. [DERIVE], data already in `teamstats.py`. → NBA #1.
-- **T2.2 MLB lineup-level batter×pitcher runs + xwOBA** — build each side's runs
-  from the posted 9 vs the starter, platoon-adjusted. [HAVE], biggest MLB lever. → MLB #1,#2.
+- **T2.2 MLB lineup-level batter×pitcher runs** — build each side's offensive base
+  from the posted 9's mean wOBA via linear weights, blended into the team rate.
+  [HAVE], biggest MLB lever. → MLB #1. **STATUS: BUILT + VALIDATED → ON at
+  LINEUP_BLEND=0.35.** `scripts/validate_lineup_runs.py`, MLB 2024, 499 games with
+  posted lineups: totals MAE and moneyline Brier both improve monotonically with
+  the blend (MAE 3.450→3.372, Brier 0.2446→0.2415 at 0→1). First lever to clear
+  the T0.1 bar. Conservative default (single validatable season — the 2023
+  FanGraphs pull is blocked here — plus mild backtest lookahead the live as-of
+  feed avoids). Follow-ups: strict as-of + Statcast xwOBA feed (MLB #2), platoon
+  split vs the starter's hand, second validation season → then raise the blend.
 - **T2.3 MLB wind vector** — already fetched (`weather.py:72`), read only for temp.
   Small, [HAVE]. → MLB #3.
 - **T2.4 Soccer real Dixon-Coles MLE fit** — fit attack/def + home γ + rho jointly;

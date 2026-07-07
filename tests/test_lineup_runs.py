@@ -15,9 +15,9 @@ def test_better_lineup_scores_more():
     assert lo < avg < hi
 
 
-def test_blend_inert_when_off():
-    # LINEUP_BLEND defaults to 0 -> passing a lineup wOBA changes nothing
-    assert config.LINEUP_BLEND == 0.0
+def test_blend_inert_when_off(monkeypatch):
+    # with the blend forced off, passing a lineup wOBA changes nothing
+    monkeypatch.setattr(config, "LINEUP_BLEND", 0.0)
     base = game.TeamInputs(name="T", runs_per_game=4.6, opp_starter_xfip=4.1)
     withlu = game.TeamInputs(name="T", runs_per_game=4.6, opp_starter_xfip=4.1,
                              lineup_woba=0.360)

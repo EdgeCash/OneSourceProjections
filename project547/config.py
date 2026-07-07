@@ -85,11 +85,16 @@ TEAM_RATE_WEIGHT = 0.65
 STARTER_INNINGS_SHARE = 5.3 / 9.0
 
 # Lineup-level offense (roadmap T2.2): blend a run estimate built from the nine
-# posted batters' wOBA into the team-rate base. 0 = off (pure team rate, the
-# historical behavior); ~0.5 = half lineup, half team rate. Stays 0 until the
-# walk-forward totals-MAE validation (scripts/validate_lineup_runs.py) shows the
-# lineup construction beats the team-rate model — tuned like TEMP_COEF.
-LINEUP_BLEND = 0.0
+# posted batters' wOBA into the team-rate base. 0 = off (pure team rate); 1 =
+# pure lineup. VALIDATED ON: scripts/validate_lineup_runs.py, MLB 2024, 499 games
+# with posted lineups — totals MAE and moneyline Brier both improve monotonically
+# as the blend rises (MAE 3.450→3.372, Brier 0.2446→0.2415 at blend 0→1). Set to
+# a conservative 0.35: clearly beneficial, with headroom left because (a) only
+# 2024 batter stats were available to validate (the 2023 FanGraphs pull is
+# blocked here) and (b) the backtest's season-aggregate wOBA carries mild
+# lookahead the live as-of feed does not. Raise it once a strict as-of wOBA feed
+# and a second validation season confirm the larger blends.
+LINEUP_BLEND = 0.35
 
 # How strongly to apply park factors to expected runs (0 = off, 1 = full).
 # The expected-runs math already de-biases each team's own home park, so
