@@ -69,6 +69,13 @@ class Sport:
     # disagreements with the close are mostly noise. Defaults to the historical
     # global (0.5); override per sport from the walk-forward backtest.
     market_shrink: float = 0.5
+    # first month of the league year, for season labeling (Elo between-season
+    # regression). 1 = the season fits inside one calendar year (MLB, WNBA,
+    # MLS, ATP). Cross-New-Year leagues (NBA/NHL/NFL/NCAAF) set 7: any game
+    # July-onward belongs to the season labeled by its own year, Jan-June games
+    # belong to the previous label. Prevents the mid-season regression that
+    # calendar-year labeling caused every Jan 1.
+    season_start_month: int = 1
 
 
 SPORTS: dict[str, Sport] = {
@@ -111,6 +118,7 @@ SPORTS: dict[str, Sport] = {
         league_ppg=114.0, hfa=2.5, sigma_margin=12.5, sigma_total=19.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
         fp_projections="daily", score_method="multiplicative",
+        season_start_month=7,
         # Elo primed for season openers (carries prior-season strength so the
         # first weeks aren't coin flips). Mirrors WNBA's strong basketball
         # result; validate/tune via Performance -> Model vs market once games run.
@@ -129,6 +137,7 @@ SPORTS: dict[str, Sport] = {
         league_ppg=22.5, hfa=1.8, sigma_margin=16.0, sigma_total=13.5,
         in_season_months=(9, 10, 11, 12, 1, 2), form_days=140,
         fp_projections="weekly", score_method="multiplicative",
+        season_start_month=7,
         # Few games/season -> larger k and a heavier between-season regression.
         elo_blend=0.60, elo_k=20.0, elo_home_edge=48.0, elo_regress=0.33,
         # rest edge (bye weeks / short weeks): +cal & +CLV on the 2021-24 backtest.
@@ -146,6 +155,7 @@ SPORTS: dict[str, Sport] = {
         in_season_months=(8, 9, 10, 11, 12, 1), form_days=140,
         espn_params={"groups": 80, "limit": 400},  # FBS only
         score_method="multiplicative",
+        season_start_month=7,
         # Heavy roster turnover -> regress harder toward the mean each season.
         elo_blend=0.50, elo_k=22.0, elo_home_edge=65.0, elo_regress=0.45,
     ),
@@ -174,6 +184,7 @@ SPORTS: dict[str, Sport] = {
         league_ppg=3.0, hfa=0.15, sigma_margin=0.0, sigma_total=0.0,
         in_season_months=(10, 11, 12, 1, 2, 3, 4, 5, 6), form_days=45,
         score_method="multiplicative",
+        season_start_month=7,
         # Low-event sport -> small k (single results carry little signal).
         elo_blend=0.50, elo_k=6.0, elo_home_edge=50.0, elo_regress=0.30,
         # strength-of-schedule helps NHL on the 2022-24 backtest (logloss/CLV/ROI).
@@ -185,6 +196,21 @@ SPORTS: dict[str, Sport] = {
 def in_season(sport_key: str, date: str) -> bool:
     month = int(date.split("-")[1])
     return month in SPORTS[sport_key].in_season_months
+
+
+def season_label(sport_key: str, date) -> int:
+    """League season label for a game date (YYYY-MM-DD or anything with a
+    YYYY-MM prefix). Used for Elo between-season regression: the label must
+    only change across a real off-season, never mid-season. For cross-New-Year
+    leagues the label is the year the season *started* in (2025-26 NBA -> 2025)."""
+    d = str(date)
+    try:
+        year, month = int(d[:4]), int(d[5:7])
+    except (ValueError, IndexError):
+        return 0
+    sp = SPORTS.get(sport_key)
+    start = sp.season_start_month if sp else 1
+    return year if month >= start else year - 1
 
 
 def active_sports(date: str) -> list[str]:

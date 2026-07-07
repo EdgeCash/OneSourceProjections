@@ -107,6 +107,7 @@ def test_attach_tennis_edges(monkeypatch):
     df = pd.DataFrame([{
         "player1": "Alexander Zverev", "player2": "Taylor Fritz",
         "player1_win_prob": 0.65, "player2_win_prob": 0.35,
+        "p1_matches": 20, "p2_matches": 20,
     }])
     out = pipeline._attach_tennis_edges(df, "ATP", "2026-06-20")
     r = out.iloc[0]
@@ -115,3 +116,19 @@ def test_attach_tennis_edges(monkeypatch):
     assert r["market"] == "tennis_moneyline"
     # model 0.65 beats the ~0.58 devig on p1 -> p1 EV should be the positive side
     assert r["p1_ev"] > r["p2_ev"]
+
+
+def test_attach_tennis_edges_thin_sample_gate(monkeypatch):
+    """A player with under TENNIS_MIN_MATCHES of Elo history must not be
+    priced — an unseen player sits at the base rating, so the model's
+    'disagreement' with the market is fake (audit 2026-07 #16)."""
+    monkeypatch.setattr(pipeline.oddsapi, "game_odds",
+                        lambda *a, **k: _tennis_event())
+    df = pd.DataFrame([{
+        "player1": "Alexander Zverev", "player2": "Taylor Fritz",
+        "player1_win_prob": 0.65, "player2_win_prob": 0.35,
+        "p1_matches": 20, "p2_matches": 0,
+    }])
+    out = pipeline._attach_tennis_edges(df, "ATP", "2026-06-20")
+    r = out.iloc[0]
+    assert r["p1_ev"] is None and r["p2_ev"] is None and r["kelly"] is None

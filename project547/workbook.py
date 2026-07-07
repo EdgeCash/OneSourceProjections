@@ -193,15 +193,23 @@ def game_rows(sport: str, date: str, g: dict) -> list[dict]:
     start = str(g.get("game_time", ""))[11:16]
     out: list[dict] = []
 
-    def add(market, selection, prob, mkt_odds, stored_ev=None, line=None):
+    def add(market, selection, prob, mkt_odds, stored_ev=None, line=None,
+            p_used=None):
         o = _num(mkt_odds)
-        # Prefer the probability the engine actually bet on: where it stored an
-        # EV against a real price, recover p = (EV+1)/(b+1) so the sheet's math
-        # equals the engine's (it shrinks toward market before pricing). With no
-        # market EV, fall back to the raw model probability.
+        # Prefer the probability the engine actually bet on: the pipeline's
+        # p_used column (calibrated + market-blended) when present, else — for
+        # older payloads — recover p = (EV+1)/(b+1) from the stored EV so the
+        # sheet's math equals the engine's. With neither, fall back to the raw
+        # model probability. (The recovery is exact only at half-point lines;
+        # push-aware EV at whole-number lines shifts it by ~p_push/dec, which
+        # is why the explicit p_used takes precedence.)
         ev, p = _num(stored_ev), _num(prob)
+        pu = _num(p_used)
         priced = False
-        if ev is not None and o is not None:
+        if pu is not None:
+            p = pu
+            priced = ev is not None and o is not None
+        elif ev is not None and o is not None:
             b = odds.american_to_decimal(o) - 1
             if b > 0:
                 p = (ev + 1.0) / (b + 1.0)
@@ -214,18 +222,24 @@ def game_rows(sport: str, date: str, g: dict) -> list[dict]:
                     "engine_priced": priced})
 
     # Moneyline
-    add("Moneyline", away, g.get("away_win_prob"), g.get("away_ml"), g.get("away_ml_ev"))
-    add("Moneyline", home, g.get("home_win_prob"), g.get("home_ml"), g.get("home_ml_ev"))
+    ml_pu = _num(g.get("home_ml_p_used"))
+    add("Moneyline", away, g.get("away_win_prob"), g.get("away_ml"),
+        g.get("away_ml_ev"), p_used=(1 - ml_pu) if ml_pu is not None else None)
+    add("Moneyline", home, g.get("home_win_prob"), g.get("home_ml"),
+        g.get("home_ml_ev"), p_used=ml_pu)
 
     # Total (over/under)
     tl = _num(g.get("total_line"))
     mover = _num(g.get("model_over_prob"))
     if mover is not None:
         ln = f"{tl:g}" if tl is not None else ""
+        o_pu = _num(g.get("over_p_used"))
+        o_push = _num(g.get("over_p_push")) or 0.0
         add("Total", f"Over {ln}".strip(), mover, g.get("over_odds"),
-            g.get("over_ev"), tl)
+            g.get("over_ev"), tl, p_used=o_pu)
         add("Total", f"Under {ln}".strip(), 1 - mover,
-            g.get("under_odds", g.get("over_odds")), g.get("under_ev"), tl)
+            g.get("under_odds", g.get("over_odds")), g.get("under_ev"), tl,
+            p_used=(max(0.0, 1 - o_pu - o_push) if o_pu is not None else None))
 
     # Spread / run line — MLB uses rl_*, generic engine uses spread_*
     sp_line = _num(g.get("rl_home_line", g.get("spread_home_line")))
@@ -234,9 +248,14 @@ def game_rows(sport: str, date: str, g: dict) -> list[dict]:
     a_odds = g.get("rl_away_odds", g.get("spread_away_odds"))
     h_ev = g.get("rl_home_ev", g.get("spread_home_ev"))
     a_ev = g.get("rl_away_ev", g.get("spread_away_ev"))
+    sp_pu = _num(g.get("rl_home_p_used", g.get("spread_home_p_used")))
+    sp_push = _num(g.get("spread_home_p_push")) or 0.0
     if home_cover is not None and sp_line is not None:
-        add("Spread", f"{home} {sp_line:+g}", home_cover, h_odds, h_ev, sp_line)
-        add("Spread", f"{away} {-sp_line:+g}", 1 - home_cover, a_odds, a_ev, -sp_line)
+        add("Spread", f"{home} {sp_line:+g}", home_cover, h_odds, h_ev, sp_line,
+            p_used=sp_pu)
+        add("Spread", f"{away} {-sp_line:+g}", 1 - home_cover, a_odds, a_ev,
+            -sp_line,
+            p_used=(max(0.0, 1 - sp_pu - sp_push) if sp_pu is not None else None))
     return out
 
 

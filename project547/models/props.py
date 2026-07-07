@@ -35,8 +35,16 @@ def blend(own: float | None, fp: float | None, league: float) -> float:
 
 def prob_over_count(lam: float, line: float) -> float:
     """P(X > line) for Poisson X. Works for half lines (5.5) and whole
-    lines (6 → strictly over; pushes are handled by the caller's odds)."""
+    lines (6 → strictly over; price the push mass via prob_push_count)."""
     return float(1 - stats.poisson.cdf(int(line), lam))
+
+
+def prob_push_count(lam: float, line: float) -> float:
+    """P(X == line) for Poisson X — the push mass at an integer line
+    (the book refunds the stake). 0.0 for half lines, which cannot push."""
+    if float(line) != int(line):
+        return 0.0
+    return float(stats.poisson.pmf(int(line), lam))
 
 
 # Per-game total bases are heavily overdispersed (var/mean ~2.2): lots of
@@ -52,6 +60,16 @@ def prob_over_neg_binom(mean: float, line: float, dispersion: float = TB_DISPERS
     mean = max(mean, 1e-6)
     p = dispersion / (dispersion + mean)
     return float(1 - stats.nbinom.cdf(int(line), dispersion, p))
+
+
+def prob_push_neg_binom(mean: float, line: float, dispersion: float = TB_DISPERSION) -> float:
+    """P(X == line) for the same negative binomial prob_over_neg_binom prices
+    with — the push mass at an integer line. 0.0 for half lines."""
+    if float(line) != int(line):
+        return 0.0
+    mean = max(mean, 1e-6)
+    p = dispersion / (dispersion + mean)
+    return float(stats.nbinom.pmf(int(line), dispersion, p))
 
 
 def refine_expected_innings(base: float, workload: dict | None) -> float:
@@ -203,6 +221,18 @@ def prob_over_hits(expected_ab: float, p: float, line: float,
     a = concentration * p
     b = concentration * (1 - p)
     return float(1 - stats.betabinom.cdf(int(line), n, a, b))
+
+
+def prob_push_hits(expected_ab: float, p: float, line: float,
+                   concentration: float = HITS_CONCENTRATION) -> float:
+    """P(X == line) for the same beta-binomial prob_over_hits prices with —
+    the push mass at an integer hits line. 0.0 for half lines."""
+    if float(line) != int(line):
+        return 0.0
+    n = max(1, round(expected_ab))
+    a = concentration * p
+    b = concentration * (1 - p)
+    return float(stats.betabinom.pmf(int(line), n, a, b))
 
 
 def batter_total_bases(

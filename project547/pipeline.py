@@ -28,7 +28,7 @@ from .models import tennis
 from .models import wnba_props
 from .models.elo import Elo, EloConfig
 from .names import normalize
-from .sports import SPORTS, active_sports
+from .sports import SPORTS, active_sports, season_label
 
 log = logging.getLogger(__name__)
 
@@ -39,7 +39,8 @@ log = logging.getLogger(__name__)
 
 def _market_eval(p_model_a: float, a_price, b_price,
                  shrink: float | None = None,
-                 sport: str | None = None, market: str | None = None) -> dict:
+                 sport: str | None = None, market: str | None = None,
+                 p_push: float = 0.0) -> dict:
     """Evaluate a two-way market for both sides from one model probability.
 
     Rejects incoherent price pairs, shrinks the model probability toward the
@@ -51,11 +52,21 @@ def _market_eval(p_model_a: float, a_price, b_price,
     when unset. Only the two-way branch uses it — a single quoted side is never
     shrunk (a lone vig-inclusive price is not a clean consensus).
 
-    Returns {p_used, p_fair, ev_a, ev_b}; ev_* are None where that side has
-    no usable price. ``p_used`` falls back to the raw model prob when there's
-    no market to anchor to.
+    ``p_push`` is the model's probability the market pushes (an integer line
+    landing exactly), so P(A) + P(B) + p_push = 1. A push refunds the stake —
+    it is neither a win for the under nor a loss for the over. The de-vigged
+    market fair prob is conditional on no push by construction, so the blend
+    happens in conditional space and is scaled back. Without this, every
+    whole-number line overstated the B side's EV by ~p_push × payout and
+    understated the A side's by ~p_push (audit 2026-07 #2).
+
+    Returns {p_used, p_fair, p_push, ev_a, ev_b}; ev_* are None where that
+    side has no usable price. ``p_used`` is the (unconditional) win prob of
+    side A the EVs were computed from — Kelly stakes must be sized from it,
+    not the raw model prob.
     """
     shrink = config.MARKET_SHRINK if shrink is None else shrink
+    p_push = float(p_push or 0.0)
     # Post-hoc calibration (flag-gated, default off): map the raw model prob to
     # its calibrated value before it becomes EV/shrink. Identity no-op for any
     # (sport, market) without a fitted map. See docs/MODEL_REPAIR.md.
@@ -64,7 +75,9 @@ def _market_eval(p_model_a: float, a_price, b_price,
         p_model_a = _cal.calibrate(p_model_a, sport, market)
     a_ok = a_price is not None and pd.notna(a_price)
     b_ok = b_price is not None and pd.notna(b_price)
-    out = {"p_used": p_model_a, "p_fair": None, "ev_a": None, "ev_b": None}
+    out = {"p_used": p_model_a, "p_fair": None,
+           "p_push": round(p_push, 4), "ev_a": None, "ev_b": None}
+    live = max(1e-9, 1.0 - p_push)  # P(no push)
     if a_ok and b_ok:
         # two-way market: de-vig to a clean consensus and shrink toward it
         fair = odds.fair_two_way(float(a_price), float(b_price),
@@ -72,7 +85,8 @@ def _market_eval(p_model_a: float, a_price, b_price,
         if fair is None:
             return out  # incoherent pair -> no edge either side
         p_fair = fair[0]
-        p = odds.blend_toward_market(p_model_a, p_fair, shrink)
+        cond_a = min(max(p_model_a / live, 0.0), 1.0)
+        p = odds.blend_toward_market(cond_a, p_fair, shrink) * live
         out["p_fair"] = round(p_fair, 4)
     elif a_ok or b_ok:
         # single quoted side: the lone implied prob still carries the book's
@@ -87,9 +101,10 @@ def _market_eval(p_model_a: float, a_price, b_price,
         return out
     out["p_used"] = round(p, 4)
     if a_ok:
-        out["ev_a"] = round(odds.expected_value(p, float(a_price)), 4)
+        out["ev_a"] = round(odds.expected_value(p, float(a_price), p_push), 4)
     if b_ok:
-        out["ev_b"] = round(odds.expected_value(1 - p, float(b_price)), 4)
+        p_b = max(0.0, 1.0 - p - p_push)
+        out["ev_b"] = round(odds.expected_value(p_b, float(b_price), p_push), 4)
     return out
 
 
@@ -107,6 +122,24 @@ def _nb_prob_over(line_int: int, mean: float) -> float:
     p = 1.0 / d                 # var/mean = 1/p  ->  p = 1/d
     n = mean / (d - 1.0)        # mean = n(1-p)/p ->  n = mean/(d-1)
     return float(1 - _st.nbinom.cdf(line_int, n, p))
+
+
+def _nb_prob_push(line: float, mean: float) -> float:
+    """P(total == line) under the same negative binomial as ``_nb_prob_over`` —
+    the push mass at a whole-number total line (0 for half-point lines). At an
+    MLB total of 9 with mean 9 this is ~8-9%, far bigger than a typical edge,
+    so EV must treat it as a refund, not a win/loss."""
+    from scipy import stats as _st
+
+    if mean <= 0 or float(line) != int(line):
+        return 0.0
+    k = int(line)
+    d = config.RUN_DISPERSION
+    if d <= 1.0:
+        return float(_st.poisson.pmf(k, mean))
+    p = 1.0 / d
+    n = mean / (d - 1.0)
+    return float(_st.nbinom.pmf(k, n, p))
 
 
 # ---------------------------------------------------------------------------
@@ -216,13 +249,23 @@ def _batter_woba_map(batters: pd.DataFrame) -> dict:
     if batters is None or batters.empty:
         return out
     for _, b in batters.iterrows():
+        d = b.to_dict()
         nm = b.get("norm_name")
-        avg, slg = _lookup_float(b.to_dict(), "AVG"), _lookup_float(b.to_dict(), "SLG")
+        avg, slg = _lookup_float(d, "AVG"), _lookup_float(d, "SLG")
         if not nm or (avg is None and slg is None):
             continue
         a = (avg / _LG_AVG) if avg else 1.0
         s = (slg / _LG_SLG) if slg else 1.0
-        out[nm] = _nrfi.LEAGUE_WOBA * (0.45 * a + 0.55 * s)
+        w = _nrfi.LEAGUE_WOBA * (0.45 * a + 0.55 * s)
+        # PA-shrink toward league, same prior the Statcast path uses (40 PA):
+        # batters fall to this proxy exactly when their sample is thinnest
+        # (call-ups missing from the Savant minPA leaderboard), so an unshrunk
+        # 12-AB hot streak would otherwise walk straight into the lineup mean.
+        pa = _lookup_float(d, "PA", "AB")
+        if pa is not None and pa >= 0:
+            k = pa / (pa + 40.0)
+            w = k * w + (1 - k) * _nrfi.LEAGUE_WOBA
+        out[nm] = w
     return out
 
 
@@ -280,8 +323,10 @@ def project_games(date: str) -> pd.DataFrame:
         # by its own home park (see models/game.expected_runs).
         pf_venue = parks.factor(g["home_team"])
         # Weather first — its temperature feeds expected_runs (warm air carries
-        # the ball). game_weather returns None for domes/unavailable forecasts,
-        # so temp_f stays None there and the model skips the adjustment.
+        # the ball). game_weather suppresses the forecast for fixed domes and
+        # likely-closed retractable roofs (weather.py), matching the dome/roof
+        # exclusion in the backtest that validated TEMP_COEF, so temp_f stays
+        # None there and the model skips the adjustment.
         try:
             wx = weather.game_weather(g["home_team"], g["game_time"])
         except Exception:
@@ -576,6 +621,28 @@ def prob_over_for_row(row: dict, line: float) -> float | None:
     return None
 
 
+def prob_push_for_row(row: dict, line: float) -> float:
+    """Model probability the prop pushes — the stat landing exactly on a
+    whole-number line — under the same distribution ``prob_over_for_row``
+    prices. 0 for half-point lines. Feeds ``_market_eval(p_push=...)`` so a
+    push is priced as a stake refund instead of a loss (audit 2026-07 #2)."""
+    try:
+        if float(line) != int(line):
+            return 0.0
+    except (TypeError, ValueError):
+        return 0.0
+    if row["dist"] == "poisson":
+        return prop_model.prob_push_count(row["param"], line)
+    if row["dist"] == "negbinom":
+        disp = row.get("dispersion")
+        if disp is None or pd.isna(disp):
+            disp = prop_model.TB_DISPERSION
+        return prop_model.prob_push_neg_binom(row["param"], line, float(disp))
+    if row["dist"] == "binomial":
+        return prop_model.prob_push_hits(row.get("n", 4), row["param"], line)
+    return 0.0
+
+
 _PROP_EDGE_COLS = ("line", "odds", "book_id", "model_over_prob", "ev", "kelly",
                    "bp_projection", "bp_ev", "bp_probability",
                    "bp_recommended_side", "bp_bet_rating",
@@ -680,9 +747,11 @@ def attach_prop_edges(props: pd.DataFrame, date: str) -> pd.DataFrame:
         p = prob_over_for_row(row, float(row["line"]))
         if p is None:
             return pd.Series({"model_over_prob": None, "ev": None, "kelly": None})
-        ev = _market_eval(p, row["odds"], None)
+        p_push = prob_push_for_row(row, float(row["line"]))
+        ev = _market_eval(p, row["odds"], None, p_push=p_push)
         k = (round(odds.kelly_stake(ev["p_used"], float(row["odds"]),
-                                    config.KELLY_FRACTION), 4)
+                                    config.KELLY_FRACTION,
+                                    push_prob=ev["p_push"]), 4)
              if ev["ev_a"] is not None else None)
         return pd.Series({"model_over_prob": round(p, 4), "ev": ev["ev_a"],
                           "kelly": k})
@@ -740,11 +809,13 @@ def _attach_bp_consensus_keyed(props: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["model_over_prob"] = round(p, 4)
                     price = row.get("odds")
                     if price is not None and pd.notna(price):
-                        ev = _market_eval(p, price, None)
+                        p_push = prob_push_for_row(row, float(line))
+                        ev = _market_eval(p, price, None, p_push=p_push)
                         out["ev"] = ev["ev_a"]
                         if ev["ev_a"] is not None:
                             out["kelly"] = round(odds.kelly_stake(
-                                ev["p_used"], float(price), config.KELLY_FRACTION), 4)
+                                ev["p_used"], float(price), config.KELLY_FRACTION,
+                                push_prob=ev["p_push"]), 4)
         return pd.Series(out)
 
     recomputed = merged.apply(compute, axis=1)
@@ -763,7 +834,13 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
     game_cols = ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
                  "total_line", "over_odds", "under_odds", "model_over_prob",
                  "over_ev", "under_ev", "rl_home_line", "rl_home_odds",
-                 "rl_away_odds", "model_home_rl", "rl_home_ev", "rl_away_ev")
+                 "rl_away_odds", "model_home_rl", "rl_home_ev", "rl_away_ev",
+                 # market-blended probabilities the EVs were computed from —
+                 # the staking layer sizes Kelly from these, never the raw
+                 # model probs (audit 2026-07 #3) — plus the push mass at
+                 # whole-number lines (a push is a refund, not a loss).
+                 "home_ml_p_used", "over_p_used", "over_p_push",
+                 "rl_home_p_used")
     _ensure_cols(games, game_cols)
     if games.empty:
         return games
@@ -830,6 +907,7 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                 out["home_ml_ev"] = ev["ev_a"]
             if ev["ev_b"] is not None:
                 out["away_ml_ev"] = ev["ev_b"]
+            out["home_ml_p_used"] = ev["p_used"]
         # total
         tg = event_offer(tot, row)
         if tg is not None and not tg.empty and "line" in tg.columns:
@@ -857,11 +935,14 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["under_odds"] = under_price
                 ev = _market_eval(float(p), float(best_o["odds"]), under_price,
                                   shrink=SPORTS["MLB"].market_shrink,
-                                  sport="MLB", market="total")
+                                  sport="MLB", market="total",
+                                  p_push=_nb_prob_push(line, float(row["proj_total"])))
                 if ev["ev_a"] is not None:
                     out["over_ev"] = ev["ev_a"]
                 if ev["ev_b"] is not None:
                     out["under_ev"] = ev["ev_b"]
+                out["over_p_used"] = ev["p_used"]
+                out["over_p_push"] = ev["p_push"]
         # run line (home -1.5 / +1.5)
         rg = event_offer(rl, row)
         if rg is not None and not rg.empty and "line" in rg.columns:
@@ -899,11 +980,13 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                                           None, shrink=shrink)
                         hb = _market_eval(1.0 - float(p_cover), float(away_price),
                                           None, shrink=shrink)
-                        ev = {"ev_a": ha["ev_a"], "ev_b": hb["ev_a"]}
+                        ev = {"ev_a": ha["ev_a"], "ev_b": hb["ev_a"],
+                              "p_used": ha["p_used"]}
                     if ev.get("ev_a") is not None:
                         out["rl_home_ev"] = ev["ev_a"]
                     if ev.get("ev_b") is not None:
                         out["rl_away_ev"] = ev["ev_b"]
+                    out["rl_home_p_used"] = ev.get("p_used")
         return pd.Series(out, dtype=object)
 
     extra = games.apply(per_game, axis=1)
@@ -940,8 +1023,13 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
             elo_results = espn.results_range(
                 sport_key, mlb_statsapi._shift_date(date, -500), date)
             for r in sorted(elo_results, key=lambda x: x["date"]):
+                # league season label, not the calendar year: calendar labeling
+                # regressed every cross-New-Year league toward the mean on Jan 1
+                # (mid-season) and never across the real off-season.
                 elo.update(r["home_team"], r["away_team"],
-                           r["home_score"], r["away_score"], int(r["date"][:4]))
+                           r["home_score"], r["away_score"],
+                           season_label(sport_key, r["date"]),
+                           neutral=bool(r.get("neutral")))
         except Exception as e:
             log.warning("%s Elo history unavailable: %s", sport_key, e)
             elo = None
@@ -964,21 +1052,26 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
 
     rows = []
     for g in slate:
+        neutral = bool(g.get("neutral"))
         proj = generic.project_game(
-            sport, ratings.get(g["home_team"]), ratings.get(g["away_team"])
+            sport, ratings.get(g["home_team"]), ratings.get(g["away_team"]),
+            neutral=neutral,
         )
         hwp = proj.home_win_prob
         if elo is not None:
-            season = int(str(g.get("date") or date)[:4])
-            ewp = elo.home_win_prob(g["home_team"], g["away_team"], season)
+            season = season_label(sport_key, str(g.get("date") or date))
+            ewp = elo.home_win_prob(g["home_team"], g["away_team"], season,
+                                    neutral=neutral)
             hwp = (1 - sport.elo_blend) * hwp + sport.elo_blend * ewp
         if sport.rest_coeff and sport.sigma_margin > 0:
             rest_diff = _rest(g["home_team"]) - _rest(g["away_team"])
             hwp = generic.shift_win_prob(hwp, sport.rest_coeff * rest_diff,
                                          sport.sigma_margin)
-        # Fold the Elo/rest-adjusted win prob back into the projection's margin
-        # so the spread cover prob (which reads margin_mean) stays consistent
-        # with the published moneyline. Totals are unaffected by design.
+        # Fold the Elo/rest-adjusted win prob back into the projection so the
+        # published numbers agree with each other: the margin (spread cover),
+        # the side scores (normal model: re-split around the blended margin;
+        # Poisson: lambdas tilted to the blended win prob holding the total),
+        # and the moneyline all carry the same information.
         proj = generic.with_consistent_margin(proj, hwp, sport)
         hwp = proj.home_win_prob
         rows.append(
@@ -1040,9 +1133,14 @@ def project_tennis_matches(sport_key: str, date: str) -> pd.DataFrame:
     """Tennis match projections: P(each player wins) from surface-aware player
     Elo (models/tennis), primed from ESPN match history. Projection-only for now
     (no odds feed), surfaced and, once priced, gated in PROBATION like any new
-    market."""
+    market. Placeholder entrants (TBD/qualifier) and matches already underway
+    are dropped — an unseen player sits at the Elo base rating, so pricing a
+    debutant (or a live match with a pregame Elo) manufactures fake edges."""
     slate = espn.tennis_matches(sport_key, date, date)
-    slate = [m for m in slate if not m["completed"]]
+    slate = [m for m in slate if not m["completed"]
+             and not _tennis_placeholder(m.get("player1"))
+             and not _tennis_placeholder(m.get("player2"))
+             and not _tennis_started(m)]
     if not slate:
         return pd.DataFrame()
     sport = SPORTS[sport_key]
@@ -1068,6 +1166,32 @@ def project_tennis_matches(sport_key: str, date: str) -> pd.DataFrame:
             "p1_matches": elo.seen(p1), "p2_matches": elo.seen(p2),
         })
     return pd.DataFrame(rows)
+
+
+# Minimum Elo history per player before a tennis match may be priced (mirrors
+# wnba_props.MIN_GAMES): an unseen player sits at the base rating, so a
+# debutant vs a market favorite reads as a large fake model disagreement.
+TENNIS_MIN_MATCHES = 5
+
+
+def _tennis_placeholder(name) -> bool:
+    n = str(name or "").strip().lower()
+    return n in ("", "tbd", "tba", "bye") or n.startswith("qualifier")
+
+
+def _tennis_started(m: dict) -> bool:
+    """True when the match's scheduled start is already in the past — a live
+    match must not be priced with a pregame Elo against in-play odds."""
+    ts = m.get("match_time")
+    if not ts:
+        return False
+    try:
+        t = pd.Timestamp(str(ts))
+        if t.tzinfo is None:
+            t = t.tz_localize("UTC")
+    except (ValueError, TypeError):
+        return False
+    return t < pd.Timestamp.now(tz="UTC")
 
 
 def _attach_tennis_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.DataFrame:
@@ -1098,6 +1222,11 @@ def _attach_tennis_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
     shrink = SPORTS[sport_key].market_shrink
 
     def _row(row):
+        # thin-sample gate: both players need real Elo history before their
+        # model prob is allowed to disagree with the market.
+        if min(int(row.get("p1_matches") or 0),
+               int(row.get("p2_matches") or 0)) < TENNIS_MIN_MATCHES:
+            return pd.Series({})
         a = price.get(normalize(row["player1"]))
         b = price.get(normalize(row["player2"]))
         if a is None and b is None:
@@ -1196,6 +1325,11 @@ def _attach_soccer_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
 
     def _row(row):
         out: dict = {}
+        # probability each EV was actually computed from (market-blended) — the
+        # Kelly stake must be sized on the same number, not the raw model prob,
+        # which is systematically more extreme (the tennis/props paths already
+        # stake on p_used; this brings soccer in line).
+        p_used: dict = {}
         ml = _lookup(row, ev_ml)
         if ml and {"home", "draw", "away"} <= set(ml):
             fair = odds.fair_multiway({"home": ml["home"], "draw": ml["draw"],
@@ -1211,12 +1345,16 @@ def _attach_soccer_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
                     out[f"{k}_ml"] = ml[k]
                     out[f"{k}_ev"] = round(odds.expected_value(blended[k],
                                                                float(ml[k])), 4)
+                    p_used[f"{k}_ev"] = blended[k]
         tot = _lookup(row, ev_tot)
         if tot and "over" in tot and "under" in tot:
             ev = _market_eval(row["over_2_5"], tot["over"], tot["under"], shrink=shrink,
                               sport=sport_key, market="total")
             out["over_price"], out["under_price"] = tot["over"], tot["under"]
             out["over_ev"], out["under_ev"] = ev["ev_a"], ev["ev_b"]
+            if ev["p_used"] is not None:
+                p_used["over_ev"] = ev["p_used"]
+                p_used["under_ev"] = round(1 - ev["p_used"], 4)
         evs = {k: out[k] for k in ("home_ev", "draw_ev", "away_ev", "over_ev",
                                    "under_ev") if out.get(k) is not None}
         best_side = max(evs, key=evs.get) if evs else None
@@ -1225,12 +1363,9 @@ def _attach_soccer_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
                          "away_ev": out.get("away_ml"), "over_ev": out.get("over_price"),
                          "under_ev": out.get("under_price")}
             side_price = price_map[best_side]
-            p_map = {"home_ev": row["home_win_prob"], "draw_ev": row["draw_prob"],
-                     "away_ev": row["away_win_prob"], "over_ev": row["over_2_5"],
-                     "under_ev": round(1 - row["over_2_5"], 4)}
-            if side_price is not None:
+            if side_price is not None and best_side in p_used:
                 out["kelly"] = round(odds.kelly_stake(
-                    p_map[best_side], float(side_price), config.KELLY_FRACTION), 4)
+                    p_used[best_side], float(side_price), config.KELLY_FRACTION), 4)
             out["market"] = ("soccer_total" if best_side in ("over_ev", "under_ev")
                              else "soccer_moneyline")
         return pd.Series(out)
@@ -1281,7 +1416,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
             ev = _market_eval(r["home_win_prob"], r.get("home_ml"), r.get("away_ml"),
                               shrink=sport.market_shrink,
                               sport=sport_key, market="moneyline")
-            return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"]})
+            return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"],
+                              "home_ml_p_used": ev["p_used"]})
 
         games = pd.concat([games, games.apply(_ml_ev, axis=1)], axis=1)
 
@@ -1309,13 +1445,15 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
             if offer is None:
                 return pd.Series({"total_line": None, "over_odds": None,
                                   "under_odds": None, "model_over_prob": None,
-                                  "over_ev": None, "under_ev": None})
+                                  "over_ev": None, "under_ev": None,
+                                  "over_p_used": None, "over_p_push": None})
             line = float(offer["line"])
             p = row["_proj"].prob_over(line, sport)
             under_odds = float(under["odds"]) if under is not None else None
             ev = _market_eval(p, float(offer["odds"]), under_odds,
-                              shrink=SPORTS[sport].market_shrink,
-                              sport=sport_key, market="total")
+                              shrink=sport.market_shrink,
+                              sport=sport_key, market="total",
+                              p_push=row["_proj"].prob_push(line, sport))
             return pd.Series({
                 "total_line": line,
                 "over_odds": offer["odds"],
@@ -1323,6 +1461,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                 "model_over_prob": round(p, 4),
                 "over_ev": ev["ev_a"],
                 "under_ev": ev["ev_b"],
+                "over_p_used": ev["p_used"],
+                "over_p_push": ev["p_push"],
             })
 
         games = pd.concat([games, games.apply(total_cols, axis=1)], axis=1)
@@ -1335,7 +1475,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         def spread_cols(row):
             out = {"spread_home_line": None, "spread_home_odds": None,
                    "spread_away_odds": None, "model_home_cover": None,
-                   "spread_home_ev": None, "spread_away_ev": None}
+                   "spread_home_ev": None, "spread_away_ev": None,
+                   "spread_home_p_used": None, "spread_home_p_push": None}
             ids = [eid for eid, ts in event_teams.items()
                    if any(_teams_match(row["home_team"], t)
                           or _teams_match(row["away_team"], t) for t in ts)]
@@ -1355,11 +1496,14 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                                 .iloc[0]["odds"]) if not away_rows.empty else None)
             ev = _market_eval(p, float(best_h["odds"]), away_price,
                               shrink=sport.market_shrink,
-                              sport=sport_key, market="spread")
+                              sport=sport_key, market="spread",
+                              p_push=row["_proj"].home_cover_push_prob(spread, sport))
             out.update({"spread_home_line": spread,
                         "spread_home_odds": float(best_h["odds"]),
                         "model_home_cover": round(p, 4),
-                        "spread_home_ev": ev["ev_a"]})
+                        "spread_home_ev": ev["ev_a"],
+                        "spread_home_p_used": ev["p_used"],
+                        "spread_home_p_push": ev["p_push"]})
             if away_price is not None:
                 out["spread_away_odds"] = away_price
                 out["spread_away_ev"] = ev["ev_b"]
@@ -1664,13 +1808,20 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
             "model_over_prob": None, "ev_over": None, "ev_under": None, "kelly": None,
         }
         if projection is not None and pd.notna(line):
+            line_f = float(line)
             if model_r is not None:      # WNBA: our data-fit, calibrated NB
-                p_over = wnba_props.prob_over(float(projection), float(line), model_r)
+                p_over = wnba_props.prob_over(float(projection), line_f, model_r)
+                # push mass at a whole-number line under the same NB:
+                # P(X == L) = P(X > L-1) - P(X > L)
+                p_push = (max(0.0, wnba_props.prob_over(float(projection),
+                                                        line_f - 1.0, model_r) - p_over)
+                          if line_f == int(line_f) else 0.0)
             else:                        # other sports: generic keyword dispersion
-                p_over = generic.prop_prob_over(float(projection), float(line), market_name)
+                p_over = generic.prop_prob_over(float(projection), line_f, market_name)
+                p_push = generic.prop_push_prob(float(projection), line_f, market_name)
             row["model_over_prob"] = round(p_over, 4)
             ev = _market_eval(p_over, r.get("over_odds"), r.get("under_odds"),
-                              shrink=SPORTS[sport_key].market_shrink)
+                              shrink=SPORTS[sport_key].market_shrink, p_push=p_push)
             row["ev_over"], row["ev_under"] = ev["ev_a"], ev["ev_b"]
             best_ev = max(
                 [v for v in (row["ev_over"], row["ev_under"]) if v is not None],
@@ -1678,9 +1829,11 @@ def project_generic_props(sport_key: str, date: str) -> pd.DataFrame:
             if best_ev is not None and best_ev > 0:
                 over_side = best_ev == row["ev_over"]
                 side_odds = r["over_odds"] if over_side else r["under_odds"]
-                side_prob = ev["p_used"] if over_side else 1 - ev["p_used"]
+                side_prob = (ev["p_used"] if over_side
+                             else max(0.0, 1 - ev["p_used"] - ev["p_push"]))
                 row["kelly"] = round(odds.kelly_stake(
-                    side_prob, float(side_odds), config.KELLY_FRACTION), 4)
+                    side_prob, float(side_odds), config.KELLY_FRACTION,
+                    push_prob=ev["p_push"]), 4)
         rows.append(row)
     return pd.DataFrame(rows)
 

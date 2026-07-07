@@ -116,8 +116,62 @@ def _logs(sport: str, seasons: tuple[int, ...]) -> pd.DataFrame:
     if "minutes" in out.columns:
         out = out[out["minutes"].isna() | (out["minutes"] >= MIN_PLAY_MINUTES)]
     out["date"] = pd.to_datetime(out["date"])
-    out = out.sort_values("date").drop_duplicates(["norm", "date"], keep="last")
+    # Dedupe backfill/forward-store overlap without deleting legitimate
+    # multi-game days: key on the game id where present (an MLB doubleheader
+    # is two distinct games on one date) and the role (a two-way player has a
+    # batting and a pitching line in the same game). Rows lacking a game id
+    # fall back to (norm, date) among themselves — drop_duplicates treats the
+    # NaN ids/roles as equal to each other.
+    keys = [k for k in ("norm", "date", "game_id", "role") if k in out.columns]
+    out = out.sort_values("date").drop_duplicates(keys, keep="last")
     return out
+
+
+def _gid_str(v):
+    """Game id normalized to a string so backfill (int game_pk / str game_id)
+    and forward-store rows key identically; None where absent."""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return None
+    try:
+        f = float(v)
+        if f.is_integer():
+            return str(int(f))
+    except (TypeError, ValueError):
+        pass
+    return str(v)
+
+
+_ROLE_CANON = {"pitcher": "P", "p": "P", "batter": "B", "b": "B"}
+
+
+def _role_col(sport: str, df: pd.DataFrame) -> pd.Series:
+    """Canonical per-row role ('P' pitcher / 'B' batter for MLB, None where
+    unknown) so the MARKET_STAT role filter can separate a two-way player's
+    pitching line from his batting line. Backfill rows carry an explicit
+    role; MLB forward-store rows carry a position instead, and the oldest
+    forward rows carry neither but pitcher lines always have inningsPitched
+    and batter lines plateAppearances/totalBases."""
+    if "role" in df.columns:
+        role = df["role"].map(
+            lambda v: _ROLE_CANON.get(str(v).strip().lower())
+            if v is not None and pd.notna(v) else None)
+    else:
+        role = pd.Series([None] * len(df), index=df.index, dtype=object)
+    if sport != "mlb":
+        return role
+    if "position" in df.columns:
+        pos = df["position"].map(
+            lambda v: None if v is None or pd.isna(v)
+            else ("P" if str(v).strip().upper() == "P" else "B"))
+        role = role.fillna(pos)
+    if "inningsPitched" in df.columns:
+        ip = pd.to_numeric(df["inningsPitched"], errors="coerce")
+        role = role.mask(role.isna() & ip.notna(), "P")
+    for col in ("plateAppearances", "totalBases"):
+        if col in df.columns:
+            v = pd.to_numeric(df[col], errors="coerce")
+            role = role.mask(role.isna() & v.notna(), "B")
+    return role
 
 
 def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
@@ -126,8 +180,15 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
         "norm": df[name_col].map(normalize),
         "date": df["date"],
         "opp": df.get("opponent"),
-        "role": df.get("role"),
     })
+    base["role"] = _role_col(sport, df)
+    # game id (backfill: game_id / MLB game_pk; forward store: game_pk) so
+    # dedupe can distinguish two games on one date (MLB doubleheaders)
+    gid = pd.Series([None] * len(df), index=df.index, dtype=object)
+    for col in ("game_pk", "game_id"):
+        if col in df.columns:
+            gid = gid.fillna(df[col])
+    base["game_id"] = gid.map(_gid_str)
     if "season" in df.columns:
         base["season"] = df["season"]
     else:
@@ -169,6 +230,16 @@ def _normalize_frame(sport: str, df: pd.DataFrame) -> pd.DataFrame:
     return base
 
 
+def _apply_role(g: pd.DataFrame, role: str | None) -> pd.DataFrame:
+    """Keep rows matching the market's role filter (MARKET_STAT's 'P'/'B') so
+    e.g. pitcher_hits_allowed never reads a two-way player's batting line.
+    Rows with an unknown role are kept — sports/sources without role info
+    stay fully usable."""
+    if role and "role" in g.columns:
+        return g[(g["role"] == role) | g["role"].isna()]
+    return g
+
+
 def hit_rates(sport: str, player: str, market: str, line: float,
               opponent: str | None = None, season: int | None = None) -> dict:
     """Over-rate for the player's stat vs `line` across recent windows.
@@ -176,14 +247,14 @@ def hit_rates(sport: str, player: str, market: str, line: float,
     info = market_to_stat(market)
     if info is None or line is None or pd.isna(line):
         return {}
-    stat, _role = info
+    stat, role = info
     seasons = tuple(sorted({season or pd.Timestamp.now().year,
                             (season or pd.Timestamp.now().year) - 1}))
     df = _logs(sport, seasons)
     if df.empty or stat not in df.columns:
         return {}
-    g = df[(df["norm"] == normalize(player)) & df[stat].notna()].sort_values(
-        "date", ascending=False)
+    g = df[(df["norm"] == normalize(player)) & df[stat].notna()]
+    g = _apply_role(g, role).sort_values("date", ascending=False)
     if g.empty:
         return {}
     over = (g[stat] > line)
@@ -212,14 +283,14 @@ def recent_series(sport: str, player: str, market: str, n: int = 12,
     info = market_to_stat(market)
     if info is None:
         return []
-    stat, _ = info
+    stat, role = info
     seasons = tuple(sorted({season or pd.Timestamp.now().year,
                             (season or pd.Timestamp.now().year) - 1}))
     df = _logs(sport, seasons)
     if df.empty or stat not in df.columns:
         return []
-    g = df[(df["norm"] == normalize(player)) & df[stat].notna()].sort_values(
-        "date", ascending=False).head(n)
+    g = df[(df["norm"] == normalize(player)) & df[stat].notna()]
+    g = _apply_role(g, role).sort_values("date", ascending=False).head(n)
     g = g.iloc[::-1]
     return [{"date": d.strftime("%-m/%-d"), "value": float(v),
              "opp": (o if isinstance(o, str) else "")}
@@ -233,11 +304,15 @@ def actual_value(sport: str, player: str, market: str, date: str) -> float | Non
     info = market_to_stat(market)
     if info is None:
         return None
-    stat, _role = info
-    df = _logs(sport, (int(str(date)[:4]),))
+    stat, role = info
+    # Load {Y, Y-1} like hit_rates: NHL (and any start-year-labeled sport)
+    # files a January game under the season that started the previous fall,
+    # so loading only int(date[:4]) made Jan-Jun grading return None.
+    y = int(str(date)[:4])
+    df = _logs(sport, tuple(sorted({y, y - 1})))
     if df.empty or stat not in df.columns:
         return None
-    g = df[df["norm"] == normalize(player)].copy()
+    g = _apply_role(df[df["norm"] == normalize(player)], role).copy()
     if g.empty:
         return None
     g["_d"] = pd.to_datetime(g["date"], errors="coerce").dt.normalize()
@@ -284,11 +359,17 @@ def ingest_mlb(date: str) -> int:
 
 
 def ingest_espn(sport: str, date: str) -> int:
-    """Fetch ESPN box scores for finished games on `date` (WNBA/NBA/NHL) and
-    append new player lines to the forward store, idempotent by event id."""
+    """Fetch ESPN box scores for finished games on `date` (WNBA/NBA/NFL/
+    NCAAF/NHL) and append new player lines to the forward store, idempotent
+    by event id."""
     from .clients import espn
 
     season = int(date[:4])
+    # NHL logs are labeled by the season's START year (a Jan 2026 game belongs
+    # to season 2025), matching the committed backfill convention
+    # (scripts/import_nhl_skaters.py). Other sports label by calendar year.
+    if sport == "NHL" and int(date[5:7]) < 8:
+        season -= 1
     done = _ingested_pks(sport)
     rows = []
     try:
@@ -312,7 +393,7 @@ def ingest(sport: str, date: str) -> int:
     """Append finished-game player logs for any supported sport."""
     if sport == "MLB":
         return ingest_mlb(date)
-    if sport in ("WNBA", "NBA", "NFL", "NCAAF"):
+    if sport in ("WNBA", "NBA", "NFL", "NCAAF", "NHL"):
         return ingest_espn(sport, date)
     return 0
 
