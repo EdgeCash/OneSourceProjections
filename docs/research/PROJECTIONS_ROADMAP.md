@@ -99,6 +99,38 @@ Nothing below can be judged without it. All [HAVE], low effort.
 
 ---
 
+## KEY EMPIRICAL FINDING (from the T0.1 instrument)
+
+Once the measuring stick existed, it answered the whole question bluntly. On every
+game market with closing-line data (NBA/NFL/NHL, 2022–24), our model is **strictly
+less accurate than the de-vigged closing line** — for both the winner and the total
+— and accuracy improves **monotonically** as the published projection is blended
+toward the market (λ = model→market share), validated against actual outcomes:
+
+| Sport | total MAE λ=0 (model) → λ=1 (market) | ML Brier λ=0 → λ=1 |
+|---|---|---|
+| NBA | 15.07 → **13.53** | 0.208 → **0.187** |
+| NFL | 10.46 → **10.01** | 0.219 → **0.207** |
+| NHL | 1.87 → **1.79** | 0.238 → **0.225** |
+
+No interior optimum: pure market is best at every step. Two Tier-1 reweighting
+levers (T1.1 recency, T1.2 SoS) were tested and neither closed the gap — because
+the gap is **structural** (coarse team-average inputs), not a weighting problem.
+
+**Implications for the plan:**
+1. The most accurate projection we can publish *today* is a heavily market-anchored
+   one (T3.1). That's an immediate, validated accuracy win for the displayed
+   "Team A x.x / Team B y.y / total z.z".
+2. But a projection that *equals* the market has zero deviation → zero edge → no
+   plays. Real plays require the model to beat the market *somewhere*, which today
+   it does not on these markets. That only comes from the **structural** signal in
+   Tier 2 (MLB lineup runs, NBA pace/efficiency, NHL goalie, soccer MLE/xG, tennis
+   serve/return). Each must beat the T0.1 baseline before it earns weight *away*
+   from the market anchor.
+3. So the architecture is: **publish a market-anchored projection (accurate now),
+   keep the model's independent deviation for edge detection, and grow that
+   deviation's weight only where a structural lever proves it beats the close.**
+
 ## Sequencing rationale
 1. **T0 first** — the market-baseline metric is the gate. Without it every later
    claim is an assertion, and the EPA history shows Brier-gains that were CLV-dead.
