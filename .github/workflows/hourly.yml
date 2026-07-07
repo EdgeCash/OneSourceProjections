@@ -34,6 +34,9 @@ jobs:
 
       - name: Hourly pull, project, snapshot, grade
         env:
+          # Post-hoc probability calibration (docs/MODEL_REPAIR.md). "1" = ON.
+          # Set to "0" or delete this line to turn calibration back off.
+          APPLY_CALIBRATION: "1"
           FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
           BP_PARTNER_KEY: ${{ secrets.BP_PARTNER_KEY }}
           BP_USER: ${{ secrets.BP_USER }}
