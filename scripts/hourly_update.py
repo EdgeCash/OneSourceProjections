@@ -45,6 +45,7 @@ RECAP_STATE = OUTPUT_DIR.parent / "track" / "recap_state.json"
 MLB_BACKFILL_STATE = OUTPUT_DIR.parent / "track" / "mlb_backfill_state.json"
 HANDEDNESS_STATE = OUTPUT_DIR.parent / "track" / "mlb_handedness_state.json"
 UMPIRE_STATE = OUTPUT_DIR.parent / "track" / "mlb_umpire_state.json"
+STATCAST_STATE = OUTPUT_DIR.parent / "track" / "mlb_statcast_state.json"
 
 
 def _maybe_refresh_umpires(today_iso: str) -> None:
@@ -128,6 +129,35 @@ def _maybe_refresh_mlb_backfill(today_iso: str) -> None:
         log.info("refreshed MLB %s backfill: %d games", season, n)
     except Exception as e:
         log.error("MLB backfill refresh failed: %s", e)
+
+
+def _maybe_refresh_statcast(today_iso: str) -> None:
+    """Once per day, rebuild the current MLB season's Statcast expected-stats
+    file (per-player wOBA/xwOBA from Baseball Savant) so the lineup-level run
+    model uses fresh, as-of hitter quality instead of a season-old snapshot
+    (roadmap T2.2b). Best-effort and deduped by date; skips out of season."""
+    try:
+        state = json.loads(STATCAST_STATE.read_text()) \
+            if STATCAST_STATE.exists() else {}
+    except Exception:
+        state = {}
+    if state.get("last") == today_iso:
+        return
+    if int(today_iso[5:7]) not in range(3, 11):   # MLB season ~Mar–Oct
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "build_statcast_xstats",
+            Path(__file__).resolve().parent / "build_statcast_xstats.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.build(int(today_iso[:4]))
+        STATCAST_STATE.parent.mkdir(parents=True, exist_ok=True)
+        STATCAST_STATE.write_text(json.dumps({"last": today_iso}))
+        log.info("refreshed MLB %s Statcast expected stats", today_iso[:4])
+    except Exception as e:
+        log.error("MLB Statcast refresh failed: %s", e)
 
 
 def _maybe_daily_recap(today_iso: str, yesterday_iso: str, hour_et: int) -> None:
@@ -360,6 +390,10 @@ def main():
     # 3a3) once/day: extend the umpire-tendency table with recent finals so the
     #      per-ump indexes stay current (assignment is fetched live per run).
     _maybe_refresh_umpires(today.isoformat())
+
+    # 3a4) once/day: rebuild current-season Statcast expected stats (per-player
+    #      wOBA/xwOBA) so the lineup-level run model uses fresh hitter quality.
+    _maybe_refresh_statcast(today.isoformat())
 
     # 3b) daily recap push (once/day): YESTERDAY's model + played accuracy,
     #     logged to the daily record so the day-by-day history accrues.

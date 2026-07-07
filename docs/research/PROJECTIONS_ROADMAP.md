@@ -72,11 +72,13 @@ Nothing below can be judged without it. All [HAVE], low effort.
   AVG/SLG proxy (MLB 2024, 499 games): the **xwOBA blend HURT** totals MAE
   (expected stats predict future skill, not in-sample runs); actual wOBA with
   light shrink only *edged* the proxy (blend=1.0 MAE 3.356 vs 3.363) — marginal —
-  and **no current-season (2026) Statcast feed exists**, so a live switch would be
-  inert. Module kept tuned (actual wOBA, light shrink) for when 2026 Statcast is
-  backfilled. Platoon deferred: needs historical starter-handedness the backtest
-  data lacks; revisit as a forward-CLV A/B once the live path (which has starter
-  hand) runs it.
+  (expected stats predict future skill, not in-sample runs). **UPDATE: 2026
+  Statcast backfilled (Baseball Savant is reachable) → the lineup engine now uses
+  true wOBA live**, refreshed daily via `scripts/build_statcast_xstats.py` (wired
+  into the hourly job). `_lineup_woba` prefers Statcast wOBA by player id with the
+  AVG/SLG proxy as fallback — a more principled input than the proxy it replaced.
+  Platoon still deferred: needs historical starter-handedness the backtest data
+  lacks; revisit as a forward-CLV A/B.
 - **T2.1 NBA/WNBA pace-and-efficiency engine** — points = `poss × (adj ORtg vs adj
   DRtg)/100`. [DERIVE], `teamstats.py`. → NBA #1. **STATUS: BUILT + TESTED →
   MIXED, parked.** `models/hoops.py` + `scripts/validate_hoops.py`, walk-forward
