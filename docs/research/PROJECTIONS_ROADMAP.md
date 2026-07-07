@@ -78,7 +78,15 @@ Nothing below can be judged without it. All [HAVE], low effort.
   data lacks; revisit as a forward-CLV A/B once the live path (which has starter
   hand) runs it.
 - **T2.1 NBA/WNBA pace-and-efficiency engine** — points = `poss × (adj ORtg vs adj
-  DRtg)/100`, total from projected possessions. [DERIVE], data already in `teamstats.py`. → NBA #1.
+  DRtg)/100`. [DERIVE], `teamstats.py`. → NBA #1. **STATUS: BUILT + TESTED →
+  MIXED, parked.** `models/hoops.py` + `scripts/validate_hoops.py`, walk-forward
+  WNBA 2023–25 (822 games, box-score ratings): pace×eff **improves the winner**
+  (Brier 0.2237→0.2193, robust across mult/additive variants) but **worsens the
+  total** (MAE 13.37→13.59) — genuinely higher variance, not a fixable bias.
+  Totals are the priority, so not shipped. Can't validate the winner gain vs the
+  market (WNBA has no closing lines here) and NBA has no box data in-repo (off
+  season). Capability kept; revisit as an efficiency-*margin* blend (like the
+  EPA/Elo margin hooks) once NBA box data + a market baseline exist.
 - **T2.2 MLB lineup-level batter×pitcher runs** — build each side's offensive base
   from the posted 9's mean wOBA via linear weights, blended into the team rate.
   [HAVE], biggest MLB lever. → MLB #1. **STATUS: BUILT + VALIDATED → ON at
