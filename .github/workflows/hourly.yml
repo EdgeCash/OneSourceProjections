@@ -7,9 +7,12 @@ on:
         description: "Anchor date (YYYY-MM-DD), defaults to today ET"
         required: false
   schedule:
-    # top of every hour. scheduled runs only fire on the default branch,
-    # so this branch must be merged to main to activate.
-    - cron: "0 * * * *"
+    # Game-time schedule to avoid burning BettingPros credits overnight. Times
+    # are UTC; ET = UTC-4 (summer) / UTC-5 (winter), so the window shifts ~1h in
+    # winter — fine, it's wide. No pulls in the dead of night (~2am-8am ET).
+    # Scheduled runs only fire on the default branch, so this must be on main.
+    - cron: "0 13,15,17 * * *"     # every 2h, ~9am-1pm ET — morning slate + tennis
+    - cron: "0 18-23,0-5 * * *"    # hourly, ~2pm-1am ET — lineups, games, grading
 
 # avoid overlapping runs racing on the same data files
 concurrency:
