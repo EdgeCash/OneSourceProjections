@@ -52,8 +52,14 @@ Nothing below can be judged without it. All [HAVE], low effort.
 
 ### TIER 1 — Shared-substrate cheap wins (one change → many sports, all HAVE/DERIVE)
 - **T1.1 Time-decay recency weighting** in `generic.team_ratings` (flat window →
-  per-sport exponential half-life). Lifts NBA/WNBA/NFL/NCAAF/NHL/soccer together.
-  The match `date` is already on every row. → NBA #2, NFL #5, soccer #1, cross #4.
+  per-sport exponential half-life). → NBA #2, NFL #5, soccer #1, cross #4.
+  **STATUS: BUILT + TESTED → NEGATIVE, parked at 0.0.** Capability shipped
+  (`Sport.form_half_life`, `generic.decay_weights`), then swept half-lives
+  {20,10,6,4} vs the T0.1 market baseline on NBA/NFL/NHL (2023–24). Moneyline
+  Brier-skill barely moved and total-MAE-skill generally got *worse* at shorter
+  half-lives; WNBA/MLS have no matched closing lines so can't be validated. Kept
+  OFF everywhere pending contrary evidence — the measuring stick earning its keep
+  (a plausible lever that does not beat the baseline, like the shelved EPA blend).
 - **T1.2 Turn on opponent-adjustment (SoS)** for NFL & NCAAF (flag flip, already
   coded and used by NBA/NHL), and switch WNBA SoS to efficiency. → NFL #1, NBA #4.
 - **T1.3 Reconcile total & side-scores with the Elo/rest blend.** After the blend,
