@@ -19,8 +19,15 @@ from functools import lru_cache
 from . import history, platoon
 from .models.game import LEAGUE_WOBA
 
-BAT_PRIOR_PA = 150.0     # shrink thin Statcast samples toward league wOBA
-XWOBA_WEIGHT = 0.5       # weight on expected wOBA vs actual (xwOBA stabilizes faster)
+# Validated on scripts/validate_lineup_runs.py (MLB 2024, 499 games): blending in
+# xwOBA HURT totals MAE vs actual runs (expected stats predict future skill, not
+# the runs actually scored in-sample), and heavy PA-shrink compressed the lineup
+# signal. Best config was actual wOBA with light shrink — it edged the shipped
+# AVG/SLG proxy (blend=1.0 MAE 3.356 vs 3.363). Kept here for when a current-season
+# Statcast feed exists (2026 has none yet, so the live pipeline still uses the
+# proxy — this module is inert until then).
+BAT_PRIOR_PA = 40.0      # light shrink toward league wOBA (protects thin samples)
+XWOBA_WEIGHT = 0.0       # use actual wOBA; xwOBA blend measured worse for run projection
 
 
 @lru_cache(maxsize=8)

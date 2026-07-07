@@ -67,6 +67,16 @@ Nothing below can be judged without it. All [HAVE], low effort.
   no rest/Elo (`generic.py:196`). Correctness fix, cheap. → NBA #3, NFL #2.
 
 ### TIER 2 — Per-sport structural wins (bigger, high value, mostly no new feed)
+- **T2.2b MLB xwOBA + platoon** (`project547/batwoba.py`). **STATUS: TESTED →
+  proxy kept.** Statcast wOBA-by-id was validated head-to-head vs the shipped
+  AVG/SLG proxy (MLB 2024, 499 games): the **xwOBA blend HURT** totals MAE
+  (expected stats predict future skill, not in-sample runs); actual wOBA with
+  light shrink only *edged* the proxy (blend=1.0 MAE 3.356 vs 3.363) — marginal —
+  and **no current-season (2026) Statcast feed exists**, so a live switch would be
+  inert. Module kept tuned (actual wOBA, light shrink) for when 2026 Statcast is
+  backfilled. Platoon deferred: needs historical starter-handedness the backtest
+  data lacks; revisit as a forward-CLV A/B once the live path (which has starter
+  hand) runs it.
 - **T2.1 NBA/WNBA pace-and-efficiency engine** — points = `poss × (adj ORtg vs adj
   DRtg)/100`, total from projected possessions. [DERIVE], data already in `teamstats.py`. → NBA #1.
 - **T2.2 MLB lineup-level batter×pitcher runs** — build each side's offensive base
