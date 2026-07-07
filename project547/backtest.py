@@ -511,6 +511,30 @@ class BetLog:
                 "roi_pct": round(100 * self.pnl / self.staked, 2) if self.staked else None}
 
 
+def _total_crps(prob_over, mean: float, actual: float) -> float:
+    """Discrete CRPS of the model's *total* distribution against the observed
+    total, using the model's own P(total > line) curve as the predictive CDF.
+
+    CRPS = ∫ (F(x) - 1{x >= actual})^2 dx, F(x) = P(total <= x) = 1 - prob_over(x).
+    Lower is better; unlike MAE/RMSE it rewards getting the *spread* of the total
+    right, not just the mean — the metric that tells us whether distribution-shape
+    work (over-dispersion, key-number spikes) actually helped. Evaluated on a
+    bounded, mean-centred grid (≤ ~80 points) so it stays cheap inside the loop.
+    """
+    half = max(abs(actual - mean) + 2.0, 0.5 * mean + 8.0)
+    lo = max(0.0, mean - half)
+    hi = mean + half
+    n = min(80, max(8, int(hi - lo) + 1))
+    step = (hi - lo) / (n - 1)
+    crps = 0.0
+    for i in range(n):
+        x = lo + i * step
+        f = 1.0 - prob_over(x)                 # P(total <= x)
+        indicator = 1.0 if x >= actual else 0.0
+        crps += (f - indicator) ** 2 * step
+    return crps
+
+
 def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
@@ -575,6 +599,13 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     fav_correct = 0
     total_abs = total_sq = n_tot = 0.0
     cal_bins = defaultdict(lambda: [0, 0.0])  # bin -> [count, wins]
+    # market-baseline skill: score the de-vigged close on the *same* matched
+    # games the model is scored on, so "does the model beat free information?"
+    # is answered apples-to-apples (the north-star question — cross-sport #2).
+    mkt_brier_sum = mkt_logloss_sum = n_ml_mkt = 0.0
+    mdl_brier_mkt_sum = mdl_logloss_mkt_sum = 0.0
+    mkt_tot_abs = mkt_tot_sq = mdl_tot_abs_mkt = mdl_tot_sq_mkt = n_tot_mkt = 0.0
+    crps_sum = 0.0
     # betting accumulators
     ml_bets, total_bets, spread_bets = BetLog(), BetLog(), BetLog()
     clv_deltas, spread_clv = [], []
@@ -650,6 +681,16 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 if rec["moneyline"]:
                     m = rec["moneyline"]
                     clv_deltas.append(hwp - m["home_fair"])
+                    # market baseline vs model on this matched game (raw model
+                    # prob, pre bet-selection shrink — that's what we're judging)
+                    mfair = min(max(m["home_fair"], 1e-6), 1 - 1e-6)
+                    mkt_brier_sum += (mfair - home_won) ** 2
+                    mkt_logloss_sum += -(home_won * math.log(mfair)
+                                         + (1 - home_won) * math.log(1 - mfair))
+                    mdl_brier_mkt_sum += (p - home_won) ** 2
+                    mdl_logloss_mkt_sum += -(home_won * math.log(p)
+                                             + (1 - home_won) * math.log(1 - p))
+                    n_ml_mkt += 1
                     # blend the model prob toward the de-vigged closing line
                     # before deciding bets (shrink=0 -> raw model behavior)
                     p_home = odds.blend_toward_market(hwp, m["home_fair"], shrink)
@@ -660,6 +701,15 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                             ml_bets.add(won, odds.american_to_decimal(price))
                 if rec["total"]:
                     t = rec["total"]
+                    # market baseline for the total = the closing total line
+                    # itself; compare our projected total against it on the same
+                    # games, plus a distributional CRPS of our total.
+                    mkt_tot_abs += abs(t["line"] - actual_total)
+                    mkt_tot_sq += (t["line"] - actual_total) ** 2
+                    mdl_tot_abs_mkt += abs(tmean - actual_total)
+                    mdl_tot_sq_mkt += (tmean - actual_total) ** 2
+                    crps_sum += _total_crps(prob_over, tmean, actual_total)
+                    n_tot_mkt += 1
                     po = prob_over(t["line"])
                     p_over = odds.blend_toward_market(po, t["over_fair"], shrink)
                     over_won = actual_total > t["line"]
@@ -746,6 +796,26 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             "rmse": round(math.sqrt(total_sq / n_tot), 3) if n_tot else None,
         },
         "calibration": list(calibration.values()),
+        "market_baseline": {
+            # Does the model beat the de-vigged close (free information) on the
+            # same games? Skill score > 0 => model beats the market baseline.
+            "games_matched_ml": int(n_ml_mkt),
+            "market_brier": round(mkt_brier_sum / n_ml_mkt, 4) if n_ml_mkt else None,
+            "model_brier_matched": round(mdl_brier_mkt_sum / n_ml_mkt, 4) if n_ml_mkt else None,
+            "brier_skill_score": (round(1 - mdl_brier_mkt_sum / mkt_brier_sum, 4)
+                                  if mkt_brier_sum else None),
+            "market_log_loss": round(mkt_logloss_sum / n_ml_mkt, 4) if n_ml_mkt else None,
+            "model_log_loss_matched": round(mdl_logloss_mkt_sum / n_ml_mkt, 4) if n_ml_mkt else None,
+            "games_matched_total": int(n_tot_mkt),
+            "market_total_mae": round(mkt_tot_abs / n_tot_mkt, 3) if n_tot_mkt else None,
+            "model_total_mae_matched": round(mdl_tot_abs_mkt / n_tot_mkt, 3) if n_tot_mkt else None,
+            "market_total_rmse": round(math.sqrt(mkt_tot_sq / n_tot_mkt), 3) if n_tot_mkt else None,
+            "model_total_rmse_matched": round(math.sqrt(mdl_tot_sq_mkt / n_tot_mkt), 3) if n_tot_mkt else None,
+            # +ve => our projected total is closer than the closing line
+            "total_mae_skill": (round((mkt_tot_abs - mdl_tot_abs_mkt) / n_tot_mkt, 3)
+                                if n_tot_mkt else None),
+            "model_total_crps": round(crps_sum / n_tot_mkt, 3) if n_tot_mkt else None,
+        },
         "closing_line": {
             "games_matched": n_matched,
             "avg_clv_vs_fair": round(float(np.mean(clv_deltas)), 4) if clv_deltas else None,
