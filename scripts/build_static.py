@@ -374,11 +374,14 @@ SITE_CSS = """
     padding-bottom: 1px; }
   .gt-sp { color: var(--muted); font-size: 0.84rem; margin-top: 4px; }
   .gt-wp { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .gt-mkt { color: var(--acc); margin-left: 4px; }
   .gm { display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; min-width: 128px; gap: 3px; }
   .gm-proj { font-family: var(--disp); font-weight: 700; font-size: 1.5rem;
     font-variant-numeric: tabular-nums; }
   .gm-line { color: var(--muted); font-size: 0.74rem; font-family: var(--mono); }
+  .gm-mkt { color: var(--acc); font-size: 0.74rem; font-family: var(--mono); }
+  .gm-delta { margin-left: 5px; opacity: 0.8; font-weight: 700; }
   .askai { margin-top: 6px; background: var(--acc); color: var(--bg); border: none;
     border-radius: 999px; padding: 7px 15px; font-family: var(--disp); font-weight: 700;
     font-size: 0.8rem; letter-spacing: 0.04em; cursor: pointer;
@@ -640,33 +643,63 @@ def _match_body(sport: str, g: dict) -> str:
     return "".join(parts)
 
 
-def _team_block(sport: str, g: dict, side: str) -> str:
-    """One team's colored header cell: name (team-color rail), starter, win%."""
+def _market_proj(g: dict) -> dict:
+    """Market-implied projection from the de-vigged prices: each side's win% (a
+    two-way moneyline de-vig) and the posted total line. The market is the
+    strongest public estimate — showing it beside ours makes the gap explicit
+    (roadmap: the model currently trails the close, so this is honest)."""
+    from project547 import odds
+    out: dict = {}
+    aml, hml = g.get("away_ml"), g.get("home_ml")
+    if (isinstance(aml, (int, float)) and isinstance(hml, (int, float))
+            and not (math.isnan(aml) or math.isnan(hml))):
+        try:
+            fa, fh = odds.devig_two_way(odds.implied_prob(aml), odds.implied_prob(hml))
+            out["away_wp"], out["home_wp"] = fa, fh
+        except (ValueError, ZeroDivisionError):
+            pass
+    tl = g.get("total_line")
+    if isinstance(tl, (int, float)) and not math.isnan(tl):
+        out["total"] = float(tl)
+    return out
+
+
+def _team_block(sport: str, g: dict, side: str, mkt: dict) -> str:
+    """One team's colored header cell: name (team-color rail), starter, and both
+    win probabilities — our model's and the market-implied."""
     team = g.get(f"{side}_team", "")
     color = _team_color(team)
     wp = ui._pct(g.get(f"{side}_win_prob"))
+    mwp = mkt.get(f"{side}_wp")
+    mkt_wp = (f"<span class='gt-mkt'>mkt {ui._pct(mwp)}</span>"
+              if mwp is not None else "")
     starter = g.get(f"{side}_pitcher") if sport == "MLB" else None
     sp = (f"<div class='gt-sp'>⚾ {html.escape(str(starter))}</div>"
           if isinstance(starter, str) and starter.strip() else "")
     return (f"<div class='gt' style='--tc:{color}'><div class='gt-rail'></div>"
             f"<div class='gt-name'>{html.escape(str(team))}</div>{sp}"
-            f"<div class='gt-wp'>win {wp}</div></div>")
+            f"<div class='gt-wp'>model {wp} {mkt_wp}</div></div>")
 
 
 def _game_header(sport: str, g: dict, gid: str) -> str:
     """The 5-W answer band above a Sharp Sheet: WHO (teams, colored, starters) ·
-    WHAT (projected line) · plus the Ask-AI chip. Where/Why/When live in the
-    sheet below (conditions strip, stat tables, first pitch)."""
-    away, home = _team_block(sport, g, "away"), _team_block(sport, g, "home")
+    WHAT (our projected line AND the market's, side by side) · Ask-AI chip.
+    Showing both numbers is deliberate — the market is the sharper estimate today,
+    and the gap is the story."""
+    mkt = _market_proj(g)
+    away, home = _team_block(sport, g, "away", mkt), _team_block(sport, g, "home", mkt)
     proj = f"{ui._num(ui._exp(g, 'away'))}–{ui._num(ui._exp(g, 'home'))}"
-    total = ui._num(g.get("total_line") or g.get("proj_total"))
-    aml, hml = g.get("away_ml"), g.get("home_ml")
-    fav = ""
-    if isinstance(aml, (int, float)) and isinstance(hml, (int, float)):
-        fside, fprice = (("away", aml) if aml < hml else ("home", hml))
-        fav = f"{g.get(f'{fside}_team','').split()[-1]} {ui.fmt_american(fprice)}"
+    mtot = g.get("proj_total")
+    ktot = mkt.get("total")
+    # model total row + market total row, with the delta when both exist
+    delta = ""
+    if isinstance(mtot, (int, float)) and ktot is not None:
+        d = float(mtot) - ktot
+        delta = f"<span class='gm-delta'>{d:+.1f}</span>"
+    mkt_line = (f"<div class='gm-mkt'>market total {ui._num(ktot)}{delta}</div>"
+                if ktot is not None else "")
     mid = (f"<div class='gm'><div class='gm-proj'>{proj}</div>"
-           f"<div class='gm-line'>proj total {total}{(' · ' + fav) if fav else ''}</div>"
+           f"<div class='gm-line'>model total {ui._num(mtot)}</div>{mkt_line}"
            f"<button class='askai' data-gid='{html.escape(gid, quote=True)}'>"
            f"◆ Ask AI</button></div>")
     return f"<div class='ghead'>{away}{mid}{home}</div>"
