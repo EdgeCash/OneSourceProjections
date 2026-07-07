@@ -355,7 +355,9 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
              away_opp_bp: float | None = None,
              park_venue: float = 1.0,
              home_own_pf: float = 1.0, away_own_pf: float = 1.0,
-             temp_f: float | None = None):
+             temp_f: float | None = None,
+             home_lineup_woba: float | None = None,
+             away_lineup_woba: float | None = None):
     """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn).
 
     home_opp_xfip / away_opp_xfip are the FIP of the starter each team
@@ -369,12 +371,12 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
                                  opp_starter_xfip=home_opp_xfip,
                                  opp_bullpen_xfip=home_opp_bp,
                                  park_factor=park_venue, own_home_pf=home_own_pf,
-                                 temp_f=temp_f)
+                                 temp_f=temp_f, lineup_woba=home_lineup_woba)
         ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored,
                                  opp_starter_xfip=away_opp_xfip,
                                  opp_bullpen_xfip=away_opp_bp,
                                  park_factor=park_venue, own_home_pf=away_own_pf,
-                                 temp_f=temp_f)
+                                 temp_f=temp_f, lineup_woba=away_lineup_woba)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
         mu_h, mu_a = proj.home_exp_runs, proj.away_exp_runs
@@ -553,10 +555,17 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       sigma_margin: float | None = None,
                       sigma_total: float | None = None,
                       form_half_life: float | None = None,
+                      lineup_woba_table: dict | None = None,
+                      lineup_blend: float | None = None,
                       detail: bool = False) -> dict:
     import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
+    # Optional lineup-level offense (roadmap T2.2): temporarily set the global
+    # blend for this run so _project's TeamInputs pick it up; restored in finally.
+    _saved_blend = config.LINEUP_BLEND
+    if lineup_blend is not None:
+        config.LINEUP_BLEND = lineup_blend
     # sigma overrides for calibration sweeps (frozen dataclass -> replace).
     if sigma_margin is not None or sigma_total is not None:
         sport = _dc.replace(
@@ -637,9 +646,12 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 pf_venue = home_pf = away_pf = 1.0
             temp_f = temp_tbl.get((g["date"], teams.canon("MLB", g["home"]))) \
                 if temp_tbl else None
+            lw = lineup_woba_table or {}
             hwp, tmean, prob_over, cover_fn, gp_obj = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
-                home_bp, away_bp, pf_venue, home_pf, away_pf, temp_f=temp_f)
+                home_bp, away_bp, pf_venue, home_pf, away_pf, temp_f=temp_f,
+                home_lineup_woba=lw.get((pk, "home")),
+                away_lineup_woba=lw.get((pk, "away")))
             if elo is not None:
                 ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
                 hwp = (1 - elo_blend) * hwp + elo_blend * ewp
@@ -742,6 +754,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 to_ = (rec or {}).get("total") or {}
                 mo_ = (rec or {}).get("moneyline") or {}
                 d = {"date": g["date"], "season": g.get("season"), "week": g.get("week"),
+                     "game_pk": g.get("game_pk"),
                      "home": g["home"], "away": g["away"],
                      "home_score": g["home_score"], "away_score": g["away_score"],
                      "home_win_prob": round(hwp, 4), "proj_total": round(tmean, 2),
@@ -785,6 +798,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
                        int(g["date"][:4]))
 
+    config.LINEUP_BLEND = _saved_blend      # restore any per-run blend override
     calibration = {b: {"n": c[0], "predicted": round(b, 2),
                        "empirical": round(c[1] / c[0], 4)}
                    for b, c in sorted(cal_bins.items()) if c[0] >= 20}
