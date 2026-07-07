@@ -6,7 +6,7 @@
     "codespaces": {
       "openFiles": [
         "README.md",
-        "app/dashboard.py"
+        "scripts/build_static.py"
       ]
     },
     "vscode": {
@@ -17,13 +17,13 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
-    "server": "streamlit run app/dashboard.py --server.enableCORS false --server.enableXsrfProtection false"
+    "server": "python scripts/build_static.py && python -m http.server 8501 -d site"
   },
   "portsAttributes": {
     "8501": {
-      "label": "Application",
+      "label": "Static site",
       "onAutoForward": "openPreview"
     }
   },
