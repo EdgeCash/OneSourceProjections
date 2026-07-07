@@ -1,10 +1,12 @@
-"""Streamlit UI package (dashboard + presentation helpers).
+"""Presentation helpers shared by the static-site build (scripts/build_static.py).
 
-Declared as a real package (not an implicit namespace package) so imports like
-``from app import ui`` resolve deterministically. Without this, Streamlit Cloud
-could re-run the entry script (``dashboard.py``) after a git pull while keeping a
-stale ``app.ui`` cached in ``sys.modules`` from process start — producing skew
-errors such as ``module 'app.ui' has no attribute 'play_card_html'`` even though
-the files on disk are consistent. A clean package boundary + a full app reboot
-avoids that.
+After the Streamlit app was retired, this package holds only the streamlit-free
+rendering + theme code the static site reuses:
+
+- ``app.ui``     — the Sharp Sheet / card HTML builders and formatters.
+- ``app.theme``  — palette tokens + global CSS.
+- ``app.assets`` — team logos / monogram fallbacks.
+
+Declared as a real package (not an implicit namespace package) so ``from app
+import ui`` resolves deterministically.
 """
