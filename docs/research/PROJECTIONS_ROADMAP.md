@@ -89,8 +89,14 @@ Nothing below can be judged without it. All [HAVE], low effort.
   FanGraphs pull is blocked here — plus mild backtest lookahead the live as-of
   feed avoids). Follow-ups: strict as-of + Statcast xwOBA feed (MLB #2), platoon
   split vs the starter's hand, second validation season → then raise the blend.
-- **T2.3 MLB wind vector** — already fetched (`weather.py:72`), read only for temp.
-  Small, [HAVE]. → MLB #3.
+- **T2.3 MLB wind vector** — [HAVE]. → MLB #3. **STATUS: BUILT + TESTED →
+  NEGATIVE, parked at WIND_COEF=0.** Full wind term (out/in component × speed from
+  Retrosheet `wind_dir` categories) swept on MLB 2022–24 (5,628 windy outdoor
+  games): totals MAE got *worse* at every positive coefficient (3.529→3.548 on the
+  wind-affected subset). Team form already carries the scoring environment and the
+  game-start wind category is too noisy to add signal — unlike temperature, which
+  helped. Plumbing kept inert. (Third parked negative after T1.1 recency + T1.2
+  SoS — the cheap adjustments don't move the number; the structural engines do.)
 - **T2.4 Soccer real Dixon-Coles MLE fit** — fit attack/def + home γ + rho jointly;
   yields per-league HFA and time-decay for free. [DERIVE]. → soccer #2.
 - **T2.5 Tennis serve/return point model** → full games/sets distribution (the only
