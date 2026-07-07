@@ -15,8 +15,8 @@ from functools import lru_cache
 
 import pandas as pd
 
-from . import (config, internal_stats, odds, parks, platoon, playerlogs, teams,
-               umpires, weather)
+from . import (batwoba, config, internal_stats, odds, parks, platoon, playerlogs,
+               teams, umpires, weather)
 from .clients import bettingpros, espn, fantasypros, mlb_statsapi, oddsapi, statcast
 from .models import game as game_model
 from .models import generic
@@ -310,9 +310,11 @@ def project_games(date: str) -> pd.DataFrame:
             lineups, pids = None, {}
 
         def _lineup_woba(side: str) -> float | None:
+            # Prefer Statcast true wOBA by player id (roadmap T2.2b, 2026 feed
+            # now backfilled), falling back to the AVG/SLG name proxy per batter.
             names = (lineups or {}).get(side) or []
-            ws = [bq[normalize(n)] for n in names if normalize(n) in bq]
-            return sum(ws) / len(ws) if ws else None
+            batters = [(pids.get(normalize(n)), normalize(n)) for n in names]
+            return batwoba.lineup_woba(batters, season, proxy=bq)
 
         home = game_model.TeamInputs(
             name=g["home_team"],
