@@ -577,9 +577,12 @@ def closing_consensus(sport: str) -> dict[tuple, dict]:
         ev_rows[r[0]].append(r)
 
     out: dict[tuple, list] = defaultdict(list)
-    for rows in ev_rows.values():
+    for eid, rows in ev_rows.items():
         date, home, away = rows[0][6], rows[0][7], rows[0][8]
-        rec = {"date": date, "home": home, "away": away,
+        # event_id disambiguates doubleheaders (same date + teams). It doesn't
+        # join to the backfill's game_pk, so _lookup_closing falls back to
+        # line proximity, but the id is recorded for any caller that can join.
+        rec = {"date": date, "event_id": eid, "home": home, "away": away,
                "moneyline": None, "total": None, "spread": None}
         markets: dict = defaultdict(lambda: defaultdict(dict))
         for (_e, book, market, side, am_, line, _d, _h, _a) in rows:
@@ -1071,8 +1074,10 @@ def bp_open_close(season: int = 2026) -> dict[tuple, dict]:
         if len(h) and len(a):
             ho, ao = h.iloc[0]["open_cost"], a.iloc[0]["open_cost"]
             hc, ac = h.iloc[0]["close_cost"], a.iloc[0]["close_cost"]
-            hof, _ = odds.devig_two_way(odds.implied_prob(ho), odds.implied_prob(ao))
-            hcf, _ = odds.devig_two_way(odds.implied_prob(hc), odds.implied_prob(ac))
+            # power de-vig (audit #22): multiplicative flatters the market
+            # baseline at the extremes, overstating open→close CLV on dogs.
+            hof, _ = calculators.no_vig(float(ho), float(ao), method="power")
+            hcf, _ = calculators.no_vig(float(hc), float(ac), method="power")
             rec["moneyline"] = {
                 "home_open": float(ho), "away_open": float(ao),
                 "home_open_fair": float(hof), "away_open_fair": float(1 - hof),
@@ -1085,8 +1090,8 @@ def bp_open_close(season: int = 2026) -> dict[tuple, dict]:
         if len(ov) and len(un):
             oo, uo = ov.iloc[0]["open_cost"], un.iloc[0]["open_cost"]
             oc, uc = ov.iloc[0]["close_cost"], un.iloc[0]["close_cost"]
-            oof, _ = odds.devig_two_way(odds.implied_prob(oo), odds.implied_prob(uo))
-            ocf, _ = odds.devig_two_way(odds.implied_prob(oc), odds.implied_prob(uc))
+            oof, _ = calculators.no_vig(float(oo), float(uo), method="power")
+            ocf, _ = calculators.no_vig(float(oc), float(uc), method="power")
             rec["total"] = {
                 "line": float(ov.iloc[0]["line"]),
                 "over_open": float(oo), "under_open": float(uo),
