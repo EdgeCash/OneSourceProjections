@@ -190,11 +190,39 @@ def box_score(game_pk: int) -> dict:
     return {"teams": teams}
 
 
+def game_status(game_pk: int) -> str | None:
+    """codedGameState for one game ('F' = Final) via a tiny single-game
+    schedule query. The boxscore payload itself carries no game status, so
+    ingest-side Final verification needs this cheap extra call; cached only
+    briefly so a pre-final answer can't stick. None on any error."""
+    try:
+        data = cached_json(
+            f"statsapi:gamestatus:{game_pk}", _TTL_LIVE,
+            lambda: _get("schedule", {"sportId": 1, "gamePk": game_pk}))
+    except Exception:
+        return None
+    for day in data.get("dates", []):
+        for g in day.get("games", []):
+            if str(g.get("gamePk")) == str(game_pk):
+                return (g.get("status") or {}).get("codedGameState")
+    return None
+
+
 def box_player_logs(game_pk: int) -> list[dict]:
     """Per-player batting + pitching lines from a finished game's boxscore,
-    shaped for the player-log store (name, date, opponent, stat fields)."""
+    shaped for the player-log store (name, date, opponent, stat fields).
+
+    Ingest guard (audit #10): this used to share the cache key
+    ``statsapi:box:{game_pk}`` with box_score (45s TTL) and game_officials
+    (15min TTL), so a mid-game snapshot one of them cached could be read here
+    for 24h and — via the idempotent game_pk skip in playerlogs.ingest — frozen
+    into the player-log store forever. It now (a) uses its own ingest-only key
+    and (b) refuses to return rows until the game's schedule status is Final,
+    so only a Final box can ever be cached under (and served from) that key."""
+    if game_status(game_pk) != "F":
+        return []
     data = cached_json(
-        f"statsapi:box:{game_pk}",
+        f"statsapi:boxlogs:{game_pk}",
         _TTL_STATIC,
         lambda: _get(f"game/{game_pk}/boxscore"),
     )

@@ -361,6 +361,12 @@ def project_games(date: str) -> pd.DataFrame:
             batters = [(pids.get(normalize(n)), normalize(n)) for n in names]
             return batwoba.lineup_woba(batters, season, proxy=bq)
 
+        # League wOBA anchor for the lineup engine, measured from the season's
+        # own Statcast environment rather than a fixed 0.318 (which drifts up to
+        # ~0.008 from the true PA-weighted mean and biased the wRAA base). None
+        # for a missing season -> the constant default, which the AVG/SLG proxy
+        # path stays anchored to by construction.
+        lg_woba = batwoba.league_woba(season) or game_model.TeamInputs.league_woba
         home = game_model.TeamInputs(
             name=g["home_team"],
             runs_per_game=_team_runs_per_game(g["home_team_id"], date),
@@ -371,6 +377,7 @@ def project_games(date: str) -> pd.DataFrame:
             temp_f=game_temp,
             ump_runs_factor=ump_rf,
             lineup_woba=_lineup_woba("home"),
+            league_woba=lg_woba,
         )
         away = game_model.TeamInputs(
             name=g["away_team"],
@@ -382,6 +389,7 @@ def project_games(date: str) -> pd.DataFrame:
             temp_f=game_temp,
             ump_runs_factor=ump_rf,
             lineup_woba=_lineup_woba("away"),
+            league_woba=lg_woba,
         )
         proj = game_model.simulate(home, away)
         for side in ("home", "away"):

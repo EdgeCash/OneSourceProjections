@@ -29,6 +29,11 @@ class TeamInputs:
     ump_runs_factor: float = 1.0  # home-plate ump run multiplier (1.0 = neutral)
     lineup_woba: float | None = None  # mean wOBA of the 9 posted batters (None =
     # no lineup posted -> fall back to the team-rate base, current behavior)
+    league_woba: float = 0.318    # league wOBA anchor for the lineup engine's
+    # wRAA. The pipeline sets this from batwoba.league_woba(season) (PA-weighted
+    # mean of the season's Statcast file) so the anchor tracks the real run
+    # environment; 0.318 stays the default because the AVG/SLG proxy wOBA is
+    # anchored to it by construction (pipeline._batter_woba_map).
     wind_out: float | None = None  # signed out/in wind component: +1 = straight
     # out to CF (boosts runs), -1 = straight in, 0 = crosswind (None = unknown/dome)
     wind_mph: float | None = None  # wind speed at first pitch
@@ -54,15 +59,23 @@ WOBA_RUN_SCALE = 1.20         # wOBA points per run above average (standard ~1.1
 TEAM_PA_PER_GAME = 38.0       # plate appearances a lineup gets over 9 innings
 
 
-def lineup_offense_runs(lineup_woba: float, league_runs: float | None = None) -> float:
+def lineup_offense_runs(lineup_woba: float, league_runs: float | None = None,
+                        league_woba: float | None = None) -> float:
     """Convert a lineup's mean wOBA into a park/pitcher-neutral team run estimate.
 
     wRAA/game = PA·(wOBA − lgwOBA)/scale, added to the league run baseline — the
     ZiPS/THE-BAT "runs from the nine posted batters" idea, linearized. The
     downstream opposing-pitching / park / temperature modifiers in expected_runs
-    still apply on top, so this only replaces the *offensive* base."""
+    still apply on top, so this only replaces the *offensive* base.
+
+    ``league_woba`` is the wRAA anchor. When batters carry real Statcast wOBA the
+    caller should pass the season's PA-weighted league mean (batwoba.league_woba)
+    — the committed files range .310–.318 by season, and anchoring a .310 season
+    to the 0.318 constant read every lineup ~"below league" (audit #12). None
+    keeps the 0.318 default that the AVG/SLG proxy path is built around."""
     league = config.LEAGUE_RUNS_PER_GAME if league_runs is None else league_runs
-    wraa = TEAM_PA_PER_GAME * (lineup_woba - LEAGUE_WOBA) / WOBA_RUN_SCALE
+    anchor = LEAGUE_WOBA if league_woba is None else league_woba
+    wraa = TEAM_PA_PER_GAME * (lineup_woba - anchor) / WOBA_RUN_SCALE
     return max(league + wraa, 1.0)
 
 
@@ -74,7 +87,7 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
     # Lineup-level offense: blend the run estimate from the nine posted batters
     # into the team-rate base (inert at LINEUP_BLEND=0 / no lineup posted).
     if team.lineup_woba is not None and config.LINEUP_BLEND > 0:
-        lr = lineup_offense_runs(team.lineup_woba, league)
+        lr = lineup_offense_runs(team.lineup_woba, league, team.league_woba)
         base = config.LINEUP_BLEND * lr + (1 - config.LINEUP_BLEND) * base
 
     # Opposing pitching: scale the starter-covered share of the game by the
@@ -151,6 +164,44 @@ def draw_runs(rng, mu: float, n: int, dispersion: float | None = None) -> np.nda
     return rng.poisson(lam).astype(float)
 
 
+def break_ties(rng, h: np.ndarray, a: np.ndarray, h_mu: float, a_mu: float) -> None:
+    """Resolve 9-inning ties like extra innings, in place (audit #11 / P4 #9).
+
+    Runs added to the TOTAL: each extra frame both sides draw one-inning
+    Poisson runs until the tie breaks (vectorized, few passes). The per-side
+    frame lambda is max(mu/9, EXTRA_FRAME_RUNS): since 2020 the ghost runner
+    (automatic runner on 2nd) makes extra frames score well above a normal
+    inning of the same teams, so a floor keeps tied-game totals from being
+    understated. Single innings, so Poisson is appropriate here regardless of
+    the full-game dispersion.
+
+    The WINNER: real extra-inning games are not a symmetric run race — the
+    home side bats last and plays every bottom half knowing exactly what it
+    needs (walk-off structure), which is why home teams win extras ≈52%
+    historically. A symmetric race can't produce that, so the winning side of
+    each tied game is drawn Bernoulli(HOME_EXTRA_WIN_P) and the frame runs are
+    assigned larger-to-winner — the tie-break's total and margin-magnitude
+    distributions are untouched; only which side ends up ahead is tilted."""
+    ties = h == a
+    n_t = int(ties.sum())
+    if not n_t:
+        return
+    lam_h = max(h_mu / 9.0, config.EXTRA_FRAME_RUNS)
+    lam_a = max(a_mu / 9.0, config.EXTRA_FRAME_RUNS)
+    hx = np.zeros(n_t)
+    ax = np.zeros(n_t)
+    open_ = np.ones(n_t, dtype=bool)
+    while open_.any():
+        k = int(open_.sum())
+        hx[open_] += rng.poisson(lam_h, k)
+        ax[open_] += rng.poisson(lam_a, k)
+        open_ = hx == ax
+    home_wins = rng.random(n_t) < config.HOME_EXTRA_WIN_P
+    hi, lo = np.maximum(hx, ax), np.minimum(hx, ax)
+    h[ties] += np.where(home_wins, hi, lo)
+    a[ties] += np.where(home_wins, lo, hi)
+
+
 def simulate(
     home: TeamInputs,
     away: TeamInputs,
@@ -167,15 +218,7 @@ def simulate(
     h = draw_runs(rng, h_mu, n)
     a = draw_runs(rng, a_mu, n)
 
-    # Resolve ties like extra innings: repeatedly add one-inning runs for both
-    # sides until the tie breaks (vectorized, few passes). Extra frames are
-    # single innings, so Poisson is appropriate here regardless of the
-    # full-game dispersion.
-    ties = h == a
-    while ties.any():
-        h[ties] += rng.poisson(h_mu / 9.0, int(ties.sum()))
-        a[ties] += rng.poisson(a_mu / 9.0, int(ties.sum()))
-        ties = h == a
+    break_ties(rng, h, a, h_mu, a_mu)
 
     total = h + a
     margin = h - a
@@ -188,10 +231,14 @@ def simulate(
     for spread in runline_spreads or [-1.5, 1.5]:
         cover[spread] = float((margin + spread > 0).mean())
 
+    # HOME_WIN_SHIFT: small additive post-sim home win-prob adjustment for the
+    # residual last-at-bat edge the run model can't express (audit #11); 0 = off.
+    hwp = float(np.clip((margin > 0).mean() + config.HOME_WIN_SHIFT, 0.0, 1.0))
+
     return GameProjection(
         home_exp_runs=round(h_mu, 3),
         away_exp_runs=round(a_mu, 3),
-        home_win_prob=float((margin > 0).mean()),
+        home_win_prob=hwp,
         total_mean=round(h_mu + a_mu, 3),
         over_probs=over_probs,
         home_runline_cover=cover,

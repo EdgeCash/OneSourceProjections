@@ -33,13 +33,51 @@ PARKS = {
 _DIRS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
          "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
 
+# Venue roof classification (audit #7). TEMP_COEF was validated on a backtest
+# that EXCLUDED dome/roof games (backtest.mlb_temp_table nulls temp_f whenever
+# the retrosheet sky field says dome/roof), so the live feed must suppress
+# outdoor forecasts for those venues too — otherwise a 105°F Phoenix forecast
+# gets an outdoors-validated multiplier applied to a game played at 72°F
+# indoors. Fixed domes never see weather; retractable roofs are open only in
+# comfortable conditions, so we pass the forecast through inside a plausible
+# roof-open band and suppress it outside (heuristic below).
+DOME_TEAMS = {"TB"}  # Tropicana Field — fixed roof, always indoors
+RETRACTABLE_ROOF_TEAMS = {"ARI", "HOU", "TEX", "MIA", "MIL", "TOR"}
+# SEA's canopy is deliberately NOT here: it never fully encloses the park (the
+# field stays open-air even when covered), so Seattle is treated as outdoor.
+
+# Roof-open heuristic for retractable parks: clubs typically close the roof in
+# real heat, real cold, or likely rain. Forecast temp inside [55°F, 88°F] and
+# precip probability below 50% -> assume open (forecast passes through);
+# anything else -> assume closed (temp/wind suppressed, like a dome). This
+# mirrors the backtest's dome/roof exclusion — conservative on purpose: a
+# suppressed adjustment costs ~nothing, a wrongly-applied extreme one is what
+# the audit measured (~+0.7 runs toward the clamp in summer).
+ROOF_OPEN_TEMP_MIN_F = 55.0
+ROOF_OPEN_TEMP_MAX_F = 88.0
+ROOF_OPEN_MAX_PRECIP = 50  # % precip probability
+
+
+def _roof_closed(temp_f: float | None, precip_pct: float | None) -> bool:
+    """Assume a retractable roof is closed outside the comfort band."""
+    if temp_f is None:
+        return True
+    if not (ROOF_OPEN_TEMP_MIN_F <= float(temp_f) <= ROOF_OPEN_TEMP_MAX_F):
+        return True
+    return precip_pct is not None and float(precip_pct) >= ROOF_OPEN_MAX_PRECIP
+
 
 def game_weather(home_team: str, game_time_iso: str | None) -> dict | None:
     """{temp_f, wind_mph, wind_dir, precip_pct} at the hour nearest first
-    pitch, or None when the park or forecast is unavailable."""
+    pitch, or None when the park or forecast is unavailable. Fixed domes
+    return None; retractable-roof parks return the forecast only when the
+    roof is plausibly open (see the classification table above), otherwise
+    temp/wind come back None so the model skips the weather adjustments."""
     key = canon("MLB", home_team)
     if key not in PARKS or not game_time_iso:
         return None
+    if key in DOME_TEAMS:
+        return None  # always indoors — no outdoor forecast applies
     lat, lon = PARKS[key]
     try:
         gt = datetime.fromisoformat(str(game_time_iso).replace("Z", "+00:00"))
@@ -70,11 +108,17 @@ def game_weather(home_team: str, game_time_iso: str | None) -> dict | None:
                 datetime.fromisoformat(times[i]).replace(tzinfo=timezone.utc)
                 - gt))
         wd = hours["wind_direction_10m"][idx]
-        return {
+        out = {
             "temp_f": round(hours["temperature_2m"][idx]),
             "wind_mph": round(hours["wind_speed_10m"][idx]),
             "wind_dir": _DIRS[int(((wd or 0) + 11.25) // 22.5) % 16],
             "precip_pct": hours["precipitation_probability"][idx],
         }
+        if key in RETRACTABLE_ROOF_TEAMS and _roof_closed(
+                out["temp_f"], out["precip_pct"]):
+            # roof presumed closed -> indoor game: no temp/wind adjustment.
+            # precip_pct is kept as context (it's why the roof is closed).
+            out["temp_f"] = out["wind_mph"] = out["wind_dir"] = None
+        return out
     except Exception:
         return None
