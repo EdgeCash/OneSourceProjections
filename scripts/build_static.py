@@ -392,6 +392,22 @@ SITE_CSS = """
     border-radius: 8px; padding: 9px 16px; font-family: var(--disp); font-weight: 700;
     font-size: 0.85rem; cursor: pointer; }
   .copybtn.done { background: var(--good); }
+  /* match-sport (tennis/soccer) card */
+  .mmeta { font-family: var(--disp); font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted); margin: 4px 2px 12px; }
+  .mticket { border: 1.5px solid var(--acc); border-left-width: 5px; border-radius: 10px;
+    background: color-mix(in srgb, var(--acc) 7%, transparent); padding: 12px 15px;
+    margin: 4px 0 14px; }
+  .mticket .mt-pick { font-family: var(--disp); font-weight: 700; font-size: 1.05rem; }
+  .mticket .mt-sub { color: var(--muted); font-size: 0.82rem; margin-top: 3px;
+    font-family: var(--mono); }
+  .mticket .mt-none { color: var(--muted); font-size: 0.86rem; }
+  .mtable { border-collapse: collapse; width: 100%; font-size: 0.86rem; margin-top: 6px; }
+  .mtable th, .mtable td { text-align: left; padding: 6px 10px;
+    border-bottom: 1px solid var(--line); }
+  .mtable th { font-family: var(--disp); font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--muted); }
+  .mtable td { font-family: var(--mono); }
   @media (max-width: 820px) {
     .ghead { grid-template-columns: 1fr; }
     .site { flex-direction: column; }
@@ -536,6 +552,71 @@ def _plays_board(day: dict, active_sports: list) -> str:
     return "".join(rows)
 
 
+def _priced_sides(sport: str, g: dict) -> str:
+    try:
+        edges = ui.match_edge_table(sport, g)
+    except Exception:
+        edges = pd.DataFrame()
+    if edges.empty:
+        return ""
+    return ("<div style='overflow-x:auto'>"
+            + edges.to_html(index=False, border=0, classes="mtable") + "</div>")
+
+
+def _tennis_ticket(sport: str, g: dict) -> str:
+    cands = []
+    for pl, ev, price, wp in (
+        ("player1", "p1_ev", "p1_price", "player1_win_prob"),
+        ("player2", "p2_ev", "p2_price", "player2_win_prob")):
+        e = g.get(ev)
+        if e is not None and pd.notna(e):
+            cands.append((g.get(pl, ""), e, g.get(price), g.get(wp)))
+    if not cands:
+        return ("<div class='mticket'><div class='mt-none'>Market price attaches at "
+                "match time — the surface-aware Elo read above stands on its own "
+                "until then.</div></div>")
+    name, ev, price, wp = max(cands, key=lambda c: c[1])
+    try:
+        from project547 import edge_gate
+        status = edge_gate.status_for(sport, "tennis_moneyline", _gate_table())
+    except Exception:
+        status = None
+    tier = ui.play_tier(ev, MIN_EDGE, gate=status)
+    kelly = g.get("kelly")
+    stake = (f" · {kelly:.1f}u" if isinstance(kelly, (int, float)) and pd.notna(kelly)
+             else "")
+    return (f"<div class='mticket'><div class='mt-pick'>{html.escape(str(name))} "
+            f"{ui.fmt_american(price)} — {html.escape(tier['label'])}</div>"
+            f"<div class='mt-sub'>model {ui._pct(wp)} · {ev * 100:+.1f}% EV{stake}</div></div>")
+
+
+def _tennis_card(sport: str, g: dict) -> str:
+    """A real two-player match card: surface-Elo win%, sample, bet ticket, and
+    the priced sides — built entirely from the row (no pipeline dependency)."""
+    p1, p2 = str(g.get("player1", "")), str(g.get("player2", ""))
+    q1, q2 = g.get("player1_win_prob"), g.get("player2_win_prob")
+    fav1 = (q1 or 0) >= (q2 or 0)
+    surface = str(g.get("surface") or "—").title()
+    tour = str(g.get("tournament", ""))
+    slam = any(s in tour.lower() for s in
+               ("wimbledon", "roland garros", "french open", "us open", "australian open"))
+    best_of = "Best of 5" if (slam and sport == "ATP") else "Best of 3"
+    meta = (f"<div class='mmeta'>{html.escape(tour)}{' · ' if tour else ''}"
+            f"{html.escape(surface)} (surface-inferred) · {best_of}</div>")
+
+    def panel(name, q, n, fav):
+        rail = "var(--acc)" if fav else "var(--line)"
+        sub = (f"{int(n)} matches" if isinstance(n, (int, float)) and pd.notna(n) else "—")
+        return (f"<div class='gt' style='--tc:{rail}'><div class='gt-rail'></div>"
+                f"<div class='gt-name'>{html.escape(name)}</div>"
+                f"<div class='gt-wp'>win {ui._pct(q)}</div>"
+                f"<div class='gt-sp'>surface Elo · {sub}</div></div>")
+    panels = (f"<div class='ghead'>{panel(p1, q1, g.get('p1_matches'), fav1)}"
+              f"<div class='gm'><div class='gm-proj'>vs</div></div>"
+              f"{panel(p2, q2, g.get('p2_matches'), not fav1)}</div>")
+    return meta + panels + _tennis_ticket(sport, g) + _priced_sides(sport, g)
+
+
 def _match_body(sport: str, g: dict) -> str:
     try:
         edges = ui.match_edge_table(sport, g)
@@ -612,7 +693,9 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
         gid = str(g.get("game_pk") or f"{sport}-{i}")
         header = ""
         try:
-            if sport in MATCH_MODEL_SPORTS:
+            if sport in ("ATP", "WTA"):
+                body = _tennis_card(sport, g)
+            elif sport in MATCH_MODEL_SPORTS:
                 body = _match_body(sport, g)
             else:
                 m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
