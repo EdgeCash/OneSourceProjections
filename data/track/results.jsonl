@@ -715,3 +715,6 @@
 {"date": "2026-07-06", "sport": "MLB", "game": "Toronto Blue Jays @ San Francisco Giants", "market": "model_winprob", "side": "", "pred_home_wp": 0.5567, "home_won": 1, "market_home_wp": 0.496, "brier": 0.1965, "proj_total": 7.921, "actual_total": 11}
 {"date": "2026-07-06", "sport": "MLB", "game": "Toronto Blue Jays @ San Francisco Giants", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5184, "yrfi": 1, "brier": 0.2319}
 {"date": "2026-07-06", "sport": "MLB", "game": "Toronto Blue Jays @ San Francisco Giants", "market": "moneyline", "side": "home", "line": null, "price": 102.0, "ev": 0.042, "won": true, "pnl": 1.02, "clv": 0.0019, "model_prob": 0.5567}
+{"date": "2026-07-06", "sport": "MLB", "game": "Colorado Rockies @ Los Angeles Dodgers", "market": "model_winprob", "side": "", "pred_home_wp": 0.5293, "home_won": 1, "market_home_wp": 0.6886, "brier": 0.2216, "proj_total": 10.475, "actual_total": 15}
+{"date": "2026-07-06", "sport": "MLB", "game": "Colorado Rockies @ Los Angeles Dodgers", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5876, "yrfi": 0, "brier": 0.3453}
+{"date": "2026-07-06", "sport": "MLB", "game": "Colorado Rockies @ Los Angeles Dodgers", "market": "moneyline", "side": "away", "line": null, "price": 213.0, "ev": 0.1663, "won": false, "pnl": -1.0, "clv": -0.0253, "model_prob": 0.4707}
