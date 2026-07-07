@@ -46,6 +46,38 @@ MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
                 "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
 
+# Team primary colors, used as accents (rails/chips) on each game — the
+# Lucky-Louie touch. Keyed by normalized full name; unknown teams fall back to
+# a deterministic monogram color so every team still gets an accent.
+_MLB_COLORS = {
+    "Arizona Diamondbacks": "#A71930", "Atlanta Braves": "#CE1141",
+    "Baltimore Orioles": "#DF4601", "Boston Red Sox": "#BD3039",
+    "Chicago Cubs": "#0E3386", "Chicago White Sox": "#27251F",
+    "Cincinnati Reds": "#C6011F", "Cleveland Guardians": "#00385D",
+    "Colorado Rockies": "#333366", "Detroit Tigers": "#0C2340",
+    "Houston Astros": "#EB6E1F", "Kansas City Royals": "#004687",
+    "Los Angeles Angels": "#BA0021", "Los Angeles Dodgers": "#005A9C",
+    "Miami Marlins": "#00A3E0", "Milwaukee Brewers": "#12284B",
+    "Minnesota Twins": "#002B5C", "New York Mets": "#FF5910",
+    "New York Yankees": "#003087", "Athletics": "#005743",
+    "Philadelphia Phillies": "#E81828", "Pittsburgh Pirates": "#FDB827",
+    "San Diego Padres": "#2F241D", "San Francisco Giants": "#FD5A1E",
+    "Seattle Mariners": "#0C2C56", "St. Louis Cardinals": "#C41E3A",
+    "Tampa Bay Rays": "#092C5C", "Texas Rangers": "#003278",
+    "Toronto Blue Jays": "#134A8E", "Washington Nationals": "#AB0003",
+}
+_TEAM_COLORS = {normalize(k): v for k, v in _MLB_COLORS.items()}
+
+
+def _team_color(team: str) -> str:
+    if not team:
+        return "#8a8472"
+    hit = _TEAM_COLORS.get(normalize(team))
+    if hit:
+        return hit
+    from app.assets import monogram
+    return monogram(team)[1]
+
 
 @lru_cache(maxsize=None)
 def _gate_table() -> dict:
@@ -331,7 +363,37 @@ SITE_CSS = """
   .drow .dev.g { color: var(--good); } .drow .dev.m { color: var(--mid); }
   .drow .dev.f { color: var(--faint); }
   .dnone { color: var(--muted); font-size: 0.88rem; margin-top: 18px; }
+  /* 5-W game header band (team colors as accents) */
+  .ghead { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px;
+    align-items: stretch; margin: 6px 0 14px; }
+  .gt { position: relative; background: var(--card2); border: 1.5px solid var(--line);
+    border-radius: 10px; padding: 12px 14px 12px 16px; overflow: hidden; }
+  .gt-rail { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--tc); }
+  .gt-name { font-family: var(--disp); font-weight: 700; font-size: 1.05rem;
+    color: var(--text); border-bottom: 2px solid var(--tc); display: inline-block;
+    padding-bottom: 1px; }
+  .gt-sp { color: var(--muted); font-size: 0.84rem; margin-top: 4px; }
+  .gt-wp { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .gm { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; min-width: 128px; gap: 3px; }
+  .gm-proj { font-family: var(--disp); font-weight: 700; font-size: 1.5rem;
+    font-variant-numeric: tabular-nums; }
+  .gm-line { color: var(--muted); font-size: 0.74rem; font-family: var(--mono); }
+  .askai { margin-top: 6px; background: var(--acc); color: var(--bg); border: none;
+    border-radius: 999px; padding: 7px 15px; font-family: var(--disp); font-weight: 700;
+    font-size: 0.8rem; letter-spacing: 0.04em; cursor: pointer;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--acc) 60%, #000); }
+  .askai:hover { filter: brightness(1.06); }
+  .aimodal .dn { font-family: var(--disp); font-size: 1.3rem; font-weight: 700; }
+  .aibrief { width: 100%; height: 62vh; margin-top: 12px; resize: none; border-radius: 10px;
+    border: 1.5px solid var(--line); background: var(--card2); color: var(--text);
+    font-family: var(--mono); font-size: 0.8rem; padding: 12px; line-height: 1.5; }
+  .copybtn { margin-top: 12px; background: var(--text); color: var(--bg); border: none;
+    border-radius: 8px; padding: 9px 16px; font-family: var(--disp); font-weight: 700;
+    font-size: 0.85rem; cursor: pointer; }
+  .copybtn.done { background: var(--good); }
   @media (max-width: 820px) {
+    .ghead { grid-template-columns: 1fr; }
     .site { flex-direction: column; }
     .sb { width: 100%; height: auto; position: static; flex-direction: row;
       flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -364,16 +426,32 @@ DRAWER_JS = """
     }
     drawer.hidden = false; document.body.style.overflow = 'hidden';
   }
-  function closeDrawer(){ drawer.hidden = true; document.body.style.overflow=''; }
+  const aimodal = document.getElementById('aimodal');
+  function closeAll(){ drawer.hidden = true; if(aimodal) aimodal.hidden = true;
+    document.body.style.overflow=''; }
+  function openAI(gid){
+    const txt = (window.BRIEFS||{})[gid];
+    const ta = document.getElementById('aitext');
+    ta.value = txt || 'No prompt available for this game.';
+    const btn = document.getElementById('aicopy'); btn.textContent='⧉ Copy prompt'; btn.classList.remove('done');
+    aimodal.hidden = false; document.body.style.overflow='hidden';
+  }
   document.addEventListener('click', e => {
+    const ai = e.target.closest('.askai');
+    if(ai){ openAI(ai.dataset.gid); return; }
+    const cp = e.target.closest('#aicopy');
+    if(cp){ const ta=document.getElementById('aitext'); ta.select();
+      const done=()=>{cp.textContent='✓ Copied';cp.classList.add('done');};
+      (navigator.clipboard ? navigator.clipboard.writeText(ta.value).then(done).catch(()=>{document.execCommand('copy');done();})
+        : (document.execCommand('copy'), done())); return; }
     const a = e.target.closest('a.osp-plink');
     if(a){ e.preventDefault();
       const u = new URL(a.getAttribute('href'), location.href);
       const nm = u.searchParams.get('player');
       if(nm) openDrawer(nm); return; }
-    if(e.target.closest('.drawer-bg') || e.target.closest('.drawer-x')) closeDrawer();
+    if(e.target.closest('.drawer-bg') || e.target.closest('.drawer-x')) closeAll();
   });
-  document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeAll(); });
   const box = document.querySelector('.search');
   if(box) box.addEventListener('input', e => {
     const q = e.target.value.trim().toLowerCase();
@@ -399,23 +477,30 @@ def _nav(active: str, active_sports: list) -> str:
 
 
 def _page(active: str, title: str, gen: str, body: str, active_sports: list,
-          props: dict | None = None) -> str:
+          props: dict | None = None, briefs: dict | None = None) -> str:
     props_json = json.dumps(props or {}, allow_nan=False).replace("</", "<\\/")
+    briefs_json = json.dumps(briefs or {}, allow_nan=False).replace("</", "<\\/")
     drawer = ('<div id="drawer" class="drawer" hidden><div class="drawer-bg"></div>'
               '<div class="drawer-panel"><button class="drawer-x" aria-label="Close">×</button>'
               '<div class="drawer-head"></div><div class="drawer-body"></div></div></div>')
+    ai_modal = ('<div id="aimodal" class="drawer" hidden><div class="drawer-bg"></div>'
+                '<div class="drawer-panel aimodal"><button class="drawer-x" aria-label="Close">×</button>'
+                '<div class="dn">Ask AI</div><div class="dt">Copy this prompt into ChatGPT, '
+                'Claude, or any chatbot — it uses your own subscription.</div>'
+                '<button class="copybtn" id="aicopy">⧉ Copy prompt</button>'
+                '<textarea class="aibrief" id="aitext" readonly></textarea></div></div>')
     return (
-        f"<!doctype html><html data-theme=\"dark\"><head><meta charset=\"utf-8\">"
+        f"<!doctype html><html data-theme=\"light\"><head><meta charset=\"utf-8\">"
         f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
         f"<title>360Five — {html.escape(title)}</title>"
-        f"{theme.theme_css('dark')}<style>{SITE_CSS}</style></head><body>"
+        f"{theme.theme_css('cream')}<style>{SITE_CSS}</style></head><body>"
         f"<div class=\"site\">{_nav(active, active_sports)}<main>"
         f"<div class=\"topbar\"><div class=\"osp-title\">{html.escape(title)}</div>"
         f"<input class=\"search\" placeholder=\"\U0001f50d  team or player…\"></div>"
         f"<div class=\"sub\">Updated {html.escape(gen)} ET · refreshes hourly · "
-        f"not financial advice</div>{body}</main></div>{drawer}"
-        f"<script>window.PROPS={props_json};</script><script>{DRAWER_JS}</script>"
-        f"</body></html>")
+        f"not financial advice</div>{body}</main></div>{drawer}{ai_modal}"
+        f"<script>window.PROPS={props_json};window.BRIEFS={briefs_json};</script>"
+        f"<script>{DRAWER_JS}</script></body></html>")
 
 
 # --------------------------------------------------------------------------
@@ -474,22 +559,58 @@ def _match_body(sport: str, g: dict) -> str:
     return "".join(parts)
 
 
-def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict]:
+def _team_block(sport: str, g: dict, side: str) -> str:
+    """One team's colored header cell: name (team-color rail), starter, win%."""
+    team = g.get(f"{side}_team", "")
+    color = _team_color(team)
+    wp = ui._pct(g.get(f"{side}_win_prob"))
+    starter = g.get(f"{side}_pitcher") if sport == "MLB" else None
+    sp = (f"<div class='gt-sp'>⚾ {html.escape(str(starter))}</div>"
+          if isinstance(starter, str) and starter.strip() else "")
+    return (f"<div class='gt' style='--tc:{color}'><div class='gt-rail'></div>"
+            f"<div class='gt-name'>{html.escape(str(team))}</div>{sp}"
+            f"<div class='gt-wp'>win {wp}</div></div>")
+
+
+def _game_header(sport: str, g: dict, gid: str) -> str:
+    """The 5-W answer band above a Sharp Sheet: WHO (teams, colored, starters) ·
+    WHAT (projected line) · plus the Ask-AI chip. Where/Why/When live in the
+    sheet below (conditions strip, stat tables, first pitch)."""
+    away, home = _team_block(sport, g, "away"), _team_block(sport, g, "home")
+    proj = f"{ui._num(ui._exp(g, 'away'))}–{ui._num(ui._exp(g, 'home'))}"
+    total = ui._num(g.get("total_line") or g.get("proj_total"))
+    aml, hml = g.get("away_ml"), g.get("home_ml")
+    fav = ""
+    if isinstance(aml, (int, float)) and isinstance(hml, (int, float)):
+        fside, fprice = (("away", aml) if aml < hml else ("home", hml))
+        fav = f"{g.get(f'{fside}_team','').split()[-1]} {ui.fmt_american(fprice)}"
+    mid = (f"<div class='gm'><div class='gm-proj'>{proj}</div>"
+           f"<div class='gm-line'>proj total {total}{(' · ' + fav) if fav else ''}</div>"
+           f"<button class='askai' data-gid='{html.escape(gid, quote=True)}'>"
+           f"◆ Ask AI</button></div>")
+    return f"<div class='ghead'>{away}{mid}{home}</div>"
+
+
+def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
     blob = day.get(sport, {})
     games = blob.get("games", []) or []
     props = blob.get("props") or []
     if not games:
-        return "<div class='feednote'>No games scheduled for this slate.</div>", {}
+        return "<div class='feednote'>No games scheduled for this slate.</div>", {}, {}
     gt = _gate_table()
-    out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — click a game for its "
-           "full Sharp Sheet, then tap any lineup name for that player's props.</div>"]
-    for g in games:
+    briefs: dict = {}
+    out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — open a game for the full "
+           "research card, tap any lineup name for that player's props, or ◆ Ask AI "
+           "to copy a prompt for your chatbot.</div>"]
+    for i, g in enumerate(games):
         try:
             label, auto = ui.sheet_headline(sport, g, min_edge=MIN_EDGE,
                                             gate_table=gt, bankroll=BANKROLL)
         except Exception:
             label, auto = f"{g.get('away_team','')} @ {g.get('home_team','')}", False
         search = re.sub(r"[*_]", "", label).lower()
+        gid = str(g.get("game_pk") or f"{sport}-{i}")
+        header = ""
         try:
             if sport in MATCH_MODEL_SPORTS:
                 body = _match_body(sport, g)
@@ -503,6 +624,11 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict]:
                     best_line = _best_line_for(sport, g, date_sel)
                 except Exception:
                     best_line = {}
+                header = _game_header(sport, g, gid)
+                try:
+                    briefs[gid] = ui.ai_brief_game(sport, g, m, min_edge=MIN_EDGE)
+                except Exception:
+                    briefs.pop(gid, None)
                 body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
                                            gate_table=gt, bankroll=BANKROLL, props=props,
                                            best_line=best_line, data=data)
@@ -512,8 +638,8 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict]:
             f"<details class='game'{' open' if auto else ''} "
             f"data-search=\"{html.escape(search, quote=True)}\">"
             f"<summary>{_md_bold(label)}</summary>"
-            f"<div class='ssbody'>{body}</div></details>")
-    return "".join(out), _prop_index(sport, props)
+            f"<div class='ssbody'>{header}{body}</div></details>")
+    return "".join(out), _prop_index(sport, props), briefs
 
 
 def _md_bold(s: str) -> str:
@@ -554,10 +680,10 @@ def main() -> int:
     pages = 1
 
     for sport in active_sports:
-        body, prop_idx = _sport_feed(sport, day, date_sel)
+        body, prop_idx, briefs = _sport_feed(sport, day, date_sel)
         (OUT / f"{sport.lower()}.html").write_text(
             _page(sport.lower(), SPORT_LABELS.get(sport, sport), gen, body,
-                  active_sports, props=prop_idx))
+                  active_sports, props=prop_idx, briefs=briefs))
         pages += 1
 
     print(f"built {pages} pages → {OUT}  (slate {date_sel}; "
