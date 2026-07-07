@@ -334,6 +334,28 @@ SITE_CSS = """
   .ssbody { padding: 4px 18px 16px; border-top: 1.5px solid var(--line); }
   .legend { color: var(--muted); font-size: 0.82rem; margin: 4px 2px 14px; }
   .feednote { color: var(--muted); font-size: 0.8rem; margin: 16px 2px; }
+  /* track-record scorecard */
+  .sc-note { color: var(--muted); font-size: 0.82rem; line-height: 1.5;
+    margin: 4px 2px 18px; max-width: 760px; }
+  .sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px; }
+  .sc-card { border: 1.5px solid var(--line); border-radius: 12px; background: var(--card);
+    padding: 14px 16px; }
+  .sc-top { display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; }
+  .sc-name { font-family: var(--disp); font-weight: 700; font-size: 1.05rem; }
+  .sc-pill { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; padding: 3px 8px; border-radius: 20px; }
+  .sc-edge { background: #1f7a4d; color: #fff; }
+  .sc-noedge { background: #b23b3b; color: #fff; }
+  .sc-building { background: var(--line); color: var(--muted); }
+  .sc-r { display: flex; justify-content: space-between; padding: 4px 0;
+    border-top: 1px solid var(--line); font-size: 0.86rem; }
+  .sc-r:first-of-type { border-top: none; }
+  .sc-k { color: var(--muted); }
+  .sc-v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .sc-v.pos { color: #1f7a4d; font-weight: 700; }
+  .sc-v.neg { color: #b23b3b; font-weight: 700; }
   /* lineup names read as tappable */
   a.osp-plink { cursor: pointer; border-bottom: 1px dotted var(--acc); }
   /* player-prop drawer */
@@ -482,7 +504,7 @@ DRAWER_JS = """
 
 
 def _nav(active: str, active_sports: list) -> str:
-    items = [("plays", "Plays", "plays.html")]
+    items = [("plays", "Plays", "plays.html"), ("record", "Track Record", "record.html")]
     for s in active_sports:
         items.append((s.lower(), SPORT_LABELS.get(s, s), f"{s.lower()}.html"))
     links = "".join(
@@ -528,6 +550,68 @@ def _page(active: str, title: str, gen: str, body: str, active_sports: list,
 
 def _has_cards(day: dict, sport: str) -> bool:
     return bool((day.get(sport) or {}).get("games"))
+
+
+def _scorecard_page(perf: dict) -> str:
+    """Honest track record per sport: the headline is CLV (did our *bets* beat the
+    closing line — the leading edge indicator), shown next to record/ROI and the
+    projection-vs-market Brier. Small samples are labelled, not over-read."""
+    by = perf.get("by_sport", {})
+    order = ["overall"] + sorted(by, key=lambda s: -(by[s].get("bets") or 0))
+
+    def _verdict(p: dict) -> tuple[str, str]:
+        n_games, n_bets = p.get("graded_games") or 0, p.get("bets") or 0
+        clv = p.get("avg_clv_pct")
+        if n_games < 40 or n_bets < 25 or clv is None:
+            return ("building", "Building sample")
+        return ("edge", "Beating the close") if clv > 0 else ("noedge", "No edge yet")
+
+    def _row(label, val, cls=""):
+        return (f"<div class='sc-r'><span class='sc-k'>{label}</span>"
+                f"<span class='sc-v {cls}'>{val}</span></div>")
+
+    def _pct(v, dp=1):
+        return f"{v:+.{dp}f}%" if isinstance(v, (int, float)) else "—"
+
+    cards = []
+    for key in order:
+        p = perf.get("overall", {}) if key == "overall" else by[key]
+        name = "All sports" if key == "overall" else SPORT_LABELS.get(key, key)
+        cls, label = _verdict(p)
+        clv = p.get("avg_clv_pct")
+        beat = p.get("clv_beat_rate")
+        bvm = p.get("brier_vs_market")
+        wr = p.get("bet_win_rate")
+        units = p.get("units")
+        body = "".join([
+            _row("Avg CLV", _pct(clv),
+                 "pos" if isinstance(clv, (int, float)) and clv > 0 else
+                 ("neg" if isinstance(clv, (int, float)) and clv < 0 else "")),
+            _row("CLV beat rate", f"{beat*100:.0f}%" if isinstance(beat, (int, float)) else "—"),
+            _row("Bets graded", str(p.get("bets") or 0)),
+            _row("Win rate", f"{wr*100:.0f}%" if isinstance(wr, (int, float)) else "—"),
+            _row("Units", f"{units:+.1f}" if isinstance(units, (int, float)) else "—",
+                 "pos" if isinstance(units, (int, float)) and units > 0 else
+                 ("neg" if isinstance(units, (int, float)) and units < 0 else "")),
+            _row("ROI", _pct(p.get("roi_pct")),
+                 "pos" if isinstance(p.get("roi_pct"), (int, float)) and p["roi_pct"] > 0 else
+                 ("neg" if isinstance(p.get("roi_pct"), (int, float)) and p["roi_pct"] < 0 else "")),
+            _row("Proj vs market", f"{bvm:+.4f}" if isinstance(bvm, (int, float)) else "—",
+                 "pos" if isinstance(bvm, (int, float)) and bvm > 0 else
+                 ("neg" if isinstance(bvm, (int, float)) and bvm < 0 else "")),
+        ])
+        cards.append(
+            f"<div class='sc-card'><div class='sc-top'>"
+            f"<span class='sc-name'>{html.escape(name)}</span>"
+            f"<span class='sc-pill sc-{cls}'>{label}</span></div>{body}</div>")
+
+    note = ("<div class='sc-note'>The number that matters is <b>Avg CLV</b> — how "
+            "much our graded bets beat the market's closing line. Positive CLV is the "
+            "leading sign of a real edge, ahead of noisy win/loss. <b>Proj vs market</b> "
+            "is whether our published win probability out-calibrates the closing line "
+            "(&gt;0 = we do). Samples under ~40 games are labelled <i>building</i> — "
+            "don't read them yet. Not financial advice.</div>")
+    return f"<div class='sc-wrap'>{note}<div class='sc-grid'>{''.join(cards)}</div></div>"
 
 
 def _plays_board(day: dict, active_sports: list) -> str:
@@ -793,7 +877,10 @@ def main() -> int:
     plays_html = _page("plays", "Plays", gen, _plays_board(day, active_sports), active_sports)
     (OUT / "plays.html").write_text(plays_html)
     (OUT / "index.html").write_text(plays_html)
-    pages = 1
+    (OUT / "record.html").write_text(
+        _page("record", "Track Record", gen,
+              _scorecard_page(data.get("performance") or {}), active_sports))
+    pages = 2
 
     for sport in active_sports:
         body, prop_idx, briefs = _sport_feed(sport, day, date_sel)

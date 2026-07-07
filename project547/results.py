@@ -323,10 +323,25 @@ def _summarize(rows: list[dict]) -> dict:
             y = r["home_won"]
             tot += -(y * math.log(p) + (1 - y) * math.log(1 - p))
         log_loss = tot / len(games)
+    # Projection skill vs the market: on the games where we captured the market's
+    # own de-vig prob, is our published prob better calibrated than the close?
+    # (>0 in brier_vs_market means our projection beat the market's.)
+    mkt_games = [r for r in games if r.get("market_home_wp") is not None]
+    market_brier = brier_vs_market = None
+    if mkt_games:
+        mb = sum((min(max(float(r["pred_home_wp"]), 1e-6), 1 - 1e-6) - r["home_won"]) ** 2
+                 for r in mkt_games) / len(mkt_games)
+        kb = sum((min(max(float(r["market_home_wp"]), 1e-6), 1 - 1e-6) - r["home_won"]) ** 2
+                 for r in mkt_games) / len(mkt_games)
+        market_brier = round(kb, 4)
+        brier_vs_market = round(kb - mb, 4)
     clvs = [r["clv"] for r in bets if r.get("clv") is not None]
     return {
         "graded_games": len(games),
         "model_brier": round(brier, 4) if brier is not None else None,
+        "market_brier": market_brier,
+        "brier_vs_market": brier_vs_market,
+        "n_vs_market": len(mkt_games),
         "model_log_loss": round(log_loss, 4) if log_loss is not None else None,
         "bets": staked,
         "bet_win_rate": round(wins / staked, 4) if staked else None,
