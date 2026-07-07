@@ -356,6 +356,17 @@ SITE_CSS = """
   .sc-v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .sc-v.pos { color: #1f7a4d; font-weight: 700; }
   .sc-v.neg { color: #b23b3b; font-weight: 700; }
+  .sc-mkt { margin-top: 26px; }
+  .sc-mkt-h { font-family: var(--disp); font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 10px; }
+  .sc-tblwrap { overflow-x: auto; }
+  .sc-tbl { border-collapse: collapse; width: 100%; max-width: 620px; font-size: 0.88rem; }
+  .sc-tbl th { text-align: left; color: var(--muted); font-weight: 600;
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: .03em;
+    padding: 6px 12px 6px 0; border-bottom: 1.5px solid var(--line); }
+  .sc-tbl td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line);
+    white-space: nowrap; }
+  .sc-tbl .sc-pill { font-size: 0.64rem; }
   /* lineup names read as tappable */
   a.osp-plink { cursor: pointer; border-bottom: 1px dotted var(--acc); }
   /* player-prop drawer */
@@ -611,7 +622,39 @@ def _scorecard_page(perf: dict) -> str:
             "is whether our published win probability out-calibrates the closing line "
             "(&gt;0 = we do). Samples under ~40 games are labelled <i>building</i> — "
             "don't read them yet. Not financial advice.</div>")
-    return f"<div class='sc-wrap'>{note}<div class='sc-grid'>{''.join(cards)}</div></div>"
+    return (f"<div class='sc-wrap'>{note}<div class='sc-grid'>{''.join(cards)}</div>"
+            f"{_market_table()}</div>")
+
+
+def _market_table() -> str:
+    """Per-(sport, market) edge status from the demonstrated-edge gate: which
+    specific markets have proven CLV (cleared), are still gathering it
+    (building), or are suppressed as proven losers (gated). This is where the
+    headline sport-level CLV actually comes from."""
+    gt = _gate_table()
+    if not gt:
+        return ""
+    STATUS = {"cleared": ("sc-edge", "Cleared"),
+              "probation": ("sc-building", "Building"),
+              "gated": ("sc-noedge", "Gated")}
+    rows = []
+    for (sp, mk), v in sorted(gt.items()):
+        cls, label = STATUS.get(v.get("status"), ("sc-building", str(v.get("status"))))
+        clv = v.get("avg_clv")
+        clv_txt = f"{clv * 100:+.1f}%" if isinstance(clv, (int, float)) else "—"
+        clv_cls = ("pos" if isinstance(clv, (int, float)) and clv > 0
+                   else "neg" if isinstance(clv, (int, float)) and clv < 0 else "")
+        rows.append(
+            f"<tr><td>{html.escape(SPORT_LABELS.get(sp, sp))}</td>"
+            f"<td>{html.escape(str(mk))}</td>"
+            f"<td><span class='sc-pill {cls}'>{label}</span></td>"
+            f"<td class='sc-v {clv_cls}'>{clv_txt}</td>"
+            f"<td class='sc-v'>{v.get('clv_n') or 0}</td></tr>")
+    return (f"<div class='sc-mkt'><div class='sc-mkt-h'>By market — where the edge "
+            f"is proven</div><div class='sc-tblwrap'><table class='sc-tbl'><thead><tr>"
+            f"<th>Sport</th><th>Market</th><th>Status</th><th>Avg CLV</th>"
+            f"<th>CLV&nbsp;n</th></tr></thead><tbody>{''.join(rows)}</tbody></table>"
+            f"</div></div>")
 
 
 def _plays_board(day: dict, active_sports: list) -> str:
