@@ -150,6 +150,48 @@ def mlb_temp_table(seasons: list[int]) -> dict:
     return out
 
 
+# Retrosheet wind-direction categories -> signed out/in component (+1 straight
+# out to CF boosts runs, -1 straight in suppresses, corners damped, crosswind ~0).
+WIND_OUT = {"tocf": 1.0, "fromcf": -1.0, "tolf": 0.6, "torf": 0.6,
+            "fromlf": -0.6, "fromrf": -0.6, "ltor": 0.0, "rtol": 0.0}
+
+
+def mlb_wind_table(seasons: list[int]) -> dict:
+    """{(date 'YYYY-MM-DD', canon home team): (wind_out, wind_mph)} from the
+    committed game_context. Dome / unknown-direction games map to (None, None) so
+    the model skips the wind adjustment. Mirrors mlb_temp_table for walk-forward
+    validation of the wind effect."""
+    import gzip
+    from . import teams as _teams
+    out: dict = {}
+    for s in seasons:
+        p = history.HISTORY_DIR / "backfill" / "mlb" / str(s) / "game_context.jsonl.gz"
+        if not p.exists():
+            continue
+        with gzip.open(p, "rt") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                r = json.loads(line)
+                d = str(r.get("date") or "")
+                if len(d) == 8:
+                    d = f"{d[:4]}-{d[4:6]}-{d[6:]}"
+                home = _teams.canon("MLB", r.get("home_team", ""))
+                sky = (r.get("sky") or "").lower()
+                wdir = (r.get("wind_dir") or "").lower()
+                try:
+                    mph = float(r.get("wind_speed_mph"))
+                except (TypeError, ValueError):
+                    mph = None
+                comp = WIND_OUT.get(wdir)
+                if "dome" in sky or "roof" in sky or comp is None or mph is None \
+                        or not (0 <= mph <= 60):
+                    out[(d, home)] = (None, None)
+                else:
+                    out[(d, home)] = (comp, mph)
+    return out
+
+
 def starter_fip_table(seasons: list[int], league_fip: float = 4.10,
                       ip_prior: float = 50.0, min_ip: float = 5.0) -> dict:
     """As-of-date starter FIP per game side, no lookahead. Walks the
@@ -357,7 +399,8 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
              home_own_pf: float = 1.0, away_own_pf: float = 1.0,
              temp_f: float | None = None,
              home_lineup_woba: float | None = None,
-             away_lineup_woba: float | None = None):
+             away_lineup_woba: float | None = None,
+             wind_out: float | None = None, wind_mph: float | None = None):
     """Return (home_win_prob, total_mean, prob_over_fn, home_cover_fn).
 
     home_opp_xfip / away_opp_xfip are the FIP of the starter each team
@@ -371,12 +414,14 @@ def _project(sport_key: str, sport, h: generic.TeamRating | None,
                                  opp_starter_xfip=home_opp_xfip,
                                  opp_bullpen_xfip=home_opp_bp,
                                  park_factor=park_venue, own_home_pf=home_own_pf,
-                                 temp_f=temp_f, lineup_woba=home_lineup_woba)
+                                 temp_f=temp_f, lineup_woba=home_lineup_woba,
+                                 wind_out=wind_out, wind_mph=wind_mph)
         ai = mlb_game.TeamInputs(name="a", runs_per_game=a.scored,
                                  opp_starter_xfip=away_opp_xfip,
                                  opp_bullpen_xfip=away_opp_bp,
                                  park_factor=park_venue, own_home_pf=away_own_pf,
-                                 temp_f=temp_f, lineup_woba=away_lineup_woba)
+                                 temp_f=temp_f, lineup_woba=away_lineup_woba,
+                                 wind_out=wind_out, wind_mph=wind_mph)
         proj = mlb_game.simulate(hi, ai, total_lines=[], runline_spreads=[],
                                  draws=draws, seed=7)
         mu_h, mu_a = proj.home_exp_runs, proj.away_exp_runs
@@ -557,6 +602,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       form_half_life: float | None = None,
                       lineup_woba_table: dict | None = None,
                       lineup_blend: float | None = None,
+                      use_wind: bool = False, wind_coef: float | None = None,
                       detail: bool = False) -> dict:
     import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
@@ -566,6 +612,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     _saved_blend = config.LINEUP_BLEND
     if lineup_blend is not None:
         config.LINEUP_BLEND = lineup_blend
+    _saved_wind = config.WIND_COEF
+    if wind_coef is not None:
+        config.WIND_COEF = wind_coef
     # sigma overrides for calibration sweeps (frozen dataclass -> replace).
     if sigma_margin is not None or sigma_total is not None:
         sport = _dc.replace(
@@ -598,6 +647,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     is_mlb = sport_key == "MLB"
     fip_table = starter_fip_table(seasons) if (is_mlb and use_starters) else {}
     temp_tbl = mlb_temp_table(seasons) if (is_mlb and use_temp) else {}
+    wind_tbl = mlb_wind_table(seasons) if (is_mlb and use_wind) else {}
     bp_table = bullpen_fip_table(seasons) if (is_mlb and use_bullpen) else {}
 
     # Elo (generic sports): maintain ratings walk-forward, pre-warmed from
@@ -646,12 +696,16 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 pf_venue = home_pf = away_pf = 1.0
             temp_f = temp_tbl.get((g["date"], teams.canon("MLB", g["home"]))) \
                 if temp_tbl else None
+            wind_out, wind_mph = wind_tbl.get(
+                (g["date"], teams.canon("MLB", g["home"])), (None, None)) \
+                if wind_tbl else (None, None)
             lw = lineup_woba_table or {}
             hwp, tmean, prob_over, cover_fn, gp_obj = _project(
                 sport_key, sport, h, a, draws, home_opp, away_opp,
                 home_bp, away_bp, pf_venue, home_pf, away_pf, temp_f=temp_f,
                 home_lineup_woba=lw.get((pk, "home")),
-                away_lineup_woba=lw.get((pk, "away")))
+                away_lineup_woba=lw.get((pk, "away")),
+                wind_out=wind_out, wind_mph=wind_mph)
             if elo is not None:
                 ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
                 hwp = (1 - elo_blend) * hwp + elo_blend * ewp
@@ -799,6 +853,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                        int(g["date"][:4]))
 
     config.LINEUP_BLEND = _saved_blend      # restore any per-run blend override
+    config.WIND_COEF = _saved_wind
     calibration = {b: {"n": c[0], "predicted": round(b, 2),
                        "empirical": round(c[1] / c[0], 4)}
                    for b, c in sorted(cal_bins.items()) if c[0] >= 20}

@@ -116,6 +116,15 @@ TEMP_COEF = 0.003          # fractional run change per °F away from baseline
 TEMP_BASELINE_F = 72.0     # neutral temperature (no adjustment)
 TEMP_CLAMP = 0.08          # cap the total swing at ±8% (guards bad/extreme temps)
 
+# Wind effect on run scoring (outdoor games only). Wind out to center carries
+# fly balls for extra runs, wind in kills them — a real effect at open parks.
+# Applied as a game-level multiplier = 1 + WIND_COEF · out_component · mph, where
+# out_component ∈ [-1, +1] (+1 straight out to CF, -1 straight in, 0 crosswind).
+# WIND_COEF is per (mph · unit-out); 0 = off. Tuned on the walk-forward totals MAE
+# like TEMP_COEF; skipped for domes / unknown wind direction.
+WIND_COEF = 0.0            # set > 0 only once the backtest shows it helps
+WIND_CLAMP = 0.12          # cap the wind swing at ±12%
+
 # Home-plate umpire tendency. The committed table (data/history/mlb_umpires.json,
 # built by scripts/build_mlb_umpires.py) carries per-ump runs/K/BB indexes vs the
 # league average, shrunk toward 1.0 by game count. The home-plate ump is surfaced
