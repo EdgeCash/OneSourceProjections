@@ -28,6 +28,10 @@ class Sport:
     sigma_total: float       # stdev of combined score (normal model only)
     in_season_months: tuple[int, ...]
     form_days: int           # lookback window for team ratings
+    # exponential recency half-life in *games* for team ratings (0 = flat
+    # average, the historical behavior). Set per sport only where the
+    # walk-forward backtest shows it beats the market-baseline (roadmap T1.1).
+    form_half_life: float = 0.0
     fp_projections: str | None = None   # FantasyPros projections support
     espn_params: dict = field(default_factory=dict)
     elo_blend: float = 0.0   # weight on Elo win prob vs the off/def model (0 = off)

@@ -914,7 +914,8 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
     except Exception as e:
         log.warning("%s results unavailable: %s", sport_key, e)
         results = []
-    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust,
+                                   half_life=sport.form_half_life)
 
     # Elo: maintain ratings over a longer history (covers prior + current
     # season for cross-season carryover), then blend its win prob in.
@@ -1002,7 +1003,8 @@ def project_soccer_games(sport_key: str, date: str) -> pd.DataFrame:
     except Exception as e:
         log.warning("%s results unavailable: %s", sport_key, e)
         results = []
-    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust,
+                                   half_life=sport.form_half_life)
     rows = []
     for g in slate:
         h_exp, a_exp = generic.expected_score(

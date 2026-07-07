@@ -303,6 +303,7 @@ def _wnba_games(seasons: list[int]) -> list[dict]:
 @dataclass
 class _Form:
     window: int
+    half_life: float = 0.0    # exponential recency half-life in games (0 = flat)
     scored: dict = field(default_factory=lambda: defaultdict(deque))
     allowed: dict = field(default_factory=lambda: defaultdict(deque))
     opp: dict = field(default_factory=lambda: defaultdict(deque))
@@ -312,9 +313,11 @@ class _Form:
         n = len(s)
         if n == 0:
             return None
+        # deque is oldest→newest, matching decay_weights' ordering
+        wts = generic.decay_weights(n, self.half_life)
         w = generic.RATING_SHRINK * min(1.0, n / 10)
-        return (w * (sum(s) / n) + (1 - w) * league_ppg,
-                w * (sum(a) / n) + (1 - w) * league_ppg, n)
+        return (w * generic._decayed_mean(list(s), wts) + (1 - w) * league_ppg,
+                w * generic._decayed_mean(list(a), wts) + (1 - w) * league_ppg, n)
 
     def rating(self, team: str, league_ppg: float,
                opponent_adjust: bool = False) -> generic.TeamRating | None:
@@ -549,6 +552,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       elo_blend: float | None = None,
                       sigma_margin: float | None = None,
                       sigma_total: float | None = None,
+                      form_half_life: float | None = None,
                       detail: bool = False) -> dict:
     import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
@@ -572,11 +576,12 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     elo_regress = sport.elo_regress if elo_regress is None else elo_regress
     elo_home_edge = sport.elo_home_edge if elo_home_edge is None else elo_home_edge
     elo_blend = sport.elo_blend if elo_blend is None else elo_blend
+    form_half_life = sport.form_half_life if form_half_life is None else form_half_life
     games = (_mlb_games(seasons, use_results_2026=True) if sport_key == "MLB"
              else _wnba_games(seasons) if sport_key == "WNBA"
              else _generic_games(sport_key, seasons))
     window = 30 if sport_key == "MLB" else 15
-    form = _Form(window)
+    form = _Form(window, half_life=form_half_life)
     last_seen: dict = {}                  # team -> last game date, for rest days
     qb_value: dict = {}                   # qb id -> EMA of team points started
     qb_base: dict = {}                    # team -> EMA of its starters' qb_value

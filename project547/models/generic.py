@@ -33,13 +33,36 @@ class TeamRating:
     allowed: float
 
 
+def decay_weights(n: int, half_life: float) -> list[float]:
+    """Exponential recency weights for ``n`` games ordered oldest→newest.
+
+    ``half_life`` is in *games*: a game ``half_life`` back from the newest gets
+    half the weight of the newest. ``half_life <= 0`` (or n <= 1) returns uniform
+    weights — i.e. the historical flat-average behavior. Recency weighting lets a
+    team's rating track current form instead of being anchored by stale games in
+    the lookback window (roadmap T1.1)."""
+    if half_life and half_life > 0 and n > 1:
+        return [0.5 ** ((n - 1 - i) / half_life) for i in range(n)]
+    return [1.0] * n
+
+
+def _decayed_mean(vals: list[float], weights: list[float]) -> float:
+    sw = sum(weights)
+    return sum(w * v for w, v in zip(weights, vals)) / sw if sw else 0.0
+
+
 def team_ratings(results: list[dict], league_ppg: float,
-                 opponent_adjust: bool = False) -> dict[str, TeamRating]:
-    """results: [{home_team, away_team, home_score, away_score}, ...].
+                 opponent_adjust: bool = False,
+                 half_life: float = 0.0) -> dict[str, TeamRating]:
+    """results: [{home_team, away_team, home_score, away_score}, ...], ordered
+    oldest→newest (sorted by ``date`` here when present).
 
     When opponent_adjust is set, the off/def rates get a one-pass
     strength-of-schedule correction: facing weak defenses discounts your
-    offense, facing strong offenses credits your defense."""
+    offense, facing strong offenses credits your defense. When ``half_life`` > 0,
+    games are exponentially recency-weighted (half-life in games)."""
+    if results and all("date" in g for g in results):
+        results = sorted(results, key=lambda g: g["date"])
     raw: dict[str, list[tuple[float, float]]] = {}
     opps: dict[str, list[str]] = {}
     for g in results:
@@ -51,9 +74,10 @@ def team_ratings(results: list[dict], league_ppg: float,
     base = {}
     for team, games in raw.items():
         n = len(games)
+        wts = decay_weights(n, half_life)
         w = RATING_SHRINK * min(1.0, n / 10)
-        base[team] = (w * (sum(s for s, _ in games) / n) + (1 - w) * league_ppg,
-                      w * (sum(a for _, a in games) / n) + (1 - w) * league_ppg, n)
+        base[team] = (w * _decayed_mean([s for s, _ in games], wts) + (1 - w) * league_ppg,
+                      w * _decayed_mean([a for _, a in games], wts) + (1 - w) * league_ppg, n)
 
     out = {}
     for team, (scored, allowed, n) in base.items():
