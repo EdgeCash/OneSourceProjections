@@ -294,27 +294,9 @@ def project_games(date: str) -> pd.DataFrame:
         except Exception:
             ump = None
         ump_rf = (ump or {}).get("runs_factor") or 1.0
-        home = game_model.TeamInputs(
-            name=g["home_team"],
-            runs_per_game=_team_runs_per_game(g["home_team_id"], date),
-            opp_starter_xfip=starter_xfip(g["away_pitcher"]),
-            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["away_team"])),
-            park_factor=pf_venue,
-            own_home_pf=pf_venue,
-            temp_f=game_temp,
-            ump_runs_factor=ump_rf,
-        )
-        away = game_model.TeamInputs(
-            name=g["away_team"],
-            runs_per_game=_team_runs_per_game(g["away_team_id"], date),
-            opp_starter_xfip=starter_xfip(g["home_pitcher"]),
-            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["home_team"])),
-            park_factor=pf_venue,
-            own_home_pf=parks.factor(g["away_team"]),
-            temp_f=game_temp,
-            ump_runs_factor=ump_rf,
-        )
-        proj = game_model.simulate(home, away)
+        # Lineups are fetched here (before building TeamInputs) so the posted
+        # nine can feed the lineup-level offense model (roadmap T2.2) as well as
+        # NRFI/props below. Inert on expected runs until config.LINEUP_BLEND > 0.
         try:
             lu = mlb_statsapi.batting_order(g["game_pk"])
             lineups = {s_: [p["name"] for p in lu.get(s_, [])]
@@ -326,6 +308,35 @@ def project_games(date: str) -> pd.DataFrame:
                         pids[normalize(p["name"])] = p["player_id"]
         except Exception:
             lineups, pids = None, {}
+
+        def _lineup_woba(side: str) -> float | None:
+            names = (lineups or {}).get(side) or []
+            ws = [bq[normalize(n)] for n in names if normalize(n) in bq]
+            return sum(ws) / len(ws) if ws else None
+
+        home = game_model.TeamInputs(
+            name=g["home_team"],
+            runs_per_game=_team_runs_per_game(g["home_team_id"], date),
+            opp_starter_xfip=starter_xfip(g["away_pitcher"]),
+            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["away_team"])),
+            park_factor=pf_venue,
+            own_home_pf=pf_venue,
+            temp_f=game_temp,
+            ump_runs_factor=ump_rf,
+            lineup_woba=_lineup_woba("home"),
+        )
+        away = game_model.TeamInputs(
+            name=g["away_team"],
+            runs_per_game=_team_runs_per_game(g["away_team_id"], date),
+            opp_starter_xfip=starter_xfip(g["home_pitcher"]),
+            opp_bullpen_xfip=bullpens.get(teams.canon("MLB", g["home_team"])),
+            park_factor=pf_venue,
+            own_home_pf=parks.factor(g["away_team"]),
+            temp_f=game_temp,
+            ump_runs_factor=ump_rf,
+            lineup_woba=_lineup_woba("away"),
+        )
+        proj = game_model.simulate(home, away)
         for side in ("home", "away"):
             nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
             if nm and pid:
@@ -914,7 +925,8 @@ def project_generic_games(sport_key: str, date: str) -> pd.DataFrame:
     except Exception as e:
         log.warning("%s results unavailable: %s", sport_key, e)
         results = []
-    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust,
+                                   half_life=sport.form_half_life)
 
     # Elo: maintain ratings over a longer history (covers prior + current
     # season for cross-season carryover), then blend its win prob in.
@@ -1002,7 +1014,8 @@ def project_soccer_games(sport_key: str, date: str) -> pd.DataFrame:
     except Exception as e:
         log.warning("%s results unavailable: %s", sport_key, e)
         results = []
-    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust)
+    ratings = generic.team_ratings(results, sport.league_ppg, sport.opponent_adjust,
+                                   half_life=sport.form_half_life)
     rows = []
     for g in slate:
         h_exp, a_exp = generic.expected_score(
