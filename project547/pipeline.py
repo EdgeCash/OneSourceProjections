@@ -38,7 +38,8 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 def _market_eval(p_model_a: float, a_price, b_price,
-                 shrink: float | None = None) -> dict:
+                 shrink: float | None = None,
+                 sport: str | None = None, market: str | None = None) -> dict:
     """Evaluate a two-way market for both sides from one model probability.
 
     Rejects incoherent price pairs, shrinks the model probability toward the
@@ -55,6 +56,12 @@ def _market_eval(p_model_a: float, a_price, b_price,
     no market to anchor to.
     """
     shrink = config.MARKET_SHRINK if shrink is None else shrink
+    # Post-hoc calibration (flag-gated, default off): map the raw model prob to
+    # its calibrated value before it becomes EV/shrink. Identity no-op for any
+    # (sport, market) without a fitted map. See docs/MODEL_REPAIR.md.
+    if config.APPLY_CALIBRATION and sport and market and p_model_a is not None:
+        from . import calibrate as _cal
+        p_model_a = _cal.calibrate(p_model_a, sport, market)
     a_ok = a_price is not None and pd.notna(a_price)
     b_ok = b_price is not None and pd.notna(b_price)
     out = {"p_used": p_model_a, "p_fair": None, "ev_a": None, "ev_b": None}
@@ -804,7 +811,8 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     prices[side] = float(m["odds"].max())
                     out[f"{side}_ml"] = prices[side]
             ev = _market_eval(row["home_win_prob"], prices.get("home"),
-                              prices.get("away"), shrink=SPORTS["MLB"].market_shrink)
+                              prices.get("away"), shrink=SPORTS["MLB"].market_shrink,
+                              sport="MLB", market="moneyline")
             if ev["ev_a"] is not None:
                 out["home_ml_ev"] = ev["ev_a"]
             if ev["ev_b"] is not None:
@@ -835,7 +843,8 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     under_price = float(best_u["odds"])
                     out["under_odds"] = under_price
                 ev = _market_eval(float(p), float(best_o["odds"]), under_price,
-                                  shrink=SPORTS["MLB"].market_shrink)
+                                  shrink=SPORTS["MLB"].market_shrink,
+                                  sport="MLB", market="total")
                 if ev["ev_a"] is not None:
                     out["over_ev"] = ev["ev_a"]
                 if ev["ev_b"] is not None:
@@ -865,7 +874,8 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     out["model_home_rl"] = round(float(p_cover), 4)
                     shrink = SPORTS["MLB"].market_shrink
                     ev = _market_eval(float(p_cover), float(best_h["odds"]),
-                                      away_price, shrink=shrink)
+                                      away_price, shrink=shrink,
+                                      sport="MLB", market="spread")
                     # Run-line prices are line-shopped best-of-book, so the
                     # home/away pair often sums under 1.0 (a synthetic arb across
                     # books) and the two-way de-vig rejects it. Fall back to
@@ -1077,7 +1087,8 @@ def _attach_tennis_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
         b = price.get(normalize(row["player2"]))
         if a is None and b is None:
             return pd.Series({})
-        ev = _market_eval(row["player1_win_prob"], a, b, shrink=shrink)
+        ev = _market_eval(row["player1_win_prob"], a, b, shrink=shrink,
+                          sport=sport_key, market="moneyline")
         best = max([v for v in (ev["ev_a"], ev["ev_b"]) if v is not None],
                    default=None)
         kelly = None
@@ -1187,7 +1198,8 @@ def _attach_soccer_edges(df: pd.DataFrame, sport_key: str, date: str) -> pd.Data
                                                                float(ml[k])), 4)
         tot = _lookup(row, ev_tot)
         if tot and "over" in tot and "under" in tot:
-            ev = _market_eval(row["over_2_5"], tot["over"], tot["under"], shrink=shrink)
+            ev = _market_eval(row["over_2_5"], tot["over"], tot["under"], shrink=shrink,
+                              sport=sport_key, market="total")
             out["over_price"], out["under_price"] = tot["over"], tot["under"]
             out["over_ev"], out["under_ev"] = ev["ev_a"], ev["ev_b"]
         evs = {k: out[k] for k in ("home_ev", "draw_ev", "away_ev", "over_ev",
@@ -1252,7 +1264,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
 
         def _ml_ev(r):
             ev = _market_eval(r["home_win_prob"], r.get("home_ml"), r.get("away_ml"),
-                              shrink=sport.market_shrink)
+                              shrink=sport.market_shrink,
+                              sport=sport_key, market="moneyline")
             return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"]})
 
         games = pd.concat([games, games.apply(_ml_ev, axis=1)], axis=1)
@@ -1286,7 +1299,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
             p = row["_proj"].prob_over(line, sport)
             under_odds = float(under["odds"]) if under is not None else None
             ev = _market_eval(p, float(offer["odds"]), under_odds,
-                              shrink=SPORTS[sport].market_shrink)
+                              shrink=SPORTS[sport].market_shrink,
+                              sport=sport_key, market="total")
             return pd.Series({
                 "total_line": line,
                 "over_odds": offer["odds"],
@@ -1325,7 +1339,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
             away_price = (float(away_rows.sort_values("odds", ascending=False)
                                 .iloc[0]["odds"]) if not away_rows.empty else None)
             ev = _market_eval(p, float(best_h["odds"]), away_price,
-                              shrink=sport.market_shrink)
+                              shrink=sport.market_shrink,
+                              sport=sport_key, market="spread")
             out.update({"spread_home_line": spread,
                         "spread_home_odds": float(best_h["odds"]),
                         "model_home_cover": round(p, 4),
