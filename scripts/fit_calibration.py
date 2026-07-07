@@ -112,6 +112,31 @@ def _pairs(rows, market):
             if p is not None and o is not None]
 
 
+def _ml_roi(rows, mp, min_edge=0.02):
+    """Out-of-sample moneyline ROI on the holdout, raw vs calibrated, betting
+    any side clearing min_edge at the closing best price. mp is the map fit on
+    train (None => raw). Returns (roi_raw, roi_cal, n_raw, n_cal)."""
+    from project547 import odds
+    st = {"raw": [0.0, 0.0], "cal": [0.0, 0.0]}  # [stake, profit]
+    for r in rows:
+        p, hw = r.get("home_win_prob"), r.get("home_won")
+        if p is None or hw is None:
+            continue
+        pc = float(_apply(mp, p)) if mp is not None else p
+        for pr, pcl, price, won in (
+            (p, pc, r.get("home_ml"), hw == 1),
+            (1 - p, 1 - pc, r.get("away_ml"), hw == 0)):
+            if price is None:
+                continue
+            dec = odds.american_to_decimal(price)
+            for tag, prob in (("raw", pr), ("cal", pcl)):
+                if odds.expected_value(prob, price) >= min_edge:
+                    st[tag][0] += 1.0
+                    st[tag][1] += (dec - 1.0) if won else -1.0
+    roi = lambda k: (st[k][1] / st[k][0]) if st[k][0] else None
+    return roi("raw"), roi("cal"), int(st["raw"][0]), int(st["cal"][0])
+
+
 def main() -> int:
     maps: dict = {}
     print("=== calibration fit + out-of-sample holdout (raw -> calibrated) ===")
@@ -146,17 +171,28 @@ def main() -> int:
             ec0, ec1 = _ece(hp, hy), _ece(cp, hy)
             keep = br1 <= br0 + 5e-4      # calibration must not worsen Brier
             action = "WRITE" if keep else "skip (worse)"
+            roi_txt = ""
+            roi_raw = roi_cal = None
+            if market == "moneyline":
+                roi_raw, roi_cal, nr, nc = _ml_roi(hold, m)
+                if roi_raw is not None and roi_cal is not None:
+                    roi_txt = (f"  | ROI(OOS) {roi_raw*100:+.1f}% (n={nr}) -> "
+                               f"{roi_cal*100:+.1f}% (n={nc})")
             print(f"{sport+'/'+market:<18}{len(ho):>7}{br0:>11.4f}{br1:>11.4f}"
-                  f"{ec0:>9.4f}{ec1:>9.4f}   {action}")
+                  f"{ec0:>9.4f}{ec1:>9.4f}   {action}{roi_txt}")
             if keep:
                 prod = _fit(*zip(*all_pairs))   # production: refit on ALL rows
-                maps[f"{sport.lower()}_{market}"] = {
+                entry = {
                     "n_fit": len(all_pairs),
                     "brier_raw": round(br0, 4), "brier_cal": round(br1, 4),
                     "ece_raw": round(ec0, 4), "ece_cal": round(ec1, 4),
                     "x_knots": [round(float(x), 5) for x in prod[0]],
                     "y_knots": [round(float(y), 5) for y in prod[1]],
                 }
+                if roi_raw is not None:
+                    entry["roi_raw_oos"] = round(roi_raw, 4)
+                    entry["roi_cal_oos"] = round(roi_cal, 4)
+                maps[f"{sport.lower()}_{market}"] = entry
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"markets": maps}, indent=1))
     print(f"\nwrote {len(maps)} validated maps -> {OUT}")
