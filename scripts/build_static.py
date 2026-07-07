@@ -6,19 +6,21 @@ site — no server, no per-click re-runs — reusing the *same* renderers the
 Streamlit app uses (``app.ui.sharp_sheet_html`` / ``build_best_bets`` and the
 shared ``app.theme`` CSS), so the look matches exactly.
 
-Output: ``site/`` — one page per in-season sport plus the cross-sport PLAYS
-board, a sidebar nav, and native ``<details>`` Sharp Sheets (no JS needed to
-expand). Run:  ``python scripts/build_static.py``
+Output: ``site/`` — one page per sport that has cards today, plus the
+cross-sport PLAYS board, a sidebar nav, native ``<details>`` Sharp Sheets (no
+JS needed to expand), and a player-prop drawer that opens when you tap a name
+in a lineup. Run:  ``python scripts/build_static.py``
 
-Prototype scope: team-sport Sharp Sheets + the PLAYS board render in full;
-per-game CLV/calibration/pitcher enrichment (the Streamlit ``data=`` object)
-is deferred to the production build, so those fields show honest DATA-GAP
-dashes — never fabricated.
+The per-game enrichment (CLV, calibration, starter strip, best odds) is
+computed here from the same local sources the app uses — all CI-safe (the
+pipeline keeps internal box logs primary because FanGraphs is blocked on CI).
+Anything genuinely missing still renders an honest DATA-GAP dash.
 """
 from __future__ import annotations
 
 import html
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -30,6 +32,7 @@ import pandas as pd  # noqa: E402
 
 from app import theme, ui  # noqa: E402
 from project547 import config, teamstats  # noqa: E402
+from project547.names import normalize  # noqa: E402
 from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
 OUT = ROOT / "site"
@@ -58,15 +61,181 @@ def _matchup(sport: str, home: str, away: str, asof: str, window: str = "l5") ->
         return {}
 
 
-def _md_bold(s: str) -> str:
-    """Render a sheet_headline markdown label as safe HTML (only **bold** + text)."""
-    out, last = [], 0
-    for m in re.finditer(r"\*\*(.+?)\*\*", s):
-        out.append(html.escape(s[last:m.start()]))
-        out.append(f"<strong>{html.escape(m.group(1))}</strong>")
-        last = m.end()
-    out.append(html.escape(s[last:]))
-    return "".join(out)
+# --------------------------------------------------------------------------
+# Sharp Sheet enrichment — plain (uncached) ports of the dashboard helpers.
+# Every source here reads local files the pipeline already produced, so the
+# build never depends on a live API. Failures degrade to DATA-GAP dashes.
+# --------------------------------------------------------------------------
+
+def _market_stats() -> dict:
+    try:
+        from project547 import edge_gate
+        return {f"{s}|{m}": v for (s, m), v in edge_gate.market_stats().items()}
+    except Exception:
+        return {}
+
+
+def _market_calibration(sport: str) -> dict | None:
+    try:
+        from project547 import results
+        led = [r for r in results.load_ledger()
+               if r.get("sport") == sport and r.get("won") is not None]
+    except Exception:
+        return None
+    ms = _market_stats()
+    out, any_data = {}, False
+    for label, mk in (("Moneyline", "moneyline"), ("Total", "total"), ("Run Line", "spread")):
+        rows = [r for r in led if r.get("market") == mk
+                and isinstance(r.get("model_prob"), (int, float))]
+        if rows:
+            pred = sum(r["model_prob"] for r in rows) / len(rows)
+            actual = sum(1 for r in rows if r["won"]) / len(rows)
+            out[label] = {"pred": round(pred, 4), "actual": round(actual, 4), "n": len(rows)}
+            any_data = True
+        else:
+            s = ms.get(f"{sport}|{mk}") or {}
+            out[label] = {"pred": None, "actual": s.get("win_rate"), "n": s.get("n")}
+            any_data = any_data or s.get("win_rate") is not None
+    return out if any_data else None
+
+
+def _pitcher_stats(season: int) -> dict:
+    try:
+        from project547 import pipeline
+        df = pipeline._pitcher_table(season)
+        return {r.get("norm_name"): r for r in df.to_dict("records") if r.get("norm_name")}
+    except Exception:
+        return {}
+
+
+def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
+    ms = _market_stats()
+    clv = {}
+    for mk in ("moneyline", "total", "spread"):
+        s = ms.get(f"{sport}|{mk}") or {}
+        if s.get("clv_n"):
+            clv[mk] = {"avg_clv": s.get("avg_clv"), "clv_n": s.get("clv_n")}
+    pitching = None
+    if sport == "MLB":
+        from project547 import platoon
+        # Import these independently: _lookup_float exists, starter_xfip may not.
+        # (The dashboard imports both together, so a missing starter_xfip silently
+        # stubs _lf → every rate stat blanks to DATA GAP. Split so IP/K9/BB9/xFIP
+        # resolve and only the truly-absent starter_xfip fallback no-ops.)
+        try:
+            from project547.pipeline import _lookup_float as _lf
+        except Exception:
+            _lf = lambda row, *ks: None           # noqa: E731
+        try:
+            from project547.pipeline import starter_xfip
+        except Exception:
+            starter_xfip = lambda *_: None       # noqa: E731
+        pstats = _pitcher_stats(int(str(date_sel)[:4]))
+        pitching = {}
+        for side in ("away", "home"):
+            nm, pid = g.get(f"{side}_pitcher"), g.get(f"{side}_pitcher_id")
+            if not isinstance(nm, str) or not nm.strip():
+                continue
+            row = pstats.get(normalize(nm)) or {}
+            ip_tot, gs = _lf(row, "IP"), _lf(row, "GS")
+            ip = (ip_tot / gs) if ip_tot and gs else None
+            k9, bb9 = _lf(row, "K/9", "K9"), _lf(row, "BB/9", "BB9")
+            xfip = _lf(row, "xFIP", "FIP")
+            if xfip is None:
+                try:
+                    xfip = starter_xfip(nm)
+                except Exception:
+                    xfip = None
+            try:
+                hand = platoon.throws(nm, pid)
+            except Exception:
+                hand = None
+            pitching[f"{side}_sp"] = {
+                "name": nm, "id": pid, "hand": hand, "xfip": xfip, "ip": ip,
+                "k9": k9, "bb9": bb9, "tto_flag": bool(ip and ip >= 5.8)}
+            bp = (matchup or {}).get(f"{side}_bullpen") or {}
+            if bp:
+                pitching[f"{side}_bullpen"] = {"fatigue": bp.get("level"),
+                                               "proj_ip": bp.get("proj_ip")}
+    return {"clv": clv or None, "calibration": _market_calibration(sport),
+            "pitching": pitching or None}
+
+
+def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
+    from project547 import lineshop
+    try:
+        best = {" vs ".join(sorted(k)): v
+                for k, v in lineshop.best_lines(sport, date_sel).items()}
+    except Exception:
+        return {}
+    key = " vs ".join(sorted({normalize(g.get("home_team", "")),
+                              normalize(g.get("away_team", ""))}))
+    rec = best.get(key)
+    if not rec:
+        return {}
+    out: dict = {}
+    ml = rec.get("moneyline") or {}
+    for side in ("away_team", "home_team"):
+        info = ml.get(normalize(g.get(side, "")))
+        if info:
+            out[f"{g.get(side, '').split()[-1]} ML"] = {
+                "price": info.get("price"), "book": info.get("book")}
+    tot = rec.get("total") or {}
+    for side in ("over", "under"):
+        info = tot.get(side)
+        if info:
+            ln = f" {info['line']:g}" if info.get("line") is not None else ""
+            out[f"{side.title()}{ln}"] = {"price": info.get("price"), "book": info.get("book")}
+    return out
+
+
+# --------------------------------------------------------------------------
+# Player-prop drawer index
+# --------------------------------------------------------------------------
+
+def _clean(v):
+    if v is None or (isinstance(v, float) and math.isnan(v)):
+        return None
+    if isinstance(v, float):
+        return round(v, 3)
+    return v
+
+
+def _norm_key(name: str) -> str:
+    """A JS-replicable normalization so a lineup click resolves to prop rows."""
+    return re.sub(r"[.\s]+", " ", str(name).lower()).strip()
+
+
+def _prop_index(sport: str, props: list) -> dict:
+    """{norm(player): {name, team, rows:[{market,line,proj,ev,prob,price,pick}]}}."""
+    idx: dict = {}
+    for p in props or []:
+        nm = p.get("player")
+        if not isinstance(nm, str) or not nm.strip():
+            continue
+        edge = None
+        try:
+            edge = ui._prop_edge(sport, p)
+        except Exception:
+            edge = None
+        row = {"market": ui.short_market(str(p.get("market", ""))),
+               "line": _clean(p.get("line")), "proj": _clean(p.get("projection"))}
+        if edge:
+            ev = edge.get("ev")
+            row["ev"] = round(ev * 100, 1) if ev is not None and pd.notna(ev) else None
+            mp = edge.get("model_prob")
+            row["prob"] = round(mp * 100) if mp is not None and pd.notna(mp) else None
+            price = edge.get("price")
+            row["price"] = ui.fmt_american(price) if price is not None and pd.notna(price) else ""
+            row["pick"] = edge.get("bet")
+        key = _norm_key(nm)
+        rec = idx.setdefault(key, {"name": nm, "team": p.get("team") or "", "rows": []})
+        rec["rows"].append(row)
+    # edges first, then projection-only; cap to keep pages light
+    for rec in idx.values():
+        rec["rows"].sort(key=lambda r: (r.get("ev") is None, -(r.get("ev") or 0)))
+        rec["rows"] = rec["rows"][:12]
+    return idx
 
 
 # --------------------------------------------------------------------------
@@ -79,11 +248,9 @@ SITE_CSS = """
     font-family: var(--font); }
   a { color: inherit; text-decoration: none; }
   .site { display: flex; min-height: 100vh; }
-  /* sidebar */
   .sb { width: 232px; flex: 0 0 232px; background: var(--sb1);
     border-right: 1.5px solid var(--line); padding: 18px 14px;
-    display: flex; flex-direction: column; position: sticky; top: 0;
-    height: 100vh; }
+    display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
   .osp-logo { display: flex; align-items: center; gap: 10px; margin: 2px 4px 18px; }
   .osp-logo .mk { width: 30px; height: 30px; border-radius: 8px; flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center; font-size: 1rem;
@@ -105,16 +272,14 @@ SITE_CSS = """
     display: flex; align-items: center; justify-content: center; font-weight: 700;
     font-family: var(--disp); font-size: 0.9rem; color: var(--bg); background: var(--acc); }
   .osp-acct .nm { font-family: var(--disp); font-weight: 600; font-size: 0.92rem; }
-  /* main */
   main { flex: 1; min-width: 0; padding: 20px 30px 60px; max-width: 1180px; }
   .topbar { display: flex; align-items: center; gap: 20px; justify-content: space-between; }
   .osp-title { font-family: var(--disp); font-size: 1.9rem; font-weight: 600; }
-  .search { background: var(--card); border: 1.5px solid var(--line);
-    color: var(--text); border-radius: 999px; padding: 9px 16px; width: 300px;
-    font-family: var(--font); font-size: 0.9rem; outline: none; }
+  .search { background: var(--card); border: 1.5px solid var(--line); color: var(--text);
+    border-radius: 999px; padding: 9px 16px; width: 300px; font-family: var(--font);
+    font-size: 0.9rem; outline: none; }
   .search:focus { border-color: var(--acc); }
   .sub { color: var(--muted); font-size: 0.82rem; margin: 6px 2px 18px; }
-  /* game feed: native details/summary Sharp Sheets */
   details.game { border: 1.5px solid var(--line); border-radius: 12px;
     background: var(--card); margin-bottom: 10px; overflow: hidden; }
   details.game > summary { list-style: none; cursor: pointer; padding: 14px 18px;
@@ -127,19 +292,80 @@ SITE_CSS = """
   .ssbody { padding: 4px 18px 16px; border-top: 1.5px solid var(--line); }
   .legend { color: var(--muted); font-size: 0.82rem; margin: 4px 2px 14px; }
   .feednote { color: var(--muted); font-size: 0.8rem; margin: 16px 2px; }
+  /* lineup names read as tappable */
+  a.osp-plink { cursor: pointer; border-bottom: 1px dotted var(--acc); }
+  /* player-prop drawer */
+  .drawer[hidden] { display: none; }
+  .drawer { position: fixed; inset: 0; z-index: 100; }
+  .drawer-bg { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+  .drawer-panel { position: absolute; top: 0; right: 0; height: 100%; width: 420px;
+    max-width: 92vw; background: var(--card); border-left: 1.5px solid var(--line);
+    box-shadow: -20px 0 50px rgba(0,0,0,.5); padding: 20px 22px; overflow-y: auto;
+    animation: slidein .18s ease; }
+  @keyframes slidein { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
+  .drawer-x { position: absolute; top: 12px; right: 14px; background: none; border: none;
+    color: var(--muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .drawer-x:hover { color: var(--text); }
+  .drawer .dn { font-family: var(--disp); font-size: 1.3rem; font-weight: 700; }
+  .drawer .dt { color: var(--muted); font-size: 0.85rem; margin-bottom: 4px; }
+  .drawer .dsub { color: var(--muted); font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.1em; margin: 16px 0 8px; }
+  .drow { border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px;
+    margin-bottom: 9px; }
+  .drow .dm { font-family: var(--disp); font-weight: 600; font-size: 0.95rem; }
+  .drow .dmeta { color: var(--muted); font-size: 0.8rem; margin-top: 2px;
+    font-variant-numeric: tabular-nums; }
+  .drow .dpick { margin-top: 6px; font-family: var(--mono); font-size: 0.85rem; color: var(--text); }
+  .drow .dev { display: inline-block; margin-top: 6px; font-family: var(--mono);
+    font-weight: 700; font-size: 0.82rem; }
+  .drow .dev.g { color: var(--good); } .drow .dev.m { color: var(--mid); }
+  .drow .dev.f { color: var(--faint); }
+  .dnone { color: var(--muted); font-size: 0.88rem; margin-top: 18px; }
   @media (max-width: 820px) {
     .site { flex-direction: column; }
     .sb { width: 100%; height: auto; position: static; flex-direction: row;
       flex-wrap: wrap; align-items: center; gap: 6px; }
     .osp-logo { margin: 0 12px 0 0; } .sb nav { flex-direction: row; flex-wrap: wrap; }
     .osp-acct { margin: 0 0 0 auto; border: none; padding: 0; }
-    main { padding: 16px; }
+    main { padding: 16px; } .drawer-panel { width: 100%; }
   }
 """
 
-SEARCH_JS = """
+DRAWER_JS = """
+  const _nk = s => s.toLowerCase().replace(/[.\\s]+/g,' ').trim();
+  const drawer = document.getElementById('drawer');
+  function openDrawer(name){
+    const rec = (window.PROPS||{})[_nk(name)];
+    const head = drawer.querySelector('.drawer-head');
+    const body = drawer.querySelector('.drawer-body');
+    if(!rec || !rec.rows || !rec.rows.length){
+      head.innerHTML = `<div class="dn">${name}</div>`;
+      body.innerHTML = '<div class="dnone">No props for this player on this slate.</div>';
+    } else {
+      head.innerHTML = `<div class="dn">${rec.name}</div><div class="dt">${rec.team||''}</div>`;
+      body.innerHTML = '<div class="dsub">Props · model edges</div>' + rec.rows.map(r => {
+        const meta = [r.line!=null?`line ${r.line}`:'', r.proj!=null?`proj ${r.proj}`:'']
+          .filter(Boolean).join(' · ') + (r.prob!=null?` · model ${r.prob}%`:'');
+        const pick = r.pick ? `<div class="dpick">▸ ${r.pick} ${r.price||''}</div>` : '';
+        const ev = (r.ev!=null) ? `<span class="dev ${r.ev>=4?'g':r.ev>0?'m':'f'}">${r.ev>0?'+':''}${r.ev}% EV</span>` : '';
+        return `<div class="drow"><div class="dm">${r.market}</div>`+
+               `<div class="dmeta">${meta}</div>${pick}${ev}</div>`;
+      }).join('');
+    }
+    drawer.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){ drawer.hidden = true; document.body.style.overflow=''; }
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a.osp-plink');
+    if(a){ e.preventDefault();
+      const u = new URL(a.getAttribute('href'), location.href);
+      const nm = u.searchParams.get('player');
+      if(nm) openDrawer(nm); return; }
+    if(e.target.closest('.drawer-bg') || e.target.closest('.drawer-x')) closeDrawer();
+  });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
   const box = document.querySelector('.search');
-  if (box) box.addEventListener('input', e => {
+  if(box) box.addEventListener('input', e => {
     const q = e.target.value.trim().toLowerCase();
     document.querySelectorAll('[data-search]').forEach(el => {
       el.style.display = (!q || el.dataset.search.includes(q)) ? '' : 'none';
@@ -148,9 +374,9 @@ SEARCH_JS = """
 """
 
 
-def _nav(active: str) -> str:
+def _nav(active: str, active_sports: list) -> str:
     items = [("plays", "Plays", "plays.html")]
-    for s in NAV_SPORTS:
+    for s in active_sports:
         items.append((s.lower(), SPORT_LABELS.get(s, s), f"{s.lower()}.html"))
     links = "".join(
         f'<a href="{href}" class="{"active" if key == active else ""}">'
@@ -162,32 +388,41 @@ def _nav(active: str) -> str:
             f'<span class="nm">EdgeCash</span></div></aside>')
 
 
-def _page(active: str, title: str, gen: str, body: str) -> str:
+def _page(active: str, title: str, gen: str, body: str, active_sports: list,
+          props: dict | None = None) -> str:
+    props_json = json.dumps(props or {}, allow_nan=False).replace("</", "<\\/")
+    drawer = ('<div id="drawer" class="drawer" hidden><div class="drawer-bg"></div>'
+              '<div class="drawer-panel"><button class="drawer-x" aria-label="Close">×</button>'
+              '<div class="drawer-head"></div><div class="drawer-body"></div></div></div>')
     return (
         f"<!doctype html><html data-theme=\"dark\"><head><meta charset=\"utf-8\">"
         f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
         f"<title>360Five — {html.escape(title)}</title>"
         f"{theme.theme_css('dark')}<style>{SITE_CSS}</style></head><body>"
-        f"<div class=\"site\">{_nav(active)}<main>"
+        f"<div class=\"site\">{_nav(active, active_sports)}<main>"
         f"<div class=\"topbar\"><div class=\"osp-title\">{html.escape(title)}</div>"
         f"<input class=\"search\" placeholder=\"\U0001f50d  team or player…\"></div>"
         f"<div class=\"sub\">Updated {html.escape(gen)} ET · refreshes hourly · "
-        f"not financial advice</div>{body}</main></div>"
-        f"<script>{SEARCH_JS}</script></body></html>")
+        f"not financial advice</div>{body}</main></div>{drawer}"
+        f"<script>window.PROPS={props_json};</script><script>{DRAWER_JS}</script>"
+        f"</body></html>")
 
 
 # --------------------------------------------------------------------------
 # Content builders
 # --------------------------------------------------------------------------
 
-def _plays_board(day: dict) -> str:
+def _has_cards(day: dict, sport: str) -> bool:
+    return bool((day.get(sport) or {}).get("games"))
+
+
+def _plays_board(day: dict, active_sports: list) -> str:
     board = ui.build_best_bets(day, MIN_EDGE)
     if not board.empty:
         board = board[pd.to_numeric(board["ev"], errors="coerce") < 0.30]
-    sports = [s for s in NAV_SPORTS if s in day]
     rows = ["<div class='pl-board'>",
             "<div class='pl-head'><span>Matchup</span><span>Play</span></div>"]
-    for sport in sports:
+    for sport in active_sports:
         sub = (board[board["sport"] == sport] if not board.empty else board.iloc[0:0])
         rows.append(f"<div class='pl-grp'>{html.escape(SPORT_LABELS.get(sport, sport))}</div>")
         if sub.empty:
@@ -206,42 +441,7 @@ def _plays_board(day: dict) -> str:
     return "".join(rows)
 
 
-def _sport_feed(sport: str, day: dict, date_sel: str) -> str:
-    blob = day.get(sport, {})
-    games = blob.get("games", []) or []
-    if not games:
-        return "<div class='feednote'>No games scheduled for this slate.</div>"
-    gt = _gate_table()
-    out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — click a game for its "
-           "full Sharp Sheet.</div>"]
-    for g in games:
-        try:
-            label, auto = ui.sheet_headline(sport, g, min_edge=MIN_EDGE,
-                                            gate_table=gt, bankroll=BANKROLL)
-        except Exception:
-            label, auto = f"{g.get('away_team','')} @ {g.get('home_team','')}", False
-        search = _md_bold(label).lower()
-        search = re.sub("<[^>]+>", "", search)
-        try:
-            if sport in MATCH_MODEL_SPORTS:
-                body = _match_body(sport, g)
-            else:
-                m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
-                body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
-                                           gate_table=gt, bankroll=BANKROLL,
-                                           props=blob.get("props") or [])
-        except Exception as e:  # never let one game blank the feed
-            body = f"<div class='feednote'>Sheet unavailable ({html.escape(str(e))}).</div>"
-        out.append(
-            f"<details class='game'{' open' if auto else ''} "
-            f"data-search=\"{html.escape(search, quote=True)}\">"
-            f"<summary>{_md_bold(label)}</summary>"
-            f"<div class='ssbody'>{body}</div></details>")
-    return "".join(out)
-
-
 def _match_body(sport: str, g: dict) -> str:
-    """Lightweight body for soccer/tennis (no team offense/defense splits)."""
     try:
         edges = ui.match_edge_table(sport, g)
     except Exception:
@@ -249,19 +449,71 @@ def _match_body(sport: str, g: dict) -> str:
     parts = []
     if sport in ("ATP", "WTA"):
         parts.append(
-            f"<p><strong>{html.escape(str(g.get('player1','P1')))}</strong> "
+            f"<p><strong>{html.escape(str(g.get('player1', 'P1')))}</strong> "
             f"{ui._pct(g.get('player1_win_prob'))} · "
-            f"<strong>{html.escape(str(g.get('player2','P2')))}</strong> "
+            f"<strong>{html.escape(str(g.get('player2', 'P2')))}</strong> "
             f"{ui._pct(g.get('player2_win_prob'))}</p>")
     else:
         parts.append(
             f"<p>Home {ui._pct(g.get('home_win_prob'))} · Draw "
             f"{ui._pct(g.get('draw_prob'))} · Away {ui._pct(g.get('away_win_prob'))}</p>")
     if not edges.empty:
-        parts.append(edges.to_html(index=False, border=0, classes="mtable"))
+        parts.append(edges.to_html(index=False, border=0))
     else:
         parts.append("<div class='feednote'>No market prices yet for this match.</div>")
     return "".join(parts)
+
+
+def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict]:
+    blob = day.get(sport, {})
+    games = blob.get("games", []) or []
+    props = blob.get("props") or []
+    if not games:
+        return "<div class='feednote'>No games scheduled for this slate.</div>", {}
+    gt = _gate_table()
+    out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — click a game for its "
+           "full Sharp Sheet, then tap any lineup name for that player's props.</div>"]
+    for g in games:
+        try:
+            label, auto = ui.sheet_headline(sport, g, min_edge=MIN_EDGE,
+                                            gate_table=gt, bankroll=BANKROLL)
+        except Exception:
+            label, auto = f"{g.get('away_team','')} @ {g.get('home_team','')}", False
+        search = re.sub(r"[*_]", "", label).lower()
+        try:
+            if sport in MATCH_MODEL_SPORTS:
+                body = _match_body(sport, g)
+            else:
+                m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
+                try:
+                    data = _sheet_data(sport, g, m, date_sel)
+                except Exception:
+                    data = {}
+                try:
+                    best_line = _best_line_for(sport, g, date_sel)
+                except Exception:
+                    best_line = {}
+                body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
+                                           gate_table=gt, bankroll=BANKROLL, props=props,
+                                           best_line=best_line, data=data)
+        except Exception as e:
+            body = f"<div class='feednote'>Sheet unavailable ({html.escape(str(e))}).</div>"
+        out.append(
+            f"<details class='game'{' open' if auto else ''} "
+            f"data-search=\"{html.escape(search, quote=True)}\">"
+            f"<summary>{_md_bold(label)}</summary>"
+            f"<div class='ssbody'>{body}</div></details>")
+    return "".join(out), _prop_index(sport, props)
+
+
+def _md_bold(s: str) -> str:
+    out, last = [], 0
+    for m in re.finditer(r"\*\*(.+?)\*\*", s):
+        out.append(html.escape(s[last:m.start()]))
+        out.append(f"<strong>{html.escape(m.group(1))}</strong>")
+        last = m.end()
+    out.append(html.escape(s[last:]))
+    return "".join(out)
 
 
 # --------------------------------------------------------------------------
@@ -280,23 +532,26 @@ def main() -> int:
     day = slates.get(date_sel, {})
     gen = str(data.get("generated_at", ""))[:16].replace("T", " ")
 
-    OUT.mkdir(exist_ok=True)
-    pages = 0
+    # Only sports that actually have cards today appear in the nav / get a page.
+    active_sports = [s for s in NAV_SPORTS if _has_cards(day, s)]
 
-    plays_html = _page("plays", "Plays", gen, _plays_board(day))
+    import shutil
+    shutil.rmtree(OUT, ignore_errors=True)  # never leave a dropped sport's stale page
+    OUT.mkdir(parents=True, exist_ok=True)
+    plays_html = _page("plays", "Plays", gen, _plays_board(day, active_sports), active_sports)
     (OUT / "plays.html").write_text(plays_html)
     (OUT / "index.html").write_text(plays_html)
-    pages += 1
+    pages = 1
 
-    for sport in NAV_SPORTS:
-        if sport not in day:
-            continue
-        body = _sport_feed(sport, day, date_sel)
+    for sport in active_sports:
+        body, prop_idx = _sport_feed(sport, day, date_sel)
         (OUT / f"{sport.lower()}.html").write_text(
-            _page(sport.lower(), SPORT_LABELS.get(sport, sport), gen, body))
+            _page(sport.lower(), SPORT_LABELS.get(sport, sport), gen, body,
+                  active_sports, props=prop_idx))
         pages += 1
 
-    print(f"built {pages} pages → {OUT}  (slate {date_sel})")
+    print(f"built {pages} pages → {OUT}  (slate {date_sel}; "
+          f"active: {', '.join(active_sports) or 'none'})")
     return 0
 
 

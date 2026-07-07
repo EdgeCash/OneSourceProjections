@@ -717,11 +717,17 @@ def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
     if sport == "MLB":
         from project547 import platoon
         from project547.names import normalize
+        # Import independently: _lookup_float exists, starter_xfip may not — a
+        # combined import that fails on the missing name silently stubs _lf, which
+        # blanks every rate stat (IP/K9/BB9/xFIP) to DATA GAP.
         try:
-            from project547.pipeline import starter_xfip, _lookup_float as _lf
+            from project547.pipeline import _lookup_float as _lf
+        except Exception:
+            _lf = lambda row, *ks: None           # noqa: E731
+        try:
+            from project547.pipeline import starter_xfip
         except Exception:
             starter_xfip = lambda *_: None       # noqa: E731
-            _lf = lambda row, *ks: None           # noqa: E731
         pstats = _pitcher_stats(int(str(date_sel)[:4]))
         pitching = {}
         for side in ("away", "home"):
