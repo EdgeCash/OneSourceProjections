@@ -696,17 +696,25 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                      "ml_hit": (home_won == 1) == (hwp >= 0.5),
                      "clv": (round(hwp - mo_["home_fair"], 4)
                              if mo_.get("home_fair") is not None else None)}
+                d["home_won"] = int(home_won)
                 if sp_.get("line") is not None:
                     pc = cover_fn(sp_["line"])
                     margin = g["home_score"] - g["away_score"]
                     d["ats_pick"] = g["home"] if pc >= 0.5 else g["away"]
                     d["ats_hit"] = (None if (margin + sp_["line"]) == 0
                                     else ((margin + sp_["line"] > 0) == (pc >= 0.5)))
+                    # raw (pred, outcome) for calibration fitting/validation
+                    d["p_cover"] = round(float(pc), 4)
+                    d["cover_won"] = (None if (margin + sp_["line"]) == 0
+                                      else int(margin + sp_["line"] > 0))
                 if to_.get("line") is not None:
                     po = prob_over(to_["line"])
                     d["tot_pick"] = "Over" if po >= 0.5 else "Under"
                     d["tot_hit"] = (None if actual_total == to_["line"]
                                     else ((actual_total > to_["line"]) == (po >= 0.5)))
+                    d["p_over"] = round(float(po), 4)
+                    d["over_won"] = (None if actual_total == to_["line"]
+                                     else int(actual_total > to_["line"]))
                 detail_rows.append(d)
         form.update(g)
         from datetime import date as _D

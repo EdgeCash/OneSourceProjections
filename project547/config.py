@@ -228,6 +228,13 @@ MARKET_SHRINK = 0.5
 VIG_SUM_MIN = 0.98
 VIG_SUM_MAX = 1.30
 
+# Post-hoc probability calibration (project547.calibrate). When on, the model's
+# raw probability is passed through the isotonic map fit by scripts/fit_calibration.py
+# before EV/shrink. Default OFF so wiring is inert until the maps are validated;
+# flip via env APPLY_CALIBRATION=1. See docs/MODEL_REPAIR.md.
+APPLY_CALIBRATION = os.environ.get("APPLY_CALIBRATION", "").strip().lower() in (
+    "1", "true", "yes", "on")
+
 # BettingPros market ids vary by sport/account tier. These are sensible
 # defaults for MLB; run `python scripts/discover_markets.py` once with your
 # keys to print the live list and adjust here if needed.
