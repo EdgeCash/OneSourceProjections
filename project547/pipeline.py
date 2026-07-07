@@ -1776,10 +1776,20 @@ def _run_mlb(date: str, pull_props: bool = True) -> dict:
 
 
 def _run_generic(sport_key: str, date: str, pull_props: bool = True) -> dict:
-    games, ge = _safe_step(
-        lambda: attach_generic_game_edges(
-            project_generic_games(sport_key, date), sport_key, date),
-        "games", sport_key)
+    def _games():
+        # Project first (reliable), then attach market edges. If the edge attach
+        # trips on a malformed odds payload (e.g. a BettingPros participant/event
+        # arriving as a dict → "unhashable type: dict"), keep the model-only games
+        # rather than blanking the whole slate — same "one bad half doesn't blank
+        # the other" contract as _safe_step, one level down.
+        projected = project_generic_games(sport_key, date)
+        try:
+            return attach_generic_game_edges(projected, sport_key, date)
+        except Exception as e:
+            log.error("%s edge attach failed (%s: %s) — serving model-only games",
+                      sport_key, type(e).__name__, e)
+            return projected
+    games, ge = _safe_step(_games, "games", sport_key)
     if _skip_props(games, pull_props, sport_key, date, "prop window closed"):
         return _bundle(games, [], ge, None)
     props, pe = _safe_step(

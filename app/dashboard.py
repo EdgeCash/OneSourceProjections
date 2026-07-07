@@ -1106,8 +1106,17 @@ def render_plays_detail():
 
         # Tier label up front (CORE PLAY / VERIFY / …) from the same ladder the
         # cards use — classify off the raw EV fraction before we rescale to %.
-        view["tier"] = [ui.play_tier(e, min_edge)["label"]
-                        for e in pd.to_numeric(sub["ev"], errors="coerce")]
+        # Pass the market's gate status so a GATED/PROBATION market can't show a
+        # tier above its cap here, just like the cards (edge_gate).
+        from project547 import edge_gate as _eg
+        _gt = gate_table()
+        _mkts = (sub["_shop_mkt"] if "_shop_mkt" in sub.columns
+                 else pd.Series([None] * len(sub), index=sub.index))
+        _gates = [
+            _eg.status_for(s, m, _gt) if isinstance(s, str) and isinstance(m, str) else None
+            for s, m in zip(sub["sport"], _mkts)]
+        view["tier"] = [ui.play_tier(e, min_edge, gate=g)["label"]
+                        for e, g in zip(pd.to_numeric(sub["ev"], errors="coerce"), _gates)]
         view["price"] = view["price"].map(ui.fmt_american)
         view["model_prob"] = pd.to_numeric(view["model_prob"], errors="coerce") * 100
         view["ev"] = pd.to_numeric(view["ev"], errors="coerce") * 100

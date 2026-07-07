@@ -2924,7 +2924,7 @@ def _ss_context(sport: str, g: dict, context: dict | None) -> str:
     pf_txt = (f"{pf:.2f}× " + ("hitter" if pf > 1.02 else "pitcher" if pf < 0.98 else "neutral")
               if pf else _gap("park"))
     wx = g.get("weather") or ctx.get("weather") or {}
-    temp, wind = wx.get("temp_f"), wx.get("wind_speed_mph")
+    temp, wind = wx.get("temp_f"), wx.get("wind_mph")
     wdir = wx.get("wind_dir")
     wx_txt = (f"{_num_or_gap(temp, '{:.0f}')}°F · wind "
               f"{_num_or_gap(wind, '{:.0f}')} mph"
