@@ -4,7 +4,10 @@ once they finish, and summarize realized performance.
 - Archived projections: data/output/projections/<date>.json (the slate as
   projected, including the market edges at projection time).
 - Graded results ledger: data/track/results.jsonl, one row per graded
-  bet/game, append-only and de-duplicated by (date, game, market, side).
+  bet/game, append-only and de-duplicated by (date, game, market, side,
+  game_id) — game_id (the game_pk/event id, "" when the slate row carries
+  none) keeps the two games of a doubleheader distinct; rows written before
+  it existed still parse and still dedup on the legacy 4-tuple.
 - Performance summary: computed on demand from the ledger.
 
 Game moneyline/total bets recommended by the model (EV >= MIN_EDGE in the
@@ -92,8 +95,17 @@ def _existing_keys() -> set:
         for line in LEDGER.read_text().splitlines():
             if line.strip():
                 r = json.loads(line)
-                keys.add((r["date"], r["game"], r["market"], r.get("side", "")))
+                keys.add((r["date"], r["game"], r["market"], r.get("side", ""),
+                          str(r.get("game_id") or "")))
     return keys
+
+
+def _seen(seen: set, date, game, market, side, gid) -> bool:
+    """Dedup check: a row is a duplicate if its full key (with game id) is in
+    the ledger, or a legacy row (graded before game ids were recorded) matches
+    on the old 4-tuple."""
+    return ((date, game, market, side, str(gid or "")) in seen
+            or (date, game, market, side, "") in seen)
 
 
 def _append(rows: list[dict]):
@@ -128,39 +140,45 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                 continue
             hs, as_ = fin["home_score"], fin["away_score"]
             label = f"{g.get('away_team')} @ {g.get('home_team')}"
+            gid = g.get("game_pk") or g.get("game_id")
+            tie = hs == as_          # NFL/regular-season ties: books push MLs
             home_won = 1 if hs > as_ else 0
             total = hs + as_
+            margin = hs - as_
             close = closes.get(frozenset({normalize(g.get("home_team", "")),
                                           normalize(g.get("away_team", ""))}), {})
 
             ml_close = close.get("moneyline", {})
             tot_close = close.get("total", {})
+            sp_close = close.get("spread", {})
 
             # win-probability tracking (every game, no bet required). Capture
             # the market's de-vigged home win prob too, so the model-vs-market
-            # scorecard can grade where we disagree with the market.
+            # scorecard can grade where we disagree with the market. Ties are
+            # excluded — a tie is neither a home win nor an away win, so it
+            # carries no Brier/calibration information for a two-way prob.
             hwp = g.get("home_win_prob")
-            key = (date, label, "model_winprob", "")
-            if hwp is not None and key not in seen:
+            if hwp is not None and not tie \
+                    and not _seen(seen, date, label, "model_winprob", "", gid):
                 mkt_home = ml_close.get(normalize(g.get("home_team", "")))
                 new_rows.append({
                     "date": date, "sport": sport, "game": label,
-                    "market": "model_winprob", "side": "",
+                    "market": "model_winprob", "side": "", "game_id": gid,
                     "pred_home_wp": round(float(hwp), 4), "home_won": home_won,
                     "market_home_wp": (round(float(mkt_home), 4)
                                        if mkt_home is not None else None),
                     "brier": round((float(hwp) - home_won) ** 2, 4),
                     "proj_total": g.get("proj_total"), "actual_total": total,
                 })
+                seen.add((date, label, "model_winprob", "", str(gid or "")))
 
             # NRFI tracking (every MLB game, no bet — the model-vs-market test
             # showed the first-inning market is efficient, so P(YRFI) is graded
             # for calibration/honesty, not surfaced as a play). Brier on the
             # actual first-inning outcome.
             yrfi_p = g.get("model_yrfi_prob")
-            nkey = (date, label, "model_nrfi", "")
-            if yrfi_p is not None and first_inning and nkey not in seen:
-                gid = g.get("game_pk") or g.get("game_id")
+            if yrfi_p is not None and first_inning \
+                    and not _seen(seen, date, label, "model_nrfi", "", gid):
                 fi = first_inning.get(gid)
                 if fi is None:
                     tkey = frozenset({normalize(g.get("home_team", "")),
@@ -170,35 +188,96 @@ def grade_date(date: str, min_edge: float | None = None) -> int:
                 if fi is not None:
                     new_rows.append({
                         "date": date, "sport": sport, "game": label,
-                        "market": "model_nrfi", "side": "",
+                        "market": "model_nrfi", "side": "", "game_id": gid,
                         "pred_yrfi": round(float(yrfi_p), 4), "yrfi": fi["yrfi"],
                         "brier": round((float(yrfi_p) - fi["yrfi"]) ** 2, 4),
                     })
+                    seen.add((date, label, "model_nrfi", "", str(gid or "")))
 
-            # moneyline bets recommended at projection time
+            # moneyline bets recommended at projection time. A tied final is a
+            # push (books refund two-way moneylines) — stake back, pnl 0.
             for side, won in (("home", home_won == 1), ("away", home_won == 0)):
                 price = g.get(f"{side}_ml")
                 ev = g.get(f"{side}_ml_ev", g.get(f"{side}_ev"))
-                k = (date, label, "moneyline", side)
-                if price and ev is not None and ev >= min_edge and k not in seen:
+                if price and ev is not None and ev >= min_edge \
+                        and not _seen(seen, date, label, "moneyline", side, gid):
                     fair = ml_close.get(normalize(g.get(f"{side}_team", "")))
                     new_rows.append(_bet_row(date, sport, label, "moneyline", side,
-                                             price, won, ev,
+                                             price, None if tie else won, ev,
+                                             gid=gid, push=tie,
                                              clv=clv.clv_pct(price, fair),
                                              model_prob=g.get(f"{side}_win_prob")))
+                    seen.add((date, label, "moneyline", side, str(gid or "")))
 
-            # total bet recommended at projection time
+            # total bets recommended at projection time — BOTH sides. A final
+            # exactly on the line is a push (stake refunded, pnl 0), matching
+            # how plays.grade_plays settles DFS legs. CLV is only scored when
+            # the bet's line equals the consensus closing line: fair-at-9.5
+            # says nothing about a bet made at 8.5 (audit #18) — a moved line
+            # gets clv=None and clv_line_moved=True instead.
             line = g.get("total_line")
-            over_odds = g.get("over_odds")
-            over_ev = g.get("over_ev")
-            if line is not None and over_odds and over_ev is not None and total != line:
-                k = (date, label, "total", "over")
-                if over_ev >= min_edge and k not in seen:
-                    new_rows.append(_bet_row(date, sport, label, "total", "over",
-                                             over_odds, total > line, over_ev,
-                                             line=line,
-                                             clv=clv.clv_pct(over_odds, tot_close.get("over")),
-                                             model_prob=g.get("model_over_prob")))
+            close_tot_line = tot_close.get("line")
+            tot_same_line = (line is not None and close_tot_line is not None
+                             and float(line) == float(close_tot_line))
+            over_p = g.get("model_over_prob")
+            for side, odds_key, ev_key, won, mp in (
+                    ("over", "over_odds", "over_ev", total > (line or 0), over_p),
+                    ("under", "under_odds", "under_ev", total < (line or 0),
+                     None if over_p is None else 1 - float(over_p))):
+                price, ev = g.get(odds_key), g.get(ev_key)
+                if line is None or not price or ev is None or ev < min_edge \
+                        or _seen(seen, date, label, "total", side, gid):
+                    continue
+                push = total == line
+                new_rows.append(_bet_row(
+                    date, sport, label, "total", side, price,
+                    None if push else won, ev, line=line, gid=gid, push=push,
+                    clv=(clv.clv_pct(price, tot_close.get(side))
+                         if tot_same_line else None),
+                    close_line=close_tot_line,
+                    clv_line_moved=(not tot_same_line
+                                    if close_tot_line is not None else None),
+                    model_prob=mp))
+                seen.add((date, label, "total", side, str(gid or "")))
+
+            # spread / run-line bets — both sides, symmetric with totals.
+            # MLB stakes rl_* columns; the generic sports stake spread_*.
+            for prefix, line_key, cover_key in (
+                    ("rl", "rl_home_line", "model_home_rl"),
+                    ("spread", "spread_home_line", "model_home_cover")):
+                sp_line = g.get(line_key)
+                if sp_line is None:
+                    continue
+                sp_line = float(sp_line)
+                cover_p = g.get(cover_key)
+                for side, sign in (("home", 1.0), ("away", -1.0)):
+                    price = g.get(f"{prefix}_{side}_odds")
+                    ev = g.get(f"{prefix}_{side}_ev")
+                    if not price or ev is None or ev < min_edge \
+                            or _seen(seen, date, label, "spread", side, gid):
+                        continue
+                    push = (margin + sp_line) == 0
+                    won = (margin + sp_line) > 0 if side == "home" \
+                        else (margin + sp_line) < 0
+                    # closing spread CLV: only when the closing consensus quotes
+                    # this side's team at the SAME line the bet was made at.
+                    cl = sp_close.get(normalize(g.get(f"{side}_team", "")))
+                    side_line = sign * sp_line
+                    sp_same = (cl is not None and cl.get("line") is not None
+                               and float(cl["line"]) == side_line)
+                    mp = None
+                    if cover_p is not None:
+                        mp = float(cover_p) if side == "home" else 1 - float(cover_p)
+                    new_rows.append(_bet_row(
+                        date, sport, label, "spread", side, price,
+                        None if push else won, ev, line=side_line, gid=gid,
+                        push=push,
+                        clv=(clv.clv_pct(price, cl["prob"]) if sp_same else None),
+                        close_line=(cl or {}).get("line"),
+                        clv_line_moved=(not sp_same if cl is not None else None),
+                        model_prob=mp))
+                    seen.add((date, label, "spread", side, str(gid or "")))
+                break  # a slate row carries only one spread flavor
 
     _append(new_rows)
     if new_rows:
@@ -237,16 +316,29 @@ def _closing_lines(sport: str, date: str) -> dict:
 
 
 def _bet_row(date, sport, game, market, side, price, won, ev, line=None,
-             clv=None, model_prob=None) -> dict:
+             clv=None, model_prob=None, gid=None, push=False,
+             close_line=None, clv_line_moved=None) -> dict:
+    """One graded bet. ``won=None`` with ``push=True`` is a push: stake
+    refunded, pnl 0 (consistent with plays.grade_plays). Extra fields are
+    additive so pre-existing ledger rows still parse."""
     dec = odds.american_to_decimal(float(price))
-    return {"date": date, "sport": sport, "game": game, "market": market,
-            "side": side, "line": line, "price": price, "ev": round(float(ev), 4),
-            "won": bool(won), "pnl": round(dec - 1 if won else -1.0, 4),
-            "clv": clv,
-            # our predicted P(this side wins) — feeds the per-market calibration
-            # receipt (predicted vs realized hit-rate).
-            "model_prob": (round(float(model_prob), 4)
-                           if model_prob is not None else None)}
+    if push:
+        won, pnl = None, 0.0
+    else:
+        won, pnl = bool(won), (dec - 1 if won else -1.0)
+    row = {"date": date, "sport": sport, "game": game, "market": market,
+           "side": side, "line": line, "price": price, "ev": round(float(ev), 4),
+           "won": won, "push": bool(push), "pnl": round(pnl, 4),
+           "clv": clv, "game_id": gid,
+           # our predicted P(this side wins) — feeds the per-market calibration
+           # receipt (predicted vs realized hit-rate).
+           "model_prob": (round(float(model_prob), 4)
+                          if model_prob is not None else None)}
+    if close_line is not None:
+        row["close_line"] = close_line
+    if clv_line_moved is not None:
+        row["clv_line_moved"] = bool(clv_line_moved)
+    return row
 
 
 def load_ledger() -> list[dict]:
@@ -311,7 +403,10 @@ def _summarize(rows: list[dict]) -> dict:
     import math
     bets = [r for r in rows if "pnl" in r]
     games = [r for r in rows if r["market"] == "model_winprob"]
-    staked = len(bets)
+    # pushes (won=None, pnl=0) refund the stake: they count as bets placed but
+    # are excluded from the win-rate/ROI denominators.
+    decided = [r for r in bets if r.get("won") is not None]
+    staked = len(decided)
     pnl = sum(r["pnl"] for r in bets)
     wins = sum(1 for r in bets if r["won"])
     brier = (sum(r["brier"] for r in games) / len(games)) if games else None
@@ -343,7 +438,8 @@ def _summarize(rows: list[dict]) -> dict:
         "brier_vs_market": brier_vs_market,
         "n_vs_market": len(mkt_games),
         "model_log_loss": round(log_loss, 4) if log_loss is not None else None,
-        "bets": staked,
+        "bets": len(bets),
+        "pushes": len(bets) - staked,
         "bet_win_rate": round(wins / staked, 4) if staked else None,
         "units": round(pnl, 2),
         "roi_pct": round(100 * pnl / staked, 2) if staked else None,

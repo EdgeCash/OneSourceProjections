@@ -64,3 +64,62 @@ def test_window_excludes_old_bets():
             "pnl": 0.1, "clv": 0.05, "won": True}]
     stats = edge_gate.market_stats(ledger=old, asof="2026-06-25", window_days=180)
     assert ("MLB", "moneyline") not in stats
+
+
+# ---------------------------------------------------------------------------
+# audit #21: variance-aware CLEAR, EV-band restriction, held totals
+# ---------------------------------------------------------------------------
+
+def test_marginal_high_variance_market_stays_probation():
+    """avg CLV barely positive but noisy: the lower confidence bound
+    (avg - 1.28*SE) sits below the floor -> PROBATION, not CLEARED."""
+    n = config.GATE_CLEAR_MIN + 10
+    # alternate +5% / -4.8% CLV: avg = +0.1%, sd ~ 4.9% -> lb << 0
+    led = []
+    for i in range(n):
+        led += _led("MLB", "moneyline", 1, 0.05 if i % 2 == 0 else -0.048)
+    table = edge_gate.gate_table(ledger=led, asof="2026-06-25")
+    stat = table[("MLB", "moneyline")]
+    assert stat["avg_clv"] > 0
+    assert stat["clv_lb"] < config.GATE_CLV_FLOOR
+    assert stat["status"] == edge_gate.PROBATION
+
+
+def test_consistent_positive_clv_still_clears():
+    led = _led("MLB", "moneyline", config.GATE_CLEAR_MIN + 5, 0.03)
+    table = edge_gate.gate_table(ledger=led, asof="2026-06-25")
+    assert table[("MLB", "moneyline")]["status"] == edge_gate.CLEARED
+
+
+def test_classify_without_variance_info_falls_back_to_point_estimate():
+    # legacy stats dict (no clv_lb): behaves like the old point-estimate rule
+    stat = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.02}
+    assert edge_gate.classify(stat) == edge_gate.CLEARED
+
+
+def test_verify_band_rows_excluded_from_gate_stats():
+    """>= STALE_EV 'verify' bets (stale lines, never curated) must not be able
+    to gate a market off — or clear it."""
+    good = _led("MLB", "total", config.GATE_CLEAR_MIN + 5, 0.02)
+    stale = [dict(r, ev=config.STALE_EV + 0.02, clv=-0.20)
+             for r in _led("MLB", "total", 200, -0.20)]
+    with_band = edge_gate.market_stats(ledger=good + stale, asof="2026-06-25")
+    stat = with_band[("MLB", "total")]
+    assert stat["clv_n"] == config.GATE_CLEAR_MIN + 5   # stale rows filtered
+    assert stat["avg_clv"] == 0.02
+    assert edge_gate.classify(stat) == edge_gate.CLEARED
+
+
+def test_in_band_rows_kept():
+    rows = [dict(r, ev=0.04) for r in _led("MLB", "total", 10, 0.02)]
+    stats = edge_gate.market_stats(ledger=rows, asof="2026-06-25")
+    assert stats[("MLB", "total")]["n"] == 10
+
+
+def test_condemned_totals_are_held():
+    # T0.1 condemned NBA/NFL/NHL totals as hard as their moneylines
+    for sport in ("NBA", "NFL", "NHL"):
+        assert edge_gate.status_for(sport, "total", {}) == edge_gate.GATED
+        assert edge_gate.status_for(sport, "moneyline", {}) == edge_gate.GATED
+    # other totals unaffected
+    assert edge_gate.status_for("MLB", "total", {}) == edge_gate.PROBATION

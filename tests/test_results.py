@@ -155,3 +155,163 @@ def test_log_loss_computed(tmp_path, monkeypatch):
     # game1: pred 0.60, home won (y=1); game2: pred 0.52, home lost (y=0)
     expected = (-math.log(0.60) - math.log(1 - 0.52)) / 2
     assert abs(ll - expected) < 1e-3
+
+
+# ---------------------------------------------------------------------------
+# audit #17/#22: unders + spreads graded symmetrically, pushes push, ties push
+# ---------------------------------------------------------------------------
+
+def _slate_full():
+    """One MLB game staking under + run line, one generic game staking spread."""
+    return {
+        "MLB": {"games": [
+            {"game_pk": 11, "home_team": "Boston Red Sox",
+             "away_team": "New York Yankees", "home_win_prob": 0.55,
+             "proj_total": 7.6, "model_over_prob": 0.41,
+             "total_line": 8.5, "over_odds": -110, "over_ev": -0.03,
+             "under_odds": -105, "under_ev": 0.05,
+             "rl_home_line": -1.5, "rl_home_odds": 130, "rl_home_ev": 0.04,
+             "rl_away_odds": -150, "rl_away_ev": -0.02, "model_home_rl": 0.47},
+        ]},
+        "NFL": {"games": [
+            {"game_id": 77, "home_team": "Dallas Cowboys",
+             "away_team": "New York Giants", "home_win_prob": 0.60,
+             "spread_home_line": -3.0, "spread_home_odds": -110,
+             "spread_home_ev": 0.03, "spread_away_odds": -110,
+             "spread_away_ev": -0.05, "model_home_cover": 0.55,
+             "home_ml": -160, "home_ml_ev": 0.03, "away_ml": 140,
+             "away_ml_ev": -0.04},
+        ]},
+    }
+
+
+def _finals_full(sport, _date):
+    if sport == "MLB":
+        # total 6 (under wins), margin 4 (home -1.5 covers)
+        return [{"game_pk": 11, "home_team": "Boston Red Sox",
+                 "away_team": "New York Yankees", "home_score": 5, "away_score": 1}]
+    # margin exactly 3 -> spread push; home ML wins
+    return [{"game_id": 77, "home_team": "Dallas Cowboys",
+             "away_team": "New York Giants", "home_score": 23, "away_score": 20}]
+
+
+def test_unders_and_spreads_graded_with_pushes(tmp_path, monkeypatch):
+    _wire(tmp_path, monkeypatch)
+    monkeypatch.setattr(results, "_finals", _finals_full)
+    results.archive_projections("2026-06-12", _slate_full())
+    results.grade_date("2026-06-12")
+    bets = {(r["sport"], r["market"], r["side"]): r
+            for r in results.load_ledger() if "pnl" in r}
+
+    und = bets[("MLB", "total", "under")]
+    assert und["won"] is True and und["pnl"] > 0 and und["push"] is False
+    assert und["line"] == 8.5
+    assert und["model_prob"] == round(1 - 0.41, 4)
+    assert ("MLB", "total", "over") not in bets      # over EV below the bar
+
+    rl = bets[("MLB", "spread", "home")]
+    assert rl["won"] is True and rl["line"] == -1.5 and rl["pnl"] > 0
+    assert ("MLB", "spread", "away") not in bets     # negative EV
+
+    sp = bets[("NFL", "spread", "home")]              # 23-20 on -3.0 = push
+    assert sp["push"] is True and sp["won"] is None and sp["pnl"] == 0.0
+
+    ml = bets[("NFL", "moneyline", "home")]
+    assert ml["won"] is True
+
+
+def test_total_push_refunds_stake(tmp_path, monkeypatch):
+    _wire(tmp_path, monkeypatch)
+    slate = _slate_full()
+    monkeypatch.setattr(results, "_finals", lambda s, d: [
+        {"game_pk": 11, "home_team": "Boston Red Sox",
+         "away_team": "New York Yankees", "home_score": 5, "away_score": 3.5},
+    ] if s == "MLB" else [])
+    slate["MLB"]["games"][0]["total_line"] = 8.5
+    results.archive_projections("2026-06-12", slate)
+    results.grade_date("2026-06-12")
+    und = next(r for r in results.load_ledger()
+               if r.get("market") == "total" and r.get("side") == "under")
+    assert und["push"] is True and und["won"] is None and und["pnl"] == 0.0
+    # pushes don't count against the win rate / ROI denominators
+    perf = results.performance()["by_sport"]["MLB"]
+    assert perf["pushes"] >= 1
+
+
+def test_tie_pushes_moneyline_and_skips_brier(tmp_path, monkeypatch):
+    _wire(tmp_path, monkeypatch)
+    monkeypatch.setattr(results, "_finals", lambda s, d: [
+        {"game_id": 77, "home_team": "Dallas Cowboys",
+         "away_team": "New York Giants", "home_score": 20, "away_score": 20},
+    ] if s == "NFL" else [])
+    results.archive_projections("2026-06-12", _slate_full())
+    results.grade_date("2026-06-12")
+    rows = results.load_ledger()
+    ml = next(r for r in rows if r.get("market") == "moneyline")
+    assert ml["push"] is True and ml["won"] is None and ml["pnl"] == 0.0
+    # no model_winprob row for a tie — it's not a two-way outcome
+    assert not [r for r in rows if r.get("market") == "model_winprob"
+                and r.get("sport") == "NFL"]
+
+
+def test_doubleheader_games_both_graded(tmp_path, monkeypatch):
+    """Same date, same teams, two game_pks (a doubleheader) -> two ML rows."""
+    _wire(tmp_path, monkeypatch)
+    slate = {"MLB": {"games": [
+        {"game_pk": 1, "home_team": "Boston Red Sox",
+         "away_team": "New York Yankees", "home_win_prob": 0.6,
+         "home_ml": -130, "home_ml_ev": 0.05},
+        {"game_pk": 2, "home_team": "Boston Red Sox",
+         "away_team": "New York Yankees", "home_win_prob": 0.58,
+         "home_ml": -120, "home_ml_ev": 0.04},
+    ]}}
+    monkeypatch.setattr(results, "_finals", lambda s, d: [
+        {"game_pk": 1, "home_team": "Boston Red Sox",
+         "away_team": "New York Yankees", "home_score": 6, "away_score": 2},
+        {"game_pk": 2, "home_team": "Boston Red Sox",
+         "away_team": "New York Yankees", "home_score": 1, "away_score": 4},
+    ])
+    results.archive_projections("2026-06-12", slate)
+    results.grade_date("2026-06-12")
+    mls = [r for r in results.load_ledger() if r.get("market") == "moneyline"]
+    assert len(mls) == 2
+    assert {r["game_id"] for r in mls} == {1, 2}
+    assert {r["won"] for r in mls} == {True, False}
+    # and re-grading stays idempotent
+    assert results.grade_date("2026-06-12") == 0
+
+
+def test_total_clv_skipped_when_line_moved(tmp_path, monkeypatch):
+    """A bet at 8.5 must not be scored against fair-at-9.5 (audit #18)."""
+    from project547.names import normalize
+    closes = {
+        frozenset({normalize("Boston Red Sox"), normalize("New York Yankees")}): {
+            "total": {"line": 9.5, "over": 0.52, "under": 0.48},
+        }
+    }
+    _wire(tmp_path, monkeypatch, closes=closes)
+    monkeypatch.setattr(results, "_finals", _finals_full)
+    results.archive_projections("2026-06-12", _slate_full())
+    results.grade_date("2026-06-12")
+    und = next(r for r in results.load_ledger()
+               if r.get("market") == "total" and r.get("side") == "under")
+    assert und["clv"] is None
+    assert und["clv_line_moved"] is True and und["close_line"] == 9.5
+
+
+def test_total_clv_scored_at_same_line(tmp_path, monkeypatch):
+    from project547.names import normalize
+    closes = {
+        frozenset({normalize("Boston Red Sox"), normalize("New York Yankees")}): {
+            "total": {"line": 8.5, "over": 0.45, "under": 0.55},
+        }
+    }
+    _wire(tmp_path, monkeypatch, closes=closes)
+    monkeypatch.setattr(results, "_finals", _finals_full)
+    results.archive_projections("2026-06-12", _slate_full())
+    results.grade_date("2026-06-12")
+    und = next(r for r in results.load_ledger()
+               if r.get("market") == "total" and r.get("side") == "under")
+    # under at -105 vs closing under fair .55 -> positive CLV
+    assert und["clv"] is not None and und["clv"] > 0
+    assert und["clv_line_moved"] is False

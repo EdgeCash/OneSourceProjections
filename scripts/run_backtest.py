@@ -21,11 +21,12 @@ from project547.config import REPO_ROOT  # noqa: E402
 def _fmt_clv(c: dict) -> str:
     ml, tot = c["moneyline_bets"], c["total_bets"]
     return (f"games matched to closing lines: {c['games_matched']}, "
-            f"avg ML CLV vs fair: {c['avg_clv_vs_fair']}\n"
+            f"home-prob bias: {c['home_prob_bias']}, "
+            f"avg bet CLV: {c['avg_bet_clv']}\n"
             f"  - moneyline bets: {ml['bets']}, win {ml['win_rate']}, "
-            f"{ml['units']}u, ROI {ml['roi_pct']}%\n"
+            f"{ml['units']}u, ROI {ml['roi_pct']}%, CLV {ml['avg_bet_clv']}\n"
             f"  - total bets: {tot['bets']}, win {tot['win_rate']}, "
-            f"{tot['units']}u, ROI {tot['roi_pct']}%")
+            f"{tot['units']}u, ROI {tot['roi_pct']}%, CLV {tot['avg_bet_clv']}")
 
 
 def _md_game(r: dict, label: str | None = None) -> str:
@@ -48,14 +49,17 @@ def _md_game(r: dict, label: str | None = None) -> str:
     cl = r["closing_line"]
     lines += ["**Vs. closing lines** (bets graded at closing prices — "
               "profit here = beating the close):", "",
-              f"- Games matched: {cl['games_matched']}; avg moneyline CLV vs "
-              f"fair prob: {cl['avg_clv_vs_fair']}",
+              f"- Games matched: {cl['games_matched']}; home-prob bias vs "
+              f"fair (signed model-vs-market disagreement, not CLV): "
+              f"{cl['home_prob_bias']}; avg per-bet CLV: {cl['avg_bet_clv']}",
               f"- Moneyline bets: {cl['moneyline_bets']['bets']}, win-rate "
               f"{cl['moneyline_bets']['win_rate']}, {cl['moneyline_bets']['units']}u, "
-              f"**ROI {cl['moneyline_bets']['roi_pct']}%**",
+              f"**ROI {cl['moneyline_bets']['roi_pct']}%**, "
+              f"CLV {cl['moneyline_bets']['avg_bet_clv']}",
               f"- Total bets: {cl['total_bets']['bets']}, win-rate "
               f"{cl['total_bets']['win_rate']}, {cl['total_bets']['units']}u, "
-              f"**ROI {cl['total_bets']['roi_pct']}%**", ""]
+              f"**ROI {cl['total_bets']['roi_pct']}%**, "
+              f"CLV {cl['total_bets']['avg_bet_clv']}", ""]
     return "\n".join(lines)
 
 
@@ -116,7 +120,12 @@ def main():
     ap.add_argument("--wnba-prop-seasons", default="2023,2024,2025")
     ap.add_argument("--draws", type=int, default=4000)
     ap.add_argument("--quick", action="store_true", help="fewer MLB draws/seasons")
+    ap.add_argument("--production-mode", action="store_true",
+                    help="reproduce the deployed pipeline: apply the fitted "
+                         "calibration maps and each sport's market_shrink "
+                         "before bet selection (audit #20)")
     args = ap.parse_args()
+    prod = args.production_mode
 
     mlb_seasons = [int(s) for s in args.mlb_seasons.split(",")]
     wnba_seasons = [int(s) for s in args.wnba_seasons.split(",")]
@@ -126,16 +135,17 @@ def main():
     draws = 1500 if args.quick else args.draws
 
     print("Running MLB game backtest (team-form only)...")
-    mlb = backtest.run_game_backtest("MLB", mlb_seasons, draws=draws)
+    mlb = backtest.run_game_backtest("MLB", mlb_seasons, draws=draws,
+                                 production_mode=prod)
     print(f"  graded {mlb['n_games_graded']} games; "
           f"Brier {mlb['moneyline']['brier']}, total MAE {mlb['total']['mae']}")
 
     print("Running MLB game backtest (full pitching+park, 2024+)...")
     mlb_tf = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
-                                        use_starters=False)
+                                        use_starters=False, production_mode=prod)
     mlb_sp = backtest.run_game_backtest("MLB", starter_seasons, draws=draws,
                                         use_starters=True, use_bullpen=True,
-                                        use_park=True)
+                                        use_park=True, production_mode=prod)
     print(f"  team-form: Brier {mlb_tf['moneyline']['brier']}, "
           f"MAE {mlb_tf['total']['mae']}; full: "
           f"Brier {mlb_sp['moneyline']['brier']}, MAE {mlb_sp['total']['mae']}")
@@ -148,7 +158,8 @@ def main():
           f"+CLV rate {clv['moneyline']['clv_positive_rate']}")
 
     print("Running WNBA game backtest...")
-    wnba = backtest.run_game_backtest("WNBA", wnba_seasons, draws=draws)
+    wnba = backtest.run_game_backtest("WNBA", wnba_seasons, draws=draws,
+                                  production_mode=prod)
     print(f"  graded {wnba['n_games_graded']} games; "
           f"Brier {wnba['moneyline']['brier']}, total MAE {wnba['total']['mae']}")
     print("  " + _fmt_clv(wnba["closing_line"]))

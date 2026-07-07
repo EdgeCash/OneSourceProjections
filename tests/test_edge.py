@@ -122,3 +122,81 @@ def test_find_middles_none_when_no_gap():
         {"side": "under", "line": 7.5, "price": -110, "book": "fd"},
     ]
     assert edge.find_middles(offers) == []
+
+
+# ---------------------------------------------------------------------------
+# audit #18b: totals keyed by (book, line); consensus/EV/arb same-line only
+# ---------------------------------------------------------------------------
+
+def _snap_rows():
+    """Multi-book capture with totals at MIXED lines. Books dk/fd/mgm quote
+    8.5; caesars hangs over +120 at 9.5 — under the old price-only keying its
+    over 9.5 vs an under 8.5 elsewhere faked an arbitrage/+EV."""
+    def row(**kw):
+        base = {"event_id": "oa:1", "kind": "game", "source": "oddsapi",
+                "captured_at": "2026-06-12T22:00:00+00:00"}
+        base.update(kw)
+        return base
+    rows = []
+    for book, h, a in (("dk", -120, +110), ("fd", -118, +108), ("mgm", -122, +112)):
+        rows.append(row(market="moneyline", participant="Boston Red Sox",
+                        book_id=book, odds=h))
+        rows.append(row(market="moneyline", participant="New York Yankees",
+                        book_id=book, odds=a))
+    for book, o, u in (("dk", -110, -110), ("fd", -108, -112), ("mgm", -112, -108)):
+        rows.append(row(market="total", selection="Over", line=8.5,
+                        book_id=book, odds=o))
+        rows.append(row(market="total", selection="Under", line=8.5,
+                        book_id=book, odds=u))
+    rows.append(row(market="total", selection="Over", line=9.5,
+                    book_id="caesars", odds=+120))
+    rows.append(row(market="total", selection="Under", line=9.5,
+                    book_id="caesars", odds=-145))
+    return rows
+
+
+def _write_snap(tmp_path, rows):
+    import json
+    d = tmp_path / "mlb"
+    d.mkdir(parents=True)
+    with (d / "2026-06-12.jsonl").open("w") as f:
+        for r in rows:
+            f.write(json.dumps(r) + "\n")
+
+
+def test_slate_books_keys_totals_by_modal_line(tmp_path):
+    _write_snap(tmp_path, _snap_rows())
+    games = edge.slate_books("MLB", "2026-06-12", snap_dir=tmp_path)
+    mkts = next(iter(games.values()))
+    assert mkts["total_line"] == 8.5
+    # only the three books at the modal line are exposed to consensus/EV/arb
+    assert set(mkts["total"]) == {"dk", "fd", "mgm"}
+    # the raw offers (for the middle scanner) still carry the 9.5 quotes
+    assert any(o["line"] == 9.5 for o in mkts["_offers"])
+
+
+def test_no_phantom_arb_or_ev_across_lines(tmp_path):
+    _write_snap(tmp_path, _snap_rows())
+    scan = edge.scan_slate("MLB", "2026-06-12", min_ev=0.0, snap_dir=tmp_path)
+    # over 9.5 +120 against under 8.5 -110 would be a fake "arb"/huge +EV;
+    # same-line restriction keeps the tight 8.5 market arb- and EV-free
+    assert scan["arbs"] == []
+    assert all(b["ev"] < 0.02 for b in scan["plus_ev"] if b["market"] == "Total")
+    # the genuine cross-line middle (over 8.5 / under 9.5) is still found
+    assert any(m["low"] == 8.5 and m["high"] == 9.5 for m in scan["middles"])
+
+
+def test_real_same_line_total_arb_still_detected(tmp_path):
+    rows = _snap_rows() + [
+        # a same-line +125 over at another book vs -105 unders = true arb
+        {"event_id": "oa:1", "kind": "game", "source": "oddsapi",
+         "captured_at": "2026-06-12T22:00:00+00:00", "market": "total",
+         "selection": "Over", "line": 8.5, "book_id": "pin", "odds": +125},
+        {"event_id": "oa:1", "kind": "game", "source": "oddsapi",
+         "captured_at": "2026-06-12T22:00:00+00:00", "market": "total",
+         "selection": "Under", "line": 8.5, "book_id": "pin", "odds": -105},
+    ]
+    _write_snap(tmp_path, rows)
+    scan = edge.scan_slate("MLB", "2026-06-12", snap_dir=tmp_path)
+    tot_arbs = [a for a in scan["arbs"] if a["market"] == "Total"]
+    assert tot_arbs and tot_arbs[0]["line"] == 8.5
