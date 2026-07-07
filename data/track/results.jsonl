@@ -698,3 +698,4 @@
 {"date": "2026-07-05", "sport": "MLB", "game": "Boston Red Sox @ Los Angeles Angels", "market": "moneyline", "side": "away", "line": null, "price": 122.0, "ev": 0.2643, "won": true, "pnl": 1.22, "clv": 0.976, "model_prob": 0.5695}
 {"date": "2026-07-06", "sport": "MLB", "game": "Philadelphia Phillies @ Kansas City Royals", "market": "model_winprob", "side": "", "pred_home_wp": 0.3562, "home_won": 1, "market_home_wp": 0.9712, "brier": 0.4145, "proj_total": 9.692, "actual_total": 16}
 {"date": "2026-07-06", "sport": "MLB", "game": "Philadelphia Phillies @ Kansas City Royals", "market": "model_nrfi", "side": "", "pred_yrfi": 0.5077, "yrfi": 1, "brier": 0.2424}
+{"date": "2026-07-06", "sport": "MLB", "game": "Philadelphia Phillies @ Kansas City Royals", "market": "moneyline", "side": "home", "line": null, "price": 194.0, "ev": 0.0378, "won": true, "pnl": 1.94, "clv": 1.8553, "model_prob": 0.3769}
