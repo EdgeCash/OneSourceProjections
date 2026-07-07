@@ -29,6 +29,9 @@ class TeamInputs:
     ump_runs_factor: float = 1.0  # home-plate ump run multiplier (1.0 = neutral)
     lineup_woba: float | None = None  # mean wOBA of the 9 posted batters (None =
     # no lineup posted -> fall back to the team-rate base, current behavior)
+    wind_out: float | None = None  # signed out/in wind component: +1 = straight
+    # out to CF (boosts runs), -1 = straight in, 0 = crosswind (None = unknown/dome)
+    wind_mph: float | None = None  # wind speed at first pitch
 
 
 @dataclass
@@ -102,6 +105,16 @@ def expected_runs(team: TeamInputs, is_home: bool) -> float:
         adj = config.TEMP_COEF * (float(team.temp_f) - config.TEMP_BASELINE_F)
         adj = float(np.clip(adj, -config.TEMP_CLAMP, config.TEMP_CLAMP))
         base = base * (1 + adj)
+
+    # Wind: blowing out to center carries balls for extra runs, blowing in
+    # suppresses them; a game-level multiplier scaled by the out/in component and
+    # speed. Skipped for domes / unknown direction (wind_out=None). Gated by
+    # WIND_COEF (0 = off) and clamped, exactly like the temperature term.
+    if (team.wind_out is not None and team.wind_mph is not None
+            and config.WIND_COEF):
+        wadj = config.WIND_COEF * team.wind_out * float(team.wind_mph)
+        wadj = float(np.clip(wadj, -config.WIND_CLAMP, config.WIND_CLAMP))
+        base = base * (1 + wadj)
 
     # Home-plate umpire: a game-level multiplier (same for both teams, so it
     # moves the total not the margin), already shrunk + clamped in umpires.py.

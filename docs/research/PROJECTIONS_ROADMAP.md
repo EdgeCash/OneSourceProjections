@@ -67,8 +67,26 @@ Nothing below can be judged without it. All [HAVE], low effort.
   no rest/Elo (`generic.py:196`). Correctness fix, cheap. → NBA #3, NFL #2.
 
 ### TIER 2 — Per-sport structural wins (bigger, high value, mostly no new feed)
+- **T2.2b MLB xwOBA + platoon** (`project547/batwoba.py`). **STATUS: TESTED →
+  proxy kept.** Statcast wOBA-by-id was validated head-to-head vs the shipped
+  AVG/SLG proxy (MLB 2024, 499 games): the **xwOBA blend HURT** totals MAE
+  (expected stats predict future skill, not in-sample runs); actual wOBA with
+  light shrink only *edged* the proxy (blend=1.0 MAE 3.356 vs 3.363) — marginal —
+  and **no current-season (2026) Statcast feed exists**, so a live switch would be
+  inert. Module kept tuned (actual wOBA, light shrink) for when 2026 Statcast is
+  backfilled. Platoon deferred: needs historical starter-handedness the backtest
+  data lacks; revisit as a forward-CLV A/B once the live path (which has starter
+  hand) runs it.
 - **T2.1 NBA/WNBA pace-and-efficiency engine** — points = `poss × (adj ORtg vs adj
-  DRtg)/100`, total from projected possessions. [DERIVE], data already in `teamstats.py`. → NBA #1.
+  DRtg)/100`. [DERIVE], `teamstats.py`. → NBA #1. **STATUS: BUILT + TESTED →
+  MIXED, parked.** `models/hoops.py` + `scripts/validate_hoops.py`, walk-forward
+  WNBA 2023–25 (822 games, box-score ratings): pace×eff **improves the winner**
+  (Brier 0.2237→0.2193, robust across mult/additive variants) but **worsens the
+  total** (MAE 13.37→13.59) — genuinely higher variance, not a fixable bias.
+  Totals are the priority, so not shipped. Can't validate the winner gain vs the
+  market (WNBA has no closing lines here) and NBA has no box data in-repo (off
+  season). Capability kept; revisit as an efficiency-*margin* blend (like the
+  EPA/Elo margin hooks) once NBA box data + a market baseline exist.
 - **T2.2 MLB lineup-level batter×pitcher runs** — build each side's offensive base
   from the posted 9's mean wOBA via linear weights, blended into the team rate.
   [HAVE], biggest MLB lever. → MLB #1. **STATUS: BUILT + VALIDATED → ON at
@@ -79,8 +97,14 @@ Nothing below can be judged without it. All [HAVE], low effort.
   FanGraphs pull is blocked here — plus mild backtest lookahead the live as-of
   feed avoids). Follow-ups: strict as-of + Statcast xwOBA feed (MLB #2), platoon
   split vs the starter's hand, second validation season → then raise the blend.
-- **T2.3 MLB wind vector** — already fetched (`weather.py:72`), read only for temp.
-  Small, [HAVE]. → MLB #3.
+- **T2.3 MLB wind vector** — [HAVE]. → MLB #3. **STATUS: BUILT + TESTED →
+  NEGATIVE, parked at WIND_COEF=0.** Full wind term (out/in component × speed from
+  Retrosheet `wind_dir` categories) swept on MLB 2022–24 (5,628 windy outdoor
+  games): totals MAE got *worse* at every positive coefficient (3.529→3.548 on the
+  wind-affected subset). Team form already carries the scoring environment and the
+  game-start wind category is too noisy to add signal — unlike temperature, which
+  helped. Plumbing kept inert. (Third parked negative after T1.1 recency + T1.2
+  SoS — the cheap adjustments don't move the number; the structural engines do.)
 - **T2.4 Soccer real Dixon-Coles MLE fit** — fit attack/def + home γ + rho jointly;
   yields per-league HFA and time-decay for free. [DERIVE]. → soccer #2.
 - **T2.5 Tennis serve/return point model** → full games/sets distribution (the only
