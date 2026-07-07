@@ -27,6 +27,8 @@ class TeamInputs:
     own_home_pf: float = 1.0      # team's own home-park factor (de-bias the rate)
     temp_f: float | None = None   # first-pitch temperature (None = unknown/dome)
     ump_runs_factor: float = 1.0  # home-plate ump run multiplier (1.0 = neutral)
+    lineup_woba: float | None = None  # mean wOBA of the 9 posted batters (None =
+    # no lineup posted -> fall back to the team-rate base, current behavior)
 
 
 @dataclass
@@ -39,10 +41,38 @@ class GameProjection:
     home_runline_cover: dict[float, float]  # spread -> P(home covers)
 
 
+# Lineup-level offense (roadmap T2.2). Best-in-class systems (THE BAT X,
+# ZiPS/FanGraphs game odds) build team runs from the nine posted batters vs the
+# starter, not a team-average rate. This is that construction in its simplest,
+# provable linear-weights form: a lineup's mean wOBA converts to a
+# park/pitcher-neutral team run estimate via wRAA = PA·(wOBA − lgwOBA)/scale.
+LEAGUE_WOBA = 0.318            # matches models/nrfi.LEAGUE_WOBA
+WOBA_RUN_SCALE = 1.20         # wOBA points per run above average (standard ~1.15–1.25)
+TEAM_PA_PER_GAME = 38.0       # plate appearances a lineup gets over 9 innings
+
+
+def lineup_offense_runs(lineup_woba: float, league_runs: float | None = None) -> float:
+    """Convert a lineup's mean wOBA into a park/pitcher-neutral team run estimate.
+
+    wRAA/game = PA·(wOBA − lgwOBA)/scale, added to the league run baseline — the
+    ZiPS/THE-BAT "runs from the nine posted batters" idea, linearized. The
+    downstream opposing-pitching / park / temperature modifiers in expected_runs
+    still apply on top, so this only replaces the *offensive* base."""
+    league = config.LEAGUE_RUNS_PER_GAME if league_runs is None else league_runs
+    wraa = TEAM_PA_PER_GAME * (lineup_woba - LEAGUE_WOBA) / WOBA_RUN_SCALE
+    return max(league + wraa, 1.0)
+
+
 def expected_runs(team: TeamInputs, is_home: bool) -> float:
     league = config.LEAGUE_RUNS_PER_GAME
     w = config.TEAM_RATE_WEIGHT
     base = w * team.runs_per_game + (1 - w) * league
+
+    # Lineup-level offense: blend the run estimate from the nine posted batters
+    # into the team-rate base (inert at LINEUP_BLEND=0 / no lineup posted).
+    if team.lineup_woba is not None and config.LINEUP_BLEND > 0:
+        lr = lineup_offense_runs(team.lineup_woba, league)
+        base = config.LINEUP_BLEND * lr + (1 - config.LINEUP_BLEND) * base
 
     # Opposing pitching: scale the starter-covered share of the game by the
     # starter's quality and the rest by the opposing bullpen's quality, each

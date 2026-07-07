@@ -84,6 +84,13 @@ TEAM_RATE_WEIGHT = 0.65
 # Starter is assumed to cover this share of the game before the bullpen.
 STARTER_INNINGS_SHARE = 5.3 / 9.0
 
+# Lineup-level offense (roadmap T2.2): blend a run estimate built from the nine
+# posted batters' wOBA into the team-rate base. 0 = off (pure team rate, the
+# historical behavior); ~0.5 = half lineup, half team rate. Stays 0 until the
+# walk-forward totals-MAE validation (scripts/validate_lineup_runs.py) shows the
+# lineup construction beats the team-rate model — tuned like TEMP_COEF.
+LINEUP_BLEND = 0.0
+
 # How strongly to apply park factors to expected runs (0 = off, 1 = full).
 # The expected-runs math already de-biases each team's own home park, so
 # full weight (1.0) is appropriate and validated best in backtests.
