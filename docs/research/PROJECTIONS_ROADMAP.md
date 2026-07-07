@@ -115,8 +115,15 @@ Nothing below can be judged without it. All [HAVE], low effort.
   **pre-close** (open/current) line, small per-market weight tuned on open→close CLV;
   **never** the close we grade against (that forces CLV→0). Efficient markets get
   ~zero weight; props/secondary sports get more. → cross #1.
-- **T3.2 Calibration ON + extend to props + Platt** — harness built and proven safe,
-  just switched off for props (`pipeline.py:670,730` pass no sport/market). → cross #3.
+- **T3.2 Calibration for props** — → cross #3. **STATUS: INVESTIGATED → not needed,
+  props already well-calibrated.** Built the pooled-prop pair extractor + fitter and
+  measured it (MLB, 286k walk-forward prop evaluations): the game-market calibration
+  is already on (prior PR); for props the pooled isotonic map is **near-identity** —
+  Brier unchanged (0.185) and it *worsens* ECE on the 2026 holdout (0.0206→0.0225),
+  so it does not generalize. Props are already well-calibrated in aggregate (a
+  positive finding about the per-player NB/normal models); the one visible gap (rare
+  high-prob HR overs) is a sparse tail too thin to fit per-market. Not wired.
+  (Calibration for the *game* markets remains on — that one did clear the bar.)
 - **T3.3 Empirical-Bayes shrinkage** replacing the single fixed `RATING_SHRINK=0.65`. → cross #5.
 
 ### TIER 4 — New-feed dependent (timing edges; do after the free wins)
