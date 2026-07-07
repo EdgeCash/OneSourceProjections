@@ -23,6 +23,7 @@ import json
 import math
 import re
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -46,6 +47,7 @@ SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
                 "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
 
 
+@lru_cache(maxsize=None)
 def _gate_table() -> dict:
     try:
         from project547 import edge_gate
@@ -67,6 +69,7 @@ def _matchup(sport: str, home: str, away: str, asof: str, window: str = "l5") ->
 # build never depends on a live API. Failures degrade to DATA-GAP dashes.
 # --------------------------------------------------------------------------
 
+@lru_cache(maxsize=None)
 def _market_stats() -> dict:
     try:
         from project547 import edge_gate
@@ -75,6 +78,7 @@ def _market_stats() -> dict:
         return {}
 
 
+@lru_cache(maxsize=None)
 def _market_calibration(sport: str) -> dict | None:
     try:
         from project547 import results
@@ -99,6 +103,7 @@ def _market_calibration(sport: str) -> dict | None:
     return out if any_data else None
 
 
+@lru_cache(maxsize=None)
 def _pitcher_stats(season: int) -> dict:
     try:
         from project547 import pipeline
@@ -161,13 +166,18 @@ def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
             "pitching": pitching or None}
 
 
-def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
+@lru_cache(maxsize=None)
+def _best_lines(sport: str, date_sel: str) -> dict:
     from project547 import lineshop
     try:
-        best = {" vs ".join(sorted(k)): v
+        return {" vs ".join(sorted(k)): v
                 for k, v in lineshop.best_lines(sport, date_sel).items()}
     except Exception:
         return {}
+
+
+def _best_line_for(sport: str, g: dict, date_sel: str) -> dict:
+    best = _best_lines(sport, date_sel)
     key = " vs ".join(sorted({normalize(g.get("home_team", "")),
                               normalize(g.get("away_team", ""))}))
     rec = best.get(key)
