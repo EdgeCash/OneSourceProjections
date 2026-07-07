@@ -38,7 +38,9 @@ def test_market_stats_and_gate_table():
     assert table[("MLB", "moneyline")]["status"] == edge_gate.CLEARED
     assert table[("MLB", "total")]["status"] == edge_gate.GATED
     # unknown market defaults to probation
-    assert edge_gate.status_for("NHL", "moneyline", table) == edge_gate.PROBATION
+    assert edge_gate.status_for("WNBA", "total", table) == edge_gate.PROBATION
+    # backtest-proven losers are held (GATED) regardless of live history
+    assert edge_gate.status_for("NHL", "moneyline", table) == edge_gate.GATED
 
 
 def test_cap_tier_effects():

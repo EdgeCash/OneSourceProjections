@@ -31,6 +31,18 @@ CLEARED = "cleared"
 PROBATION = "probation"
 GATED = "gated"
 
+# Backtest-driven hard hold (docs/MODEL_REPAIR.md P1/P5): markets with a
+# demonstrated negative walk-forward ROI at the close — even after calibration
+# they lose ~15-20% (efficient markets we don't beat). Held to projections-only
+# regardless of live CLV until they earn positive rolling out-of-sample ROI, so
+# they never surface as a play or draw a stake at launch. Remove a pair here once
+# fit_calibration/backtest shows it clears.
+HELD_MARKETS = {
+    ("NBA", "moneyline"),
+    ("NFL", "moneyline"),
+    ("NHL", "moneyline"),
+}
+
 
 def _in_window(row_date: str, asof: str, window_days: int) -> bool:
     if not window_days:
@@ -110,6 +122,8 @@ def gate_table(ledger: list[dict] | None = None, asof: str | None = None,
 def status_for(sport: str, market: str, table: dict | None = None) -> str:
     """Gate status for one market. Unknown / no-history markets are PROBATION
     (bet small to gather CLV, never a top-tier play until proven)."""
+    if (sport, market) in HELD_MARKETS:
+        return GATED           # backtest-proven loser: projections-only, no stake
     if table is None:
         table = gate_table()
     entry = table.get((sport, market))
