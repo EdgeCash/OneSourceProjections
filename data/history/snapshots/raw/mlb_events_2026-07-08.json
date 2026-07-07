@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98198,
+  "sr_id": "1cc106f3-e277-4d39-aa28-056280cd1b22",
+  "sport": "MLB",
+  "scheduled": "2026-07-08 19:45:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "SF",
+  "visitor": "TOR",
+  "link": "/mlb/matchups/san-francisco-giants-vs-toronto-blue-jays/?date=2026-07-08",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "8146",
+    "name": "Logan Webb",
+    "link": "/mlb/props/logan-webb/",
+    "player": {
+     "short_name": "L. Webb",
+     "first_name": "Logan",
+     "last_name": "Webb",
+     "image": "https://images.fantasypros.com/images/players/mlb/8146/headshot/210x210.webp",
+     "position": "SP",
+     "team": "SF",
+     "conference": "NL",
+     "division": "West",
+     "slug": "logan-webb",
+     "jersey_number": 62
+    }
+   },
+   "visitor_probable": {
+    "id": "6848",
+    "name": "Dylan Cease",
+    "link": "/mlb/props/dylan-cease/",
+    "player": {
+     "short_name": "D. Cease",
+     "first_name": "Dylan",
+     "last_name": "Cease",
+     "image": "https://images.fantasypros.com/images/players/mlb/6848/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "dylan-cease",
+     "jersey_number": 84
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "SF",
+   "season": "2025",
+   "split": "A",
+   "r": "0.916",
+   "1b": "1.036",
+   "2b": "1.032",
+   "3b": "1.265",
+   "hr": "0.784",
+   "name": "Oracle Park"
+  },
+  "venue": {
+   "name": "Oracle Park",
+   "address": "24 Willie Mays Plaza",
+   "city": "San Francisco",
+   "state": "CA",
+   "country": "USA",
+   "zip": "94107",
+   "surface": "grass",
+   "capacity": 41915,
+   "stadium_type": "outdoor",
+   "id": "2d7542f5-7b80-49f7-9b24-c53ffdc75af6"
+  },
+  "participants": [
+   {
+    "id": "SF",
+    "name": "Giants",
+    "link": "/mlb/teams/san-francisco-giants/",
+    "team": {
+     "city": "San Francisco",
+     "abbreviation": "SF",
+     "conference": "NL",
+     "division": "West",
+     "record": {
+      "W": 37,
+      "L": 52,
+      "T": 0
+     },
+     "slug": "san-francisco-giants",
+     "stadium_deg_offset": "90"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 42,
+      "L": 48,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 64,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 243,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1019,
+   "forecast_humidity": 0.73
+  },
+  "broadcasts": [
+   {
+    "network": "NBCS-BA",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99095,
+  "sr_id": "7d5905ab-8a59-4459-9672-71a4dfb9337e",
+  "sport": "MLB",
+  "scheduled": "2026-07-08 22:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BAL",
+  "visitor": "CHC",
+  "link": "/mlb/matchups/baltimore-orioles-vs-chicago-cubs/?date=2026-07-08",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7918",
+    "name": "Dean Kremer",
+    "link": "/mlb/props/dean-kremer/",
+    "player": {
+     "short_name": "D. Kremer",
+     "first_name": "Dean",
+     "last_name": "Kremer",
+     "image": "https://images.fantasypros.com/images/players/mlb/7918/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "slug": "dean-kremer",
+     "jersey_number": 64
+    }
+   },
+   "visitor_probable": {
+    "id": "5822",
+    "name": "Colin Rea",
+    "link": "/mlb/props/colin-rea/",
+    "player": {
+     "short_name": "C. Rea",
+     "first_name": "Colin",
+     "last_name": "Rea",
+     "image": "https://images.fantasypros.com/images/players/mlb/5822/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "colin-rea",
+     "jersey_number": 53
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "BAL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.938",
+   "1b": "1.101",
+   "2b": "0.867",
+   "3b": "1.089",
+   "hr": "0.908",
+   "name": "Oriole Park at Camden Yards"
+  },
+  "venue": {
+   "name": "Oriole Park at Camden Yards",
+   "address": "333 West Camden Street",
+   "city": "Baltimore",
+   "state": "MD",
+   "country": "USA",
+   "zip": "21201",
+   "surface": "grass",
+   "capacity": 45971,
+   "stadium_type": "outdoor",
+   "id": "434aa63c-1049-4a54-a6bc-3790c7772ee1"
+  },
+  "participants": [
+   {
+    "id": "BAL",
+    "name": "Orioles",
+    "link": "/mlb/teams/baltimore-orioles/",
+    "team": {
+     "city": "Baltimore",
+     "abbreviation": "BAL",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 42,
+      "L": 49,
+      "T": 0
+     },
+     "slug": "baltimore-orioles",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 50,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 81,
+   "forecast_wind_speed": 5,
+   "forecast_wind_direction": "SSE",
+   "forecast_wind_degree": 150,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1015,
+   "forecast_humidity": 0.64
+  },
+  "broadcasts": [
+   {
+    "network": "MARQ",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
