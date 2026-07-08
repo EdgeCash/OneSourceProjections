@@ -148,3 +148,27 @@ hand-set guess.
   change, to land behind a 0-default knob with a before/after on a real slate.
 - **Component 4 (T3.1 market-anchored deviation selection):** after Component 3;
   needs the open→close CLV validation cycle before it earns weight.
+
+## Status update — Component 3 & 4 (July 2026)
+
+- **Component 3 (correlation-aware slate staking):** shipped (PR #77).
+  `project547/staking.py`; OFF by default (`SLATE_CORR`, `SLATE_MAX_EXPOSURE`).
+- **Component 4 (T3.1 market-anchored published projection):** machinery shipped,
+  weights OFF by default (`config.PROJECTION_ANCHOR = {}`). The pipeline stores
+  the de-vigged market moneyline fair per game and `_attach_anchored_projection`
+  publishes `*_pub` columns (`home_win_prob_pub`, `proj_total_pub`, `margin_pub`,
+  `home_exp_pub`, `away_exp_pub`) blended toward the market; the RAW columns are
+  left untouched so edge detection is unaffected. The card shows the anchored
+  number as headline with the raw model number alongside ("… · model NN%"), and
+  is byte-for-byte unchanged at weight 0. `scripts/validate_anchor.py` sweeps the
+  weight per (sport, market): accuracy improves **monotonically** toward the
+  market on every one (e.g. NBA moneyline Brier 0.210→0.190, n=4435; NHL total
+  MAE 1.865→1.784, n=3641), confirming T0.1. Because the backtest proxies the
+  market with the *closing* line, that gain is an upper bound, so the conservative
+  recommendation (half the gain, keep model deviation for edges) is α≈0.5 across
+  the board — left OFF pending review. Known gap: MLB margin/side-score anchoring
+  is inert (MLB rows use `home_exp_runs`, not the generic `home_exp`/`margin_mean`);
+  MLB moneyline and total anchor correctly.
+
+All four curation components + step 2 are now in; every real-money/behavioral
+lever ships behind a default-off knob validated against the market baseline.

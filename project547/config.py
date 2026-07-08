@@ -311,6 +311,44 @@ VIG_SUM_MAX = 1.30
 APPLY_CALIBRATION = os.environ.get("APPLY_CALIBRATION", "").strip().lower() in (
     "1", "true", "yes", "on")
 
+# Market-anchored published projection (roadmap T3.1 / docs/CURATION_DESIGN.md
+# Component 4). The most accurate number we can *publish* today is one blended
+# toward the market consensus (the T0.1 backtest shows the raw model trails the
+# de-vigged close on every game market). This knob anchors ONLY the published
+# *_pub columns toward the market; the raw model columns (home_win_prob,
+# proj_total, home_exp/away_exp, margin) are left untouched so edge detection —
+# which must measure the model's deviation FROM the market — is unaffected
+# (anchoring the edge input would erase the edge).
+#
+# Keys are (sport, market) tuples — market in {"moneyline", "total", "spread"};
+# values in [0, 1] weight the market anchor vs the model (0 = pure model, 1 =
+# pure market). Empty dict → every weight is 0 → every *_pub column exactly
+# equals its raw column → nothing changes live. Raise a weight only after the
+# open→close CLV validation cycle (T3.1) earns it, per-market: efficient markets
+# stay ~0, props/secondary sports may get more.
+#
+# scripts/validate_anchor.py swept alpha per (sport, market) against outcomes in
+# the production-mode backtest. Accuracy improved *monotonically* toward the
+# market on every one (moneyline Brier and total MAE), confirming T0.1 — but the
+# backtest's market proxy is the CLOSING line, so that gain is an UPPER BOUND
+# (production anchors to the softer current line) and a published number equal to
+# the market has zero deviation → zero edge. The conservative recommendation
+# (capture ~half the gain, keep the model's deviation) came out at 0.5 for every
+# market measured. Left OFF pending review; to enable, set e.g.:
+#   PROJECTION_ANCHOR = {
+#       ("MLB", "moneyline"): 0.5, ("MLB", "total"): 0.5,
+#       ("NBA", "moneyline"): 0.5, ("NBA", "total"): 0.5,
+#       ("NFL", "moneyline"): 0.5, ("NFL", "total"): 0.5,
+#       ("NHL", "moneyline"): 0.5, ("NHL", "total"): 0.5,
+#   }
+PROJECTION_ANCHOR: dict = {}
+
+
+def projection_anchor(sport, market) -> float:
+    """Published-projection anchor weight for a (sport, market), 0 when unset."""
+    return float(PROJECTION_ANCHOR.get((sport, market), 0.0))
+
+
 # BettingPros market ids vary by sport/account tier. These are sensible
 # defaults for MLB; run `python scripts/discover_markets.py` once with your
 # keys to print the live list and adjust here if needed.
