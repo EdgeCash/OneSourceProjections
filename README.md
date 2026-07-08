@@ -402,6 +402,20 @@ environment used by the hourly job.
 > rendering (`app/ui.py`, `app/theme.py`, `app/assets.py`) is reused by the
 > build, so `app/` stays, streamlit-free.
 
+### Install as an app (iPhone / iPad / Android)
+
+The site is a **PWA** — a home-screen app, no App Store. The manifest, service
+worker, and icons live in `app/pwa/` and are copied into `site/` at build time;
+the service worker caches the pages so the app opens instantly and works offline
+(showing the last-synced slate), and refreshes when you're online.
+
+- **iPhone / iPad (Safari):** open the site → Share → **Add to Home Screen**. It
+  launches full-screen with the 360Five icon.
+- **Android (Chrome):** open the site → menu → **Install app** / Add to Home Screen.
+
+The icons are regenerated with `python scripts/make_app_icons.py` (needs Pillow;
+a dev-only step — the committed PNGs are what ship).
+
 ## Extending
 
 - **Deepening a sport**: the generic engine is intentionally simple. To

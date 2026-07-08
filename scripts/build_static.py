@@ -37,8 +37,37 @@ from project547.names import normalize  # noqa: E402
 from project547.sports import SPORTS, default_slate_date  # noqa: E402
 
 OUT = ROOT / "site"
+PWA_DIR = ROOT / "app" / "pwa"        # manifest, sw.js, icons — copied into OUT
 MIN_EDGE = config.MIN_EDGE
 BANKROLL = 1000
+
+# PWA / iOS install: makes the site an installable home-screen app (relative
+# paths so it works at a root or project-path Pages URL). See app/pwa/.
+PWA_HEAD = (
+    '<link rel="manifest" href="manifest.webmanifest">'
+    '<meta name="theme-color" content="#faf6ec">'
+    '<meta name="apple-mobile-web-app-capable" content="yes">'
+    '<meta name="mobile-web-app-capable" content="yes">'
+    '<meta name="apple-mobile-web-app-status-bar-style" content="default">'
+    '<meta name="apple-mobile-web-app-title" content="360Five">'
+    '<link rel="apple-touch-icon" href="apple-touch-icon.png">'
+    '<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">'
+)
+PWA_SW = (
+    "<script>if('serviceWorker' in navigator){window.addEventListener('load',"
+    "function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}"
+    "</script>"
+)
+
+
+def _copy_pwa_assets() -> None:
+    """Copy the committed PWA assets (manifest, sw.js, icons) into the site."""
+    import shutil as _sh
+    if not PWA_DIR.exists():
+        return
+    for f in PWA_DIR.iterdir():
+        if f.is_file():
+            _sh.copy2(f, OUT / f.name)
 
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL", "MLS", "ATP")
               if s in SPORTS]
@@ -543,8 +572,10 @@ def _page(active: str, title: str, gen: str, body: str, active_sports: list,
                 '<textarea class="aibrief" id="aitext" readonly></textarea></div></div>')
     return (
         f"<!doctype html><html data-theme=\"light\"><head><meta charset=\"utf-8\">"
-        f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, "
+        f"viewport-fit=cover\">"
         f"<title>360Five — {html.escape(title)}</title>"
+        f"{PWA_HEAD}"
         f"{theme.theme_css('cream')}<style>{SITE_CSS}</style></head><body>"
         f"<div class=\"site\">{_nav(active, active_sports)}<main>"
         f"<div class=\"topbar\"><div class=\"osp-title\">{html.escape(title)}</div>"
@@ -552,7 +583,7 @@ def _page(active: str, title: str, gen: str, body: str, active_sports: list,
         f"<div class=\"sub\">Updated {html.escape(gen)} ET · refreshes hourly · "
         f"not financial advice</div>{body}</main></div>{drawer}{ai_modal}"
         f"<script>window.PROPS={props_json};window.BRIEFS={briefs_json};</script>"
-        f"<script>{DRAWER_JS}</script></body></html>")
+        f"<script>{DRAWER_JS}</script>{PWA_SW}</body></html>")
 
 
 # --------------------------------------------------------------------------
@@ -917,6 +948,7 @@ def main() -> int:
     import shutil
     shutil.rmtree(OUT, ignore_errors=True)  # never leave a dropped sport's stale page
     OUT.mkdir(parents=True, exist_ok=True)
+    _copy_pwa_assets()   # manifest, sw.js, icons -> installable home-screen app
     plays_html = _page("plays", "Plays", gen, _plays_board(day, active_sports), active_sports)
     (OUT / "plays.html").write_text(plays_html)
     (OUT / "index.html").write_text(plays_html)
