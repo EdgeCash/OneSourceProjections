@@ -1,0 +1,257 @@
+[
+ {
+  "id": 98971,
+  "sr_id": "70122bb5-b932-4a89-849e-7876bd4b4a9b",
+  "sport": "MLB",
+  "scheduled": "2026-07-09 16:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "ATL",
+  "link": "/mlb/matchups/atlanta-braves-vs-pittsburgh-pirates/?date=2026-07-09",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6477",
+    "name": "Mitch Keller",
+    "link": "/mlb/props/mitch-keller/",
+    "player": {
+     "short_name": "M. Keller",
+     "first_name": "Mitch",
+     "last_name": "Keller",
+     "image": "https://images.fantasypros.com/images/players/mlb/6477/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "mitch-keller",
+     "jersey_number": 23
+    }
+   },
+   "visitor_probable": {
+    "id": "44280",
+    "name": "Bryce Elder",
+    "link": "/mlb/props/bryce-elder/",
+    "player": {
+     "short_name": "B. Elder",
+     "first_name": "Bryce",
+     "last_name": "Elder",
+     "image": "https://images.fantasypros.com/images/players/mlb/44280/headshot/210x210.webp",
+     "position": "SP",
+     "team": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "slug": "bryce-elder",
+     "jersey_number": 55
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 47,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "ATL",
+    "name": "Braves",
+    "link": "/mlb/teams/atlanta-braves/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 52,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "atlanta-braves",
+     "stadium_deg_offset": "160"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 81,
+   "forecast_wind_speed": 9,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 240,
+   "forecast_rain_chance": 11,
+   "forecast_icon": "Drizzle",
+   "forecast_pressure": 1013,
+   "forecast_humidity": 0.7
+  },
+  "broadcasts": [
+   {
+    "network": "BravesVsn",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98817,
+  "sr_id": "5ea3d8e4-9590-47b8-834b-39e26cb4ca59",
+  "sport": "MLB",
+  "scheduled": "2026-07-09 17:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TB",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/new-york-yankees-vs-tampa-bay-rays/?date=2026-07-09",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43665",
+    "name": "Drew Rasmussen",
+    "link": "/mlb/props/drew-rasmussen/",
+    "player": {
+     "short_name": "D. Rasmussen",
+     "first_name": "Drew",
+     "last_name": "Rasmussen",
+     "image": "https://images.fantasypros.com/images/players/mlb/43665/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TB",
+     "conference": "AL",
+     "division": "East",
+     "slug": "drew-rasmussen",
+     "jersey_number": 57
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TB",
+   "season": "2025",
+   "split": "A",
+   "r": "0.953",
+   "1b": "0.906",
+   "2b": "0.951",
+   "3b": "1.224",
+   "hr": "0.980",
+   "name": "George M. Steinbrenner Field"
+  },
+  "venue": {
+   "name": "Tropicana Field",
+   "address": "One Tropicana Drive",
+   "city": "St. Petersburg",
+   "state": "FL",
+   "country": "USA",
+   "zip": "33705",
+   "surface": "turf",
+   "capacity": 25025,
+   "stadium_type": "indoor",
+   "id": "3aaaf4af-0f8c-49c1-8bf1-1780bb5a5f5c"
+  },
+  "participants": [
+   {
+    "id": "TB",
+    "name": "Rays",
+    "link": "/mlb/teams/tampa-bay-rays/",
+    "team": {
+     "city": "Tampa Bay",
+     "abbreviation": "TB",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 53,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "tampa-bay-rays",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 50,
+      "L": 41,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 92,
+   "forecast_wind_speed": 6,
+   "forecast_wind_direction": "SSW",
+   "forecast_wind_degree": 213,
+   "forecast_rain_chance": 53,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1020,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "YES",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
