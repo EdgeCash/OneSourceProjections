@@ -205,3 +205,40 @@ def test_ev_band_narrows_conviction_and_tier():
     # inside the fitted band -> sharp + positive conviction
     assert plays._tier(0.04, band) == "sharp"
     assert edge_gate.conviction(0.04, "MLB", "total", stat, band) == 0.03
+
+
+# --- curation seed / conviction prior (step 2) ------------------------------
+
+def test_conviction_prior_disabled_returns_empty(monkeypatch):
+    monkeypatch.setattr(config, "CURATION_SEED_ENABLED", False)
+    assert edge_gate.conviction_prior() == {}
+
+
+def test_blend_conviction_noop_without_seed():
+    live = {"clv_n": 5, "avg_clv": 0.02, "clv_lb": 0.01}
+    assert edge_gate.blend_conviction(live, None) is live
+    assert edge_gate.blend_conviction(None, None) is None
+
+
+def test_blend_conviction_ignores_seed_once_live_is_thick():
+    live = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.02, "clv_lb": 0.01}
+    seed = {"clv_n": 500, "avg_clv": 0.09, "clv_sd": 0.05, "clv_lb": 0.08}
+    # enough live sample -> seed ignored entirely (self-retiring prior)
+    assert edge_gate.blend_conviction(live, seed) is live
+
+
+def test_blend_conviction_pools_while_live_is_thin():
+    live = {"clv_n": 4, "avg_clv": 0.00, "clv_sd": 0.02}
+    seed = {"clv_n": 96, "avg_clv": 0.05, "clv_sd": 0.02, "clv_lb": 0.045}
+    out = edge_gate.blend_conviction(live, seed)
+    assert out["seeded"] is True
+    assert out["clv_n"] == 100
+    # pooled mean between the two, weighted by n (mostly the seed)
+    assert 0.04 < out["avg_clv"] <= 0.05
+    assert out["clv_lb"] is not None
+
+
+def test_seed_only_market_when_no_live():
+    seed = {"clv_n": 50, "avg_clv": 0.04, "clv_sd": 0.03, "clv_lb": 0.03}
+    out = edge_gate.blend_conviction(None, seed)
+    assert out["clv_n"] == 50 and out["avg_clv"] == 0.04 and out["seeded"] is True

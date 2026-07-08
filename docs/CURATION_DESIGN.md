@@ -126,3 +126,25 @@ consistent.
 Discipline unchanged from the rest of the repo: each component ships behind the
 gate, and any threshold it introduces is fit on consistent post-fix CLV, not a
 hand-set guess.
+
+## Status — July 2026
+
+- **Component 1 (conviction ranking):** shipped (PR #74).
+- **Component 2 (per-market EV bands):** shipped (PR #74). Already fits MLB
+  moneyline to (0.02, 0.03) on the live ledger.
+- **Step 2 (synthetic clean-CLV seed):** shipped. `scripts/seed_curation_history.py`
+  runs the current model production-mode over the backfill and writes
+  `data/history/curation_seed.json`; `edge_gate.conviction_prior` /
+  `blend_conviction` fold it into conviction **ranking only** (never stake
+  sizing), and only while a market's live CLV is thin — self-retiring. OFF by
+  default (`config.CURATION_SEED_ENABLED`), pending owner review of the numbers.
+  Generating it surfaced and fixed a real bug: the backtest's per-bet CLV metric
+  (`avg_bet_clv`) was inflated by stale-line best-of-book longshots, inconsistent
+  with how the live gate scores CLV; both now use the curated band (`_band_clv`).
+  The seed empirically confirms the T0.1 finding per-market — NBA/NFL/NHL
+  moneylines and totals run −3% to −8% CLV (the `HELD_MARKETS` set), while only
+  MLB moneyline is marginally positive (+1.5%, lower bound ~0).
+- **Component 3 (correlation-aware slate staking):** next; a real-money sizing
+  change, to land behind a 0-default knob with a before/after on a real slate.
+- **Component 4 (T3.1 market-anchored deviation selection):** after Component 3;
+  needs the open→close CLV validation cycle before it earns weight.
