@@ -251,7 +251,7 @@ GATE_PROBATION_STAKE = 0.5  # Kelly multiplier for unproven (probation) markets
 # a discounted prior the owner opts into after reviewing the numbers. When on, the
 # seed only supplements markets whose *live* CLV sample is still thin (< GATE_CLEAR_MIN);
 # once real data clears that bar the seed is ignored, so it self-retires.
-CURATION_SEED_ENABLED = False
+CURATION_SEED_ENABLED = True
 CURATION_SEED_PATH = REPO_ROOT / "data" / "history" / "curation_seed.json"
 
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
