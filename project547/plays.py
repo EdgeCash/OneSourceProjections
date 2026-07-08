@@ -230,6 +230,7 @@ def game_play_candidates(date: str, day_blob: dict,
     from . import edge_gate
     min_edge = config.SHARP_EV_MIN if min_edge is None else min_edge
     gates = edge_gate.gate_table()
+    bands = edge_gate.ev_bands()   # per-market EV bands (global fallback per market)
     out = []
     for sport, blob in (day_blob or {}).items():
         for g in blob.get("games", []) or []:
@@ -241,7 +242,8 @@ def game_play_candidates(date: str, day_blob: dict,
                     out.append(_game_play(date, sport, label, "moneyline", side,
                                           g.get(f"{side}_team", side), price, ev,
                                           gate=edge_gate.status_for(sport, "moneyline", gates),
-                                          stat=gates.get((sport, "moneyline"))))
+                                          stat=gates.get((sport, "moneyline")),
+                                          band=bands.get((sport, "moneyline"))))
             line = g.get("total_line")
             for side, odds_key, ev_key in (("over", "over_odds", "over_ev"),
                                            ("under", "under_odds", "under_ev")):
@@ -250,7 +252,8 @@ def game_play_candidates(date: str, day_blob: dict,
                     out.append(_game_play(date, sport, label, "total", side,
                                           f"{side} {line:g}", price, ev, line=line,
                                           gate=edge_gate.status_for(sport, "total", gates),
-                                          stat=gates.get((sport, "total"))))
+                                          stat=gates.get((sport, "total")),
+                                          band=bands.get((sport, "total"))))
     # rank the board by proven edge (conviction), not raw EV, so a consumer that
     # takes the top plays leads with the markets we most reliably beat the close
     # in. EV breaks ties. GATED (no-edge) markets are dropped.
@@ -260,18 +263,20 @@ def game_play_candidates(date: str, day_blob: dict,
     return curated
 
 
-def _tier(ev: float) -> str:
+def _tier(ev: float, band: tuple | None = None) -> str:
+    lo, hi = band if band else (config.SHARP_EV_MIN, config.SHARP_EV_MAX)
     if ev >= config.STALE_EV:
         return "stale"          # EV too high -> line likely stale, verify
-    if ev <= config.SHARP_EV_MAX:
+    if lo <= ev <= hi:
         return "sharp"          # the CLV-validated sweet spot -> push
-    return "watch"              # between SHARP_EV_MAX and STALE_EV
+    return "watch"              # outside the band but below the stale cutoff
 
 
 def _game_play(date, sport, game, market, side, pick, price, ev, line=None,
-               gate: str = "probation", stat: dict | None = None) -> dict:
+               gate: str = "probation", stat: dict | None = None,
+               band: tuple | None = None) -> dict:
     from . import edge_gate
-    tier = _tier(float(ev))
+    tier = _tier(float(ev), band)
     # a play is only "sharp" (pushed) when its EV is in-band AND the market has a
     # demonstrated edge (gate CLEARED). PROBATION/GATED never headline-push.
     sharp = tier == "sharp" and gate == edge_gate.CLEARED
@@ -281,7 +286,7 @@ def _game_play(date, sport, game, market, side, pick, price, ev, line=None,
     # (they're dropped by the curatable filter anyway).
     expected_clv = (stat or {}).get("avg_clv") if stat else None
     conviction = (0.0 if gate == edge_gate.GATED
-                  else edge_gate.conviction(float(ev), sport, market, stat))
+                  else edge_gate.conviction(float(ev), sport, market, stat, band))
     return {"key": f"game|{date}|{sport}|{game}|{market}|{side}",
             "date": date, "sport": sport, "game": game, "market": market,
             "side": side, "pick": pick, "price": price, "ev": round(float(ev), 4),

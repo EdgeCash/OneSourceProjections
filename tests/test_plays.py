@@ -119,9 +119,11 @@ def test_mark_played_flags_card_legs(tmp_path, monkeypatch):
 
 
 def test_game_play_candidates_tiers_by_ev(tmp_path, monkeypatch):
+    from project547 import edge_gate
     monkeypatch.setattr(plays.config, "SHARP_EV_MIN", 0.03)
     monkeypatch.setattr(plays.config, "SHARP_EV_MAX", 0.06)
     monkeypatch.setattr(plays.config, "STALE_EV", 0.08)
+    monkeypatch.setattr(edge_gate, "ev_bands", lambda *a, **k: {})  # global band, deterministic
     blob = {"MLB": {"games": [{
         "home_team": "NYY", "away_team": "BOS",
         "home_ml": -150, "home_ml_ev": 0.045,     # sharp band
@@ -266,6 +268,7 @@ def test_game_play_candidates_ranked_by_conviction(monkeypatch):
                            "avg_clv": 0.02, "clv_lb": 0.01},       # weaker proven edge
     }
     monkeypatch.setattr(edge_gate, "gate_table", lambda *a, **k: table)
+    monkeypatch.setattr(edge_gate, "ev_bands", lambda *a, **k: {})  # global bands
     blob = {"MLB": {"games": [{
         "home_team": "NYY", "away_team": "BOS",
         "home_ml": -150, "home_ml_ev": ev,

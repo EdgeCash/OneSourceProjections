@@ -166,3 +166,42 @@ def test_conviction_legacy_stat_falls_back_to_point_estimate():
     ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2
     legacy = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.03}   # no clv_lb
     assert edge_gate.conviction(ev, "MLB", "moneyline", legacy) == 0.03
+
+
+# --- per-market EV bands (Component 2) --------------------------------------
+
+def _led_ev(sport, market, n, ev, clv):
+    return [{"sport": sport, "market": market, "date": "2026-06-20",
+             "pnl": 0.0, "ev": ev, "clv": clv, "won": True} for _ in range(n)]
+
+
+def test_ev_bands_fits_positive_clv_subrange():
+    # positive CLV only in the 0.03-0.05 EV bins; 0.02 and 0.06 bins negative
+    led = (_led_ev("MLB", "total", 25, 0.025, -0.02)
+           + _led_ev("MLB", "total", 25, 0.035, 0.03)
+           + _led_ev("MLB", "total", 25, 0.045, 0.03)
+           + _led_ev("MLB", "total", 25, 0.065, -0.02))
+    bands = edge_gate.ev_bands(ledger=led, asof="2026-06-25")
+    assert bands[("MLB", "total")] == (0.03, 0.05)
+
+
+def test_ev_bands_skips_undersampled_markets():
+    led = _led_ev("MLB", "moneyline", edge_gate.EV_BAND_MIN_PER_BIN - 1, 0.04, 0.05)
+    bands = edge_gate.ev_bands(ledger=led, asof="2026-06-25")
+    assert ("MLB", "moneyline") not in bands           # -> caller uses global band
+    assert edge_gate.ev_band("MLB", "moneyline", bands) == (
+        config.SHARP_EV_MIN, config.SHARP_EV_MAX)
+
+
+def test_ev_band_narrows_conviction_and_tier():
+    """A play in the global band but outside the market's fitted band is neither
+    sharp nor high-conviction."""
+    from project547 import plays
+    band = (0.03, 0.05)
+    stat = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.04, "clv_lb": 0.03}
+    # EV 0.025 is in the global band (>=0.02) but below the fitted lo (0.03)
+    assert edge_gate.conviction(0.025, "MLB", "total", stat, band) == 0.0
+    assert plays._tier(0.025, band) == "watch"
+    # inside the fitted band -> sharp + positive conviction
+    assert plays._tier(0.04, band) == "sharp"
+    assert edge_gate.conviction(0.04, "MLB", "total", stat, band) == 0.03
