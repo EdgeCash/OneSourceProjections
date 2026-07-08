@@ -29,6 +29,35 @@ def test_expected_value_and_kelly():
     assert odds.kelly_stake(0.45, +100) == 0.0
 
 
+def test_expected_value_push_aware():
+    # p_win=0.45, p_push=0.10 at even money: EV = 0.45 - 0.45 = 0 (a push
+    # refunds the stake — only the 0.45 losing mass costs money)
+    assert math.isclose(odds.expected_value(0.45, +100, push_prob=0.10), 0.0,
+                        abs_tol=1e-12)
+    # without the push term the same bet looks -EV by exactly the push mass
+    assert math.isclose(odds.expected_value(0.45, +100), -0.10)
+    # push_prob=0 reproduces the historical two-outcome EV exactly
+    assert odds.expected_value(0.55, -110, push_prob=0.0) == odds.expected_value(0.55, -110)
+    # general algebra: p*(dec-1) - (1 - p - push)
+    dec = odds.american_to_decimal(-110)
+    assert math.isclose(odds.expected_value(0.50, -110, push_prob=0.08),
+                        0.50 * (dec - 1) - 0.42)
+    # degenerate input can't make the losing mass negative
+    assert math.isclose(odds.expected_value(0.95, +100, push_prob=0.10), 0.95)
+
+
+def test_kelly_stake_push_aware():
+    # full = (p*b - (1 - p - push)) / b at b=1
+    assert math.isclose(odds.kelly_stake(0.45, +100, push_prob=0.10), 0.0)
+    assert math.isclose(odds.kelly_stake(0.50, +100, push_prob=0.10), 0.10)
+    assert math.isclose(odds.kelly_stake(0.50, +100, fraction=0.25, push_prob=0.10),
+                        0.025)
+    # backward compatible default
+    assert odds.kelly_stake(0.55, +100) == odds.kelly_stake(0.55, +100, push_prob=0.0)
+    # push mass turns a no-edge bet into a small edge, never a negative stake
+    assert odds.kelly_stake(0.44, +100, push_prob=0.10) == 0.0
+
+
 def test_fair_two_way_rejects_incoherent_prices():
     # a coherent two-way (-110 / -110) devigs to 50/50
     fair = odds.fair_two_way(-110, -110)

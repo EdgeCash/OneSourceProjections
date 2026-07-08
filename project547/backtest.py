@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import json
 import math
-import statistics
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -28,13 +27,13 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from . import config, history, odds, parks, teams
+from . import calculators, config, history, odds, parks, teams
 from .models import game as mlb_game
 from .models import generic
 from .models import props as mlb_props
 from .models.elo import Elo, EloConfig
 from .names import normalize
-from .sports import SPORTS
+from .sports import SPORTS, season_label
 
 # WNBA abbreviation -> team nickname (last token of the full name) so the
 # abbreviated backfill joins to the full-name closing lines.
@@ -61,22 +60,56 @@ def _team_key(sport_key: str, home: str, away: str) -> tuple:
     return (normalize(home), normalize(away))
 
 
+# Max distance between a ±1-day closing candidate's total line and the model's
+# projected total before the match is rejected as a different game. Tight for
+# low-scoring (poisson) sports — an MLB series plays the same two teams on
+# consecutive days and a 1.5+ run gap flags the adjacent game (different
+# starter/park context); looser for normal-model sports whose model-vs-market
+# total disagreement is routinely several points.
+_LINE_TOL_POISSON = 1.5
+_LINE_TOL_NORMAL = 10.0
+
+
 def _lookup_closing(consensus: dict, sport_key: str, date: str,
-                    home: str, away: str) -> dict | None:
+                    home: str, away: str, ref_total: float | None = None
+                    ) -> dict | None:
     """Find the closing record for a game, tolerating a ±1 day offset
     (closing_start is UTC, so late games roll a day past the local game
-    date). Picks the closest date when several qualify."""
+    date). Picks the closest date when several qualify.
+
+    The ±1-day fallback (gap == 1) additionally requires the candidate's
+    closing total line to be near ``ref_total`` (the model's projected total)
+    when both exist — otherwise the adjacent game of an MLB/NBA/NHL series
+    matches and the bet is graded against a different game's close. Among
+    equal-gap candidates (a doubleheader shares one date+teams key because the
+    closing store's event ids don't join to backfill game_pks) the one whose
+    total line is closest to ``ref_total`` wins."""
     import datetime as _dt
 
     bucket = consensus.get(_team_key(sport_key, home, away))
     if not bucket:
         return None
+    sp = SPORTS.get(sport_key)
+    tol = _LINE_TOL_POISSON if (sp and sp.model == "poisson") else _LINE_TOL_NORMAL
     d0 = _dt.date.fromisoformat(date)
-    best, best_gap = None, 2
+
+    def _line_dist(rec) -> float | None:
+        line = ((rec.get("total") or {}).get("line"))
+        if line is None or ref_total is None:
+            return None
+        return abs(float(line) - float(ref_total))
+
+    best, best_key = None, (2, float("inf"))
     for cand_date, rec in bucket:
         gap = abs((_dt.date.fromisoformat(cand_date) - d0).days)
-        if gap <= 1 and gap < best_gap:
-            best, best_gap = rec, gap
+        if gap > 1:
+            continue
+        dist = _line_dist(rec)
+        if gap == 1 and dist is not None and dist > tol:
+            continue                    # adjacent game of a series — wrong game
+        key = (gap, dist if dist is not None else float("inf"))
+        if key < best_key:
+            best, best_key = rec, key
     return best
 
 
@@ -289,8 +322,10 @@ def _prewarm_elo(elo: Elo, sport_key: str, first_season: int, lookback: int = 8)
         return
     games = _wnba_games(warm) if sport_key == "WNBA" else _generic_games(sport_key, warm)
     for g in games:
+        # league season label, NOT the calendar year: cross-New-Year leagues
+        # must not fire the between-season Elo regression on Jan 1 (audit #5).
         elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
-                   int(g["date"][:4]))
+                   season_label(sport_key, g["date"]))
 
 
 def _rest_days(team: str, gd, last_seen: dict, cap: int = 14) -> int:
@@ -456,30 +491,64 @@ def _poisson_cover(lam_h, lam_a, spread, draws):
 # Closing-line consensus
 # ---------------------------------------------------------------------------
 
-def _devig_market(books: dict, a_side: str, b_side: str):
-    """books: {book: {side: (american, line)}}. De-vig each two-sided book,
-    average the fair prob for a_side, take the median a_side line and the best
-    (max) American price per side. Returns (fair_a, line, best_a, best_b) or
-    None when no book has both sides."""
-    fairs, lines, a_ams, b_ams = [], [], [], []
-    for sides in books.values():
-        if a_side in sides and b_side in sides:
-            pa = odds.implied_prob(sides[a_side][0])
-            pb = odds.implied_prob(sides[b_side][0])
-            fa, _ = odds.devig_two_way(pa, pb)
-            fairs.append(fa)
-            ln = sides[a_side][1]
-            if ln is not None and not (isinstance(ln, float) and math.isnan(ln)):
-                lines.append(ln)
-        if a_side in sides:
-            a_ams.append(sides[a_side][0])
-        if b_side in sides:
-            b_ams.append(sides[b_side][0])
-    if not fairs:
+def _clean_line(ln):
+    if ln is None or (isinstance(ln, float) and math.isnan(ln)):
         return None
-    return (sum(fairs) / len(fairs),
-            statistics.median(lines) if lines else None,
-            float(max(a_ams)), float(max(b_ams)))
+    return float(ln)
+
+
+def _devig_market(books: dict, a_side: str, b_side: str):
+    """books: {book: {side: (american, line)}}. Consensus honest to the line
+    (audit #18/#22): group each two-sided book by its a_side line, pick the
+    modal line (most two-sided books; ties -> median of the tied lines),
+    de-vig each book AT that line, and average those per-book fair probs.
+    Best prices per side come only from books quoting THAT line (one-sided
+    books included when their quoted line matches), so an alt-line quote can
+    never be graded against fair-at-a-different-line — the old max-across-
+    all-lines pooling manufactured phantom EV and a free half-point/run.
+
+    De-vig uses the **power** method: multiplicative normalization flatters
+    the market baseline at the extremes (favorite-longshot bias), which would
+    overstate our edge against it.
+
+    Returns (fair_a, line, best_a, best_b) or None when no book has both
+    sides. line is None for unlined markets (moneylines)."""
+    two_sided: dict = defaultdict(list)   # line -> [(fair_a, am_a, am_b)]
+    a_only: list = []                     # (line, american) one-sided quotes
+    b_only: list = []
+    for sides in books.values():
+        la = _clean_line(sides[a_side][1]) if a_side in sides else None
+        lb = _clean_line(sides[b_side][1]) if b_side in sides else None
+        if a_side in sides and b_side in sides:
+            # both sides must describe the same market: identical line
+            # (totals) or mirrored line (spreads quoted per side).
+            if la is not None and lb is not None and la != lb and la != -lb:
+                continue
+            am_a, am_b = sides[a_side][0], sides[b_side][0]
+            pa, pb = odds.implied_prob(am_a), odds.implied_prob(am_b)
+            if not (0.98 <= pa + pb <= 1.30):
+                continue                     # stale/mismatched pair
+            fa, _ = calculators.no_vig(am_a, am_b, method="power")
+            two_sided[la].append((fa, float(am_a), float(am_b)))
+        elif a_side in sides:
+            a_only.append((la, float(sides[a_side][0])))
+        elif b_side in sides:
+            b_only.append((lb, float(sides[b_side][0])))
+    if not two_sided:
+        return None
+    # modal a_side line among two-sided books; ties -> median of tied lines
+    top = max(len(v) for v in two_sided.values())
+    tied = sorted((l for l, v in two_sided.items() if len(v) == top),
+                  key=lambda l: (l is None, l))
+    line = tied[len(tied) // 2]
+    entries = two_sided[line]
+    fair_a = sum(e[0] for e in entries) / len(entries)
+    a_ams = [e[1] for e in entries] + [am for l, am in a_only
+                                       if l == line or l is None or line is None]
+    b_ams = [e[2] for e in entries] + [am for l, am in b_only
+                                       if l == line or l == (-line if line is not None else None)
+                                       or l is None or line is None]
+    return fair_a, line, float(max(a_ams)), float(max(b_ams))
 
 
 @lru_cache(maxsize=8)
@@ -508,9 +577,12 @@ def closing_consensus(sport: str) -> dict[tuple, dict]:
         ev_rows[r[0]].append(r)
 
     out: dict[tuple, list] = defaultdict(list)
-    for rows in ev_rows.values():
+    for eid, rows in ev_rows.items():
         date, home, away = rows[0][6], rows[0][7], rows[0][8]
-        rec = {"date": date, "home": home, "away": away,
+        # event_id disambiguates doubleheaders (same date + teams). It doesn't
+        # join to the backfill's game_pk, so _lookup_closing falls back to
+        # line proximity, but the id is recorded for any caller that can join.
+        rec = {"date": date, "event_id": eid, "home": home, "away": away,
                "moneyline": None, "total": None, "spread": None}
         markets: dict = defaultdict(lambda: defaultdict(dict))
         for (_e, book, market, side, am_, line, _d, _h, _a) in rows:
@@ -545,8 +617,13 @@ class BetLog:
     wins: int = 0
     staked: float = 0.0
     pnl: float = 0.0
+    clv_sum: float = 0.0
+    clv_n: int = 0
 
-    def add(self, won: bool, dec_odds: float):
+    def add(self, won: bool, dec_odds: float, clv: float | None = None):
+        """clv (optional): the bet's own-side EV at the closing fair prob —
+        genuine per-bet CLV (positive = the price taken beats the no-vig
+        close), the same convention as clv.clv_pct / run_mlb_clv_open_close."""
         self.n += 1
         self.staked += 1.0
         if won:
@@ -554,11 +631,22 @@ class BetLog:
             self.pnl += dec_odds - 1.0
         else:
             self.pnl -= 1.0
+        if clv is not None:
+            self.clv_sum += clv
+            self.clv_n += 1
 
     def summary(self) -> dict:
         return {"bets": self.n, "win_rate": round(self.wins / self.n, 4) if self.n else None,
                 "units": round(self.pnl, 2),
-                "roi_pct": round(100 * self.pnl / self.staked, 2) if self.staked else None}
+                "roi_pct": round(100 * self.pnl / self.staked, 2) if self.staked else None,
+                "avg_bet_clv": (round(self.clv_sum / self.clv_n, 4)
+                                if self.clv_n else None)}
+
+
+def _combined_bet_clv(*logs: "BetLog") -> float | None:
+    """Average per-bet CLV pooled across bet logs (ML+total+spread)."""
+    n = sum(l.clv_n for l in logs)
+    return round(sum(l.clv_sum for l in logs) / n, 4) if n else None
 
 
 def _total_crps(prob_over, mean: float, actual: float) -> float:
@@ -589,7 +677,9 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                       draws: int = 4000, min_edge: float | None = None,
                       use_starters: bool = False, use_bullpen: bool = False,
                       use_park: bool = False, use_temp: bool = False,
-                      shrink: float = 0.0,
+                      shrink: float | None = None,
+                      apply_calibration: bool = False,
+                      production_mode: bool = False,
                       rest_coeff: float | None = None,
                       opponent_adjust: bool | None = None,
                       qb_coeff: float | None = None,
@@ -607,6 +697,22 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     import dataclasses as _dc
     min_edge = config.MIN_EDGE if min_edge is None else min_edge
     sport = SPORTS[sport_key]
+    # Reproduce the deployed pipeline (audit #20): production maps the raw
+    # model prob through the fitted per-(sport, market) calibration and then
+    # shrinks it toward the de-vigged close by sport.market_shrink before
+    # computing EV (pipeline._market_eval). production_mode=True turns both
+    # on; both default OFF so historical backtest numbers are unchanged.
+    # ``shrink=None`` means "the default": 0.0 (raw model), or the sport's
+    # production market_shrink under production_mode. Pass a float to sweep.
+    if production_mode:
+        apply_calibration = True
+    if shrink is None:
+        shrink = sport.market_shrink if production_mode else 0.0
+    if apply_calibration:
+        from . import calibrate as _calmod   # lazy import, like the pipeline
+        _cal = _calmod.calibrate
+    else:
+        _cal = lambda p, _s, _m: p           # noqa: E731 — identity when off
     # Optional lineup-level offense (roadmap T2.2): temporarily set the global
     # blend for this run so _project's TeamInputs pick it up; restored in finally.
     _saved_blend = config.LINEUP_BLEND
@@ -672,7 +778,11 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
     crps_sum = 0.0
     # betting accumulators
     ml_bets, total_bets, spread_bets = BetLog(), BetLog(), BetLog()
-    clv_deltas, spread_clv = [], []
+    # signed home-side model-vs-market disagreement per matched game. This is
+    # NOT CLV (a model with huge symmetric noise averages ~0 here) — it's a
+    # directional bias diagnostic, reported as home_prob_bias (audit #19).
+    # Genuine per-bet CLV lives in each BetLog (avg_bet_clv).
+    home_bias, spread_home_bias = [], []
     detail_rows: list = []
     n_matched = 0
     n_with_starter = 0
@@ -707,7 +817,8 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                 away_lineup_woba=lw.get((pk, "away")),
                 wind_out=wind_out, wind_mph=wind_mph)
             if elo is not None:
-                ewp = elo.home_win_prob(g["home"], g["away"], int(g["date"][:4]))
+                ewp = elo.home_win_prob(g["home"], g["away"],
+                                        season_label(sport_key, g["date"]))
                 hwp = (1 - elo_blend) * hwp + elo_blend * ewp
             if rest_coeff and sport.sigma_margin > 0:
                 from datetime import date as _D
@@ -729,47 +840,59 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             if gp_obj is not None and sport.model == "normal" and sport.sigma_margin > 0:
                 gp_obj = generic.with_consistent_margin(gp_obj, hwp, sport)
                 cover_fn = lambda spread, _g=gp_obj: _g.home_cover_prob(spread, sport)
+            tie = g["home_score"] == g["away_score"]
             home_won = 1 if g["home_score"] > g["away_score"] else 0
             actual_total = g["home_score"] + g["away_score"]
 
-            # ML accuracy
+            # ML accuracy — ties excluded (audit #22): a tie is neither a home
+            # nor an away win, so it carries no two-way Brier/calibration
+            # information, and books push two-way moneylines on it.
             p = min(max(hwp, 1e-6), 1 - 1e-6)
-            brier_sum += (p - home_won) ** 2
-            logloss_sum += -(home_won * math.log(p) + (1 - home_won) * math.log(1 - p))
-            fav_correct += int((p >= 0.5) == bool(home_won))
-            cal = cal_bins[round(p * 10) / 10]
-            cal[0] += 1; cal[1] += home_won
-            n_ml += 1
+            if not tie:
+                brier_sum += (p - home_won) ** 2
+                logloss_sum += -(home_won * math.log(p) + (1 - home_won) * math.log(1 - p))
+                fav_correct += int((p >= 0.5) == bool(home_won))
+                cal = cal_bins[round(p * 10) / 10]
+                cal[0] += 1; cal[1] += home_won
+                n_ml += 1
             # total accuracy
             total_abs += abs(tmean - actual_total)
             total_sq += (tmean - actual_total) ** 2
             n_tot += 1
 
-            # betting vs closing
-            rec = _lookup_closing(consensus, sport_key, g["date"], g["home"], g["away"])
+            # betting vs closing (ref_total keeps the ±1-day fallback off the
+            # adjacent game of a series / the other half of a doubleheader)
+            rec = _lookup_closing(consensus, sport_key, g["date"],
+                                  g["home"], g["away"], ref_total=tmean)
             if rec:
                 n_matched += 1
                 if rec["moneyline"]:
                     m = rec["moneyline"]
-                    clv_deltas.append(hwp - m["home_fair"])
-                    # market baseline vs model on this matched game (raw model
-                    # prob, pre bet-selection shrink — that's what we're judging)
-                    mfair = min(max(m["home_fair"], 1e-6), 1 - 1e-6)
-                    mkt_brier_sum += (mfair - home_won) ** 2
-                    mkt_logloss_sum += -(home_won * math.log(mfair)
-                                         + (1 - home_won) * math.log(1 - mfair))
-                    mdl_brier_mkt_sum += (p - home_won) ** 2
-                    mdl_logloss_mkt_sum += -(home_won * math.log(p)
-                                             + (1 - home_won) * math.log(1 - p))
-                    n_ml_mkt += 1
-                    # blend the model prob toward the de-vigged closing line
-                    # before deciding bets (shrink=0 -> raw model behavior)
-                    p_home = odds.blend_toward_market(hwp, m["home_fair"], shrink)
-                    for side, prob, price, won in (
-                        ("home", p_home, m["home_best"], home_won == 1),
-                        ("away", 1 - p_home, m["away_best"], home_won == 0)):
-                        if odds.expected_value(prob, price) >= min_edge:
-                            ml_bets.add(won, odds.american_to_decimal(price))
+                    home_bias.append(hwp - m["home_fair"])
+                    if not tie:
+                        # market baseline vs model on this matched game (raw model
+                        # prob, pre bet-selection shrink — that's what we're judging)
+                        mfair = min(max(m["home_fair"], 1e-6), 1 - 1e-6)
+                        mkt_brier_sum += (mfair - home_won) ** 2
+                        mkt_logloss_sum += -(home_won * math.log(mfair)
+                                             + (1 - home_won) * math.log(1 - mfair))
+                        mdl_brier_mkt_sum += (p - home_won) ** 2
+                        mdl_logloss_mkt_sum += -(home_won * math.log(p)
+                                                 + (1 - home_won) * math.log(1 - p))
+                        n_ml_mkt += 1
+                        # calibrate (production_mode) then blend the model prob
+                        # toward the de-vigged closing line before deciding bets
+                        # (defaults: raw model prob, shrink=0)
+                        p_home = odds.blend_toward_market(
+                            _cal(hwp, sport_key, "moneyline"), m["home_fair"], shrink)
+                        for side, prob, price, fair, won in (
+                            ("home", p_home, m["home_best"], m["home_fair"], home_won == 1),
+                            ("away", 1 - p_home, m["away_best"], 1 - m["home_fair"], home_won == 0)):
+                            if odds.expected_value(prob, price) >= min_edge:
+                                # per-bet CLV: the taken price's EV at the
+                                # closing fair prob of the side taken
+                                ml_bets.add(won, odds.american_to_decimal(price),
+                                            clv=odds.expected_value(fair, price))
                 if rec["total"]:
                     t = rec["total"]
                     # market baseline for the total = the closing total line
@@ -782,27 +905,33 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                     crps_sum += _total_crps(prob_over, tmean, actual_total)
                     n_tot_mkt += 1
                     po = prob_over(t["line"])
-                    p_over = odds.blend_toward_market(po, t["over_fair"], shrink)
+                    p_over = odds.blend_toward_market(
+                        _cal(po, sport_key, "total"), t["over_fair"], shrink)
                     over_won = actual_total > t["line"]
                     push = actual_total == t["line"]
                     if not push:
                         if odds.expected_value(p_over, t["over_best"]) >= min_edge:
-                            total_bets.add(over_won, odds.american_to_decimal(t["over_best"]))
+                            total_bets.add(over_won, odds.american_to_decimal(t["over_best"]),
+                                           clv=odds.expected_value(t["over_fair"], t["over_best"]))
                         if odds.expected_value(1 - p_over, t["under_best"]) >= min_edge:
-                            total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]))
+                            total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]),
+                                           clv=odds.expected_value(1 - t["over_fair"], t["under_best"]))
                 if rec["spread"]:
                     s = rec["spread"]
                     pc = cover_fn(s["line"])           # model P(home covers home line)
-                    spread_clv.append(pc - s["home_fair"])
-                    p_cover = odds.blend_toward_market(pc, s["home_fair"], shrink)
+                    spread_home_bias.append(pc - s["home_fair"])
+                    p_cover = odds.blend_toward_market(
+                        _cal(pc, sport_key, "spread"), s["home_fair"], shrink)
                     margin = g["home_score"] - g["away_score"]
                     home_cover = (margin + s["line"]) > 0
                     push = (margin + s["line"]) == 0
                     if not push:
                         if odds.expected_value(p_cover, s["home_best"]) >= min_edge:
-                            spread_bets.add(home_cover, odds.american_to_decimal(s["home_best"]))
+                            spread_bets.add(home_cover, odds.american_to_decimal(s["home_best"]),
+                                            clv=odds.expected_value(s["home_fair"], s["home_best"]))
                         if odds.expected_value(1 - p_cover, s["away_best"]) >= min_edge:
-                            spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]))
+                            spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]),
+                                            clv=odds.expected_value(1 - s["home_fair"], s["away_best"]))
             if detail:
                 sp_ = (rec or {}).get("spread") or {}
                 to_ = (rec or {}).get("total") or {}
@@ -815,10 +944,12 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                      "close_spread": sp_.get("line"), "close_total": to_.get("line"),
                      "home_ml": mo_.get("home_best"), "away_ml": mo_.get("away_best"),
                      "ml_fav": g["home"] if hwp >= 0.5 else g["away"],
-                     "ml_hit": (home_won == 1) == (hwp >= 0.5),
-                     "clv": (round(hwp - mo_["home_fair"], 4)
-                             if mo_.get("home_fair") is not None else None)}
-                d["home_won"] = int(home_won)
+                     # a tied final grades no ML pick (books push)
+                     "ml_hit": (None if tie else (home_won == 1) == (hwp >= 0.5)),
+                     # signed model-vs-close disagreement — bias, not CLV
+                     "home_prob_bias": (round(hwp - mo_["home_fair"], 4)
+                                        if mo_.get("home_fair") is not None else None)}
+                d["home_won"] = None if tie else int(home_won)
                 if sp_.get("line") is not None:
                     pc = cover_fn(sp_["line"])
                     margin = g["home_score"] - g["away_score"]
@@ -850,7 +981,7 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             qb_base[team] = 0.85 * qb_base.get(team, lg) + 0.15 * qb_value[qb]
         if elo is not None:
             elo.update(g["home"], g["away"], g["home_score"], g["away_score"],
-                       int(g["date"][:4]))
+                       season_label(sport_key, g["date"]))
 
     config.LINEUP_BLEND = _saved_blend      # restore any per-run blend override
     config.WIND_COEF = _saved_wind
@@ -890,11 +1021,18 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                                 if n_tot_mkt else None),
             "model_total_crps": round(crps_sum / n_tot_mkt, 3) if n_tot_mkt else None,
         },
+        "production_mode": production_mode,
+        "apply_calibration": apply_calibration,
+        "shrink": shrink,
         "closing_line": {
             "games_matched": n_matched,
-            "avg_clv_vs_fair": round(float(np.mean(clv_deltas)), 4) if clv_deltas else None,
-            "avg_spread_clv_vs_fair": (round(float(np.mean(spread_clv)), 4)
-                                       if spread_clv else None),
+            # signed home-side model-vs-market disagreement (bias diagnostic),
+            # formerly mislabeled avg_clv_vs_fair (audit #19). Real per-bet CLV
+            # is avg_bet_clv inside each *_bets summary.
+            "home_prob_bias": round(float(np.mean(home_bias)), 4) if home_bias else None,
+            "spread_home_prob_bias": (round(float(np.mean(spread_home_bias)), 4)
+                                      if spread_home_bias else None),
+            "avg_bet_clv": _combined_bet_clv(ml_bets, total_bets, spread_bets),
             "moneyline_bets": ml_bets.summary(),
             "total_bets": total_bets.summary(),
             "spread_bets": spread_bets.summary(),
@@ -936,8 +1074,10 @@ def bp_open_close(season: int = 2026) -> dict[tuple, dict]:
         if len(h) and len(a):
             ho, ao = h.iloc[0]["open_cost"], a.iloc[0]["open_cost"]
             hc, ac = h.iloc[0]["close_cost"], a.iloc[0]["close_cost"]
-            hof, _ = odds.devig_two_way(odds.implied_prob(ho), odds.implied_prob(ao))
-            hcf, _ = odds.devig_two_way(odds.implied_prob(hc), odds.implied_prob(ac))
+            # power de-vig (audit #22): multiplicative flatters the market
+            # baseline at the extremes, overstating open→close CLV on dogs.
+            hof, _ = calculators.no_vig(float(ho), float(ao), method="power")
+            hcf, _ = calculators.no_vig(float(hc), float(ac), method="power")
             rec["moneyline"] = {
                 "home_open": float(ho), "away_open": float(ao),
                 "home_open_fair": float(hof), "away_open_fair": float(1 - hof),
@@ -950,8 +1090,8 @@ def bp_open_close(season: int = 2026) -> dict[tuple, dict]:
         if len(ov) and len(un):
             oo, uo = ov.iloc[0]["open_cost"], un.iloc[0]["open_cost"]
             oc, uc = ov.iloc[0]["close_cost"], un.iloc[0]["close_cost"]
-            oof, _ = odds.devig_two_way(odds.implied_prob(oo), odds.implied_prob(uo))
-            ocf, _ = odds.devig_two_way(odds.implied_prob(oc), odds.implied_prob(uc))
+            oof, _ = calculators.no_vig(float(oo), float(uo), method="power")
+            ocf, _ = calculators.no_vig(float(oc), float(uc), method="power")
             rec["total"] = {
                 "line": float(ov.iloc[0]["line"]),
                 "over_open": float(oo), "under_open": float(uo),

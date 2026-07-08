@@ -75,6 +75,40 @@ LEAGUE_RUNS_PER_GAME = 4.5
 # Home teams win ~53-54% of even matchups historically.
 HOME_FIELD_RUNS = 0.12
 
+# Walk-off / last-at-bat structure (audit #11). HOME_FIELD_RUNS=0.12 alone
+# delivers only ~51.2% home win prob for even teams under the NB run
+# distribution — the missing mechanism is that ties break asymmetrically in
+# reality (home bats last knowing what it needs; home teams win extra-inning
+# games ≈52% historically). So the sim's tie-break awards the extra-inning
+# winner with this probability (models/game.break_ties) instead of a symmetric
+# run race; 0.5 restores the old symmetric behavior.
+# VALIDATED: walk-forward MLB backtest 2022-26 (run_game_backtest, starters+
+# bullpen+park, 11,141 graded games): 0.50 -> 0.52 -> 0.54 moves ML log-loss
+# 0.6852 -> 0.6851 -> 0.6850 and 2026 ML bet ROI 2.7% -> 3.7% -> 4.8% (~135
+# bets — noise margin), totals MAE flat. Monotone but tiny in-sample, so we
+# ship the literature value 0.52 rather than chase 0.54's noise.
+HOME_EXTRA_WIN_P = 0.52
+
+# Additive post-sim shift on the simulated home win prob (clamped to [0,1]),
+# for the residual last-at-bat edge (9th-inning walk-offs in regulation) the
+# run race can't express. Applied in models/game.simulate; 0 = off.
+# VALIDATED on the same 2022-26 walk-forward sample: empirical home win rate
+# is 0.529 vs the model's mean 0.518 (at HOME_EXTRA_WIN_P=0.52), and sweeping
+# the shift over {0, .005, .01, .015, .02} the pooled Brier/log-loss minimum
+# sits at 0.01 (Brier 0.24601 -> 0.24590, log-loss 0.68510 -> 0.68487);
+# per-season optima range 0 (2023-24) to ~0.015-0.02 (2022/25/26), so 0.01 is
+# the conservative pooled argmin. Totals are untouched (win-prob only).
+HOME_WIN_SHIFT = 0.01
+
+# Extra-innings scoring floor (audit P4 #9). The tie-break's per-side,
+# per-frame lambda is max(mu/9, EXTRA_FRAME_RUNS). Since 2020 the ghost
+# runner (automatic runner on 2nd) makes extra frames score far above a
+# normal inning — roughly a run per full extra inning (~0.5/side/frame, the
+# walk-off truncation of the bottom half keeps it below the raw ~1.0
+# runner-on-2nd run expectancy) — so tied-game totals were understated when
+# mu/9 (~0.45-0.55) was used for weak offenses. 0 restores pure mu/9.
+EXTRA_FRAME_RUNS = 0.5
+
 # How many recent team games feed the offense rating.
 TEAM_FORM_GAMES = 30
 

@@ -193,12 +193,18 @@ def slate_books(sport: str, date: str, snap_dir=None) -> dict:
     """Build per-game, per-market ``{book: {side: price}}`` views from the latest
     multi-book capture in the day's snapshot log (the same source line-shopping
     uses). Returns ``{frozenset({norm_home, norm_away}): {"moneyline": {...},
-    "total": {...}, "_lines": {book: total_line}, "_offers": [...]}}``.
+    "total": {...}, "total_line": x, "_offers": [...]}}``.
 
     ``moneyline`` sides are normalized team names; ``total`` sides are
-    ``over``/``under``. ``_offers`` carries every total offer (book, side, line,
-    price) for the middle scanner.
+    ``over``/``under``. A lined market (the total) is keyed internally by
+    (book, line) and only offers at the **modal line across books** are exposed
+    in ``total`` — an over 8.5 at book A vs an under 9.5 at book B price
+    different events, so pooling them manufactured phantom +EV and arbs
+    (audit #18b). ``total_line`` records the line ``total`` describes.
+    ``_offers`` still carries every total offer (book, side, line, price) for
+    the middle scanner, which *wants* cross-line gaps.
     """
+    from collections import Counter as _Counter
     from collections import defaultdict as _dd
 
     from .clv import _load_rows
@@ -221,7 +227,7 @@ def slate_books(sport: str, date: str, snap_dir=None) -> dict:
         if len(teams) != 2:
             continue
         ml: dict = _dd(dict)
-        tot: dict = _dd(dict)
+        tot_by_line: dict = _dd(lambda: _dd(dict))  # line -> book -> side -> price
         offers: list = []
         for r in ers:
             book = r.get("book_id")
@@ -233,12 +239,25 @@ def slate_books(sport: str, date: str, snap_dir=None) -> dict:
             elif r.get("market") == "total":
                 side = str(r.get("selection", "")).lower()
                 key = "over" if "over" in side else "under" if "under" in side else None
-                if key:
-                    tot[book][key] = price
-                    offers.append({"side": key, "line": r.get("line"),
+                line = r.get("line")
+                if key and line is not None:
+                    tot_by_line[float(line)][book][key] = price
+                    offers.append({"side": key, "line": float(line),
                                    "price": price, "book": book})
-        out[frozenset(teams)] = {"moneyline": dict(ml), "total": dict(tot),
-                                 "_offers": offers}
+        # modal total line = the line the most books quote two-sided (ties ->
+        # median of the tied lines); consensus/EV/arb math sees only that line.
+        tot: dict = {}
+        tot_line = None
+        if tot_by_line:
+            counts = _Counter({ln: sum(1 for b in books.values()
+                                       if "over" in b and "under" in b)
+                               for ln, books in tot_by_line.items()})
+            top = max(counts.values())
+            tied = sorted(ln for ln, n in counts.items() if n == top)
+            tot_line = tied[len(tied) // 2]
+            tot = {b: dict(sides) for b, sides in tot_by_line[tot_line].items()}
+        out[frozenset(teams)] = {"moneyline": dict(ml), "total": tot,
+                                 "total_line": tot_line, "_offers": offers}
     return out
 
 
@@ -264,11 +283,19 @@ def scan_slate(sport: str, date: str, min_ev: float = 0.0,
             h = hold(ml, sides)
             if h and h["hold"] < 0.01:
                 low_holds.append({"market": "Moneyline", "game": matchup, **h})
+        # totals: slate_books already restricted these offers to the modal
+        # closing line, so consensus/EV/arb compare like with like.
         tot = mkts.get("total") or {}
-        if all("over" in b and "under" in b for b in tot.values()) and tot:
+        tot_line = mkts.get("total_line")
+        if any("over" in b and "under" in b for b in tot.values()):
             for bet in positive_ev_bets(tot, ["over", "under"]):
                 if bet["ev"] >= min_ev:
-                    plus_ev.append({"market": "Total", "game": matchup, **bet})
+                    plus_ev.append({"market": "Total", "game": matchup,
+                                    "line": tot_line, **bet})
+            arb = arbitrage_bet(tot, ["over", "under"])
+            if arb:
+                arbs.append({"market": "Total", "game": matchup,
+                             "line": tot_line, **arb})
         for m in find_middles(mkts.get("_offers") or []):
             middles.append({"market": "Total", "game": matchup, **m})
     plus_ev.sort(key=lambda r: r["ev"], reverse=True)

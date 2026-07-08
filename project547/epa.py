@@ -178,8 +178,10 @@ def passer_epa_ratings(plays: list[dict], *, lam: float = 60.0,
     pidx = {t: i for i, t in enumerate(passers)}
     didx = {t: i for i, t in enumerate(defs)}
     n = len(plays)
-    # Reuse the two-way ridge: "offense" index space is passers, "defense" is
-    # defenses. n_teams must cover both, so pad to max and slice back.
+    # Same ridge model as team ratings, but the "offense" index space is
+    # passers and the "defense" space is defenses — two independent dummy
+    # blocks, so the design matrix is built directly below rather than
+    # through the shared team-vs-team helper.
     off_i = np.fromiter((pidx[p["passer"]] for p in plays), dtype=int, count=n)
     def_i = np.fromiter((didx[p["defteam"]] for p in plays), dtype=int, count=n)
     epa = np.fromiter((float(p["epa"]) for p in plays), dtype=float, count=n)

@@ -30,11 +30,10 @@ from __future__ import annotations
 
 import pandas as pd
 
-# League base rates (2025-26 game logs): a team scores in the 1st ~29.5% of the
-# time; YRFI (either team scores) ~50%. These are the priors everything regresses
-# toward and the league anchor for log5.
+# League base rate (2025-26 game logs): a team scores in the 1st ~29.5% of the
+# time (YRFI — either team scores — lands ~50%). This is the prior everything
+# regresses toward and the league anchor for log5.
 LEAGUE_SCORE_RATE = 0.295
-LEAGUE_NRFI = 0.503        # P(no run in the 1st by either team)
 
 # Regression strength: how many league-prior "games" to add to each team's
 # first-inning sample. First-inning rates are noisy, so we regress hard.

@@ -48,6 +48,14 @@ def _parse_events(data: dict) -> list[dict]:
                 "date": (ev.get("date") or "")[:10],
                 "game_time": ev.get("date"),
                 "completed": (ev.get("status") or {}).get("type", {}).get("completed", False),
+                # ESPN season type: 1=preseason, 2=regular season,
+                # 3=postseason, 4=offseason/all-star (verified against live
+                # payloads). None when ESPN omits it. results_range drops
+                # non-regular/post types; slate keeps everything so a
+                # preseason slate still displays.
+                "season_type": (ev.get("season") or {}).get("type"),
+                # neutral-site venue (bowls, Super Bowl, internationals)
+                "neutral": bool(comp.get("neutralSite") or False),
                 "home_team": home["team"],
                 "away_team": away["team"],
                 "home_score": home["score"],
@@ -93,6 +101,10 @@ def _parse_scoreboard(data: dict, sport_key: str) -> list[dict]:
             "game_time": ev.get("date"),
             "state": stype.get("state"),          # pre / in / post
             "detail": stype.get("shortDetail"),   # "Q3 4:21", "Final", "8:00 PM"
+            # unfiltered here (a preseason scoreboard should still display) —
+            # carried so callers can filter; semantics as in _parse_events
+            "season_type": (ev.get("season") or {}).get("type"),
+            "neutral": bool(comp.get("neutralSite") or False),
             "home": home, "away": away,
         })
     return out
@@ -254,17 +266,114 @@ def _football_box(data: dict, event_id) -> list[dict]:
     return list(players.values())
 
 
+# ESPN NHL boxscore blocks ("forwards"/"defenses"/"skaters" and "goalies"):
+# machine stat key -> our log field. Field names match the committed NHL
+# backfill schema (scripts/import_nhl_skaters.py ->
+# data/history/backfill/nhl/<year>/player_games.jsonl.gz) so the forward
+# store lines up with history and with what models/nhl_props.py and
+# playerlogs.MARKET_STAT expect (shots/goals/assists/points/blocks/hits/pim;
+# saves/shots_against/goals_against). ESPN's ``shotsTotal`` is shots on goal
+# (cross-checked vs the backfill on a live 2025-01-15 CAR@BUF payload) and
+# carries no ``points`` key, so points = goals + assists like the importer.
+_NHL_SKATER_KEYS = {
+    "goals": "goals", "assists": "assists", "shotsTotal": "shots",
+    "blockedShots": "blocks", "hits": "hits", "penaltyMinutes": "pim",
+}
+_NHL_GOALIE_KEYS = {
+    "saves": "saves", "shotsAgainst": "shots_against",
+    "goalsAgainst": "goals_against", "penaltyMinutes": "pim",
+}
+_NHL_BLOCKS = {
+    "forwards": ("F", _NHL_SKATER_KEYS), "defenses": ("D", _NHL_SKATER_KEYS),
+    "skaters": ("F", _NHL_SKATER_KEYS), "goalies": ("G", _NHL_GOALIE_KEYS),
+}
+
+
+def _toi_seconds(v):
+    """'MM:SS' (or 'H:MM:SS') time-on-ice -> integer seconds, matching the
+    backfill's ``toi`` unit; None on anything unparseable."""
+    if v is None:
+        return None
+    s = str(v).strip()
+    if ":" in s:
+        try:
+            sec = 0
+            for p in s.split(":"):
+                sec = sec * 60 + int(p)
+            return sec
+        except ValueError:
+            return None
+    n = _to_num(s)
+    return int(n) if n is not None else None
+
+
+def _hockey_box(data: dict, event_id) -> list[dict]:
+    """Per-player skater + goalie lines for a finished NHL game, shaped like
+    the committed NHL backfill rows (full team names, F/D/G positions)."""
+    box = data.get("boxscore", {})
+    teams = box.get("players", [])
+    # full names to match the backfill's team/opponent convention
+    names = [(t.get("team", {}) or {}).get("displayName")
+             or (t.get("team", {}) or {}).get("abbreviation") or ""
+             for t in teams]
+    rows = []
+    for idx, t in enumerate(teams):
+        opp = names[1 - idx] if len(names) == 2 else ""
+        for block in t.get("statistics", []):
+            spec = _NHL_BLOCKS.get((block.get("name") or "").lower())
+            if not spec:
+                continue
+            default_pos, fields = spec
+            keys = block.get("keys") or block.get("names") or []
+            for ath in block.get("athletes", []):
+                stats = ath.get("stats", []) or []
+                athlete = ath.get("athlete", {}) or {}
+                name = athlete.get("displayName")
+                if not name or not stats:   # scratches carry no stats
+                    continue
+                vals = dict(zip(keys, stats))
+                pos = ((athlete.get("position") or {}).get("abbreviation")
+                       or "").upper()
+                position = ("G" if default_pos == "G"
+                            else "D" if pos == "D" else "F")
+                pid = _to_num(athlete.get("id"))
+                row = {"game_pk": event_id, "team": names[idx],
+                       "opponent": opp, "name": name, "position": position,
+                       "player_id": int(pid) if pid is not None else None}
+                for k, field in fields.items():
+                    v = _to_num(vals.get(k))
+                    if v is not None:
+                        row[field] = v
+                if default_pos != "G":
+                    g, a = row.get("goals"), row.get("assists")
+                    if g is not None or a is not None:
+                        row["points"] = (g or 0) + (a or 0)
+                toi = _toi_seconds(vals.get("timeOnIce"))
+                if toi is not None:
+                    row["toi"] = toi
+                rows.append(row)
+    return rows
+
+
 def box_player_logs(sport_key: str, event_id) -> list[dict]:
     """Per-player box-score lines for a finished game. Basketball: points,
     rebounds, assists, steals, blocks, threes. Football: passing/rushing/
-    receiving/kicking stat lines. Returns [] on any issue."""
+    receiving/kicking stat lines. Hockey: skater goals/assists/points/shots/
+    blocks/hits/pim and goalie saves/shots_against/goals_against.
+    Returns [] on any issue."""
     try:
         data = _summary(sport_key, event_id)
     except Exception:
         return []
-    if "football" in (SPORTS[sport_key].espn_path or ""):
+    path = SPORTS[sport_key].espn_path or ""
+    if "football" in path:
         try:
             return _football_box(data, event_id)
+        except Exception:
+            return []
+    if "hockey" in path:
+        try:
+            return _hockey_box(data, event_id)
         except Exception:
             return []
     box = data.get("boxscore", {})
@@ -376,24 +485,56 @@ def tennis_matches(sport_key: str, start: str, end: str,
     out, seen = [], set()
     while d0 <= d1:
         chunk_end = min(d0 + timedelta(days=149), d1)
-        rng = f"{d0.strftime('%Y%m%d')}-{chunk_end.strftime('%Y%m%d')}"
-        data = cached_json(f"espn:tennis:{sport_key}:{rng}", _TTL_RESULTS,
-                           lambda rng=rng: _get(sport_key, {"dates": rng}))
-        for m in _parse_tennis(data):
-            if m["match_id"] in seen:
-                continue
-            if completed_only and not (m["completed"] and m["winner"]):
-                continue
-            seen.add(m["match_id"])
-            out.append(m)
+        for data in _fetch_range("espn:tennis:v2", sport_key, d0, chunk_end):
+            for m in _parse_tennis(data):
+                if m["match_id"] in seen:
+                    continue
+                if completed_only and not (m["completed"] and m["winner"]):
+                    continue
+                seen.add(m["match_id"])
+                out.append(m)
         d0 = chunk_end + timedelta(days=1)
     return out
 
 
+# ESPN caps every scoreboard response at the request ``limit`` and silently
+# drops the tail — the ``page`` param is accepted but ignored (verified live:
+# page=2 returns the identical events). So multi-day fetches always request
+# this high limit (overriding sp.espn_params limits meant for one-day slates,
+# e.g. NCAAF's 400) and treat a response that reaches it as saturated.
+_RANGE_LIMIT = 1000
+
+
+def _fetch_range(cache_prefix: str, sport_key: str, d0, d1) -> list[dict]:
+    """Raw scoreboard payloads covering [d0, d1] (datetime.date objects).
+    A response with >= _RANGE_LIMIT events is saturated (ESPN truncated the
+    tail), so the window is split in half recursively until each response is
+    below the cap; a saturated single day can't be split further and is
+    returned as-is (never observed — no league plays 1000 games in a day)."""
+    from datetime import timedelta
+
+    rng = f"{d0.strftime('%Y%m%d')}-{d1.strftime('%Y%m%d')}"
+    data = cached_json(
+        f"{cache_prefix}:{sport_key}:{rng}",
+        _TTL_RESULTS,
+        lambda: _get(sport_key, {"dates": rng, "limit": _RANGE_LIMIT}),
+    )
+    if len(data.get("events") or []) >= _RANGE_LIMIT and d0 < d1:
+        mid = d0 + (d1 - d0) // 2
+        return (_fetch_range(cache_prefix, sport_key, d0, mid)
+                + _fetch_range(cache_prefix, sport_key,
+                               mid + timedelta(days=1), d1))
+    return [data]
+
+
 def results_range(sport_key: str, start: str, end: str) -> list[dict]:
-    """Completed games with final scores in [start, end]. ESPN rejects very
-    long date ranges (observed 400s past ~1 year), so wide windows are
-    chunked into <=150-day requests and merged."""
+    """Completed regular-season and postseason games with final scores in
+    [start, end]. ESPN rejects very long date ranges (observed 400s past ~1
+    year), so wide windows are chunked into <=150-day requests and merged;
+    each request saturating ESPN's response cap is split in half (see
+    _fetch_range). Preseason and offseason/all-star events (season_type 1/4)
+    are dropped so exhibition scores never reach ratings or Elo; events with
+    no season type are kept."""
     from datetime import date, timedelta
 
     d0 = date.fromisoformat(start)
@@ -402,16 +543,12 @@ def results_range(sport_key: str, start: str, end: str) -> list[dict]:
     seen: set = set()
     while d0 <= d1:
         chunk_end = min(d0 + timedelta(days=149), d1)
-        rng = f"{d0.strftime('%Y%m%d')}-{chunk_end.strftime('%Y%m%d')}"
-        data = cached_json(
-            f"espn:results:{sport_key}:{rng}",
-            _TTL_RESULTS,
-            lambda rng=rng: _get(sport_key, {"dates": rng}),
-        )
-        for g in _parse_events(data):
-            if (g["completed"] and g["home_score"] is not None
-                    and g["game_id"] not in seen):
-                seen.add(g["game_id"])
-                out.append(g)
+        for data in _fetch_range("espn:results:v2", sport_key, d0, chunk_end):
+            for g in _parse_events(data):
+                if (g["completed"] and g["home_score"] is not None
+                        and g["season_type"] in (None, 2, 3)
+                        and g["game_id"] not in seen):
+                    seen.add(g["game_id"])
+                    out.append(g)
         d0 = chunk_end + timedelta(days=1)
     return out

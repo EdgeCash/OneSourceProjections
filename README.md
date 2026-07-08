@@ -86,13 +86,19 @@ defines the calendar; override with `--sports`).
   into the moneyline win probability. WNBA uses 0.35 off/def + 0.65 Elo,
   which backtests to Brier 0.227 → **0.215** (favorite hit-rate
   0.62 → 0.67), well-calibrated across a 0.2–0.9 range. The Elo (and rest)
-  adjustment is folded back into the projection's **margin** via
-  `with_consistent_margin`, so the spread cover probability always agrees with
-  the moneyline — previously the moneyline used Elo while the spread was priced
-  off the raw points-model margin, a silent inconsistency. (For the Poisson
-  sports — NHL — the cover is simulated from the score lambdas, so this
-  normal-model fix is a no-op there; that cover stays Elo-independent, a known
-  limitation.)
+  adjustment is folded back into the projection via `with_consistent_margin`,
+  so the published numbers always agree with each other: for normal-model
+  sports the margin **and the side scores** are re-derived from the blended
+  win prob (moneyline, spread cover, and the displayed "Team A x.x / Team B
+  y.y" all carry the same information); for the Poisson sports (NHL) the
+  score lambdas are tilted to match the blended win prob while holding the
+  total, so the puck line and totals see the Elo/rest signal too. The NHL
+  simulation resolves regulation ties with one decisive OT/shootout goal
+  (margins of ±1, totals settle OT-inclusive, the way books grade). Elo
+  seasons are labeled by league year (an NBA season spanning New Year is one
+  season), results feeds are paged past ESPN's per-request cap and filtered
+  to regular season + playoffs, and neutral-site games skip both the model's
+  home advantage and Elo's home edge.
 - **Props**: BettingPros `/props` supplies every line plus their premium
   projection; FantasyPros daily projections blend in where they exist
   (NBA). Our distribution layer converts the blended projection into
@@ -106,7 +112,12 @@ defines the calendar; override with `--sports`).
 ### Edges
 
 Model probability vs the best available price from BettingPros → EV per
-unit and quarter-Kelly stake, for every game market and prop.
+unit and quarter-Kelly stake, for every game market and prop. Whole-number
+lines (totals, spreads, integer prop lines) carry the model's push mass
+explicitly — a push is a stake refund, neither a win for the under nor a
+loss for the over — and every Kelly stake is sized from the same
+calibrated, market-blended probability the EV was computed from, never the
+raw model probability.
 
 ## Setup
 

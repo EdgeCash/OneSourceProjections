@@ -53,8 +53,16 @@ def _ip_to_float(v):
 
 def _mlb_rows(season: int) -> pd.DataFrame:
     """Flat per-player-game rows for a season from backfill (nested stats)
-    plus the forward store (flat), with name/team/position/started. All
-    stat columns are numeric-coerced (sources mix strings and numbers)."""
+    plus the forward store (flat), with name/team/position/started/ids. All
+    stat columns are numeric-coerced (sources mix strings and numbers).
+
+    De-duplication (audit #9): the old key (norm_name, date) deleted the
+    second game of every doubleheader and collapsed distinct same-named
+    players. The key is now (player_id, game_pk) — falling back to norm_name
+    / date only for the component a row is missing (early forward-store rows
+    carry game_pk but no player_id; both sources normally carry both) — and
+    id-less rows that duplicate an id-carrying row of the same (name, game)
+    are dropped so overlapping backfill/forward coverage can't double-count."""
     frames = []
     bf = history.player_games("mlb", seasons=[season])
     if not bf.empty:
@@ -62,6 +70,7 @@ def _mlb_rows(season: int) -> pd.DataFrame:
             "name": bf["player_name"], "player_id": bf.get("player_id"),
             "team": bf.get("team"), "position": bf.get("position"),
             "started": bf.get("started"), "date": bf["date"],
+            "game_pk": bf.get("game_pk"),
         })
         for f in set(_PITCH_FIELDS + _BAT_FIELDS):
             flat[f] = bf["stats"].map(lambda s, k=f: (s or {}).get(k))
@@ -76,6 +85,7 @@ def _mlb_rows(season: int) -> pd.DataFrame:
                 "name": raw.get("name"), "player_id": raw.get("player_id"),
                 "team": raw.get("team"), "position": raw.get("position"),
                 "started": raw.get("started"), "date": raw.get("date"),
+                "game_pk": raw.get("game_pk"),
             })
             for f in set(_PITCH_FIELDS + _BAT_FIELDS):
                 keep[f] = raw.get(f)
@@ -86,9 +96,24 @@ def _mlb_rows(season: int) -> pd.DataFrame:
     df["inningsPitched"] = df["inningsPitched"].map(_ip_to_float)
     for f in set(_PITCH_FIELDS + _BAT_FIELDS) - {"inningsPitched"}:
         df[f] = pd.to_numeric(df[f], errors="coerce")
+    df["player_id"] = pd.to_numeric(df["player_id"], errors="coerce")
+    df["game_pk"] = pd.to_numeric(df["game_pk"], errors="coerce")
     df["norm_name"] = df["name"].map(normalize)
     df["date"] = pd.to_datetime(df["date"])
-    return df.drop_duplicates(["norm_name", "date"], keep="last")
+    # player key: id where present (separates same-named players), else name;
+    # game key: game_pk where present (keeps doubleheaders), else the date.
+    pkey = df["player_id"].astype("object").where(
+        df["player_id"].notna(), "n:" + df["norm_name"].astype(str))
+    gkey = df["game_pk"].astype("object").where(
+        df["game_pk"].notna(), df["date"].astype(str))
+    df = df.loc[~pd.DataFrame({"p": pkey, "g": gkey}).duplicated(keep="last")]
+    # drop id-less rows shadowing an id-carrying row of the same (name, game)
+    has_id = df["player_id"].notna()
+    gkey = gkey.loc[df.index]
+    seen = set(zip(df.loc[has_id, "norm_name"], gkey[has_id]))
+    shadow = ~has_id & pd.Series(
+        list(zip(df["norm_name"], gkey)), index=df.index).isin(seen)
+    return df.loc[~shadow].reset_index(drop=True)
 
 
 def _fip(hr, bb, hbp, k, ip, prior_ip: float) -> float:
@@ -96,7 +121,6 @@ def _fip(hr, bb, hbp, k, ip, prior_ip: float) -> float:
     return (raw * ip + LEAGUE_FIP * prior_ip) / (ip + prior_ip)
 
 
-@lru_cache(maxsize=4)
 @lru_cache(maxsize=4)
 def _reliever_daily(season: int) -> pd.DataFrame:
     """Per (team, date) relief innings — the input to bullpen-fatigue."""
@@ -132,6 +156,15 @@ def bullpen_fatigue(season: int, team: str, asof: str, days: int = 2) -> dict:
     return {"ip": ip, "appearances_days": n_days, "level": level}
 
 
+def _player_key(df: pd.DataFrame) -> pd.Series:
+    """Aggregation key: player_id where present (distinguishes same-named
+    players), normalized name otherwise. The frames returned to consumers keep
+    a norm_name column, so name-keyed lookups still work."""
+    return df["player_id"].astype("object").where(
+        df["player_id"].notna(), "n:" + df["norm_name"].astype(str))
+
+
+@lru_cache(maxsize=4)
 def pitcher_table(season: int) -> pd.DataFrame:
     """Starter rates: Name, norm_name, FIP, K%, IP, GS."""
     df = _mlb_rows(season)
@@ -140,14 +173,15 @@ def pitcher_table(season: int) -> pd.DataFrame:
     sp = df[(df["position"] == "P") & (df["started"] == True)]  # noqa: E712
     if sp.empty:
         return pd.DataFrame(columns=["Name", "norm_name"])
-    agg = sp.groupby("norm_name").agg(
-        Name=("name", "first"),
+    agg = sp.groupby(_player_key(sp)).agg(
+        Name=("name", "first"), norm_name=("norm_name", "first"),
+        player_id=("player_id", "first"),
         k=("strikeOuts", "sum"), bf=("battersFaced", "sum"),
         ip=("inningsPitched", "sum"), bb=("baseOnBalls", "sum"),
         hbp=("hitByPitch", "sum"), hr=("homeRuns", "sum"),
         hits=("hits", "sum"), er=("earnedRuns", "sum"),
         GS=("date", "count"),
-    ).reset_index()
+    ).reset_index(drop=True)
     agg = agg[agg["ip"] > 0]
     agg["FIP"] = [
         round(_fip(r.hr or 0, r.bb or 0, r.hbp or 0, r.k or 0, r.ip, SP_IP_PRIOR), 3)
@@ -161,8 +195,8 @@ def pitcher_table(season: int) -> pd.DataFrame:
     agg["ERA"] = (agg["er"] / ip * 9).round(3)
     agg["BB%"] = (agg["bb"] / agg["bf"].replace(0, np.nan)).round(4)
     agg["IP"] = agg["ip"]
-    return agg[["Name", "norm_name", "FIP", "K%", "H/9", "BB/9", "ERA", "BB%",
-                "IP", "GS"]]
+    return agg[["Name", "norm_name", "player_id", "FIP", "K%", "H/9", "BB/9",
+                "ERA", "BB%", "IP", "GS"]]
 
 
 @lru_cache(maxsize=4)
@@ -194,12 +228,13 @@ def batter_table(season: int) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame(columns=["Name", "norm_name"])
     bat = df[df["position"] != "P"]
-    agg = bat.groupby("norm_name").agg(
-        Name=("name", "first"), player_id=("player_id", "first"),
+    agg = bat.groupby(_player_key(bat)).agg(
+        Name=("name", "first"), norm_name=("norm_name", "first"),
+        player_id=("player_id", "first"),
         H=("hits", "sum"), TB=("totalBases", "sum"), HR=("homeRuns", "sum"),
         AB=("atBats", "sum"), PA=("plateAppearances", "sum"),
         BB=("baseOnBalls", "sum"), K=("strikeOuts", "sum"),
-    ).reset_index()
+    ).reset_index(drop=True)
     agg = agg[agg["AB"] > 0]
     agg["AVG"] = (agg["H"] / agg["AB"]).round(4)
     agg["SLG"] = (agg["TB"] / agg["AB"]).round(4)
@@ -226,3 +261,4 @@ def clear_caches():
     pitcher_table.cache_clear()
     bullpen_fip.cache_clear()
     batter_table.cache_clear()
+    _reliever_daily.cache_clear()

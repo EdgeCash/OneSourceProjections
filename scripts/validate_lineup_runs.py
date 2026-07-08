@@ -17,7 +17,6 @@ live as-of feed avoids) — a directional read on which SOURCE and blend help.
 """
 import json
 import sys
-from pathlib import Path
 
 import numpy as np
 
@@ -29,9 +28,8 @@ from project547.names import normalize
 SEASON = int(sys.argv[1]) if len(sys.argv) > 1 else 2024
 N_GAMES = int(sys.argv[2]) if len(sys.argv) > 2 else 500
 START = int(sys.argv[3]) if len(sys.argv) > 3 else 300
-CACHE = Path("/tmp/claude-0/-home-user-OneSourceProjections/"
-             "9efcf663-6afa-5006-be22-a5d4da8d7bac/scratchpad") \
-    / f"lineup_ids_{SEASON}.json"
+# repo-local cache dir (data/cache is gitignored) so re-runs are resumable
+CACHE = config.CACHE_DIR / f"lineup_ids_{SEASON}.json"
 CACHE.parent.mkdir(parents=True, exist_ok=True)
 
 

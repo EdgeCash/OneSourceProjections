@@ -30,18 +30,29 @@ def devig_two_way(p_a: float, p_b: float) -> tuple[float, float]:
     return p_a / total, p_b / total
 
 
-def expected_value(model_prob: float, american: float) -> float:
-    """EV per 1 unit staked at the quoted price given our win probability."""
+def expected_value(model_prob: float, american: float,
+                   push_prob: float = 0.0) -> float:
+    """EV per 1 unit staked at the quoted price given our win probability.
+
+    ``push_prob`` is the probability the bet pushes (integer total/spread/prop
+    lines): a push refunds the stake, so it is neither a win nor a loss —
+    the losing mass is ``1 - model_prob - push_prob``, not ``1 - model_prob``.
+    Default 0.0 keeps the historical two-outcome behavior for half lines."""
     dec = american_to_decimal(american)
-    return model_prob * (dec - 1) - (1 - model_prob)
+    return model_prob * (dec - 1) - max(0.0, 1 - model_prob - push_prob)
 
 
-def kelly_stake(model_prob: float, american: float, fraction: float = 1.0) -> float:
-    """Kelly criterion stake as a fraction of bankroll (0 if no edge)."""
+def kelly_stake(model_prob: float, american: float, fraction: float = 1.0,
+                push_prob: float = 0.0) -> float:
+    """Kelly criterion stake as a fraction of bankroll (0 if no edge).
+
+    ``push_prob``: probability the bet pushes (stake refunded). Pushes drop
+    out of both the win and loss legs, so the numerator uses the true losing
+    mass ``1 - model_prob - push_prob``."""
     b = american_to_decimal(american) - 1
     if b <= 0:
         return 0.0
-    full = (model_prob * b - (1 - model_prob)) / b
+    full = (model_prob * b - max(0.0, 1 - model_prob - push_prob)) / b
     return max(0.0, full * fraction)
 
 

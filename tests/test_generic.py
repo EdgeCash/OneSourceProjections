@@ -73,15 +73,142 @@ def test_with_consistent_margin_aligns_moneyline_and_spread():
     assert adj.total_mean == proj.total_mean
 
 
-def test_with_consistent_margin_noop_for_poisson():
-    """Poisson sports (NHL) carry no margin mean; the helper only refreshes the
-    win prob and leaves cover lambda-driven."""
+def test_with_consistent_margin_normal_scores_agree():
+    """Normal branch: the published side scores are re-split around the
+    unchanged total so they agree with the back-solved margin."""
+    import pytest
+    nba = SPORTS["NBA"]
+    a, b = _ratings(114, 114, 114, 114, nba.league_ppg)
+    proj = generic.project_game(nba, a, b)
+    adj = generic.with_consistent_margin(proj, 0.63, nba)
+    assert adj.home_exp - adj.away_exp == pytest.approx(adj.margin_mean, abs=1e-9)
+    assert adj.home_exp + adj.away_exp == pytest.approx(adj.total_mean, abs=1e-9)
+    assert adj.total_mean == proj.total_mean
+    assert abs(adj.home_win_prob - 0.63) < 1e-3
+
+
+def test_with_consistent_margin_tilts_poisson_lambdas():
+    """Poisson sports (NHL): the lambdas are tilted so the puck line and the
+    totals see the same Elo/rest blend the moneyline carries. The total is
+    preserved; the analytic win prob under the tilted lambdas hits the target."""
     nhl = SPORTS["NHL"]
     good, bad = _ratings(3.8, 2.4, 2.4, 3.8, nhl.league_ppg)
     proj = generic.project_game(nhl, good, bad)
-    adj = generic.with_consistent_margin(proj, 0.72, nhl)
-    assert abs(adj.home_win_prob - 0.72) < 1e-3
-    assert adj.margin_mean == proj.margin_mean  # unchanged (None)
+    target = round(min(0.95, proj.home_win_prob + 0.08), 4)  # Elo pushes UP
+    adj = generic.with_consistent_margin(proj, target, nhl)
+    assert adj.home_win_prob == round(target, 4)
+    assert adj.margin_mean is None
+    # total exactly preserved; the tilt is additive (+d / -d)
+    assert adj.total_mean == proj.total_mean
+    assert abs((adj.home_exp + adj.away_exp) - proj.total_mean) < 0.02
+    # lambdas actually moved toward the (higher) target win prob
+    assert adj.home_exp != proj.home_exp
+    # analytic win prob at the tilted lambdas matches the target...
+    assert abs(generic._analytic_poisson_win(adj.home_exp, adj.away_exp)
+               - target) < 5e-3
+    # ...and the simulation the cover/totals are priced from agrees (MC noise)
+    assert abs(generic._poisson_win_prob(adj.home_exp, adj.away_exp)
+               - target) < 0.02
+    # cover prob now reflects the blend: a stronger home tilt covers -1.5 more
+    raw_cover = proj.home_cover_prob(-1.5, nhl)
+    assert adj.home_cover_prob(-1.5, nhl) > raw_cover
+
+
+def test_with_consistent_margin_poisson_downgrade():
+    """The tilt works in both directions — an Elo blend can also pull the
+    favorite's win prob DOWN."""
+    nhl = SPORTS["NHL"]
+    good, bad = _ratings(3.8, 2.4, 2.4, 3.8, nhl.league_ppg)
+    proj = generic.project_game(nhl, good, bad)
+    target = max(0.05, proj.home_win_prob - 0.15)
+    adj = generic.with_consistent_margin(proj, target, nhl)
+    assert abs(generic._analytic_poisson_win(adj.home_exp, adj.away_exp)
+               - target) < 5e-3
+    assert adj.total_mean == proj.total_mean
+
+
+def test_poisson_ot_resolution_one_goal():
+    """Regulation ties get exactly ONE decisive goal: every tied draw finishes
+    at a ±1 margin (never +2/+3), and the OT goal is included in the totals."""
+    import numpy as np
+    rng = np.random.default_rng(7)
+    lam_h, lam_a = 3.0, 2.8
+    reg_h = rng.poisson(lam_h, 20_000).astype(float)
+    reg_a = rng.poisson(lam_a, 20_000).astype(float)
+    reg_ties = reg_h == reg_a
+    h, a = generic._poisson_draws(lam_h, lam_a)  # same seed/order as above
+    margins = h - a
+    assert not (margins == 0).any()                       # no unresolved ties
+    assert set(np.unique(margins[reg_ties])) == {-1.0, 1.0}  # one-goal OT only
+    # the OT goal is counted: tied games settle at regulation total + 1
+    assert ((h + a)[reg_ties] == (reg_h + reg_a)[reg_ties] + 1).all()
+    # non-tied games are untouched
+    assert (h[~reg_ties] == reg_h[~reg_ties]).all()
+    assert (a[~reg_ties] == reg_a[~reg_ties]).all()
+    # home takes the extra goal roughly lam_h/(lam_h+lam_a) of the time
+    share = float((margins[reg_ties] == 1).mean())
+    assert abs(share - lam_h / (lam_h + lam_a)) < 0.05
+
+
+def test_prob_push_totals():
+    """Integer total lines carry push mass; half lines never push. Normal
+    model uses the continuity band, Poisson counts exact simulated totals."""
+    nba = SPORTS["NBA"]
+    a, b = _ratings(114, 114, 114, 114, nba.league_ppg)
+    proj = generic.project_game(nba, a, b)
+    line = round(proj.total_mean)
+    push = proj.prob_push(line, nba)
+    from scipy import stats as st
+    expect = (st.norm.cdf(line + 0.5, proj.total_mean, nba.sigma_total)
+              - st.norm.cdf(line - 0.5, proj.total_mean, nba.sigma_total))
+    assert abs(push - expect) < 1e-12 and push > 0
+    assert proj.prob_push(line + 0.5, nba) == 0.0
+
+    nhl = SPORTS["NHL"]
+    good, bad = _ratings(3.8, 2.4, 2.4, 3.8, nhl.league_ppg)
+    pnhl = generic.project_game(nhl, good, bad)
+    p6 = pnhl.prob_push(6.0, nhl)
+    assert 0.05 < p6 < 0.30            # real push mass at an NHL total of 6
+    assert pnhl.prob_push(6.5, nhl) == 0.0
+    # over/push/under partition the simulated totals exactly
+    h, aa = pnhl._sim()
+    p_over = pnhl.prob_over(6.0, nhl)
+    p_under = float(((h + aa) < 6.0).mean())
+    assert abs(p_over + p6 + p_under - 1.0) < 1e-12
+
+
+def test_home_cover_push_prob():
+    nba = SPORTS["NBA"]
+    a, b = _ratings(120, 105, 105, 120, nba.league_ppg)
+    proj = generic.project_game(nba, a, b)
+    spread = -round(proj.home_exp - proj.away_exp)   # integer home handicap
+    push = proj.home_cover_push_prob(spread, nba)
+    assert push > 0
+    assert proj.home_cover_push_prob(spread - 0.5, nba) == 0.0
+
+    nhl = SPORTS["NHL"]
+    good, bad = _ratings(3.8, 2.4, 2.4, 3.8, nhl.league_ppg)
+    pnhl = generic.project_game(nhl, good, bad)
+    # margin == +1 has mass (OT winners land there); -1.5 spreads can't push
+    assert pnhl.home_cover_push_prob(-1.0, nhl) > 0.0
+    assert pnhl.home_cover_push_prob(-1.5, nhl) == 0.0
+    # with one-goal OT resolution the margin is never 0: pick'em can't push
+    assert pnhl.home_cover_push_prob(0.0, nhl) == 0.0
+
+
+def test_totals_include_ot_scoring():
+    """P(over) for Poisson sports now comes from the OT-inclusive simulation:
+    strictly more over mass than the regulation-only Poisson CDF at the same
+    line, and over+push+under sums to 1 at integer lines."""
+    from scipy import stats as st
+    nhl = SPORTS["NHL"]
+    a, b = _ratings(3.0, 3.0, 3.0, 3.0, nhl.league_ppg)
+    proj = generic.project_game(nhl, a, b)
+    lam = proj.home_exp + proj.away_exp
+    p_reg_only = float(1 - st.poisson.cdf(6, lam))
+    assert proj.prob_over(6.0, nhl) > p_reg_only
+    # half line behaves like P(total >= 7) on the simulated totals
+    assert proj.prob_over(6.5, nhl) == proj.prob_over(6.0, nhl)
 
 
 def test_prop_distributions():
@@ -101,6 +228,44 @@ def test_prop_distributions():
     # above the mean points carry more tail mass
     assert (generic.prop_prob_over(6, 9.5, "Points")
             > generic.prop_prob_over(6, 9.5, "Assists"))
+
+
+def test_neutral_site_drops_hfa():
+    """neutral=True removes the ±hfa/2 tilt: an even matchup is a coin flip
+    and the expected scores are symmetric."""
+    for key in ("NFL", "NCAAF", "NBA"):
+        sport = SPORTS[key]
+        lg = sport.league_ppg
+        a, b = _ratings(lg, lg, lg, lg, lg)
+        h_n, a_n = generic.expected_score(sport, a, b, neutral=True)
+        assert abs(h_n - a_n) < 1e-9                    # no home tilt
+        h_h, a_h = generic.expected_score(sport, a, b)  # default: home site
+        assert h_h - a_h > 1e-9                         # HFA present by default
+        proj = generic.project_game(sport, a, b, neutral=True)
+        assert abs(proj.home_win_prob - 0.5) < 1e-6
+        assert generic.project_game(sport, a, b).home_win_prob > 0.5
+
+
+def test_prop_push_prob():
+    from scipy import stats as st
+    # counting stat at an integer line -> NB pmf at that line
+    push = generic.prop_push_prob(6.0, 6, "Assists")
+    size = generic.NB_DISPERSION["assist"]
+    p = size / (size + 6.0)
+    assert abs(push - float(st.nbinom.pmf(6, size, p))) < 1e-12
+    assert push > 0
+    # half lines never push
+    assert generic.prop_push_prob(6.0, 6.5, "Assists") == 0.0
+    assert generic.prop_push_prob(60, 59.5, "Receiving Yards") == 0.0
+    # yardage market at an integer line -> normal continuity band
+    y = generic.prop_push_prob(60, 60, "Receiving Yards")
+    sd = 0.25 * 60 + 10
+    expect = st.norm.cdf(60.5, 60, sd) - st.norm.cdf(59.5, 60, sd)
+    assert abs(y - expect) < 1e-12
+    # over + push + under == 1 at integer lines (NB is exactly partitioned)
+    over = generic.prop_prob_over(6.0, 6, "Assists")
+    under = float(st.nbinom.cdf(5, size, p))
+    assert abs(over + push + under - 1.0) < 1e-12
 
 
 def test_multiplicative_amplifies_matchup_extremes():

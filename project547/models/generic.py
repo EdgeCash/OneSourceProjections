@@ -94,8 +94,12 @@ def expected_score(
     sport: Sport,
     home: TeamRating | None,
     away: TeamRating | None,
+    neutral: bool = False,
 ) -> tuple[float, float]:
+    """Expected (home, away) score. ``neutral`` drops the home-field advantage
+    (bowls, Super Bowl, international games): no ±hfa/2 tilt."""
     league = sport.league_ppg
+    hfa = 0.0 if neutral else sport.hfa
     h_off = home.scored if home else league
     h_def = home.allowed if home else league
     a_off = away.scored if away else league
@@ -104,11 +108,11 @@ def expected_score(
         # log5-for-points: base scoring environment scaled by how good the
         # offense is and how leaky the opposing defense is, relative to league.
         # Captures matchup extremes the midpoint average compresses.
-        h_exp = league * (h_off / league) * (a_def / league) + sport.hfa / 2
-        a_exp = league * (a_off / league) * (h_def / league) - sport.hfa / 2
+        h_exp = league * (h_off / league) * (a_def / league) + hfa / 2
+        a_exp = league * (a_off / league) * (h_def / league) - hfa / 2
     else:
-        h_exp = (h_off + a_def) / 2 + sport.hfa / 2
-        a_exp = (a_off + h_def) / 2 - sport.hfa / 2
+        h_exp = (h_off + a_def) / 2 + hfa / 2
+        a_exp = (a_off + h_def) / 2 - hfa / 2
     return max(h_exp, league * 0.3), max(a_exp, league * 0.3)
 
 
@@ -125,12 +129,40 @@ class GenericGameProjection:
     def _margin(self) -> float:
         return self.margin_mean if self.margin_mean is not None else self.home_exp - self.away_exp
 
+    def _sim(self):
+        """Lazily cached Monte-Carlo score draws for Poisson sports. The seed
+        is fixed, so the draws are deterministic; caching them per instance
+        means the moneyline, cover, totals, and push probabilities all settle
+        against the same simulated final scores (including the one-goal OT/SO
+        resolution)."""
+        draws = getattr(self, "_sim_cache", None)
+        if draws is None:
+            draws = _poisson_draws(self.home_exp, self.away_exp)
+            self._sim_cache = draws
+        return draws
+
     def prob_over(self, line: float, sport: Sport) -> float:
         if sport.model == "normal":
             return float(1 - stats.norm.cdf(line, self.total_mean, sport.sigma_total))
-        lam_h, lam_a = self.home_exp, self.away_exp
-        # total of two Poissons is Poisson(lam_h + lam_a)
-        return float(1 - stats.poisson.cdf(int(line), lam_h + lam_a))
+        # Poisson sports settle from the simulated *final* scores — ties get
+        # exactly one OT/SO goal, and books count that goal in the total, so
+        # regulation-only Poisson math would systematically under-shoot.
+        h, a = self._sim()
+        return float(((h + a) > line).mean())
+
+    def prob_push(self, line: float, sport: Sport) -> float:
+        """P(the total lands exactly on an integer line) — the push mass a
+        book refunds. 0.0 for half-point lines, which cannot push."""
+        if float(line) != int(line):
+            return 0.0
+        if sport.model == "normal":
+            # continuity treatment: the discrete outcome "total == line" owns
+            # the unit-wide band around the integer under the normal density.
+            lo = stats.norm.cdf(line - 0.5, self.total_mean, sport.sigma_total)
+            hi = stats.norm.cdf(line + 0.5, self.total_mean, sport.sigma_total)
+            return float(hi - lo)
+        h, a = self._sim()
+        return float(((h + a) == line).mean())
 
     def home_cover_prob(self, spread: float, sport: Sport) -> float:
         """P(home margin + spread > 0); spread is the home handicap
@@ -138,7 +170,21 @@ class GenericGameProjection:
         margin_mean = self._margin()
         if sport.model == "normal":
             return float(1 - stats.norm.cdf(-spread, margin_mean, sport.sigma_margin))
-        return _poisson_cover(self.home_exp, self.away_exp, spread)
+        h, a = self._sim()
+        return float(((h - a + spread) > 0).mean())
+
+    def home_cover_push_prob(self, spread: float, sport: Sport) -> float:
+        """P(the home margin exactly offsets an integer spread — i.e.
+        margin == -spread, a spread push). 0.0 for half-point spreads."""
+        if float(spread) != int(spread):
+            return 0.0
+        if sport.model == "normal":
+            m = self._margin()
+            lo = stats.norm.cdf(-spread - 0.5, m, sport.sigma_margin)
+            hi = stats.norm.cdf(-spread + 0.5, m, sport.sigma_margin)
+            return float(hi - lo)
+        h, a = self._sim()
+        return float(((h - a) == -spread).mean())
 
 
 def shift_win_prob(p: float, delta_pts: float, sigma: float) -> float:
@@ -156,8 +202,9 @@ def project_game(
     sport: Sport,
     home: TeamRating | None,
     away: TeamRating | None,
+    neutral: bool = False,
 ) -> GenericGameProjection:
-    h_exp, a_exp = expected_score(sport, home, away)
+    h_exp, a_exp = expected_score(sport, home, away, neutral=neutral)
     margin_mean = None
     if sport.model == "normal":
         margin_mean = h_exp - a_exp
@@ -196,44 +243,98 @@ def with_epa_margin(proj: GenericGameProjection, epa_margin: float,
 
 def with_consistent_margin(proj: GenericGameProjection, win_prob: float,
                            sport: Sport) -> GenericGameProjection:
-    """Rebuild a normal-model projection so its margin — and therefore its
-    spread cover probability — agrees with an *externally adjusted* home win
-    prob (e.g. after an Elo blend and/or a rest-days nudge).
+    """Rebuild a projection so its margin/scores — and therefore its spread
+    cover probability — agree with an *externally adjusted* home win prob
+    (e.g. after an Elo blend and/or a rest-days nudge).
 
-    The adjusted win prob is the source of truth: back-solve the implied
-    home-margin mean through ``sigma_margin`` (the same inversion
-    :func:`shift_win_prob` uses), so the moneyline and the spread can never
-    disagree. Without this, ``home_win_prob`` reflects the Elo/rest blend while
-    ``home_cover_prob`` still reads the raw points-model margin — a silent
-    inconsistency on every spread. Totals are untouched (Elo/rest move the
-    margin, not the combined score). No-op for Poisson sports, whose cover is
-    simulated from the score lambdas rather than a margin mean."""
+    The adjusted win prob is the source of truth; the total is held fixed.
+
+    Normal model: back-solve the implied home-margin mean through
+    ``sigma_margin`` (the same inversion :func:`shift_win_prob` uses) and
+    re-split the published scores around the unchanged total so
+    ``home_exp - away_exp == margin_mean`` — the moneyline, the spread, and
+    the "Team A x.x / Team B y.y" numbers can never disagree.
+
+    Poisson model: additively tilt the score lambdas (``lam_h + d``,
+    ``lam_a - d`` — the total is preserved by construction) until the
+    analytic win probability under the one-goal-OT rule matches the target,
+    so the puck-line cover and the totals simulation see the same Elo/rest
+    blend the moneyline carries. ``margin_mean`` stays None (cover remains
+    lambda-driven)."""
     p = min(max(float(win_prob), 1e-6), 1 - 1e-6)
+    if sport.model == "poisson":
+        lam_h, lam_a = float(proj.home_exp), float(proj.away_exp)
+        total = lam_h + lam_a
+        # Bisect the tilt d on the ANALYTIC win prob (Skellam + the one-goal
+        # OT rule) — bisecting on the Monte-Carlo win prob would chase noise.
+        lo, hi = -total / 2.0, total / 2.0
+        d = 0.0
+        for _ in range(100):
+            w = _analytic_poisson_win(lam_h + d, lam_a - d)
+            if abs(w - p) < 1e-3:
+                break
+            if w < p:
+                lo = d
+            else:
+                hi = d
+            d = (lo + hi) / 2.0
+        return GenericGameProjection(
+            home_exp=round(max(lam_h + d, 1e-6), 2),
+            away_exp=round(max(lam_a - d, 1e-6), 2),
+            home_win_prob=round(p, 4), total_mean=proj.total_mean,
+            margin_mean=None,
+        )
     if sport.model != "normal" or sport.sigma_margin <= 0:
-        # Keep the win prob current; cover stays lambda-driven for Poisson.
+        # No margin machinery (e.g. ATP placeholder): just refresh the win prob.
         return GenericGameProjection(
             home_exp=proj.home_exp, away_exp=proj.away_exp,
             home_win_prob=round(p, 4), total_mean=proj.total_mean,
             margin_mean=proj.margin_mean,
         )
     margin = sport.sigma_margin * stats.norm.ppf(p)
+    # Re-split the published side scores around the (unchanged) total so they
+    # agree with the back-solved margin: home - away == margin, home + away ==
+    # total. away is derived from the rounded home so the identities hold
+    # exactly at 2dp.
+    home_exp = round((proj.total_mean + margin) / 2, 2)
+    away_exp = round(proj.total_mean - home_exp, 2)
     return GenericGameProjection(
-        home_exp=proj.home_exp, away_exp=proj.away_exp,
+        home_exp=home_exp, away_exp=away_exp,
         home_win_prob=round(p, 4), total_mean=proj.total_mean,
-        margin_mean=round(margin, 2),
+        margin_mean=round(home_exp - away_exp, 2),
     )
 
 
 def _poisson_draws(lam_h: float, lam_a: float, n: int = 20_000, seed: int = 7):
+    """Simulated final scores for a Poisson sport, OT/SO included.
+
+    Regulation ties are resolved the way the games actually end: exactly ONE
+    decisive goal, awarded to the home side with probability
+    ``lam_h / (lam_h + lam_a)``. Tied draws therefore finish at a ±1 margin
+    (never +2/+3), and the returned scores INCLUDE the OT/SO goal — books
+    settle totals with it (an OT/SO win counts as one goal)."""
     rng = np.random.default_rng(seed)
     h = rng.poisson(lam_h, n).astype(float)
     a = rng.poisson(lam_a, n).astype(float)
     ties = h == a
-    while ties.any():  # overtime: keep adding small increments until broken
-        h[ties] += rng.poisson(lam_h / 9.0, int(ties.sum()))
-        a[ties] += rng.poisson(lam_a / 9.0, int(ties.sum()))
-        ties = h == a
+    n_ties = int(ties.sum())
+    if n_ties:
+        lam_sum = lam_h + lam_a
+        p_home = lam_h / lam_sum if lam_sum > 0 else 0.5
+        home_scores = rng.random(n_ties) < p_home
+        h[ties] += home_scores
+        a[ties] += ~home_scores
     return h, a
+
+
+def _analytic_poisson_win(lam_h: float, lam_a: float) -> float:
+    """Exact home win probability under independent Poisson scores and the
+    one-goal OT rule: P(H > A) + P(H == A) * lam_h / (lam_h + lam_a).
+    The regulation margin H − A is Skellam(lam_h, lam_a)."""
+    lam_h, lam_a = max(lam_h, 1e-6), max(lam_a, 1e-6)
+    p_reg_win = float(stats.skellam.sf(0, lam_h, lam_a))   # P(H - A >= 1)
+    p_tie = float(stats.skellam.pmf(0, lam_h, lam_a))
+    return p_reg_win + p_tie * lam_h / (lam_h + lam_a)
 
 
 def _poisson_win_prob(lam_h: float, lam_a: float) -> float:
@@ -295,3 +396,21 @@ def prop_prob_over(projection: float, line: float, market_name: str) -> float:
     mean = max(projection, 1e-6)
     p = size / (size + mean)
     return float(1 - stats.nbinom.cdf(int(line), size, p))
+
+
+def prop_push_prob(projection: float, line: float, market_name: str) -> float:
+    """P(stat == line) — the push mass at an integer line, under the same
+    distribution :func:`prop_prob_over` prices the over with. 0.0 for half
+    lines, which cannot push."""
+    if float(line) != int(line):
+        return 0.0
+    name = (market_name or "").lower()
+    if "yard" in name or "longest" in name:
+        sd = 0.25 * projection + 10
+        lo = stats.norm.cdf(line - 0.5, projection, sd)
+        hi = stats.norm.cdf(line + 0.5, projection, sd)
+        return float(hi - lo)
+    size = next((v for k, v in NB_DISPERSION.items() if k in name), DEFAULT_NB_DISPERSION)
+    mean = max(projection, 1e-6)
+    p = size / (size + mean)
+    return float(stats.nbinom.pmf(int(line), size, p))

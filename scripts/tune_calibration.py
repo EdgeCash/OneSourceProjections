@@ -74,7 +74,10 @@ def tune_sport(sport_key: str, seasons: list[int], draws: int) -> dict | None:
         sweep.append({"shrink": s, "matched": cl["games_matched"],
                       "total_units": round(total_units, 2), "total_bets": total_bets,
                       "ml": ml, "total": tot, "spread": spr,
-                      "avg_clv": cl.get("avg_clv_vs_fair")})
+                      # signed home-side model-vs-market bias (NOT CLV) plus the
+                      # genuine per-bet CLV pooled across ML+total+spread bets
+                      "home_prob_bias": cl.get("home_prob_bias"),
+                      "avg_bet_clv": cl.get("avg_bet_clv")})
         if base is None:                       # first pass carries detail + accuracy
             diffs = [g["proj_total"] - (g["home_score"] + g["away_score"])
                      for g in r.get("games", []) if g.get("proj_total") is not None]

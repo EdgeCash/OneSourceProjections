@@ -1950,8 +1950,11 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
     given) — the 'bet ticket' a bettor needs to actually place and size it."""
     calls = []
 
-    def add(label, gate_key, sides, line=None):
-        # sides: list of (name, prob, ev, american_odds)
+    def add(label, gate_key, sides, line=None, p_push=0.0):
+        # sides: list of (name, prob, ev, american_odds); prob is the
+        # market-blended probability the EV was computed from (p_used), so the
+        # Kelly stake below is sized on the same number the selection used —
+        # the raw model prob is systematically more extreme (audit 2026-07 #3).
         opts = [(n, _mcf(p), _mcf(e), _mcf(o)) for (n, p, e, o) in sides
                 if _mcf(p) is not None]
         if not opts:
@@ -1972,7 +1975,8 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
         units = dollars = None
         if (decision in ("PLAY", "LEAN") and ev is not None and ev > 0
                 and price is not None):
-            f = odds.kelly_stake(prob, float(price), config.KELLY_FRACTION)
+            f = odds.kelly_stake(prob, float(price), config.KELLY_FRACTION,
+                                 push_prob=_mcf(p_push) or 0.0)
             if status:
                 try:
                     from project547 import edge_gate
@@ -1988,19 +1992,29 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
                       "gate": status, "stake_units": units,
                       "stake_dollars": dollars})
 
+    # Prefer the pipeline's p_used columns (calibrated + market-blended, the
+    # probability each EV was actually computed from) over the raw model prob;
+    # fall back to the model prob for older latest.json payloads.
+    ml_p = _mcf(g.get("home_ml_p_used"))
     add("Moneyline", "moneyline", [
-        (_last(g.get("away_team")), g.get("away_win_prob"), g.get("away_ml_ev"),
-         g.get("away_ml")),
-        (_last(g.get("home_team")), g.get("home_win_prob"), g.get("home_ml_ev"),
-         g.get("home_ml"))])
+        (_last(g.get("away_team")),
+         (1 - ml_p) if ml_p is not None else g.get("away_win_prob"),
+         g.get("away_ml_ev"), g.get("away_ml")),
+        (_last(g.get("home_team")),
+         ml_p if ml_p is not None else g.get("home_win_prob"),
+         g.get("home_ml_ev"), g.get("home_ml"))])
     mover = _mcf(g.get("model_over_prob"))
     if mover is not None:
         tl = _mcf(g.get("total_line"))
         ln = f" {tl:g}" if tl is not None else ""
+        op = _mcf(g.get("over_p_used"))
+        opsh = _mcf(g.get("over_p_push")) or 0.0
+        o_p = op if op is not None else mover
+        u_p = max(0.0, 1 - o_p - opsh)
         add("Total", "total", [
-            (f"Over{ln}", mover, g.get("over_ev"), g.get("over_odds")),
-            (f"Under{ln}", 1 - mover, g.get("under_ev"), g.get("under_odds"))],
-            line=tl)
+            (f"Over{ln}", o_p, g.get("over_ev"), g.get("over_odds")),
+            (f"Under{ln}", u_p, g.get("under_ev"), g.get("under_odds"))],
+            line=tl, p_push=opsh)
     hc = _mcf(g.get("model_home_rl") if g.get("model_home_rl") is not None
               else g.get("model_home_cover"))
     if hc is not None:
@@ -2010,10 +2024,16 @@ def _mc_market_calls(sport, g, min_edge, gate_table=None, bankroll: float = 0) -
         a_ev = g.get("rl_away_ev") if g.get("rl_away_ev") is not None else g.get("spread_away_ev")
         h_od = g.get("rl_home_odds") if g.get("rl_home_odds") is not None else g.get("spread_home_odds")
         a_od = g.get("rl_away_odds") if g.get("rl_away_odds") is not None else g.get("spread_away_odds")
+        sp_p = _mcf(g.get("rl_home_p_used") if g.get("rl_home_p_used") is not None
+                    else g.get("spread_home_p_used"))
+        sp_push = _mcf(g.get("spread_home_p_push")) or 0.0
+        h_p = sp_p if sp_p is not None else hc
+        a_p = max(0.0, 1 - h_p - sp_push)
         hn = f"{_last(g.get('home_team'))} {sl:+g}" if sl is not None else _last(g.get("home_team"))
         an = f"{_last(g.get('away_team'))} {-sl:+g}" if sl is not None else _last(g.get("away_team"))
         add("Run Line" if sport == "MLB" else "Spread", "spread",
-            [(hn, hc, h_ev, h_od), (an, 1 - hc, a_ev, a_od)], line=sl)
+            [(hn, h_p, h_ev, h_od), (an, a_p, a_ev, a_od)], line=sl,
+            p_push=sp_push)
     return calls
 
 

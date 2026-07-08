@@ -48,6 +48,72 @@ def test_overdispersion_widens_total_tails():
     assert nb.over_probs[12.5] > po.over_probs[12.5]
 
 
+def test_extra_innings_home_tilt():
+    """Walk-off structure (audit #11): tied games break to the home side with
+    HOME_EXTRA_WIN_P, so an even matchup's win prob rises above the old
+    symmetric-race 0.512 as the knob rises."""
+    import numpy as np
+    import project547.config as cfg
+    rng = np.random.default_rng(3)
+    h, a = np.zeros(150_000), np.zeros(150_000)
+    game.break_ties(rng, h, a, 4.5, 4.5)
+    assert (h == a).sum() == 0                       # every tie resolved
+    frac = (h > a).mean()
+    assert abs(frac - cfg.HOME_EXTRA_WIN_P) < 0.005  # winner tilt = the knob
+
+    ti = game.TeamInputs("T", runs_per_game=4.5, opp_starter_xfip=4.10)
+    old = cfg.HOME_EXTRA_WIN_P
+    try:
+        cfg.HOME_EXTRA_WIN_P = 0.5
+        sym = game.simulate(ti, ti, draws=200_000).home_win_prob
+        cfg.HOME_EXTRA_WIN_P = 1.0     # exaggerated so the gap beats MC noise
+        tilt = game.simulate(ti, ti, draws=200_000).home_win_prob
+    finally:
+        cfg.HOME_EXTRA_WIN_P = old
+    assert tilt > sym + 0.02           # ~10% ties, all flipped home
+
+
+def test_ghost_runner_adds_extra_frame_runs():
+    """Audit P4 #9: tied games draw extra-frame runs at
+    max(mu/9, EXTRA_FRAME_RUNS) per side — ~1 run per full extra frame at the
+    0.5 floor — so weak-offense tied games no longer trickle at mu/9."""
+    import numpy as np
+    import project547.config as cfg
+    rng = np.random.default_rng(5)
+    h, a = np.zeros(100_000), np.zeros(100_000)
+    game.break_ties(rng, h, a, 3.0, 3.0)   # mu/9 = 0.33 -> floor (0.5) binds
+    added = (h + a).mean()
+    # lambda 0.5/side -> P(frame stays tied) ≈ .466 -> E[frames] ≈ 1.87
+    # -> E[added runs] = 2 * 0.5 * 1.87 ≈ 1.87 (~1 run per frame)
+    assert 1.7 < added < 2.1
+    per_frame_old = 2 * 3.0 / 9.0          # symmetric mu/9 rate = 0.67/frame
+    assert added / 1.87 > per_frame_old    # clearly above the old rate
+
+    # knob at ~0 restores the mu/9-only behavior (fewer runs added)
+    old = cfg.EXTRA_FRAME_RUNS
+    try:
+        cfg.EXTRA_FRAME_RUNS = 1e-9
+        h2, a2 = np.zeros(100_000), np.zeros(100_000)
+        game.break_ties(rng, h2, a2, 3.0, 3.0)
+    finally:
+        cfg.EXTRA_FRAME_RUNS = old
+    assert (h2 + a2).mean() < added
+
+
+def test_home_win_shift_applies_post_sim():
+    import project547.config as cfg
+    ti = game.TeamInputs("T", runs_per_game=4.5, opp_starter_xfip=4.10)
+    old = cfg.HOME_WIN_SHIFT
+    try:
+        cfg.HOME_WIN_SHIFT = 0.0
+        base = game.simulate(ti, ti, draws=20_000).home_win_prob
+        cfg.HOME_WIN_SHIFT = 0.02
+        shifted = game.simulate(ti, ti, draws=20_000).home_win_prob
+    finally:
+        cfg.HOME_WIN_SHIFT = old
+    assert abs(shifted - (base + 0.02)) < 1e-9
+
+
 def test_better_team_favored():
     good = game.TeamInputs("G", runs_per_game=5.6, opp_starter_xfip=4.8)
     bad = game.TeamInputs("B", runs_per_game=3.8, opp_starter_xfip=3.2)

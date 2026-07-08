@@ -16,6 +16,32 @@ def test_higher_rated_team_favored():
     assert e.home_win_prob("B", "A") < 0.5  # weaker team at home still underdog-ish
 
 
+def test_neutral_site_drops_home_edge():
+    e = Elo()
+    # equal ratings on a neutral site -> a true coin flip
+    assert abs(e.home_win_prob("A", "B", neutral=True) - 0.5) < 1e-12
+    # rating gaps still count on neutral sites
+    e.ratings["A"] = 1700
+    e.ratings["B"] = 1400
+    p_neutral = e.home_win_prob("A", "B", neutral=True)
+    assert p_neutral > 0.8
+    # ...but the home edge is gone: home quote > neutral quote
+    assert e.home_win_prob("A", "B") > p_neutral
+
+
+def test_update_neutral_expectation():
+    """A neutral-site update scores the result against the no-edge
+    expectation: for equal teams p_home = 0.5 exactly, so a home win moves
+    ratings by k/2 (mov off)."""
+    e = Elo(EloConfig(mov=False))
+    e.update("A", "B", 1, 0, neutral=True)
+    assert abs(e.ratings["A"] - (1500 + e.cfg.k * 0.5)) < 1e-9
+    # a home update credits less (home win was more expected)
+    e2 = Elo(EloConfig(mov=False))
+    e2.update("A", "B", 1, 0)
+    assert e2.ratings["A"] < e.ratings["A"]
+
+
 def test_update_moves_ratings_correctly():
     e = Elo(EloConfig(mov=False))
     before = e.home_win_prob("A", "B")

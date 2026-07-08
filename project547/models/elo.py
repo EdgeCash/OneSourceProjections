@@ -41,15 +41,19 @@ class Elo:
             self.ratings[team] = r + self.cfg.season_regress * (self.cfg.base - r)
         self._last_season[team] = season
 
-    def home_win_prob(self, home: str, away: str, season: int | None = None) -> float:
+    def home_win_prob(self, home: str, away: str, season: int | None = None,
+                      neutral: bool = False) -> float:
+        """P(home wins). ``neutral`` drops the home-edge rating points
+        (neutral-site games: bowls, Super Bowl, internationals)."""
         self._maybe_regress(home, season)
         self._maybe_regress(away, season)
-        diff = self._r(home) + self.cfg.home_edge - self._r(away)
+        edge = 0.0 if neutral else self.cfg.home_edge
+        diff = self._r(home) + edge - self._r(away)
         return 1.0 / (1.0 + 10 ** (-diff / 400.0))
 
     def update(self, home: str, away: str, home_score: float, away_score: float,
-               season: int | None = None):
-        p_home = self.home_win_prob(home, away, season)
+               season: int | None = None, neutral: bool = False):
+        p_home = self.home_win_prob(home, away, season, neutral=neutral)
         home_won = 1.0 if home_score > away_score else 0.0
         mult = 1.0
         if self.cfg.mov:
@@ -59,9 +63,10 @@ class Elo:
             # the favorite wins (its pre-game rating edge over the loser is large
             # and positive) and inflates it on upsets, so predictable blowouts by
             # strong teams don't keep ratcheting their ratings up. ``diff`` is the
-            # home edge (incl. home_edge); the winner's signed edge is +diff when
-            # home wins, −diff when away wins.
-            diff = self._r(home) + self.cfg.home_edge - self._r(away)
+            # home edge (incl. home_edge, dropped on neutral sites); the
+            # winner's signed edge is +diff when home wins, −diff when away wins.
+            edge = 0.0 if neutral else self.cfg.home_edge
+            diff = self._r(home) + edge - self._r(away)
             winner_edge = diff if home_won else -diff
             mult = math.log(margin + 1.0) * (2.2 / (0.001 * winner_edge + 2.2))
         delta = self.cfg.k * mult * (home_won - p_home)
