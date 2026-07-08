@@ -2839,7 +2839,13 @@ def match_sheet_html(sport: str, g: dict, best_line: dict | None = None) -> str:
 
 
 def _gap(what: str = "data gap") -> str:
-    """A visible DATA GAP chip — never a silent blank when a field is missing."""
+    """Marker for a missing field. A *named* gap (a driver we expected but
+    couldn't get) shows a warning chip; an unnamed/optional cell shows a quiet
+    em-dash, so a card isn't littered with warning triangles for stats that are
+    simply N/A for this matchup (e.g. a market with no line, a stat with no
+    recent-window value). Still never a silent blank."""
+    if not what:
+        return "<span class='osp-ss-na'>—</span>"
     return (f"<span class='osp-ss-gap' title='This input is not available; the "
             f"model does not fabricate it.'>⚠ {what}</span>")
 
@@ -2893,7 +2899,7 @@ def _ss_pitching(sport: str, g: dict, pitching: dict | None) -> str:
             un = (f" · out: {', '.join(d['unavailable'])}" if d["unavailable"]
                   else " · all available")
         else:
-            un = f" · {_gap('availability')}" if d else ""
+            un = ""   # per-reliever availability isn't fetched; omit rather than warn
         return f"<div class='osp-ss-pen'>Bullpen {fat} {ip}{un}</div>"
 
     a, h = g.get("away_team", ""), g.get("home_team", "")
@@ -2926,7 +2932,7 @@ def _ss_markets_clv(sport: str, g: dict, calls: list, clv: dict | None) -> str:
         avg, n = cst.get("avg_clv"), cst.get("clv_n") or cst.get("n")
         clv_txt = (f"<b style='color:var(--{'good' if (avg or 0)>=0 else 'neg'});'>"
                    f"{avg*100:+.1f}%</b> <small>n={n}</small>"
-                   if avg is not None else _gap("no sample"))
+                   if avg is not None else _gap(""))   # no graded history yet -> quiet —
         # a moneyline has no line by definition — N/A ("—"), not a DATA GAP
         line_cell = ("<span style='color:var(--faint);'>—</span>"
                      if c["label"] == "Moneyline"
@@ -2974,6 +2980,18 @@ def _ss_uncertainty(sport: str, g: dict, uncertainty: dict | None) -> str:
     """Median + 80% interval for the total (and the win-prob split), from the sim
     spread — replaces the false precision of a single point total."""
     ci = (uncertainty or {}).get("total_ci") or _total_ci_from_probs(g)
+    if not ci:
+        # normal-model sports (WNBA/NBA/NFL) have no sim survival curve; build the
+        # 80% interval from proj_total ± 1.2816·sigma_total instead of gapping.
+        pt = _mcf(g.get("proj_total"))
+        if pt is not None:
+            try:
+                from project547.sports import SPORTS
+                sig = SPORTS[sport].sigma_total
+            except Exception:
+                sig = 0.0
+            if sig:
+                ci = (pt - 1.2816 * sig, pt, pt + 1.2816 * sig)
     hw = _mcf(g.get("home_win_prob"))
     total_html = (
         f"<b>{ci[1]:.1f}</b> <span class='osp-ss-ci'>80% CI {ci[0]:.1f}–{ci[2]:.1f}</span>"
@@ -3093,6 +3111,7 @@ _SS_STYLE2 = """<style>
 .osp-ss-gap{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.03em;
   color:var(--mid,#e3b341);background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.5);
   border-radius:5px;padding:0 5px;text-transform:uppercase;vertical-align:middle}
+.osp-ss-na{color:var(--faint);}
 .osp-ss-pit{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--card);
   border:1.5px solid var(--line);border-radius:13px;padding:12px 15px}
 .osp-ss-pit-col.right{text-align:right}

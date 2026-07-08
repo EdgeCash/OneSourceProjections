@@ -35,3 +35,19 @@ def test_scoreboard_and_theme_wiring_in_build():
     assert "#000000" in css     # classic-black dark bg
     # scoreboard league map excludes tennis (no team scoreboard shape)
     assert "ATP" not in bs.SB_LEAGUE_PATHS and bs.SB_LEAGUE_PATHS["MLB"] == "baseball/mlb"
+
+
+def test_gap_quiet_dash_vs_named_chip():
+    from app import ui
+    # unnamed/optional missing cell -> quiet em-dash (no warning triangle)
+    assert "osp-ss-na" in ui._gap("") and "⚠" not in ui._gap("")
+    # a named, expected-but-missing driver -> a warning chip
+    assert "osp-ss-gap" in ui._gap("hand") and "⚠" in ui._gap("hand")
+
+
+def test_pitcher_table_has_k9_column():
+    # K/9 must be derivable (was missing -> card showed 'K/9 gap' for every game)
+    from project547 import internal_stats
+    import inspect
+    src = inspect.getsource(internal_stats.pitcher_table)
+    assert '"K/9"' in src or "'K/9'" in src

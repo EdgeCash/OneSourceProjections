@@ -190,13 +190,14 @@ def pitcher_table(season: int) -> pd.DataFrame:
     # Per-inning rates so the outs/hits/ER/walks prop models use the pitcher's
     # own numbers instead of league fallbacks (H/9, BB/9, ERA, BB%).
     ip = agg["ip"].replace(0, np.nan)
+    agg["K/9"] = (agg["k"] / ip * 9).round(3)
     agg["H/9"] = (agg["hits"] / ip * 9).round(3)
     agg["BB/9"] = (agg["bb"] / ip * 9).round(3)
     agg["ERA"] = (agg["er"] / ip * 9).round(3)
     agg["BB%"] = (agg["bb"] / agg["bf"].replace(0, np.nan)).round(4)
     agg["IP"] = agg["ip"]
-    return agg[["Name", "norm_name", "player_id", "FIP", "K%", "H/9", "BB/9",
-                "ERA", "BB%", "IP", "GS"]]
+    return agg[["Name", "norm_name", "player_id", "FIP", "K%", "K/9", "H/9",
+                "BB/9", "ERA", "BB%", "IP", "GS"]]
 
 
 @lru_cache(maxsize=4)

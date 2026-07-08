@@ -151,7 +151,8 @@ def _market_calibration(sport: str) -> dict | None:
     out, any_data = {}, False
     for label, mk in (("Moneyline", "moneyline"), ("Total", "total"), ("Run Line", "spread")):
         rows = [r for r in led if r.get("market") == mk
-                and isinstance(r.get("model_prob"), (int, float))]
+                and isinstance(r.get("model_prob"), (int, float))
+                and pd.notna(r.get("model_prob"))]   # NaN model_prob poisons the mean
         if rows:
             pred = sum(r["model_prob"] for r in rows) / len(rows)
             actual = sum(1 for r in rows if r["won"]) / len(rows)
@@ -221,8 +222,13 @@ def _sheet_data(sport: str, g: dict, matchup: dict, date_sel: str) -> dict:
                 "k9": k9, "bb9": bb9, "tto_flag": bool(ip and ip >= 5.8)}
             bp = (matchup or {}).get(f"{side}_bullpen") or {}
             if bp:
+                # the fatigue dict has no per-game projection; the bullpen covers
+                # whatever the starter doesn't (9 innings), so derive it here.
+                proj_ip = bp.get("proj_ip")
+                if proj_ip is None and ip:
+                    proj_ip = round(max(0.0, 9.0 - ip), 1)
                 pitching[f"{side}_bullpen"] = {"fatigue": bp.get("level"),
-                                               "proj_ip": bp.get("proj_ip")}
+                                               "proj_ip": proj_ip}
     return {"clv": clv or None, "calibration": _market_calibration(sport),
             "pitching": pitching or None}
 
