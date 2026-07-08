@@ -124,6 +124,7 @@ def test_game_play_candidates_tiers_by_ev(tmp_path, monkeypatch):
     monkeypatch.setattr(plays.config, "SHARP_EV_MAX", 0.06)
     monkeypatch.setattr(plays.config, "STALE_EV", 0.08)
     monkeypatch.setattr(edge_gate, "ev_bands", lambda *a, **k: {})  # global band, deterministic
+    monkeypatch.setattr(edge_gate, "conviction_prior", lambda: {})  # no seed, deterministic
     blob = {"MLB": {"games": [{
         "home_team": "NYY", "away_team": "BOS",
         "home_ml": -150, "home_ml_ev": 0.045,     # sharp band
