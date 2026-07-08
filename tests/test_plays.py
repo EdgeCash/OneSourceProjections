@@ -250,3 +250,29 @@ def test_record_daily_upserts_by_date(tmp_path, monkeypatch):
     assert len(rows) == 2  # not 3 — upsert by date
     row14 = next(r for r in rows if r["date"] == "2026-06-14")
     assert row14["model_acc"] == 0.7 and row14["played_n"] == 6
+
+
+def test_game_play_candidates_ranked_by_conviction(monkeypatch):
+    """The board leads with the market we most reliably beat the close in
+    (highest lower-bound CLV), not the biggest raw EV."""
+    from project547 import config, edge_gate
+    ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2   # in-band for both
+    table = {
+        ("MLB", "moneyline"): {"status": edge_gate.CLEARED,
+                               "clv_n": config.GATE_CLEAR_MIN,
+                               "avg_clv": 0.05, "clv_lb": 0.04},   # strong proven edge
+        ("MLB", "total"): {"status": edge_gate.CLEARED,
+                           "clv_n": config.GATE_CLEAR_MIN,
+                           "avg_clv": 0.02, "clv_lb": 0.01},       # weaker proven edge
+    }
+    monkeypatch.setattr(edge_gate, "gate_table", lambda *a, **k: table)
+    blob = {"MLB": {"games": [{
+        "home_team": "NYY", "away_team": "BOS",
+        "home_ml": -150, "home_ml_ev": ev,
+        "total_line": 8.5, "over_odds": -110, "over_ev": ev,
+    }]}}
+    cands = plays.game_play_candidates("2026-06-15", blob)
+    # higher-conviction market sorts first even though EVs are identical
+    assert [c["market"] for c in cands] == ["moneyline", "total"]
+    assert cands[0]["conviction"] == 0.04 and cands[0]["expected_clv"] == 0.05
+    assert cands[1]["conviction"] == 0.01

@@ -226,3 +226,52 @@ def stake_mult(status: str) -> float:
 def is_curatable(status: str) -> bool:
     """Whether a market may produce a pushed/curated play at all."""
     return status != GATED
+
+
+# ---------------------------------------------------------------------------
+# Conviction — rank the board by *proven* edge, not raw disagreement (EV).
+#
+# The audit's central finding: raw model EV (disagreement with the price) is not
+# edge; realized CLV is. Two plays at the same EV are not equal — the one in a
+# market that reliably beats the close is the real play. ``conviction`` is the
+# rank key the curated board sorts on, built from data the gate already rolls up
+# (``market_stats``): the market's lower-bound mean CLV, discounted for sample
+# size and zeroed unless the play sits in that market's positive-CLV band.
+#
+# ``ev_in_band`` is the global sharp band for now; Component 2 (per-market EV
+# bands fit from the ledger) will replace the bounds here without changing
+# callers. See docs/CURATION_DESIGN.md.
+# ---------------------------------------------------------------------------
+
+def ev_in_band(ev: float, sport: str = "", market: str = "") -> bool:
+    """Whether a play's EV sits in the positive-CLV 'sharp' band. Until the
+    per-market fit lands, this is the global band
+    (config.SHARP_EV_MIN..SHARP_EV_MAX)."""
+    try:
+        ev = float(ev)
+    except (TypeError, ValueError):
+        return False
+    return config.SHARP_EV_MIN <= ev <= config.SHARP_EV_MAX
+
+
+def conviction(ev: float, sport: str, market: str, stat: dict | None) -> float:
+    """Rank key for 'best suggested plays' — higher = more trustworthy edge.
+
+    ``= clv_lb x sample_confidence`` when the play is in-band and the market's
+    lower-bound mean CLV is positive; ``0.0`` otherwise. So a big-EV stale line
+    in a thin market scores 0 and sorts below a modest in-band edge in a market
+    that demonstrably beats the close. ``stat`` is the market's ``gate_table``
+    entry (``avg_clv``/``clv_lb``/``clv_n``); ``None`` (no history) -> 0.0, i.e.
+    an unproven play never outranks a proven one.
+    """
+    if not stat or not ev_in_band(ev, sport, market):
+        return 0.0
+    lb = stat.get("clv_lb")
+    if lb is None:                    # legacy stats w/o variance -> point estimate
+        lb = stat.get("avg_clv")
+    if lb is None or lb <= 0:         # not (yet) beating the close -> no conviction
+        return 0.0
+    clv_n = stat.get("clv_n", 0) or 0
+    sample_conf = (min(1.0, clv_n / config.GATE_CLEAR_MIN)
+                   if config.GATE_CLEAR_MIN else 1.0)
+    return round(lb * sample_conf, 5)

@@ -123,3 +123,46 @@ def test_condemned_totals_are_held():
         assert edge_gate.status_for(sport, "moneyline", {}) == edge_gate.GATED
     # other totals unaffected
     assert edge_gate.status_for("MLB", "total", {}) == edge_gate.PROBATION
+
+
+# --- conviction (rank by proven edge, not raw EV) — Component 1 --------------
+
+def test_ev_in_band_uses_global_sharp_band():
+    assert edge_gate.ev_in_band(config.SHARP_EV_MIN, "MLB", "moneyline")
+    assert edge_gate.ev_in_band(config.SHARP_EV_MAX, "MLB", "moneyline")
+    assert not edge_gate.ev_in_band(config.SHARP_EV_MIN - 0.001, "MLB", "moneyline")
+    assert not edge_gate.ev_in_band(config.STALE_EV, "MLB", "moneyline")
+    assert not edge_gate.ev_in_band(None, "MLB", "moneyline")
+
+
+def test_conviction_zero_without_history_or_out_of_band():
+    stat = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.03, "clv_lb": 0.02}
+    ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2
+    assert edge_gate.conviction(ev, "MLB", "moneyline", None) == 0.0      # no history
+    assert edge_gate.conviction(config.STALE_EV, "MLB", "moneyline", stat) == 0.0  # out of band
+
+
+def test_conviction_zero_when_not_beating_close():
+    # in-band EV but the market's lower bound isn't positive -> no conviction
+    stat = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.01, "clv_lb": -0.005}
+    ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2
+    assert edge_gate.conviction(ev, "MLB", "moneyline", stat) == 0.0
+
+
+def test_conviction_scales_with_lb_and_sample():
+    ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2
+    full = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.04, "clv_lb": 0.02}
+    assert edge_gate.conviction(ev, "MLB", "moneyline", full) == 0.02
+    # half the clearing sample -> half conviction (confidence discount)
+    half = {"clv_n": config.GATE_CLEAR_MIN // 2, "avg_clv": 0.04, "clv_lb": 0.02}
+    assert edge_gate.conviction(ev, "MLB", "moneyline", half) == 0.01
+    # a stronger proven edge outranks a weaker one at the same EV
+    strong = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.06, "clv_lb": 0.05}
+    assert (edge_gate.conviction(ev, "MLB", "moneyline", strong)
+            > edge_gate.conviction(ev, "MLB", "moneyline", full))
+
+
+def test_conviction_legacy_stat_falls_back_to_point_estimate():
+    ev = (config.SHARP_EV_MIN + config.SHARP_EV_MAX) / 2
+    legacy = {"clv_n": config.GATE_CLEAR_MIN, "avg_clv": 0.03}   # no clv_lb
+    assert edge_gate.conviction(ev, "MLB", "moneyline", legacy) == 0.03

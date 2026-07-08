@@ -240,7 +240,8 @@ def game_play_candidates(date: str, day_blob: dict,
                 if price and ev is not None and ev >= min_edge:
                     out.append(_game_play(date, sport, label, "moneyline", side,
                                           g.get(f"{side}_team", side), price, ev,
-                                          gate=edge_gate.status_for(sport, "moneyline", gates)))
+                                          gate=edge_gate.status_for(sport, "moneyline", gates),
+                                          stat=gates.get((sport, "moneyline"))))
             line = g.get("total_line")
             for side, odds_key, ev_key in (("over", "over_odds", "over_ev"),
                                            ("under", "under_odds", "under_ev")):
@@ -248,8 +249,15 @@ def game_play_candidates(date: str, day_blob: dict,
                 if line is not None and price and ev is not None and ev >= min_edge:
                     out.append(_game_play(date, sport, label, "total", side,
                                           f"{side} {line:g}", price, ev, line=line,
-                                          gate=edge_gate.status_for(sport, "total", gates)))
-    return [c for c in out if c["curatable"]]        # drop GATED (no-edge) markets
+                                          gate=edge_gate.status_for(sport, "total", gates),
+                                          stat=gates.get((sport, "total"))))
+    # rank the board by proven edge (conviction), not raw EV, so a consumer that
+    # takes the top plays leads with the markets we most reliably beat the close
+    # in. EV breaks ties. GATED (no-edge) markets are dropped.
+    curated = [c for c in out if c["curatable"]]
+    curated.sort(key=lambda c: (c.get("conviction") or 0.0, c.get("ev") or 0.0),
+                 reverse=True)
+    return curated
 
 
 def _tier(ev: float) -> str:
@@ -261,16 +269,24 @@ def _tier(ev: float) -> str:
 
 
 def _game_play(date, sport, game, market, side, pick, price, ev, line=None,
-               gate: str = "probation") -> dict:
+               gate: str = "probation", stat: dict | None = None) -> dict:
     from . import edge_gate
     tier = _tier(float(ev))
     # a play is only "sharp" (pushed) when its EV is in-band AND the market has a
     # demonstrated edge (gate CLEARED). PROBATION/GATED never headline-push.
     sharp = tier == "sharp" and gate == edge_gate.CLEARED
+    # expected_clv = the market's rolling mean CLV (how much this play is
+    # estimated to beat the close); conviction = the confidence-discounted,
+    # in-band rank key the board sorts on. GATED markets score 0 defensively
+    # (they're dropped by the curatable filter anyway).
+    expected_clv = (stat or {}).get("avg_clv") if stat else None
+    conviction = (0.0 if gate == edge_gate.GATED
+                  else edge_gate.conviction(float(ev), sport, market, stat))
     return {"key": f"game|{date}|{sport}|{game}|{market}|{side}",
             "date": date, "sport": sport, "game": game, "market": market,
             "side": side, "pick": pick, "price": price, "ev": round(float(ev), 4),
             "line": line, "tier": tier, "gate": gate,
+            "expected_clv": expected_clv, "conviction": conviction,
             "curatable": edge_gate.is_curatable(gate),
             "stake_mult": edge_gate.stake_mult(gate),
             "sharp": sharp, "verify": tier == "stale"}
