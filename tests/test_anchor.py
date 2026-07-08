@@ -25,13 +25,17 @@ def _games():
     }])
 
 
-def test_projection_anchor_default_zero():
-    assert config.projection_anchor("NBA", "moneyline") == 0.0
-    assert config.projection_anchor("MLB", "total") == 0.0
-    assert config.projection_anchor("anything", "spread") == 0.0
+def test_projection_anchor_lookup():
+    # enabled markets return their reviewed weight; unset markets return 0
+    assert config.projection_anchor("NBA", "moneyline") == 0.5
+    assert config.projection_anchor("MLB", "total") == 0.5
+    assert config.projection_anchor("MLB", "spread") == 0.0   # spread not enabled
+    assert config.projection_anchor("anything", "moneyline") == 0.0
 
 
-def test_weight_zero_pub_equals_raw():
+def test_weight_zero_pub_equals_raw(monkeypatch):
+    # the identity property: at weight 0 every *_pub equals its raw column
+    monkeypatch.setattr(config, "PROJECTION_ANCHOR", {})
     g = _games()
     out = pipeline._attach_anchored_projection(g.copy(), "NBA")
     row = out.iloc[0]
