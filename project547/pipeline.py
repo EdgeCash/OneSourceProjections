@@ -840,6 +840,9 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
 
     games = games.copy()
     game_cols = ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
+                 # de-vigged market fair prob of the home side — the moneyline
+                 # anchor for the published projection (Component 4).
+                 "home_ml_fair",
                  "total_line", "over_odds", "under_odds", "model_over_prob",
                  "over_ev", "under_ev", "rl_home_line", "rl_home_odds",
                  "rl_away_odds", "model_home_rl", "rl_home_ev", "rl_away_ev",
@@ -916,6 +919,7 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
             if ev["ev_b"] is not None:
                 out["away_ml_ev"] = ev["ev_b"]
             out["home_ml_p_used"] = ev["p_used"]
+            out["home_ml_fair"] = ev.get("p_fair")
         # total
         tg = event_offer(tot, row)
         if tg is not None and not tg.empty and "line" in tg.columns:
@@ -1000,6 +1004,85 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
     extra = games.apply(per_game, axis=1)
     for c in extra.columns:
         games[c] = extra[c]
+    _attach_anchored_projection(games, "MLB")
+    return games
+
+
+# ---------------------------------------------------------------------------
+# Market-anchored published projection (roadmap T3.1 / Component 4)
+# ---------------------------------------------------------------------------
+
+def _attach_anchored_projection(games: pd.DataFrame, sport_key: str) -> pd.DataFrame:
+    """Publish a market-anchored projection as NEW ``*_pub`` columns, blending
+    each raw model projection toward the stored market anchor per the
+    ``config.PROJECTION_ANCHOR`` weight for this (sport, market). Default weight
+    0 everywhere → every ``*_pub`` column exactly equals its raw model column,
+    so nothing changes live and edge detection (which reads the RAW columns) is
+    untouched — anchoring the edge input would erase the edge.
+
+    Anchors: moneyline → the de-vigged market fair prob of the home side
+    (``home_ml_fair``); total → the posted ``total_line``; margin → the negated
+    spread line (``rl_home_line`` for MLB / ``spread_home_line`` for generic).
+    Every blend degrades to the raw model number when its weight is 0 or the
+    anchor is missing. Pure function, no-op-safe on an empty frame.
+
+    Adds: ``home_win_prob_pub``, ``proj_total_pub``, ``margin_pub``,
+    ``home_exp_pub``, ``away_exp_pub``.
+    """
+    cols = ["home_win_prob_pub", "proj_total_pub", "margin_pub",
+            "home_exp_pub", "away_exp_pub"]
+    if games is None or games.empty:
+        if games is not None:
+            for c in cols:
+                if c not in games.columns:
+                    games[c] = None
+        return games
+
+    a_ml = config.projection_anchor(sport_key, "moneyline")
+    a_tot = config.projection_anchor(sport_key, "total")
+    a_mgn = config.projection_anchor(sport_key, "spread")
+
+    def _ok(v) -> bool:
+        return v is not None and pd.notna(v)
+
+    def _blend(model, anchor, w):
+        if not _ok(model):
+            return model
+        if w == 0 or not _ok(anchor):
+            return model
+        return (1.0 - w) * float(model) + w * float(anchor)
+
+    def _row(r):
+        d = r.to_dict()
+        hwp_pub = _blend(d.get("home_win_prob"), d.get("home_ml_fair"), a_ml)
+        tot_pub = _blend(d.get("proj_total"), d.get("total_line"), a_tot)
+        # model margin: explicit margin_mean if present, else home_exp − away_exp
+        margin = d.get("margin_mean")
+        if not _ok(margin):
+            he, ae = d.get("home_exp"), d.get("away_exp")
+            margin = (float(he) - float(ae)) if (_ok(he) and _ok(ae)) else None
+        spread_line = d.get("rl_home_line")
+        if not _ok(spread_line):
+            spread_line = d.get("spread_home_line")
+        neg_spread = -float(spread_line) if _ok(spread_line) else None
+        margin_pub = _blend(margin, neg_spread, a_mgn)
+        # side scores reconstructed from the anchored total + margin, else raw
+        if _ok(tot_pub) and _ok(margin_pub):
+            home_exp_pub = (float(tot_pub) + float(margin_pub)) / 2.0
+            away_exp_pub = (float(tot_pub) - float(margin_pub)) / 2.0
+        else:
+            home_exp_pub, away_exp_pub = d.get("home_exp"), d.get("away_exp")
+        return pd.Series({
+            "home_win_prob_pub": hwp_pub,
+            "proj_total_pub": tot_pub,
+            "margin_pub": margin_pub,
+            "home_exp_pub": home_exp_pub,
+            "away_exp_pub": away_exp_pub,
+        }, dtype=object)
+
+    attached = games.apply(_row, axis=1)
+    for c in cols:
+        games[c] = attached[c] if c in attached.columns else None
     return games
 
 
@@ -1394,6 +1477,7 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         event_ids = [e.get("id") for e in events if e.get("id")]
     except Exception as e:
         log.warning("%s BettingPros unavailable: %s", sport_key, e)
+        _attach_anchored_projection(games, sport_key)
         return games.drop(columns=["_proj"])
 
     flat_by_market: dict[str, pd.DataFrame] = {}
@@ -1425,7 +1509,8 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
                               shrink=sport.market_shrink,
                               sport=sport_key, market="moneyline")
             return pd.Series({"home_ml_ev": ev["ev_a"], "away_ml_ev": ev["ev_b"],
-                              "home_ml_p_used": ev["p_used"]})
+                              "home_ml_p_used": ev["p_used"],
+                              "home_ml_fair": ev.get("p_fair")})
 
         games = pd.concat([games, games.apply(_ml_ev, axis=1)], axis=1)
 
@@ -1520,10 +1605,12 @@ def attach_generic_game_edges(games: pd.DataFrame, sport_key: str, date: str) ->
         games = pd.concat([games, games.apply(spread_cols, axis=1)], axis=1)
 
     _ensure_cols(games, ("home_ml", "away_ml", "home_ml_ev", "away_ml_ev",
+                         "home_ml_fair",
                          "total_line", "over_odds", "under_odds", "model_over_prob",
                          "over_ev", "under_ev", "spread_home_line", "spread_home_odds",
                          "spread_away_odds", "model_home_cover",
                          "spread_home_ev", "spread_away_ev"))
+    _attach_anchored_projection(games, sport_key)
     return games.drop(columns=["_proj"])
 
 

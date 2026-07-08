@@ -282,6 +282,21 @@ def _exp(game: dict, side: str):
     return game.get(f"{side}_exp_runs", game.get(f"{side}_exp"))
 
 
+def _pub(game: dict, pub_key: str, raw):
+    """Published (market-anchored) headline value with a flag for whether it
+    actually differs from the raw model number (roadmap T3.1 / Component 4).
+    Falls back to ``raw`` when the ``*_pub`` column is absent, and reports
+    ``anchored=False`` when the anchor weight is 0 (pub == raw) — so the card
+    shows no redundant "model" annotation and nothing changes live by default.
+    Returns ``(headline_value, anchored)``."""
+    v = game.get(pub_key)
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return raw, False
+    if raw is not None and pd.notna(raw) and abs(float(v) - float(raw)) < 1e-9:
+        return raw, False
+    return v, True
+
+
 def _best_edge(game: dict) -> tuple[str, float] | None:
     """Largest positive model edge on a game, as (label, ev)."""
     cands = []
@@ -386,8 +401,18 @@ def game_card_html(sport: str, g: dict) -> str:
     h_badge = assets.team_badge_html(sport, home, 40)
     a_exp, h_exp = _exp(g, "away"), _exp(g, "home")
     a_wp, h_wp = g.get("away_win_prob"), g.get("home_win_prob")
+    # Published (market-anchored) headline projection, with the raw model number
+    # shown alongside (roadmap T3.1 / Component 4). Falls back to the raw column
+    # when the *_pub column is absent; the "model" annotation only appears when a
+    # nonzero anchor makes pub differ from raw, so the default (weight 0) card is
+    # unchanged.
+    h_wp_pub, h_anch = _pub(g, "home_win_prob_pub", h_wp)
+    a_wp_pub = ((1 - float(h_wp_pub)) if (h_anch and h_wp_pub is not None
+                                          and pd.notna(h_wp_pub)) else a_wp)
     time = fmt_time_et(g.get("game_time"))
-    total = g.get("total_line") or g.get("proj_total")
+    proj_total_raw = g.get("proj_total")
+    proj_total_pub, tot_anch = _pub(g, "proj_total_pub", proj_total_raw)
+    total = g.get("total_line") or proj_total_pub
 
     hml, aml = g.get("home_ml"), g.get("away_ml")
     odds_bits = []
@@ -411,8 +436,10 @@ def game_card_html(sport: str, g: dict) -> str:
 
     gpk = g.get("game_pk")
 
-    def side(badge, name, exp, wp, fav, pitcher=None):
+    def side(badge, name, exp, wp, fav, pitcher=None, wp_model=None):
         weight = "700" if fav else "500"
+        model_wp = (f" · <span style='opacity:0.7;'>model {_pct(wp_model)}</span>"
+                    if wp_model is not None and pd.notna(wp_model) else "")
         sp_row = (f"<div style='color:var(--muted);font-size:0.74rem;margin-top:1px;'>"
                   f"⚾ {player_link(pitcher, gpk, sport)}</div>"
                   if pitcher and pd.notna(pitcher) else "")
@@ -423,13 +450,15 @@ def game_card_html(sport: str, g: dict) -> str:
             f"<div style='display:flex;align-items:center;gap:10px;flex:1;'>"
             f"{framed}"
             f"<div><div style='font-weight:{weight};font-size:0.95rem;'>{name}</div>"
-            f"<div style='color:var(--muted);font-size:0.8rem;'>win {_pct(wp)}</div>"
+            f"<div style='color:var(--muted);font-size:0.8rem;'>win {_pct(wp)}{model_wp}</div>"
             f"{sp_row}</div>"
             f"<div style='margin-left:auto;font-size:1.5rem;font-weight:700;'>"
             f"{_num(exp)}</div></div>"
         )
 
     home_fav = (h_wp or 0) >= (a_wp or 0)
+    tot_model_html = (f" · <span style='opacity:0.7;'>model {_num(proj_total_raw)}</span>"
+                      if tot_anch else "")
     return (
         "<div style='background:var(--card);border:1px solid var(--line);border-radius:14px;"
         "padding:14px 16px;margin-bottom:12px;"
@@ -437,11 +466,12 @@ def game_card_html(sport: str, g: dict) -> str:
         f"<div style='display:flex;justify-content:space-between;align-items:center;"
         f"margin-bottom:8px;'>"
         f"<span style='color:var(--muted);font-size:0.78rem;'>"
-        f"{time} · O/U {_num(total)} · proj total {_num(g.get('proj_total'))}</span>"
+        f"{time} · O/U {_num(total)} · proj total {_num(proj_total_pub)}"
+        f"{tot_model_html}</span>"
         f"{_status_badge(sport, g)}</div>"
-        f"{side(a_badge, away, a_exp, a_wp, not home_fav, g.get('away_pitcher'))}"
+        f"{side(a_badge, away, a_exp, a_wp_pub, not home_fav, g.get('away_pitcher'), a_wp if h_anch else None)}"
         "<div style='height:8px;'></div>"
-        f"{side(h_badge, home, h_exp, h_wp, home_fav, g.get('home_pitcher'))}"
+        f"{side(h_badge, home, h_exp, h_wp_pub, home_fav, g.get('home_pitcher'), h_wp if h_anch else None)}"
         f"{market_line}"
         "<div style='border-top:1px solid var(--line);margin-top:10px;padding-top:8px;"
         f"font-size:0.85rem;'>{edge_html}</div>"
