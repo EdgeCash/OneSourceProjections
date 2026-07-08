@@ -346,11 +346,27 @@ SITE_CSS = """
   main { flex: 1; min-width: 0; padding: 20px 30px 60px; max-width: 1180px; }
   .topbar { display: flex; align-items: center; gap: 20px; justify-content: space-between; }
   .osp-title { font-family: var(--disp); font-size: 1.9rem; font-weight: 600; }
+  .tb-right { display: flex; align-items: center; gap: 12px; }
   .search { background: var(--card); border: 1.5px solid var(--line); color: var(--text);
     border-radius: 999px; padding: 9px 16px; width: 300px; font-family: var(--font);
     font-size: 0.9rem; outline: none; }
   .search:focus { border-color: var(--acc); }
-  .sub { color: var(--muted); font-size: 0.82rem; margin: 6px 2px 18px; }
+  .themetoggle { flex: none; width: 40px; height: 40px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--card); color: var(--text);
+    font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0;
+    transition: border-color .15s ease, background .15s ease; }
+  .themetoggle:hover { border-color: var(--acc); }
+  .sub { color: var(--muted); font-size: 0.82rem; margin: 6px 2px 12px; }
+  /* live-score banner — horizontal strip of game chips, scores update live */
+  .scoreboard { overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin: 0 0 16px; border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line); }
+  .scoreboard::-webkit-scrollbar { display: none; }
+  .sb-track { display: flex; gap: 8px; padding: 8px 2px; width: max-content; }
+  .sb-chip { flex: none; font-family: var(--mono); font-size: 0.76rem;
+    color: var(--text); background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+  .sb-chip.live { border-color: var(--good); color: var(--good); font-weight: 600; }
   details.game { border: 1.5px solid var(--line); border-radius: 12px;
     background: var(--card); margin-bottom: 10px; overflow: hidden; }
   details.game > summary { list-style: none; cursor: pointer; padding: 14px 18px;
@@ -383,8 +399,8 @@ SITE_CSS = """
   .sc-r:first-of-type { border-top: none; }
   .sc-k { color: var(--muted); }
   .sc-v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
-  .sc-v.pos { color: #1f7a4d; font-weight: 700; }
-  .sc-v.neg { color: #b23b3b; font-weight: 700; }
+  .sc-v.pos { color: var(--good); font-weight: 700; }
+  .sc-v.neg { color: var(--neg); font-weight: 700; }
   .sc-mkt { margin-top: 26px; }
   .sc-mkt-h { font-family: var(--disp); font-weight: 700; font-size: 1.05rem;
     margin-bottom: 10px; }
@@ -484,6 +500,74 @@ SITE_CSS = """
   }
 """
 
+# ESPN public scoreboard paths per sport, for the live-score banner (fetched
+# client-side so scores stay current without a rebuild). Tennis has no team
+# scoreboard in this shape, so ATP is omitted.
+SB_LEAGUE_PATHS = {
+    "MLB": "baseball/mlb", "WNBA": "basketball/wnba", "NBA": "basketball/nba",
+    "NFL": "football/nfl", "NCAAF": "football/college-football",
+    "NHL": "hockey/nhl", "MLS": "soccer/usa.1",
+}
+
+SCOREBOARD_JS = """
+  (function(){
+    var el = document.getElementById('scoreboard');
+    if(!el || !window.SB_LEAGUES || !window.SB_LEAGUES.length) return;
+    function chip(ev){
+      try{
+        var c = ev.competitions[0], cs = c.competitors;
+        var home = cs.filter(function(x){return x.homeAway==='home';})[0];
+        var away = cs.filter(function(x){return x.homeAway==='away';})[0];
+        var st = (ev.status && ev.status.type) || {};
+        var det = st.shortDetail || '';
+        var live = st.state === 'in', pre = st.state === 'pre';
+        var ab = function(t){ return (t.team.abbreviation||t.team.shortDisplayName||'').toUpperCase(); };
+        var body = pre
+          ? ab(away)+' @ '+ab(home)+' · '+det
+          : ab(away)+' '+(away.score||'0')+'  '+ab(home)+' '+(home.score||'0')+' · '+det;
+        return '<span class="sb-chip'+(live?' live':'')+'">'+body+'</span>';
+      }catch(e){ return ''; }
+    }
+    function load(){
+      var chips = [], pending = window.SB_LEAGUES.length;
+      window.SB_LEAGUES.forEach(function(lg){
+        fetch('https://site.api.espn.com/apis/site/v2/sports/'+lg+'/scoreboard')
+          .then(function(r){return r.json();})
+          .then(function(d){ (d.events||[]).forEach(function(ev){ chips.push(chip(ev)); }); })
+          .catch(function(){})
+          .then(function(){
+            if(--pending===0){
+              var html = chips.filter(Boolean).join('');
+              if(html){ el.innerHTML = '<div class="sb-track">'+html+'</div>'; el.style.display=''; }
+              else { el.style.display='none'; }
+            }
+          });
+      });
+    }
+    load();
+    setInterval(load, 60000);   // refresh live scores each minute
+  })();
+"""
+
+THEME_JS = """
+  (function(){
+    var root = document.documentElement, btn = document.getElementById('themebtn');
+    var meta = document.querySelector('meta[name=theme-color]');
+    function tint(){ if(meta) meta.setAttribute('content',
+        root.getAttribute('data-theme')==='dark' ? '#000000' : '#faf6ec'); }
+    function icon(){ return root.getAttribute('data-theme')==='dark' ? '\\u2600' : '\\u263e'; }
+    if(btn){ btn.textContent = icon();
+      btn.addEventListener('click', function(){
+        var next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try{ localStorage.setItem('theme', next); }catch(e){}
+        btn.textContent = icon(); tint();
+      });
+    }
+    tint();  // match the iOS status-bar tint to the theme on load
+  })();
+"""
+
 DRAWER_JS = """
   const _nk = s => s.toLowerCase().replace(/[.\\s]+/g,' ').trim();
   const drawer = document.getElementById('drawer');
@@ -561,6 +645,9 @@ def _page(active: str, title: str, gen: str, body: str, active_sports: list,
           props: dict | None = None, briefs: dict | None = None) -> str:
     props_json = json.dumps(props or {}, allow_nan=False).replace("</", "<\\/")
     briefs_json = json.dumps(briefs or {}, allow_nan=False).replace("</", "<\\/")
+    # ESPN scoreboard paths for the sports in season on this build (live-score banner)
+    sb_leagues = json.dumps([SB_LEAGUE_PATHS[s] for s in active_sports
+                             if s in SB_LEAGUE_PATHS])
     drawer = ('<div id="drawer" class="drawer" hidden><div class="drawer-bg"></div>'
               '<div class="drawer-panel"><button class="drawer-x" aria-label="Close">×</button>'
               '<div class="drawer-head"></div><div class="drawer-body"></div></div></div>')
@@ -574,16 +661,26 @@ def _page(active: str, title: str, gen: str, body: str, active_sports: list,
         f"<!doctype html><html data-theme=\"light\"><head><meta charset=\"utf-8\">"
         f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, "
         f"viewport-fit=cover\">"
+        # set the saved theme before first paint (no flash)
+        f"<script>try{{var t=localStorage.getItem('theme')||'light';"
+        f"document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}</script>"
         f"<title>360Five — {html.escape(title)}</title>"
         f"{PWA_HEAD}"
-        f"{theme.theme_css('cream')}<style>{SITE_CSS}</style></head><body>"
+        f"{theme.theme_css_both()}<style>{SITE_CSS}</style></head><body>"
         f"<div class=\"site\">{_nav(active, active_sports)}<main>"
         f"<div class=\"topbar\"><div class=\"osp-title\">{html.escape(title)}</div>"
-        f"<input class=\"search\" placeholder=\"\U0001f50d  team or player…\"></div>"
+        f"<div class=\"tb-right\">"
+        f"<button id=\"themebtn\" class=\"themetoggle\" aria-label=\"Toggle dark mode\">"
+        f"☾</button>"
+        f"<input class=\"search\" placeholder=\"\U0001f50d  team or player…\"></div></div>"
         f"<div class=\"sub\">Updated {html.escape(gen)} ET · refreshes hourly · "
-        f"not financial advice</div>{body}</main></div>{drawer}{ai_modal}"
-        f"<script>window.PROPS={props_json};window.BRIEFS={briefs_json};</script>"
-        f"<script>{DRAWER_JS}</script>{PWA_SW}</body></html>")
+        f"not financial advice</div>"
+        f"<div id=\"scoreboard\" class=\"scoreboard\" style=\"display:none\"></div>"
+        f"{body}</main></div>{drawer}{ai_modal}"
+        f"<script>window.PROPS={props_json};window.BRIEFS={briefs_json};"
+        f"window.SB_LEAGUES={sb_leagues};</script>"
+        f"<script>{DRAWER_JS}</script><script>{THEME_JS}</script>"
+        f"<script>{SCOREBOARD_JS}</script>{PWA_SW}</body></html>")
 
 
 # --------------------------------------------------------------------------

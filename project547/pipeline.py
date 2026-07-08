@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from datetime import date as _date
 from functools import lru_cache
 
@@ -36,6 +37,20 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Market evaluation: price sanity + de-vig + shrink toward market
 # ---------------------------------------------------------------------------
+
+def json_sanitize(obj):
+    """Recursively replace non-finite floats (NaN/inf) with None so
+    ``json.dumps(..., allow_nan=False)`` emits strict, valid JSON. Bare ``NaN``
+    (Python's default) is rejected by browsers/strict parsers and shows up as
+    missing data on the cards — so the site's data feed must never contain it."""
+    if isinstance(obj, dict):
+        return {k: json_sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [json_sanitize(v) for v in obj]
+    if isinstance(obj, float) and not math.isfinite(obj):
+        return None
+    return obj
+
 
 def _market_eval(p_model_a: float, a_price, b_price,
                  shrink: float | None = None,
@@ -945,10 +960,20 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
                     best_u = unders.sort_values("odds", ascending=False).iloc[0]
                     under_price = float(best_u["odds"])
                     out["under_odds"] = under_price
+                push = _nb_prob_push(line, float(row["proj_total"]))
                 ev = _market_eval(float(p), float(best_o["odds"]), under_price,
                                   shrink=SPORTS["MLB"].market_shrink,
-                                  sport="MLB", market="total",
-                                  p_push=_nb_prob_push(line, float(row["proj_total"])))
+                                  sport="MLB", market="total", p_push=push)
+                # Over/under prices are line-shopped best-of-book, so the pair
+                # often sums under 1.0 (a synthetic cross-book arb) and the
+                # two-way de-vig rejects it -> ev_a None. Fall back to honest
+                # per-side pricing at the real best price, same as the run line.
+                if ev["ev_a"] is None and under_price is not None:
+                    ho = _market_eval(float(p), float(best_o["odds"]), None, p_push=push)
+                    hu = _market_eval(max(0.0, 1.0 - float(p) - ho["p_push"]),
+                                      under_price, None, p_push=ho["p_push"])
+                    ev = {"ev_a": ho["ev_a"], "ev_b": hu["ev_a"],
+                          "p_used": ho["p_used"], "p_push": ho["p_push"]}
                 if ev["ev_a"] is not None:
                     out["over_ev"] = ev["ev_a"]
                 if ev["ev_b"] is not None:
@@ -959,12 +984,14 @@ def attach_game_edges(games: pd.DataFrame, date: str) -> pd.DataFrame:
         rg = event_offer(rl, row)
         if rg is not None and not rg.empty and "line" in rg.columns:
             cover = row.get("home_rl_cover") or {}
+            # The sim prices cover only at the standard +/-1.5 grid, so restrict
+            # offer selection to |line| == 1.5; picking an off-grid alt line
+            # (e.g. +1.0) by best odds left cover.get(line) None -> NaN edges.
+            std_rl = rg["line"].notna() & (rg["line"].abs() == 1.5)
             home_rows = rg[rg["participant"].map(
-                lambda p: _teams_match(row["home_team"], p or ""))
-                & rg["line"].notna()]
+                lambda p: _teams_match(row["home_team"], p or "")) & std_rl]
             away_rows = rg[rg["participant"].map(
-                lambda p: _teams_match(row["away_team"], p or ""))
-                & rg["line"].notna()]
+                lambda p: _teams_match(row["away_team"], p or "")) & std_rl]
             if not home_rows.empty:
                 best_h = home_rows.sort_values("odds", ascending=False).iloc[0]
                 spread = float(best_h["line"])
@@ -2138,6 +2165,7 @@ def run(date: str | None = None, sports: list[str] | None = None,
     if write:
         config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         path = config.OUTPUT_DIR / "latest.json"
-        path.write_text(json.dumps(out, indent=1, default=str))
+        path.write_text(json.dumps(json_sanitize(out), indent=1,
+                                   default=str, allow_nan=False))
         log.info("wrote %s", path)
     return out

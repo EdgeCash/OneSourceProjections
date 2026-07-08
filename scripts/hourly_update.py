@@ -417,7 +417,8 @@ def main():
         "odds_api_credits": oddsapi.credits_remaining(),
     }
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUTPUT_DIR / "latest.json").write_text(json.dumps(out, indent=1, default=str))
+    (OUTPUT_DIR / "latest.json").write_text(
+        json.dumps(pipeline.json_sanitize(out), indent=1, default=str, allow_nan=False))
     log.info("wrote latest.json | primary=%s | in-season=%s | perf=%s",
              primary, active_sports(primary), perf["overall"])
 

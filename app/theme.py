@@ -184,13 +184,27 @@ THEME_CSS = """
 """
 
 
+_TYPE_VARS = ("--disp:'Archivo', system-ui, -apple-system, sans-serif; "
+              "--font:'Archivo', system-ui, -apple-system, sans-serif; "
+              "--mono:'Spline Sans Mono', ui-monospace, 'JetBrains Mono', "
+              "Menlo, Consolas, monospace; ")
+
+
 def theme_css(theme: str = "dark") -> str:
     p = PALETTES.get(theme, PALETTES["dark"])
     root = (":root { " + "".join(f"--{k}:{v}; " for k, v in p.items())
-            + "--disp:'Archivo', system-ui, -apple-system, sans-serif; "
-            + "--font:'Archivo', system-ui, -apple-system, sans-serif; "
-            + "--mono:'Spline Sans Mono', ui-monospace, 'JetBrains Mono', "
-              "Menlo, Consolas, monospace; }")
+            + _TYPE_VARS + "}")
     return f"<style>{root}{THEME_CSS}</style>"
+
+
+def theme_css_both() -> str:
+    """Emit BOTH palettes, scoped by ``data-theme`` on <html>, so a toggle can
+    swap them live: light = cream almanac, dark = classic black. Shared type
+    vars and the base rules go on every root. Default (no attribute) = light."""
+    def _vars(name):
+        return "".join(f"--{k}:{v}; " for k, v in PALETTES[name].items())
+    css = (f":root, :root[data-theme=\"light\"] {{ {_vars('cream')}{_TYPE_VARS}}}"
+           f":root[data-theme=\"dark\"] {{ {_vars('dark')}{_TYPE_VARS}}}")
+    return f"<style>{css}{THEME_CSS}</style>"
 
 

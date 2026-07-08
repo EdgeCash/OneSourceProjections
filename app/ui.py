@@ -2643,6 +2643,13 @@ def _ss_bestline(g: dict, best_line: dict | None) -> str:
 def _ss_lineups(sport: str, g: dict) -> str:
     lu = g.get("lineups") or {}
     if not (lu.get("home") or lu.get("away")):
+        # MLB posts confirmed lineups ~2-3h before first pitch, so an earlier
+        # hourly build legitimately has none — say so (the projection falls back
+        # to team rates until they post) rather than hide the section entirely.
+        if sport == "MLB":
+            return ("<div style='color:var(--muted);font-size:0.85rem;'>"
+                    "Not yet posted — MLB confirms lineups ~2–3h before first "
+                    "pitch. Refreshes hourly.</div>")
         return ""
     pids = g.get("player_ids") or {}
     gpk = g.get("game_pk")
