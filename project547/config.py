@@ -255,14 +255,18 @@ CURATION_SEED_ENABLED = True
 CURATION_SEED_PATH = REPO_ROOT / "data" / "history" / "curation_seed.json"
 
 # Slate-level stake shaping (docs/CURATION_DESIGN.md Component 3), applied after
-# per-market gate scaling. Both OFF by default (identity) — turn on after review.
+# per-market gate scaling. ENABLED after review.
 #   SLATE_CORR: assumed common pairwise correlation among same-game legs. Each
 #     leg in a k-leg game is scaled by 1/(1+(k-1)*SLATE_CORR) — the equicorrelation
-#     Kelly haircut. 0.0 = no haircut. A practitioner value is ~0.25-0.35.
+#     Kelly haircut. 0.30 is a practitioner mid-value; the haircut only reduces
+#     stakes, so it is conservative.
 #   SLATE_MAX_EXPOSURE: cap on the slate's total suggested stake as a fraction of
-#     bankroll; over it, every stake scales down proportionally. None = no cap.
-SLATE_CORR = 0.0
-SLATE_MAX_EXPOSURE = None
+#     bankroll; over it every stake scales down proportionally. Set to 0.25 — the
+#     raw independent-Kelly stakes summed to ~0.85 of bankroll on a real slate,
+#     which is over-levered. Raise/lower to taste (this is a bankroll-risk choice,
+#     not a validated constant); None removes the cap.
+SLATE_CORR = 0.30
+SLATE_MAX_EXPOSURE = 0.25
 
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
@@ -334,14 +338,16 @@ APPLY_CALIBRATION = os.environ.get("APPLY_CALIBRATION", "").strip().lower() in (
 # (production anchors to the softer current line) and a published number equal to
 # the market has zero deviation → zero edge. The conservative recommendation
 # (capture ~half the gain, keep the model's deviation) came out at 0.5 for every
-# market measured. Left OFF pending review; to enable, set e.g.:
-#   PROJECTION_ANCHOR = {
-#       ("MLB", "moneyline"): 0.5, ("MLB", "total"): 0.5,
-#       ("NBA", "moneyline"): 0.5, ("NBA", "total"): 0.5,
-#       ("NFL", "moneyline"): 0.5, ("NFL", "total"): 0.5,
-#       ("NHL", "moneyline"): 0.5, ("NHL", "total"): 0.5,
-#   }
-PROJECTION_ANCHOR: dict = {}
+# market measured. ENABLED at the reviewed 0.5 weight for the four sports with
+# closing-line validation (moneyline + total each). Spread and untested markets
+# stay 0 (return the raw model number). The card shows the anchored headline with
+# the raw model alongside ("... · model NN%").
+PROJECTION_ANCHOR: dict = {
+    ("MLB", "moneyline"): 0.5, ("MLB", "total"): 0.5,
+    ("NBA", "moneyline"): 0.5, ("NBA", "total"): 0.5,
+    ("NFL", "moneyline"): 0.5, ("NFL", "total"): 0.5,
+    ("NHL", "moneyline"): 0.5, ("NHL", "total"): 0.5,
+}
 
 
 def projection_anchor(sport, market) -> float:
