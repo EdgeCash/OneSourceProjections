@@ -74,6 +74,14 @@ NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL", "MLS", "A
 MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
 SPORT_LABELS = {"MLB": "MLB", "WNBA": "WNBA", "NBA": "NBA", "NHL": "NHL",
                 "NFL": "NFL", "NCAAF": "NCAAF", "MLS": "Soccer", "ATP": "Tennis"}
+# What waits inside each card's "Deep research" disclosure (the summary note).
+DEEP_NOTES = {
+    "MLB": "lineups · props · splits · CLV",
+    "WNBA": "ratings · pace · rest · CLV", "NBA": "ratings · pace · rest · CLV",
+    "NHL": "goalies · xG · rest · CLV",
+    "NFL": "EPA · splits · rest · CLV", "NCAAF": "EPA · splits · rest · CLV",
+    "MLS": "form · xG · priced sides", "ATP": "serve/return · recent matches · sets",
+}
 
 # Team primary colors, used as accents (rails/chips) on each game — the
 # Lucky-Louie touch. Keyed by normalized full name; unknown teams fall back to
@@ -325,7 +333,7 @@ SITE_CSS = """
     font-family: var(--font); }
   a { color: inherit; text-decoration: none; }
   .site { display: flex; min-height: 100vh; }
-  .sb { width: 232px; flex: 0 0 232px; background: var(--sb1);
+  .sb { width: 196px; flex: 0 0 196px; background: var(--sb1);
     border-right: 1.5px solid var(--line); padding: 18px 14px;
     display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
   .osp-logo { display: flex; align-items: center; gap: 10px; margin: 2px 4px 18px; }
@@ -495,14 +503,143 @@ SITE_CSS = """
   .mtable th { font-family: var(--disp); font-size: 0.72rem; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--muted); }
   .mtable td { font-family: var(--mono); }
+  /* ===== scannable card hero (360Five redesign) — scoped under .osp-hero so
+     the generic class names never collide with the rest of the site ===== */
+  .osp-hero { --dg: var(--good); }
+  .osp-hero .hem { color: var(--faint); }
+  .osp-hero .eyebrow { display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: .72rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .08em; margin: 4px 0 14px; }
+  .osp-hero .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%;
+    background: var(--acc); flex: none; }
+  .osp-hero .eyebrow .sep { color: var(--faint); }
+  .osp-hero .eyebrow .lock { margin-left: auto; color: var(--faint);
+    text-transform: none; letter-spacing: 0; font-size: .7rem; }
+  .osp-hero .match { display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 10px; margin-bottom: 16px; }
+  .osp-hero .team { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .osp-hero .team.away { align-items: flex-start; }
+  .osp-hero .team.home { align-items: flex-end; text-align: right; }
+  .osp-hero .team .nm { font-family: var(--disp); font-weight: 700;
+    font-size: 1.06rem; letter-spacing: -.01em; line-height: 1.1; }
+  .osp-hero .team .rec { font-family: var(--mono); font-size: .72rem; color: var(--muted); }
+  .osp-hero .at { font-family: var(--mono); color: var(--faint); font-size: .8rem; }
+  .osp-hero .play { background: color-mix(in srgb, var(--good) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--good) 32%, transparent);
+    border-radius: 13px; padding: 13px 14px; display: flex; align-items: center;
+    gap: 12px; margin-bottom: 15px; }
+  .osp-hero .play.pass { background: var(--card2); border-color: var(--line); --dg: var(--muted); }
+  .osp-hero .play-main { flex: 1; min-width: 0; }
+  .osp-hero .play .tier { font-family: var(--mono); font-size: .66rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--good); }
+  .osp-hero .play.pass .tier { color: var(--muted); }
+  .osp-hero .play .pick { font-family: var(--disp); font-size: 1.32rem; font-weight: 700;
+    letter-spacing: -.02em; margin: 1px 0 2px; }
+  .osp-hero .play .sub { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+  .osp-hero .play .sub b { color: var(--good); font-weight: 700; }
+  .osp-hero .play.pass .sub b { color: var(--muted); }
+  .osp-hero .dial { flex: none; width: 58px; height: 58px; border-radius: 50%;
+    display: grid; place-items: center; position: relative; }
+  .osp-hero .dial::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--dg) calc(var(--v) * 1%), var(--line) 0);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
+    mask: radial-gradient(circle, transparent 60%, #000 61%); }
+  .osp-hero .dial .val { font-family: var(--disp); font-weight: 700; font-size: 1.02rem; line-height: 1; }
+  .osp-hero .dial .cap { font-family: var(--mono); font-size: .52rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .06em; text-align: center; }
+  .osp-hero .lbl { font-family: var(--mono); font-size: .66rem; font-weight: 700;
+    color: var(--faint); text-transform: uppercase; letter-spacing: .1em; margin: 0 0 8px; }
+  .osp-hero .proj { margin-bottom: 16px; }
+  .osp-hero .bar { display: grid; grid-template-columns: 42px 1fr auto; align-items: center;
+    gap: 10px; margin-bottom: 6px; }
+  .osp-hero .bar .who { font-family: var(--mono); font-size: .74rem; color: var(--muted); font-weight: 600; }
+  .osp-hero .bar .track { height: 9px; border-radius: 5px; background: var(--card2); overflow: hidden; }
+  .osp-hero .bar .fill { height: 100%; border-radius: 5px; background: var(--acc); opacity: .85; }
+  .osp-hero .bar.fav .fill { background: var(--good); opacity: 1; }
+  .osp-hero .bar .v { font-family: var(--mono); font-size: .82rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; min-width: 30px; text-align: right; }
+  .osp-hero .proj .tot { font-family: var(--mono); font-size: .76rem; color: var(--muted);
+    margin-top: 7px; display: flex; gap: 6px; align-items: baseline; }
+  .osp-hero .proj .tot b { color: var(--text); font-weight: 700; }
+  .osp-hero .proj .tot .edge { color: var(--good); font-weight: 700; margin-left: auto; }
+  .osp-hero .drivers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+  .osp-hero .chip { background: var(--card2); border: 1px solid var(--line); border-radius: 11px;
+    padding: 9px 11px; display: flex; gap: 9px; align-items: flex-start; }
+  .osp-hero .chip svg { flex: none; width: 16px; height: 16px; stroke: var(--acc); fill: none;
+    stroke-width: 1.7; margin-top: 1px; }
+  .osp-hero .chip .k { font-family: var(--mono); font-size: .63rem; color: var(--faint);
+    text-transform: uppercase; letter-spacing: .06em; }
+  .osp-hero .chip .val { font-family: var(--disp); font-size: .85rem; font-weight: 700;
+    line-height: 1.15; margin-top: 1px; }
+  .osp-hero .chip .note { font-size: .72rem; color: var(--muted); line-height: 1.2; }
+  .osp-hero .odds { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 2px; }
+  .osp-hero .oz { flex: 1; min-width: 82px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 9px; padding: 7px 9px; text-align: center; }
+  .osp-hero .oz .k { font-family: var(--mono); font-size: .6rem; color: var(--faint);
+    text-transform: uppercase; letter-spacing: .06em; }
+  .osp-hero .oz .v { font-family: var(--mono); font-size: .86rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .osp-hero .oz .v.pos { color: var(--good); }
+  .osp-hero .prop { display: flex; align-items: center; gap: 9px; padding: 9px 12px;
+    margin-bottom: 15px; border: 1px solid var(--line); border-radius: 11px; background: var(--card);
+    cursor: pointer; transition: border-color .15s ease; }
+  .osp-hero .prop:hover { border-color: var(--acc); }
+  .osp-hero .prop .star { color: var(--acc); font-size: .92rem; flex: none; }
+  .osp-hero .prop .pk { font-family: var(--mono); font-size: .6rem; color: var(--faint);
+    flex: none; text-transform: uppercase; letter-spacing: .08em; }
+  .osp-hero .prop .pick { font-weight: 700; font-size: .88rem; flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .osp-hero .prop .od { font-family: var(--mono); font-size: .8rem; font-weight: 700; flex: none;
+    font-variant-numeric: tabular-nums; }
+  .osp-hero .prop .ev { font-family: var(--mono); font-size: .76rem; font-weight: 700;
+    color: var(--good); flex: none; }
+  .osp-hero .prop .chev { color: var(--faint); flex: none; font-size: .85rem; }
+  .osp-hero a.prop { border-bottom: none; }
+  .osp-hero .prop.pending { cursor: default; }
+  .osp-hero .prop.pending .pick { color: var(--muted); font-weight: 400; font-size: .8rem; }
+  /* deep-research disclosure (holds the full, unchanged research card) */
+  details.deep { border-top: 1.5px solid var(--line); margin: 4px -18px 0; }
+  details.deep > summary { list-style: none; cursor: pointer; padding: 13px 18px;
+    display: flex; align-items: center; gap: 9px; font-family: var(--disp); font-weight: 700;
+    font-size: .9rem; color: var(--text); }
+  details.deep > summary::-webkit-details-marker { display: none; }
+  details.deep .caret { transition: transform .2s ease; color: var(--acc); font-size: .8rem; }
+  details.deep[open] .caret { transform: rotate(90deg); }
+  details.deep .deepnote { font-family: var(--mono); font-size: .68rem; color: var(--muted);
+    font-weight: 400; margin-left: auto; text-transform: none; }
+  details.deep > summary:hover { background: var(--card2); }
+  .deepbody { padding: 2px 18px 10px; }
+
   @media (max-width: 820px) {
-    .ghead { grid-template-columns: 1fr; }
     .site { flex-direction: column; }
     .sb { width: 100%; height: auto; position: static; flex-direction: row;
       flex-wrap: wrap; align-items: center; gap: 6px; }
     .osp-logo { margin: 0 12px 0 0; } .sb nav { flex-direction: row; flex-wrap: wrap; }
     .osp-acct { margin: 0 0 0 auto; border: none; padding: 0; }
     main { padding: 16px; } .drawer-panel { width: 100%; }
+  }
+  /* phone: single-column, a card fits one screen, nothing overflows sideways */
+  @media (max-width: 720px) {
+    html, body { overflow-x: hidden; }
+    main { padding: 12px 12px 48px; max-width: 100%; }
+    .topbar { flex-wrap: wrap; gap: 10px; }
+    .search { width: 100%; }
+    .sb nav a { padding: 7px 10px; font-size: 0.82rem; }
+    details.game > summary { padding: 12px 14px; font-size: 0.9rem; }
+    .ssbody { padding: 4px 14px 14px; }
+    details.deep, details.deep > summary { margin-left: -14px; margin-right: -14px; }
+    .deepbody { padding: 2px 14px 10px; }
+    .osp-hero .match { gap: 8px; }
+    .osp-hero .team .nm { font-size: 0.98rem; }
+    .osp-hero .play .pick { font-size: 1.18rem; }
+    /* keep the 4 "why" chips 2x2 on phones (compact) so the hero stays ~one
+       screen rather than a tall single-column stack */
+    .osp-hero .drivers { gap: 6px; }
+    .osp-hero .chip { padding: 8px 9px; }
+    .osp-hero .odds { flex-wrap: nowrap; }
+    .osp-hero .oz { min-width: 0; }
+    .osp-hero, .deepbody, .ssbody { overflow-x: hidden; }
+    .deepbody table, .deepbody .osp-ss-mtab { display: block; overflow-x: auto; }
   }
 """
 
@@ -985,11 +1122,19 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
             label, auto = f"{g.get('away_team','')} @ {g.get('home_team','')}", False
         search = re.sub(r"[*_]", "", label).lower()
         gid = str(g.get("game_pk") or f"{sport}-{i}")
-        header = ""
+        # Each card = a scannable HERO (the play + the why, one screen) followed
+        # by the FULL existing research card, collapsed one tap away in "Deep
+        # research". The hero replaces the old 5-W game header (and its N/A odds
+        # boxes); the deep body is the unchanged detailed renderer.
+        hero = ""
         try:
             if sport in ("ATP", "WTA"):
+                hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
+                                    props=props)
                 body = _tennis_card(sport, g)
             elif sport in MATCH_MODEL_SPORTS:
+                hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
+                                    props=props)
                 body = _match_body(sport, g)
             else:
                 m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
@@ -1001,21 +1146,27 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
                     best_line = _best_line_for(sport, g, date_sel)
                 except Exception:
                     best_line = {}
-                header = _game_header(sport, g, gid)
                 try:
                     briefs[gid] = ui.ai_brief_game(sport, g, m, min_edge=MIN_EDGE)
                 except Exception:
                     briefs.pop(gid, None)
+                hero = ui.hero_html(sport, g, m, data=data, gate_table=gt,
+                                    min_edge=MIN_EDGE, bankroll=BANKROLL,
+                                    best_line=best_line, props=props)
                 body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
                                            gate_table=gt, bankroll=BANKROLL, props=props,
                                            best_line=best_line, data=data)
         except Exception as e:
             body = f"<div class='feednote'>Sheet unavailable ({html.escape(str(e))}).</div>"
+        deep_note = DEEP_NOTES.get(sport, "lineups · stats · splits · CLV")
+        deep = (f"<details class='deep'><summary><span class='caret'>▸</span> "
+                f"Deep research <span class='deepnote'>{deep_note}</span></summary>"
+                f"<div class='deepbody'>{body}</div></details>")
         out.append(
             f"<details class='game'{' open' if auto else ''} "
             f"data-search=\"{html.escape(search, quote=True)}\">"
             f"<summary>{_md_bold(label)}</summary>"
-            f"<div class='ssbody'>{header}{body}</div></details>")
+            f"<div class='ssbody'>{hero}{deep}</div></details>")
     return "".join(out), _prop_index(sport, props), briefs
 
 

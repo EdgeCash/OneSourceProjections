@@ -68,6 +68,24 @@ def fmt_time_et(iso_ts: str | None) -> str:
         return str(iso_ts)
 
 
+def lock_label(sport: str) -> str:
+    """Sport-aware odds-lock phrase for the hero eyebrow (and the deep sheet's
+    Best-Available hint). One place so no baseball language ("first pitch")
+    leaks onto basketball, hockey, football, tennis, or soccer cards."""
+    s = (sport or "").upper()
+    if s in ("NBA", "WNBA"):
+        return "odds lock at tip-off"
+    if s == "NHL":
+        return "odds lock at puck drop"
+    if s in ("NFL", "NCAAF"):
+        return "odds lock at kickoff"
+    if s in ("ATP", "WTA"):
+        return "locks at first serve"
+    if s in ("MLS", "EPL"):
+        return "odds lock at kickoff"
+    return "odds lock at first pitch"
+
+
 def short_market(market: str) -> str:
     """'pitcher_strikeouts' -> 'Pitcher Ks', 'batter_total_bases' -> 'Total Bases'."""
     pretty = {
@@ -2591,7 +2609,7 @@ def _ss_header(sport: str, g: dict, matchup: dict) -> str:
         meta.append(wx)
     # confidence is shown as its own multi-factor strip below the header
     meta.append("<span style='margin-left:auto;color:var(--warn,#a9791b);"
-                "font-weight:600;'>🔒 Odds lock at first pitch</span>")
+                f"font-weight:600;'>🔒 {lock_label(sport).capitalize()}</span>")
     return (
         "<div class='osp-ss-head'>"
         "<div class='osp-ss-teams'>"
@@ -3107,6 +3125,635 @@ def _confidence(sport: str, g: dict, calls: list, data: dict) -> dict:
                         "completeness": round(completeness, 2)}}
 
 
+# ---------------------------------------------------------------------------
+# Scannable hero (360Five card redesign) — the play + the why, one screen; the
+# full research card lives one tap away in a Deep-research disclosure. Sport
+# adaptive: drivers change per sport and no baseball language leaks elsewhere.
+# CSS classes are scoped under `.osp-hero` (styles live in build_static
+# SITE_CSS, alongside the other card CSS).
+# ---------------------------------------------------------------------------
+
+# Inline monochrome SVG glyphs (stroke inherits var(--acc) via CSS), keyed by a
+# driver's icon name. Mirrors the approved mockup's line icons.
+_HERO_ICONS = {
+    "pitching": '<circle cx="12" cy="12" r="9"/><path d="M5 7c3 2 3 8 0 10M19 7c-3 2-3 8 0 10"/>',
+    "park": '<path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/>',
+    "weather": '<path d="M4 14a4 4 0 014-4 5 5 0 019.6-1.5A3.5 3.5 0 1118 17H7a3 3 0 01-3-3z"/>',
+    "umpire": '<path d="M12 3v18M6 8h12M7 8l-3 6h6zM17 8l-3 6h6z"/>',
+    "pace": '<path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="9"/>',
+    "rating": '<path d="M4 19V5M4 19h16M8 15l4-6 3 3 4-7"/>',
+    "form": '<path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 21l-4.9 2.2.9-5.5-4-3.9 5.5-.8z"/>',
+    "rest": '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+    "surface": '<path d="M4 20L20 4M8 4h12v12"/>',
+    "serve": '<path d="M12 3v18M7 6l10 6-10 6"/>',
+    "h2h": '<path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/>',
+    "epa": '<path d="M4 19V5M4 19h16M6 16l4-5 3 2 5-8"/>',
+    "puck": '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="9" ry="3.5"/>',
+}
+
+
+def _hero_em() -> str:
+    """Quiet em-dash for a driver whose data is genuinely absent (never a
+    warning triangle in the scannable hero — the deep sheet carries those)."""
+    return "<span class='hem'>—</span>"
+
+
+def _stat_row(rows, stat):
+    """(off_situ value, off_rank) for a named stat in a matchup off-vs-def table."""
+    for r in rows or []:
+        if r.get("stat") == stat:
+            return _mcf(r.get("off_situ")), r.get("off_rank")
+    return None, None
+
+
+def _hero_drivers_mlb(g: dict, data: dict) -> list:
+    pit = (data.get("pitching") or {})
+    asp, hsp = pit.get("away_sp") or {}, pit.get("home_sp") or {}
+    a_nm, h_nm = _last(asp.get("name") or g.get("away_pitcher")), _last(hsp.get("name") or g.get("home_pitcher"))
+    a_x, h_x = _mcf(asp.get("xfip")), _mcf(hsp.get("xfip"))
+    if a_nm or h_nm:
+        pit_val = f"{a_nm or _hero_em()} vs {h_nm or _hero_em()}"
+    else:
+        pit_val = _hero_em()
+    if a_x is not None or h_x is not None:
+        pit_note = f"xFIP {_num(a_x, 2)} / {_num(h_x, 2)}"
+    else:
+        pit_note = ""
+    pf = None
+    try:
+        from project547 import parks
+        pf = parks.factor(g.get("home_team", ""))
+    except Exception:
+        pf = None
+    if pf:
+        park_val = f"{pf:.2f}× runs"
+        park_note = ("hitter-friendly" if pf > 1.02 else
+                     "pitcher-friendly" if pf < 0.98 else "neutral park")
+    else:
+        park_val, park_note = _hero_em(), ""
+    wx = g.get("weather") or {}
+    temp, wind, wdir = _mcf(wx.get("temp_f")), _mcf(wx.get("wind_mph")), wx.get("wind_dir")
+    if temp is not None or wind is not None:
+        wv = []
+        if temp is not None:
+            wv.append(f"{temp:.0f}°")
+        if wind is not None:
+            wv.append(f"{wind:.0f} mph{(' ' + wdir) if wdir else ''}")
+        wx_val, wx_note = " · ".join(wv), "wind vs total"
+    else:
+        wx_val, wx_note = _hero_em(), ""
+    ump = g.get("umpire") or {}
+    ki = _mcf(ump.get("k_idx") or ump.get("k_index"))
+    ri = _mcf(ump.get("runs_idx") or ump.get("runs_index"))
+    if ump.get("name"):
+        ump_val = _last(ump.get("name"))
+        ump_note = (f"K {_num(ki, 2)}× · R {_num(ri, 2)}×"
+                    if (ki is not None or ri is not None) else "")
+    else:
+        ump_val, ump_note = _hero_em(), ""
+    return [
+        {"icon": "pitching", "label": "Pitching", "value": pit_val, "note": pit_note},
+        {"icon": "park", "label": "Park", "value": park_val, "note": park_note},
+        {"icon": "weather", "label": "Weather", "value": wx_val, "note": wx_note},
+        {"icon": "umpire", "label": "Umpire", "value": ump_val, "note": ump_note},
+    ]
+
+
+def _hero_drivers_hoops(g: dict, matchup: dict) -> list:
+    a_rows = matchup.get("away_off_vs_home_def") or []
+    h_rows = matchup.get("home_off_vs_away_def") or []
+    a_last, h_last = _last(g.get("away_team")), _last(g.get("home_team"))
+    pa, _ = _stat_row(a_rows, "Pace")
+    ph, _ = _stat_row(h_rows, "Pace")
+    if pa is not None or ph is not None:
+        avg = [x for x in (pa, ph) if x is not None]
+        pace_val = f"{(sum(avg) / len(avg)):.0f} poss"
+        pace_note = f"{a_last} {_num(pa, 0)} · {h_last} {_num(ph, 0)}"
+    else:
+        pace_val, pace_note = _hero_em(), ""
+    oa, oar = _stat_row(a_rows, "Off Rtg")
+    oh, ohr = _stat_row(h_rows, "Off Rtg")
+    if oa is not None or oh is not None:
+        rtg_val = (f"{a_last} {_num(oa, 0)}" if oa is not None else f"{h_last} {_num(oh, 0)}")
+        rtg_note = f"vs {h_last} {_num(oh, 0)} off rtg" if oh is not None else _hero_em()
+    else:
+        rtg_val, rtg_note = _hero_em(), ""
+
+    def _form(side):
+        f = matchup.get(f"{side}_form") or {}
+        l5 = f.get("last5") or []
+        if not l5 and not (f.get("w") or f.get("l")):
+            return None
+        w = sum(1 for r in l5 if r.get("win"))
+        return f"{w}–{len(l5) - w} L5" if l5 else f"{f.get('w', 0)}–{f.get('l', 0)}"
+    fa, fh = _form("away"), _form("home")
+    if fa or fh:
+        form_val = f"{a_last} {fa}" if fa else f"{h_last} {fh}"
+        form_note = (f"{h_last} {fh}" if fh else _hero_em())
+    else:
+        form_val, form_note = _hero_em(), ""
+    ra, rh = matchup.get("away_rest"), matchup.get("home_rest")
+    if ra is not None or rh is not None:
+        rest_val = f"{a_last} {ra}d" if ra is not None else f"{h_last} {rh}d"
+        rest_note = f"{h_last} {rh}d rest" if rh is not None else _hero_em()
+    else:
+        rest_val, rest_note = _hero_em(), ""
+    return [
+        {"icon": "pace", "label": "Pace", "value": pace_val, "note": pace_note},
+        {"icon": "rating", "label": "Off rating", "value": rtg_val, "note": rtg_note},
+        {"icon": "form", "label": "Form", "value": form_val, "note": form_note},
+        {"icon": "rest", "label": "Rest", "value": rest_val, "note": rest_note},
+    ]
+
+
+def _hero_drivers_nhl(g: dict, matchup: dict) -> list:
+    a_last, h_last = _last(g.get("away_team")), _last(g.get("home_team"))
+
+    def _form(side):
+        f = matchup.get(f"{side}_form") or {}
+        l5 = f.get("last5") or []
+        if not l5:
+            return None
+        w = sum(1 for r in l5 if r.get("win"))
+        return f"{w}–{len(l5) - w} L5"
+    fa, fh = _form("away"), _form("home")
+    ra, rh = matchup.get("away_rest"), matchup.get("home_rest")
+    ga = g.get("away_goalie") or g.get("away_starter")
+    gh = g.get("home_goalie") or g.get("home_starter")
+    goalie_val = (f"{_last(ga) or _hero_em()} vs {_last(gh) or _hero_em()}"
+                  if (ga or gh) else _hero_em())
+    return [
+        {"icon": "puck", "label": "Goalies", "value": goalie_val, "note": ""},
+        {"icon": "rating", "label": "Form", "value": (f"{a_last} {fa}" if fa else _hero_em()),
+         "note": (f"{h_last} {fh}" if fh else _hero_em())},
+        {"icon": "rest", "label": "Rest",
+         "value": (f"{a_last} {ra}d" if ra is not None else _hero_em()),
+         "note": (f"{h_last} {rh}d" if rh is not None else _hero_em())},
+        {"icon": "pace", "label": "Total lean", "value": _hero_em(), "note": ""},
+    ]
+
+
+def _hero_drivers_football(g: dict, matchup: dict) -> list:
+    a_last, h_last = _last(g.get("away_team")), _last(g.get("home_team"))
+    a_rows = matchup.get("away_off_vs_home_def") or []
+    h_rows = matchup.get("home_off_vs_away_def") or []
+    ea, _ = _stat_row(a_rows, "EPA/play")
+    eh, _ = _stat_row(h_rows, "EPA/play")
+    ra, rh = matchup.get("away_rest"), matchup.get("home_rest")
+
+    def _form(side):
+        f = matchup.get(f"{side}_form") or {}
+        l5 = f.get("last5") or []
+        if not l5:
+            return None
+        w = sum(1 for r in l5 if r.get("win"))
+        return f"{w}–{len(l5) - w} L5"
+    fa, fh = _form("away"), _form("home")
+    return [
+        {"icon": "epa", "label": "EPA/play",
+         "value": (f"{a_last} {_num(ea, 2)}" if ea is not None else _hero_em()),
+         "note": (f"vs {h_last} {_num(eh, 2)}" if eh is not None else _hero_em())},
+        {"icon": "form", "label": "Form", "value": (f"{a_last} {fa}" if fa else _hero_em()),
+         "note": (f"{h_last} {fh}" if fh else _hero_em())},
+        {"icon": "rest", "label": "Rest",
+         "value": (f"{a_last} {ra}d" if ra is not None else _hero_em()),
+         "note": (f"{h_last} {rh}d" if rh is not None else _hero_em())},
+        {"icon": "pace", "label": "Pace", "value": _hero_em(), "note": ""},
+    ]
+
+
+def _hero_drivers_tennis(g: dict) -> list:
+    surface = g.get("surface")
+    q1, q2 = _mcf(g.get("player1_win_prob")), _mcf(g.get("player2_win_prob"))
+    p1, p2 = _last(g.get("player1")), _last(g.get("player2"))
+    surf_note = ""
+    if q1 is not None and q2 is not None:
+        surf_note = f"{p1} {_pct(q1)} · {p2} {_pct(q2)}"
+    n1, n2 = _mcf(g.get("p1_matches")), _mcf(g.get("p2_matches"))
+    if n1 is not None or n2 is not None:
+        form_val = f"{p1} {int(n1)} GP" if n1 is not None else _hero_em()
+        form_note = f"{p2} {int(n2)} GP" if n2 is not None else _hero_em()
+    else:
+        form_val, form_note = _hero_em(), ""
+    return [
+        {"icon": "surface", "label": "Surface",
+         "value": (str(surface).title() if surface else _hero_em()), "note": surf_note},
+        {"icon": "serve", "label": "Serve hold", "value": _hero_em(), "note": ""},
+        {"icon": "h2h", "label": "Head-to-head", "value": _hero_em(), "note": ""},
+        {"icon": "form", "label": "Sample", "value": form_val, "note": form_note},
+    ]
+
+
+def hero_drivers(sport: str, g: dict, matchup: dict | None, data: dict | None) -> list:
+    """Up to four sport-adaptive "why" driver chips ({icon,label,value,note}).
+    Absent data renders as a quiet em-dash rather than a warning. Never raises."""
+    s = (sport or "").upper()
+    g, matchup, data = g or {}, matchup or {}, data or {}
+    try:
+        if s == "MLB":
+            return _hero_drivers_mlb(g, data)
+        if s in ("WNBA", "NBA"):
+            return _hero_drivers_hoops(g, matchup)
+        if s == "NHL":
+            return _hero_drivers_nhl(g, matchup)
+        if s in ("NFL", "NCAAF"):
+            return _hero_drivers_football(g, matchup)
+        if s in ("ATP", "WTA"):
+            return _hero_drivers_tennis(g)
+    except Exception:
+        log.exception("hero_drivers failed for %s", s)
+    return []
+
+
+def _hero_exp(g: dict, side: str):
+    """Projected score for a side, preferring the market-anchored ``*_exp_pub``
+    value, falling back to the raw model exp. Finite float or None."""
+    v = g.get(f"{side}_exp_pub")
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        v = _exp(g, side)
+    return _mcf(v)
+
+
+def _fair_american(prob: float) -> str:
+    """De-vig-free fair American price from a win probability."""
+    p = _mcf(prob)
+    if p is None or p <= 0 or p >= 1:
+        return "—"
+    dec = 1.0 / p
+    return f"-{round(100 / (dec - 1))}" if dec < 2 else f"+{round((dec - 1) * 100)}"
+
+
+def _oz(label: str, price) -> str:
+    """One compact odds cell; positive prices in green, absent prices em-dashed."""
+    p = _mcf(price)
+    if p is None:
+        val, cls = "—", ""
+    else:
+        val, cls = fmt_american(p), (" pos" if p > 0 else "")
+    return (f"<div class='oz'><div class='k'>{label}</div>"
+            f"<div class='v{cls}'>{val}</div></div>")
+
+
+_HERO_DEEPNOTE = {
+    "MLB": "lineups · props · splits · CLV",
+    "WNBA": "ratings · pace · rest · CLV",
+    "NBA": "ratings · pace · rest · CLV",
+    "NHL": "goalies · xG · rest · CLV",
+    "NFL": "EPA · splits · rest · CLV",
+    "NCAAF": "EPA · splits · rest · CLV",
+    "ATP": "serve/return · recent matches · sets",
+    "WTA": "serve/return · recent matches · sets",
+    "MLS": "form · xG · priced sides",
+}
+
+
+def _hero_team(side: str, name: str, rec: str, sep_cls: str) -> str:
+    r = f"<div class='rec'>{rec}</div>" if rec else ""
+    return f"<div class='team {sep_cls}'><div class='nm'>{name}</div>{r}</div>"
+
+
+def _hero_play_team(sport, g, matchup, data, min_edge, gate_table, bankroll,
+                    best_line, props) -> str:
+    """The team/standard-sport hero (MLB, WNBA/NBA, NHL, NFL/NCAAF)."""
+    away, home = g.get("away_team", ""), g.get("home_team", "")
+    home_wp = _mcf(g.get("home_win_prob"))
+
+    # --- the play: reuse the deep sheet's per-market calls (gate + ¼-Kelly aware)
+    try:
+        calls = _mc_market_calls(sport, g, min_edge, gate_table=gate_table, bankroll=bankroll)
+    except Exception:
+        calls = []
+    conf = _confidence(sport, g, calls, data)
+    if conf.get("cap") == "lean":
+        for c in calls:
+            if c["decision"] == "PLAY":
+                c["decision"] = "LEAN"
+    live = [c for c in calls if c["decision"] in ("PLAY", "LEAN")
+            and c.get("ev") is not None and pd.notna(c["ev"]) and c["ev"] >= min_edge]
+    if live:
+        best = max(live, key=lambda c: c["ev"])
+    elif calls:
+        best = max(calls, key=lambda c: (c["ev"] if c.get("ev") is not None
+                                         and pd.notna(c["ev"]) else -9))
+    else:
+        best = None
+    clv = data.get("clv") or {}
+    play = _hero_play_box(sport, best, conf, min_edge, clv, is_pass=not live)
+
+    # --- top prop one-liner
+    prop = _hero_prop(sport, g, props)
+
+    # --- projection bar (scores)
+    a_exp, h_exp = _hero_exp(g, "away"), _hero_exp(g, "home")
+    proj = _hero_proj_scores(g, away, home, a_exp, h_exp)
+
+    # --- drivers + odds
+    drivers = _hero_driver_chips(hero_drivers(sport, g, matchup, data))
+    ml_side = "home" if (home_wp or 0) >= 0.5 else "away"
+    rl_line = g.get("rl_home_line", g.get("spread_home_line"))
+    rl_price = g.get("rl_home_odds", g.get("spread_home_odds"))
+    rl_word = "RL" if sport == "MLB" else "spr"
+    tl = _mcf(g.get("total_line"))
+    rl_lbl = (f"{_last(home)} {rl_line:+g}" if rl_line is not None and pd.notna(rl_line)
+              else f"{_last(home)} {rl_word}")
+    odds = ("<div class='odds'>"
+            + _oz(f"{_last(g.get(ml_side + '_team'))} ML", g.get(f"{ml_side}_ml"))
+            + _oz(f"Over {tl:g}" if tl is not None else "Over", g.get("over_odds"))
+            + _oz(rl_lbl, rl_price) + "</div>")
+
+    a_rec = _hero_record(matchup, g, "away")
+    h_rec = _hero_record(matchup, g, "home")
+    match = ("<div class='match'>"
+             + _hero_team("away", away, a_rec, "away")
+             + "<div class='at'>@</div>"
+             + _hero_team("home", home, h_rec, "home") + "</div>")
+    return match + play + prop + proj + "<div class='lbl'>Why</div>" + drivers + odds
+
+
+def _hero_record(matchup: dict, g: dict, side: str) -> str:
+    r = matchup.get(f"{side}_record") or g.get(f"{side}_record")
+    s = matchup.get(f"{side}_streak") or g.get(f"{side}_streak")
+    bits = [x for x in (r, s) if x]
+    return " · ".join(str(b) for b in bits)
+
+
+def _hero_play_box(sport, call, conf, min_edge, clv, *, is_pass: bool) -> str:
+    if not call:
+        return ("<div class='play pass'><div class='play-main'>"
+                "<div class='tier'>Pass · no priced market</div>"
+                "<div class='pick'>No line yet</div>"
+                "<div class='sub'>Odds attach closer to game time.</div></div>"
+                "<div class='dial' style='--v:0;--dg:var(--muted)'>"
+                "<div><div class='val'>—</div><div class='cap'>conv</div></div></div></div>")
+    ev = _mcf(call.get("ev"))
+    tier = play_tier(ev, min_edge, gate=call.get("gate"))
+    kind = tier["kind"]
+    passish = is_pass or kind in ("pass", "verify") or ev is None or ev < min_edge
+    pick = f"{call.get('pick', '')} {fmt_american(call.get('price')) or ''}".strip()
+    tier_txt = f"{tier['label'].title()} · {call['label']}" if not passish else (
+        "Verify · edge too big" if kind == "verify" else "Pass · no edge")
+    # sub line
+    if not passish:
+        parts = [f"<b>{ev * 100:+.1f}% EV</b>"]
+        if call.get("stake_units"):
+            parts.append(f"¼-Kelly {call['stake_units']:g}u")
+        key = {"Moneyline": "moneyline", "Total": "total",
+               "Run Line": "spread", "Spread": "spread"}.get(call["label"], "")
+        cst = clv.get(key) or {}
+        avg, n = _mcf(cst.get("avg_clv")), (cst.get("clv_n") or cst.get("n"))
+        if avg is not None:
+            ntxt = f" <span style='color:var(--faint)'>n={n}</span>" if n else ""
+            parts.append(f"CLV {avg * 100:+.1f}%{ntxt}")
+        sub = " · ".join(parts)
+    else:
+        prob = _mcf(call.get("prob"))
+        implied = _implied(call["price"]) if call.get("price") is not None and pd.notna(call.get("price")) else None
+        bits = []
+        if prob is not None and implied is not None:
+            bits.append(f"model {_pct(prob)} vs {_pct(implied)} implied")
+        if ev is not None:
+            bits.append(f"<b>{ev * 100:+.1f}% EV</b>")
+        sub = " · ".join(bits) or "no priced edge"
+    # dial: real confidence composite for live plays; em-dash on a pass
+    if not passish:
+        v = int(round(conf.get("score", 0) * 100))
+        dial = (f"<div class='dial' style='--v:{v}'>"
+                f"<div><div class='val'>{v}</div><div class='cap'>conv</div></div></div>")
+    else:
+        dial = ("<div class='dial' style='--v:8;--dg:var(--muted)'>"
+                "<div><div class='val'>—</div><div class='cap'>conv</div></div></div>")
+    cls = "play pass" if passish else "play"
+    return (f"<div class='{cls}'><div class='play-main'>"
+            f"<div class='tier'>{tier_txt}</div>"
+            f"<div class='pick'>{pick}</div>"
+            f"<div class='sub'>{sub}</div></div>{dial}</div>")
+
+
+def _hero_prop(sport: str, g: dict, props) -> str:
+    """Top-prop one-liner (clickable → the same player-props drawer the lineup
+    names open). Pending state when nothing's priced yet."""
+    s = (sport or "").upper()
+    best = None
+    gpk = g.get("game_pk")
+    from project547.names import normalize
+    names = {normalize(g.get("away_team", "")), normalize(g.get("home_team", ""))}
+    names.discard("")
+    for p in props or []:
+        if s == "MLB":
+            if gpk is None or p.get("game_pk") != gpk:
+                continue
+        else:
+            tm = {normalize(p.get("team", "")), normalize(p.get("opponent", ""))}
+            if names and not (tm & names):
+                continue
+        row = _prop_edge(sport, p)
+        if not row:
+            continue
+        ev = _mcf(row.get("ev"))
+        if ev is None or ev <= 0:
+            continue
+        if best is None or ev > best[0]:
+            best = (ev, row, p)
+    if not best:
+        if s == "WNBA":
+            msg = "Posts with the lineup, ~30 min before tip"
+        elif s in ("ATP", "WTA", "MLS", "EPL"):
+            msg = "No player props on this match"
+        else:
+            msg = "No priced prop edge yet"
+        return ("<div class='prop pending'><span class='star'>★</span>"
+                f"<span class='pk'>Top prop</span><span class='pick'>{msg}</span></div>")
+    ev, row, p = best
+    player = p.get("player", "")
+    # the one-liner text — _prop_edge already builds "<Player> <Over/Under> <line> <market>"
+    bet = str(row.get("bet", ""))
+    pick_txt = bet if bet else player
+    # strip a leading player name for compactness (kept in the label separately)
+    price = fmt_american(row.get("price"))
+    href = player_link(player, gpk, sport)
+    # player_link returns an <a>; extract its href for the wrapping anchor
+    import re as _re
+    m = _re.search(r"href='([^']+)'", href)
+    hattr = m.group(1) if m else "#"
+    return (f"<a class='prop osp-plink' target='_self' href=\"{hattr}\">"
+            f"<span class='star'>★</span><span class='pk'>Top prop</span>"
+            f"<span class='pick'>{pick_txt}</span>"
+            f"<span class='od'>{price}</span>"
+            f"<span class='ev'>{ev * 100:+.1f}%</span>"
+            f"<span class='chev'>›</span></a>")
+
+
+def _hero_bar(who: str, width: float, val: str, fav: bool) -> str:
+    return (f"<div class='bar{' fav' if fav else ''}'><div class='who'>{who}</div>"
+            f"<div class='track'><div class='fill' style='width:{width:.1f}%'></div></div>"
+            f"<div class='v'>{val}</div></div>")
+
+
+def _hero_proj_scores(g, away, home, a_exp, h_exp) -> str:
+    if a_exp is None and h_exp is None:
+        return ""
+    mx = max([x for x in (a_exp, h_exp) if x is not None] + [0.1])
+    a_fav = (a_exp or 0) >= (h_exp or 0)
+    bars = (_hero_bar(_last(away), (100 * (a_exp or 0) / mx), _num(a_exp), a_fav)
+            + _hero_bar(_last(home), (100 * (h_exp or 0) / mx), _num(h_exp), not a_fav))
+    proj_total = _mcf(g.get("proj_total_pub")) or _mcf(g.get("proj_total"))
+    if proj_total is None and a_exp is not None and h_exp is not None:
+        proj_total = a_exp + h_exp
+    tl = _mcf(g.get("total_line"))
+    tot = ""
+    if proj_total is not None:
+        edge = ""
+        if tl is not None:
+            d = proj_total - tl
+            word = "Over" if d >= 0 else "Under"
+            edge = f"<span class='edge'>{word} {abs(d):.1f}</span>"
+        mkt = f" · market {tl:g}" if tl is not None else ""
+        tot = f"<div class='tot'>Total <b>{_num(proj_total)}</b>{mkt} {edge}</div>"
+    return (f"<div class='proj'><div class='lbl'>Projected score</div>{bars}{tot}</div>")
+
+
+def _hero_driver_chips(drivers: list) -> str:
+    if not drivers:
+        return ""
+    cells = []
+    for d in drivers:
+        svg = _HERO_ICONS.get(d.get("icon", ""), _HERO_ICONS["form"])
+        note = f"<div class='note'>{d['note']}</div>" if d.get("note") else ""
+        cells.append(
+            f"<div class='chip'><svg viewBox='0 0 24 24'>{svg}</svg>"
+            f"<div><div class='k'>{d.get('label', '')}</div>"
+            f"<div class='val'>{d.get('value', _hero_em())}</div>{note}</div></div>")
+    return f"<div class='drivers'>{''.join(cells)}</div>"
+
+
+def _hero_play_tennis(sport, g, min_edge, gate_table) -> str:
+    p1, p2 = str(g.get("player1", "")), str(g.get("player2", ""))
+    q1, q2 = _mcf(g.get("player1_win_prob")), _mcf(g.get("player2_win_prob"))
+    cands = []
+    for nm, ev, price, wp in (
+            (p1, _mcf(g.get("p1_ev")), g.get("p1_price"), q1),
+            (p2, _mcf(g.get("p2_ev")), g.get("p2_price"), q2)):
+        if ev is not None:
+            cands.append((nm, ev, _mcf(price), wp))
+    try:
+        from project547 import edge_gate
+        status = edge_gate.status_for(sport, "tennis_moneyline", gate_table or {})
+    except Exception:
+        status = None
+    if not cands:
+        play = ("<div class='play pass'><div class='play-main'>"
+                "<div class='tier'>Pass · no priced market</div>"
+                "<div class='pick'>Price attaches at match time</div>"
+                "<div class='sub'>The surface-Elo read stands until then.</div></div>"
+                "<div class='dial' style='--v:0;--dg:var(--muted)'>"
+                "<div><div class='val'>—</div><div class='cap'>conv</div></div></div></div>")
+        return play
+    nm, ev, price, wp = max(cands, key=lambda c: c[1])
+    tier = play_tier(ev, min_edge, gate=status)
+    kind = tier["kind"]
+    passish = kind in ("pass", "verify") or ev < min_edge
+    pick = f"{_last(nm)} {fmt_american(price) or ''}".strip()
+    implied = _implied(price) if price is not None else None
+    if not passish:
+        tier_txt = f"{tier['label'].title()} · Moneyline"
+        sub = f"model {_pct(wp)} · <b>{ev * 100:+.1f}% EV</b>"
+        v = int(round((wp or 0) * 100))
+        dial = (f"<div class='dial' style='--v:{v}'>"
+                f"<div><div class='val'>{v}</div><div class='cap'>conv</div></div></div>")
+    else:
+        tier_txt = "Verify · edge too big" if kind == "verify" else "Pass · no edge"
+        bits = []
+        if wp is not None and implied is not None:
+            bits.append(f"model {_pct(wp)} vs {_pct(implied)} implied")
+        bits.append(f"<b>{ev * 100:+.1f}% EV</b>")
+        sub = " · ".join(bits)
+        dial = ("<div class='dial' style='--v:8;--dg:var(--muted)'>"
+                "<div><div class='val'>—</div><div class='cap'>conv</div></div></div>")
+    cls = "play pass" if passish else "play"
+    return (f"<div class='{cls}'><div class='play-main'>"
+            f"<div class='tier'>{tier_txt}</div><div class='pick'>{pick}</div>"
+            f"<div class='sub'>{sub}</div></div>{dial}</div>")
+
+
+def _hero_play_tennisbody(sport, g, matchup, min_edge, gate_table, props) -> str:
+    p1, p2 = str(g.get("player1", "")), str(g.get("player2", ""))
+    q1, q2 = _mcf(g.get("player1_win_prob")), _mcf(g.get("player2_win_prob"))
+    n1, n2 = _mcf(g.get("p1_matches")), _mcf(g.get("p2_matches"))
+    r1 = f"{int(n1)} GP" if n1 is not None else ""
+    r2 = f"{int(n2)} GP" if n2 is not None else ""
+    match = ("<div class='match'>"
+             + _hero_team("away", p1, r1, "away")
+             + "<div class='at'>v</div>"
+             + _hero_team("home", p2, r2, "home") + "</div>")
+    play = _hero_play_tennis(sport, g, min_edge, gate_table)
+    prop = _hero_prop(sport, g, props)
+    # win-probability split (no scores in a tennis match)
+    proj = ""
+    if q1 is not None and q2 is not None:
+        mx = max(q1, q2, 0.01)
+        a_fav = q1 >= q2
+        bars = (_hero_bar(_last(p1), 100 * q1 / mx, _pct(q1), a_fav)
+                + _hero_bar(_last(p2), 100 * q2 / mx, _pct(q2), not a_fav))
+        surf = str(g.get("surface") or "").title()
+        note = f"Surface-adjusted Elo{(' · ' + surf) if surf else ''}"
+        proj = (f"<div class='proj'><div class='lbl'>Win probability</div>{bars}"
+                f"<div class='tot'>{note}</div></div>")
+    drivers = _hero_driver_chips(hero_drivers(sport, g, matchup, {}))
+    fav_wp = max([x for x in (q1, q2) if x is not None], default=None)
+    odds = ("<div class='odds'>"
+            + _oz(_last(p1), g.get("p1_price"))
+            + _oz(_last(p2), g.get("p2_price"))
+            + _oz("Model fair", _fair_american(fav_wp) if fav_wp is not None else None) + "</div>")
+    return match + play + prop + proj + "<div class='lbl'>Why</div>" + drivers + odds
+
+
+def _hero_eyebrow(sport: str, g: dict) -> str:
+    s = (sport or "").upper()
+    lock = f"<span class='lock'>🔒 {lock_label(sport)}</span>"
+    if s in ("ATP", "WTA"):
+        tour = str(g.get("tournament") or "")
+        surf = str(g.get("surface") or "").title()
+        mid = []
+        if tour:
+            mid.append(tour)
+        if surf:
+            mid.append(surf)
+        segs = "".join(f"<span class='sep'>·</span>{m}" for m in mid)
+        return (f"<div class='eyebrow'><span class='dot'></span>{s}{segs}{lock}</div>")
+    when = fmt_time_et(g.get("game_time") or g.get("match_time"))
+    label = {"MLS": "Soccer", "ATP": "Tennis"}.get(s, s)
+    time_seg = f"<span class='sep'>·</span>{when} ET" if when else ""
+    return (f"<div class='eyebrow'><span class='dot'></span>{label}{time_seg}{lock}</div>")
+
+
+def hero_html(sport: str, g: dict, matchup: dict | None, *, data: dict | None = None,
+              gate_table=None, min_edge: float = 0.02, bankroll: float = 0,
+              best_line: dict | None = None, props=None) -> str:
+    """The scannable card hero: eyebrow → matchup → the play (+ conviction dial)
+    → top-prop one-liner → projection bar → 4 sport-adaptive "why" chips → odds
+    row. Sport-aware; guards every field; never raises (a failure degrades to a
+    minimal matchup line so the feed keeps rendering). The deep research card
+    (unchanged) lives one tap away, added by the caller."""
+    s = (sport or "").upper()
+    g = g or {}
+    try:
+        eyebrow = _hero_eyebrow(sport, g)
+        if s in ("ATP", "WTA"):
+            body = _hero_play_tennisbody(sport, g, matchup or {}, min_edge, gate_table, props)
+        else:
+            body = _hero_play_team(sport, g, matchup or {}, data or {}, min_edge,
+                                   gate_table, bankroll, best_line, props)
+        return f"<div class='osp-hero'>{eyebrow}{body}</div>"
+    except Exception:
+        log.exception("hero_html failed for %s", s)
+        if s in ("ATP", "WTA"):
+            title = f"{g.get('player1', '')} v {g.get('player2', '')}"
+        else:
+            title = f"{g.get('away_team', '')} @ {g.get('home_team', '')}"
+        return (f"<div class='osp-hero'><div class='match'><div class='team away'>"
+                f"<div class='nm'>{title}</div></div></div></div>")
+
+
 _SS_STYLE2 = """<style>
 .osp-ss-gap{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.03em;
   color:var(--mid,#e3b341);background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.5);
@@ -3244,7 +3891,7 @@ def _sharp_sheet_impl(sport, g, matchup, *, window, min_edge, gate_table,
     markets = _section("Markets & CLV",
                        "our de-vig fair % vs the market · edge% · realized CLV (the headline)",
                        (cards + clv_tab))
-    bestln = _section("Best Available", "line-shop across books · locks at first pitch",
+    bestln = _section("Best Available", f"line-shop across books · {lock_label(sport)}",
                       _ss_bestline(g, best_line))
 
     # matchup breakdown (reuse the stat tables + supporting)
