@@ -1056,14 +1056,18 @@ def _attach_anchored_projection(games: pd.DataFrame, sport_key: str) -> pd.DataF
         d = r.to_dict()
         hwp_pub = _blend(d.get("home_win_prob"), d.get("home_ml_fair"), a_ml)
         tot_pub = _blend(d.get("proj_total"), d.get("total_line"), a_tot)
-        # model margin: explicit margin_mean if present, else home_exp − away_exp
+        # raw side scores: generic (home_exp/away_exp) or MLB (home_exp_runs/
+        # away_exp_runs) — whichever this sport carries.
+        he_raw, ae_raw = d.get("home_exp"), d.get("away_exp")
+        if not (_ok(he_raw) and _ok(ae_raw)):
+            he_raw, ae_raw = d.get("home_exp_runs"), d.get("away_exp_runs")
+        # model margin: explicit margin_mean if present, else home − away scores
         margin = d.get("margin_mean")
         if not _ok(margin):
-            he, ae = d.get("home_exp"), d.get("away_exp")
-            margin = (float(he) - float(ae)) if (_ok(he) and _ok(ae)) else None
-        spread_line = d.get("rl_home_line")
+            margin = (float(he_raw) - float(ae_raw)) if (_ok(he_raw) and _ok(ae_raw)) else None
+        spread_line = d.get("rl_home_line")           # MLB run line
         if not _ok(spread_line):
-            spread_line = d.get("spread_home_line")
+            spread_line = d.get("spread_home_line")   # generic spread
         neg_spread = -float(spread_line) if _ok(spread_line) else None
         margin_pub = _blend(margin, neg_spread, a_mgn)
         # side scores reconstructed from the anchored total + margin, else raw
@@ -1071,7 +1075,7 @@ def _attach_anchored_projection(games: pd.DataFrame, sport_key: str) -> pd.DataF
             home_exp_pub = (float(tot_pub) + float(margin_pub)) / 2.0
             away_exp_pub = (float(tot_pub) - float(margin_pub)) / 2.0
         else:
-            home_exp_pub, away_exp_pub = d.get("home_exp"), d.get("away_exp")
+            home_exp_pub, away_exp_pub = he_raw, ae_raw
         return pd.Series({
             "home_win_prob_pub": hwp_pub,
             "proj_total_pub": tot_pub,

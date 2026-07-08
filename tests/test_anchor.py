@@ -110,3 +110,38 @@ def test_margin_mean_preferred_over_exp_diff(monkeypatch):
     g.loc[0, "margin_mean"] = 3.0  # differs from home_exp-away_exp (=6)
     out = pipeline._attach_anchored_projection(g, "MLB")
     assert out.iloc[0]["margin_pub"] == pytest.approx(3.0)
+
+
+def _mlb_game():
+    """An MLB game row: uses home_exp_runs/away_exp_runs (no home_exp/margin_mean)
+    and rl_home_line, like the real MLB pipeline output."""
+    return pd.DataFrame([{
+        "home_win_prob": 0.55,
+        "proj_total": 8.5,
+        "home_exp_runs": 4.6,
+        "away_exp_runs": 3.9,      # margin = +0.7
+        "home_ml_fair": 0.51,
+        "total_line": 9.0,
+        "rl_home_line": -1.5,      # margin anchor = +1.5
+    }])
+
+
+def test_mlb_margin_and_side_scores_anchor(monkeypatch):
+    # MLB run-line margin anchoring (follow-up): margin/side-scores must anchor
+    # off home_exp_runs/away_exp_runs + rl_home_line, not be inert.
+    monkeypatch.setattr(config, "PROJECTION_ANCHOR",
+                        {("MLB", "spread"): 0.5, ("MLB", "total"): 0.5})
+    out = pipeline._attach_anchored_projection(_mlb_game(), "MLB")
+    r = out.iloc[0]
+    # margin blends model +0.7 with anchor +1.5 at 0.5 -> +1.1
+    assert r["margin_pub"] == pytest.approx(1.1)
+    # total blends 8.5 with 9.0 -> 8.75; side scores reconstruct from tot+margin
+    assert r["proj_total_pub"] == pytest.approx(8.75)
+    assert r["home_exp_pub"] == pytest.approx((8.75 + 1.1) / 2)
+    assert r["away_exp_pub"] == pytest.approx((8.75 - 1.1) / 2)
+
+
+def test_mlb_margin_inert_at_zero_weight():
+    # default weight 0 -> margin_pub is the raw model margin (home_exp_runs diff)
+    out = pipeline._attach_anchored_projection(_mlb_game(), "MLB")
+    assert out.iloc[0]["margin_pub"] == pytest.approx(0.7)
