@@ -231,6 +231,13 @@ def game_play_candidates(date: str, day_blob: dict,
     min_edge = config.SHARP_EV_MIN if min_edge is None else min_edge
     gates = edge_gate.gate_table()
     bands = edge_gate.ev_bands()   # per-market EV bands (global fallback per market)
+    seed = edge_gate.conviction_prior()   # backtest CLV prior (empty unless enabled)
+
+    def _conv_stat(key):
+        # gate/stake come from live only; conviction may be seed-enriched while
+        # the live CLV for this market is still thin (self-retiring prior).
+        return edge_gate.blend_conviction(gates.get(key), seed.get(key))
+
     out = []
     for sport, blob in (day_blob or {}).items():
         for g in blob.get("games", []) or []:
@@ -242,7 +249,7 @@ def game_play_candidates(date: str, day_blob: dict,
                     out.append(_game_play(date, sport, label, "moneyline", side,
                                           g.get(f"{side}_team", side), price, ev,
                                           gate=edge_gate.status_for(sport, "moneyline", gates),
-                                          stat=gates.get((sport, "moneyline")),
+                                          stat=_conv_stat((sport, "moneyline")),
                                           band=bands.get((sport, "moneyline"))))
             line = g.get("total_line")
             for side, odds_key, ev_key in (("over", "over_odds", "over_ev"),
@@ -252,7 +259,7 @@ def game_play_candidates(date: str, day_blob: dict,
                     out.append(_game_play(date, sport, label, "total", side,
                                           f"{side} {line:g}", price, ev, line=line,
                                           gate=edge_gate.status_for(sport, "total", gates),
-                                          stat=gates.get((sport, "total")),
+                                          stat=_conv_stat((sport, "total")),
                                           band=bands.get((sport, "total"))))
     # rank the board by proven edge (conviction), not raw EV, so a consumer that
     # takes the top plays leads with the markets we most reliably beat the close

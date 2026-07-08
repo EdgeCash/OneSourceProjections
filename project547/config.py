@@ -243,6 +243,17 @@ GATE_OFF_MIN = 60          # more evidence required to GATE a market off...
 GATE_OFF_CLV = -0.01       # ...and avg CLV at/below this (clearly losing to close)
 GATE_PROBATION_STAKE = 0.5  # Kelly multiplier for unproven (probation) markets
 
+# Curation seed (docs/CURATION_DESIGN.md step 2): a walk-forward production-mode
+# backtest scores the *current* model over historical slates and writes per-market
+# CLV to data/history/curation_seed.json, so conviction/gate have a prior from day
+# one instead of waiting for the live ledger to accrue. OFF by default — the seed's
+# CLV comes from backfill closing consensus, not the live BettingPros close, so it's
+# a discounted prior the owner opts into after reviewing the numbers. When on, the
+# seed only supplements markets whose *live* CLV sample is still thin (< GATE_CLEAR_MIN);
+# once real data clears that bar the seed is ignored, so it self-retires.
+CURATION_SEED_ENABLED = False
+CURATION_SEED_PATH = REPO_ROOT / "data" / "history" / "curation_seed.json"
+
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
 

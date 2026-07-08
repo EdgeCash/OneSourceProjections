@@ -355,3 +355,79 @@ def conviction(ev: float, sport: str, market: str, stat: dict | None,
     sample_conf = (min(1.0, clv_n / config.GATE_CLEAR_MIN)
                    if config.GATE_CLEAR_MIN else 1.0)
     return round(lb * sample_conf, 5)
+
+
+# ---------------------------------------------------------------------------
+# Curation seed (docs/CURATION_DESIGN.md step 2) — a production-mode backtest of
+# the CURRENT model scores historical slates and writes per-market CLV, so
+# conviction has a prior from day one instead of waiting for the live ledger.
+#
+# Scope on purpose: the seed enriches CONVICTION (ranking/display) ONLY. It never
+# touches market_stats/classify/stake_mult, so stake sizing stays live-ledger
+# only — the backtest CLV (vs backfill consensus) is a weaker signal than the
+# live close and must not size real money. And it supplements a market only while
+# that market's live CLV is thin (< GATE_CLEAR_MIN); once live clears the bar the
+# seed is ignored, so the prior self-retires. Off unless config.CURATION_SEED_ENABLED.
+# ---------------------------------------------------------------------------
+
+def conviction_prior() -> dict:
+    """``{(sport, market): {clv_n, avg_clv, clv_sd, clv_lb}}`` from the seed
+    file. Empty when disabled, missing, or unreadable."""
+    if not config.CURATION_SEED_ENABLED:
+        return {}
+    try:
+        import json
+        raw = json.loads(config.CURATION_SEED_PATH.read_text())
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    for row in raw.get("markets", []):
+        key = (row.get("sport"), row.get("market"))
+        if row.get("clv_n"):
+            out[key] = {"clv_n": row["clv_n"], "avg_clv": row.get("avg_clv"),
+                        "clv_sd": row.get("clv_sd"), "clv_lb": row.get("clv_lb")}
+    return out
+
+
+def _clv_moments(d: dict | None) -> tuple[int, float, float]:
+    """(n, sum, sum_of_squares) reconstructed from a {clv_n, avg_clv, clv_sd}
+    stat, so two CLV samples can be pooled without the raw observations."""
+    if not d:
+        return 0, 0.0, 0.0
+    n = d.get("clv_n") or 0
+    avg = d.get("avg_clv")
+    if not n or avg is None:
+        return 0, 0.0, 0.0
+    sd = d.get("clv_sd")
+    s = avg * n
+    sq = (sd * sd * (n - 1) if (sd is not None and n >= 2) else 0.0) + n * avg * avg
+    return n, s, sq
+
+
+def blend_conviction(live: dict | None, seed: dict | None) -> dict | None:
+    """The stat dict ``conviction`` should read: the live gate stats, pooled with
+    the seed prior only while the live CLV sample is thin (< GATE_CLEAR_MIN).
+    Returns ``live`` unchanged when there's no seed or live already clears the
+    bar (self-retiring prior)."""
+    if not seed:
+        return live
+    if ((live or {}).get("clv_n") or 0) >= config.GATE_CLEAR_MIN:
+        return live
+    n1, s1, sq1 = _clv_moments(live)
+    n2, s2, sq2 = _clv_moments(seed)
+    n = n1 + n2
+    if not n:
+        return live
+    avg = (s1 + s2) / n
+    sd = lb = None
+    if n >= 2:
+        var = max(0.0, ((sq1 + sq2) - n * avg * avg) / (n - 1))
+        sd = math.sqrt(var)
+        lb = avg - GATE_Z * sd / math.sqrt(n)
+    out = dict(live or {})
+    out.update({"clv_n": n, "avg_clv": round(avg, 4),
+                "clv_sd": round(sd, 4) if sd is not None else None,
+                "clv_lb": round(lb, 4) if lb is not None else None,
+                "seeded": True})
+    out.setdefault("n", n)
+    return out

@@ -340,3 +340,30 @@ def test_run_backtest_script_formats_new_fields():
          "closing_line": cl}
     md = rb._md_game(r)
     assert "home-prob bias" in md and "per-bet CLV" in md
+
+
+def test_betlog_clv_stats_mean_sd_lb():
+    from project547.backtest import BetLog
+    b = BetLog()
+    for clv in (0.02, 0.04, 0.06, 0.08):     # mean 0.05
+        b.add(won=True, dec_odds=1.9, clv=clv)
+    s = b.clv_stats()
+    assert s["clv_n"] == 4
+    assert abs(s["avg_clv"] - 0.05) < 1e-9
+    assert s["clv_sd"] is not None and s["clv_lb"] is not None
+    assert s["clv_lb"] < s["avg_clv"]        # lower bound sits below the mean
+
+
+def test_betlog_clv_stats_empty():
+    from project547.backtest import BetLog
+    s = BetLog().clv_stats()
+    assert s == {"clv_n": 0, "avg_clv": None, "clv_sd": None, "clv_lb": None}
+
+
+def test_band_clv_excludes_stale_line_bets():
+    from project547 import backtest, config, odds
+    # a curated-band bet logs CLV; a stale-line (ev >= STALE_EV) bet does not
+    fair, price = 0.45, 300           # EV@fair = 0.8 (a longshot outlier)
+    assert backtest._band_clv(config.STALE_EV - 0.001, fair, price) == odds.expected_value(fair, price)
+    assert backtest._band_clv(config.STALE_EV, fair, price) is None
+    assert backtest._band_clv(config.STALE_EV + 0.05, fair, price) is None

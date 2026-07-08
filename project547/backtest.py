@@ -618,6 +618,7 @@ class BetLog:
     staked: float = 0.0
     pnl: float = 0.0
     clv_sum: float = 0.0
+    clv_sq: float = 0.0
     clv_n: int = 0
 
     def add(self, won: bool, dec_odds: float, clv: float | None = None):
@@ -633,7 +634,26 @@ class BetLog:
             self.pnl -= 1.0
         if clv is not None:
             self.clv_sum += clv
+            self.clv_sq += clv * clv
             self.clv_n += 1
+
+    def clv_stats(self) -> dict:
+        """Per-bet CLV mean, sample std, and one-sided lower bound — the same
+        (avg_clv, clv_sd, clv_lb) shape edge_gate consumes, so a backtest run can
+        seed the curation gate (docs/CURATION_DESIGN.md step 2)."""
+        import math
+        n = self.clv_n
+        if not n:
+            return {"clv_n": 0, "avg_clv": None, "clv_sd": None, "clv_lb": None}
+        avg = self.clv_sum / n
+        sd = lb = None
+        if n >= 2:
+            var = max(0.0, (self.clv_sq - n * avg * avg) / (n - 1))
+            sd = math.sqrt(var)
+            lb = avg - 1.28 * sd / math.sqrt(n)   # GATE_Z; one-sided ~90% bound
+        return {"clv_n": n, "avg_clv": round(avg, 4),
+                "clv_sd": round(sd, 4) if sd is not None else None,
+                "clv_lb": round(lb, 4) if lb is not None else None}
 
     def summary(self) -> dict:
         return {"bets": self.n, "win_rate": round(self.wins / self.n, 4) if self.n else None,
@@ -647,6 +667,17 @@ def _combined_bet_clv(*logs: "BetLog") -> float | None:
     """Average per-bet CLV pooled across bet logs (ML+total+spread)."""
     n = sum(l.clv_n for l in logs)
     return round(sum(l.clv_sum for l in logs) / n, 4) if n else None
+
+
+def _band_clv(ev_sel: float, fair: float, price: float) -> float | None:
+    """Per-bet CLV (own-side EV at the closing fair), but only for bets in the
+    curated EV band (ev < STALE_EV). Stale-line best-of-book longshots are still
+    bet for ROI but excluded from the CLV mean — the same population the live
+    edge_gate.market_stats scores, so the two are comparable (and a backtest run
+    can seed the gate). Returns None outside the band."""
+    if ev_sel >= config.STALE_EV:
+        return None
+    return odds.expected_value(fair, price)
 
 
 def _total_crps(prob_over, mean: float, actual: float) -> float:
@@ -888,11 +919,15 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                         for side, prob, price, fair, won in (
                             ("home", p_home, m["home_best"], m["home_fair"], home_won == 1),
                             ("away", 1 - p_home, m["away_best"], 1 - m["home_fair"], home_won == 0)):
-                            if odds.expected_value(prob, price) >= min_edge:
-                                # per-bet CLV: the taken price's EV at the
-                                # closing fair prob of the side taken
+                            ev_sel = odds.expected_value(prob, price)
+                            if ev_sel >= min_edge:
+                                # per-bet CLV: the taken price's EV at the closing
+                                # fair prob of the side taken — logged only for the
+                                # curated band (ev < STALE_EV), matching
+                                # edge_gate.market_stats, so stale-line best-of-book
+                                # longshots don't dominate the CLV mean.
                                 ml_bets.add(won, odds.american_to_decimal(price),
-                                            clv=odds.expected_value(fair, price))
+                                            clv=_band_clv(ev_sel, fair, price))
                 if rec["total"]:
                     t = rec["total"]
                     # market baseline for the total = the closing total line
@@ -910,12 +945,14 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                     over_won = actual_total > t["line"]
                     push = actual_total == t["line"]
                     if not push:
-                        if odds.expected_value(p_over, t["over_best"]) >= min_edge:
+                        ev_o = odds.expected_value(p_over, t["over_best"])
+                        if ev_o >= min_edge:
                             total_bets.add(over_won, odds.american_to_decimal(t["over_best"]),
-                                           clv=odds.expected_value(t["over_fair"], t["over_best"]))
-                        if odds.expected_value(1 - p_over, t["under_best"]) >= min_edge:
+                                           clv=_band_clv(ev_o, t["over_fair"], t["over_best"]))
+                        ev_u = odds.expected_value(1 - p_over, t["under_best"])
+                        if ev_u >= min_edge:
                             total_bets.add(not over_won, odds.american_to_decimal(t["under_best"]),
-                                           clv=odds.expected_value(1 - t["over_fair"], t["under_best"]))
+                                           clv=_band_clv(ev_u, 1 - t["over_fair"], t["under_best"]))
                 if rec["spread"]:
                     s = rec["spread"]
                     pc = cover_fn(s["line"])           # model P(home covers home line)
@@ -926,12 +963,14 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
                     home_cover = (margin + s["line"]) > 0
                     push = (margin + s["line"]) == 0
                     if not push:
-                        if odds.expected_value(p_cover, s["home_best"]) >= min_edge:
+                        ev_h = odds.expected_value(p_cover, s["home_best"])
+                        if ev_h >= min_edge:
                             spread_bets.add(home_cover, odds.american_to_decimal(s["home_best"]),
-                                            clv=odds.expected_value(s["home_fair"], s["home_best"]))
-                        if odds.expected_value(1 - p_cover, s["away_best"]) >= min_edge:
+                                            clv=_band_clv(ev_h, s["home_fair"], s["home_best"]))
+                        ev_a = odds.expected_value(1 - p_cover, s["away_best"])
+                        if ev_a >= min_edge:
                             spread_bets.add(not home_cover, odds.american_to_decimal(s["away_best"]),
-                                            clv=odds.expected_value(1 - s["home_fair"], s["away_best"]))
+                                            clv=_band_clv(ev_a, 1 - s["home_fair"], s["away_best"]))
             if detail:
                 sp_ = (rec or {}).get("spread") or {}
                 to_ = (rec or {}).get("total") or {}
@@ -1036,6 +1075,14 @@ def run_game_backtest(sport_key: str, seasons: list[int], min_games: int = 10,
             "moneyline_bets": ml_bets.summary(),
             "total_bets": total_bets.summary(),
             "spread_bets": spread_bets.summary(),
+            # per-(market) CLV mean/sd/lb — the shape edge_gate consumes, so a
+            # production-mode run can seed the curation gate (CURATION_DESIGN
+            # step 2). Keyed by the gate's market names.
+            "clv_by_market": {
+                "moneyline": ml_bets.clv_stats(),
+                "total": total_bets.clv_stats(),
+                "spread": spread_bets.clv_stats(),
+            },
         },
         "games": detail_rows,
     }

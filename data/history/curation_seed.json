@@ -1,0 +1,114 @@
+{
+ "note": "curation conviction prior (docs/CURATION_DESIGN.md step 2)",
+ "source": "production-mode walk-forward backtest of the current model",
+ "seasons": {
+  "MLB": [
+   2024,
+   2025,
+   2026
+  ],
+  "NBA": [
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "NFL": [
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "NHL": [
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "WNBA": [
+   2023,
+   2024,
+   2025
+  ],
+  "NCAAF": [
+   2022,
+   2023,
+   2024
+  ]
+ },
+ "draws": 2000,
+ "markets": [
+  {
+   "sport": "MLB",
+   "market": "moneyline",
+   "clv_n": 30,
+   "avg_clv": 0.0148,
+   "clv_sd": 0.0599,
+   "clv_lb": 0.0008
+  },
+  {
+   "sport": "MLB",
+   "market": "total",
+   "clv_n": 40,
+   "avg_clv": -0.0135,
+   "clv_sd": 0.023,
+   "clv_lb": -0.0182
+  },
+  {
+   "sport": "MLB",
+   "market": "spread",
+   "clv_n": 42,
+   "avg_clv": 0.008,
+   "clv_sd": 0.0666,
+   "clv_lb": -0.0052
+  },
+  {
+   "sport": "NBA",
+   "market": "moneyline",
+   "clv_n": 844,
+   "avg_clv": -0.0768,
+   "clv_sd": 0.0709,
+   "clv_lb": -0.0799
+  },
+  {
+   "sport": "NBA",
+   "market": "total",
+   "clv_n": 36,
+   "avg_clv": -0.0455,
+   "clv_sd": 0.0,
+   "clv_lb": -0.0455
+  },
+  {
+   "sport": "NFL",
+   "market": "moneyline",
+   "clv_n": 299,
+   "avg_clv": -0.045,
+   "clv_sd": 0.0301,
+   "clv_lb": -0.0472
+  },
+  {
+   "sport": "NFL",
+   "market": "total",
+   "clv_n": 80,
+   "avg_clv": -0.0411,
+   "clv_sd": 0.0077,
+   "clv_lb": -0.0422
+  },
+  {
+   "sport": "NFL",
+   "market": "spread",
+   "clv_n": 57,
+   "avg_clv": -0.0298,
+   "clv_sd": 0.0089,
+   "clv_lb": -0.0313
+  },
+  {
+   "sport": "NHL",
+   "market": "moneyline",
+   "clv_n": 896,
+   "avg_clv": -0.0543,
+   "clv_sd": 0.0202,
+   "clv_lb": -0.0552
+  }
+ ]
+}
