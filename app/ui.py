@@ -117,7 +117,28 @@ def build_best_bets(day_slates: dict, min_edge: float) -> pd.DataFrame:
     # (cleared), half while unproven (probation), zero where we've shown no edge
     # (gated). The tier chip is capped separately via play_tier(gate=...).
     df = _attach_edge_gate(df)
+    df = _attach_slate_staking(df)
     return df.sort_values("ev", ascending=False).reset_index(drop=True)
+
+
+def _attach_slate_staking(df: pd.DataFrame) -> pd.DataFrame:
+    """Shrink stakes for correlated same-game legs and cap total slate exposure
+    (config.SLATE_CORR / SLATE_MAX_EXPOSURE). No-op at their defaults."""
+    if not len(df) or (config.SLATE_CORR <= 0 and not config.SLATE_MAX_EXPOSURE):
+        return df
+    try:
+        from project547 import staking
+        sport = df["sport"] if "sport" in df else [""] * len(df)
+        game = df["game"] if "game" in df else [""] * len(df)
+        groups = [f"{s}|{g}" for s, g in zip(sport, game)]
+        kelly = pd.to_numeric(df["kelly"], errors="coerce").tolist()
+        adj = staking.adjust_stakes(groups, kelly)
+        df = df.copy()
+        df["kelly"] = [round(a, 4) if isinstance(a, (int, float)) and a == a else a
+                       for a in adj]
+    except Exception:
+        return df
+    return df
 
 
 # market label (board) -> edge_gate market key

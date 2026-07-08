@@ -254,6 +254,16 @@ GATE_PROBATION_STAKE = 0.5  # Kelly multiplier for unproven (probation) markets
 CURATION_SEED_ENABLED = True
 CURATION_SEED_PATH = REPO_ROOT / "data" / "history" / "curation_seed.json"
 
+# Slate-level stake shaping (docs/CURATION_DESIGN.md Component 3), applied after
+# per-market gate scaling. Both OFF by default (identity) — turn on after review.
+#   SLATE_CORR: assumed common pairwise correlation among same-game legs. Each
+#     leg in a k-leg game is scaled by 1/(1+(k-1)*SLATE_CORR) — the equicorrelation
+#     Kelly haircut. 0.0 = no haircut. A practitioner value is ~0.25-0.35.
+#   SLATE_MAX_EXPOSURE: cap on the slate's total suggested stake as a fraction of
+#     bankroll; over it, every stake scales down proportionally. None = no cap.
+SLATE_CORR = 0.0
+SLATE_MAX_EXPOSURE = None
+
 # A logged DFS leg is tagged a "smash" at this edge over the de-vigged line.
 DFS_SMASH_EDGE = 0.08
 
