@@ -172,3 +172,35 @@ hand-set guess.
 
 All four curation components + step 2 are now in; every real-money/behavioral
 lever ships behind a default-off knob validated against the market baseline.
+
+## AI second-opinion layer (Claude slate curation)
+
+A *validator*, not a tout — the honest-product thesis above governs it. Each day
+the whole schedule is run through Claude once (`project547/ai_curation.py`,
+Opus 4.8, ~cents/day) and cached to `data/output/ai_curation.json`:
+
+- **`verdicts`** — one per game, `agree` / `differ` / `pass` vs the model's own
+  top play → the per-card **agreement badge** in the hero
+  (`app.ui.hero_html(..., ai_verdict=…)`).
+- **`top_plays`** — the AI's curated best 3–7 across the slate, with a 1–5
+  confidence → **"Claude's read"** on the Plays page
+  (`build_static._ai_curated_section`), shown *beside* the model's board.
+
+Design guarantees that keep it honest:
+
+- **Same numbers.** The slate brief carries the model's projections, market
+  lines/odds, and EV edges — the AI curates from what the site already shows, so
+  its take is comparable, not a black box.
+- **Passing is a valid answer.** The curation system prompt (built on
+  `ai.SYSTEM` + the Standard posture in `ai_modes.py`) tells it a thin slate with
+  zero plays is a good, sellable output, and to treat any >~15% edge as the model
+  missing news rather than free money.
+- **Whitelisted + clamped.** `_normalize` drops any pick/verdict referencing a
+  game_id we didn't send and clamps confidence/odds — the model can't invent a
+  game or a runaway stake.
+- **Graded like everything else.** Each stored play carries `market/side/line/
+  odds` at curation time so it can be CLV-graded on the same public record; the
+  card footer says so ("A validator, never an automatic tail").
+- **Cost-decoupled + fail-safe.** Runs twice daily via `.github/workflows/
+  ai-curation.yml` (not hourly), and the whole layer no-ops when
+  `ANTHROPIC_API_KEY` is unset — the site builds and renders exactly as before.

@@ -3753,27 +3753,52 @@ def _hero_eyebrow(sport: str, g: dict) -> str:
     return (f"<div class='eyebrow'><span class='dot'></span>{label}{time_seg}{lock}</div>")
 
 
-def _hero_ai_chip(gid: str | None) -> str:
-    """The 'Ask AI' validator chip: copies a paste-ready brief of this game into
-    the user's own chatbot (their subscription, our second opinion). Rendered
-    only when the caller has generated a brief for this ``gid``; the click is
-    wired to ``window.BRIEFS[gid]`` by the page's drawer JS."""
-    if not gid:
+_AI_VERDICT = {
+    "agree": ("ai-agree", "✓ AI agrees"),
+    "differ": ("ai-differ", "⚠ AI differs"),
+    "pass": ("ai-pass", "AI passes"),
+}
+
+
+def _hero_ai_verdict(verdict: dict | None) -> str:
+    """The automated second-opinion badge: how Claude's daily slate curation
+    lands on THIS game vs the model (agree / differ / pass) + its one-liner.
+    Rendered only when the curation cache carries a verdict for the game."""
+    if not verdict:
         return ""
-    return (f"<div class='hero-ai'><button class='askai mini' "
-            f"data-gid='{html.escape(str(gid), quote=True)}'>◆ Ask AI</button>"
-            f"<span class='hero-ai-note'>run this game through your own chatbot "
-            f"for a second read</span></div>")
+    cls, txt = _AI_VERDICT.get(str(verdict.get("stance")), _AI_VERDICT["pass"])
+    why = str(verdict.get("rationale") or "")
+    why_html = (f"<span class='ai-why'>{html.escape(why)}</span>" if why else "")
+    return (f"<div class='ai-verdict {cls}'><span class='ai-tag'>{txt}</span>"
+            f"{why_html}</div>")
+
+
+def _hero_ai_chip(gid: str | None, verdict: dict | None = None) -> str:
+    """The card's AI footer: the automated agreement badge (if the daily
+    curation covered this game) above the manual 'Ask AI' chip, which copies a
+    paste-ready brief into the user's own chatbot (their subscription, our
+    second opinion). The chip is wired to ``window.BRIEFS[gid]`` by the drawer
+    JS; the badge is a static read from the curation cache."""
+    badge = _hero_ai_verdict(verdict)
+    chip = ""
+    if gid:
+        chip = (f"<div class='hero-ai'><button class='askai mini' "
+                f"data-gid='{html.escape(str(gid), quote=True)}'>◆ Ask AI</button>"
+                f"<span class='hero-ai-note'>run this game through your own chatbot "
+                f"for a second read</span></div>")
+    return badge + chip
 
 
 def hero_html(sport: str, g: dict, matchup: dict | None, *, data: dict | None = None,
               gate_table=None, min_edge: float = 0.02, bankroll: float = 0,
-              best_line: dict | None = None, props=None, gid: str | None = None) -> str:
+              best_line: dict | None = None, props=None, gid: str | None = None,
+              ai_verdict: dict | None = None) -> str:
     """The scannable card hero: eyebrow → matchup → the play (+ conviction dial)
     → top-prop one-liner → projection bar → 4 sport-adaptive "why" chips → odds
-    row → Ask-AI validator chip. Sport-aware; guards every field; never raises (a
-    failure degrades to a minimal matchup line so the feed keeps rendering). The
-    deep research card (unchanged) lives one tap away, added by the caller."""
+    row → AI second-opinion badge + Ask-AI validator chip. Sport-aware; guards
+    every field; never raises (a failure degrades to a minimal matchup line so
+    the feed keeps rendering). The deep research card (unchanged) lives one tap
+    away, added by the caller."""
     s = (sport or "").upper()
     g = g or {}
     try:
@@ -3783,7 +3808,7 @@ def hero_html(sport: str, g: dict, matchup: dict | None, *, data: dict | None = 
         else:
             body = _hero_play_team(sport, g, matchup or {}, data or {}, min_edge,
                                    gate_table, bankroll, best_line, props)
-        return f"<div class='osp-hero'>{eyebrow}{body}{_hero_ai_chip(gid)}</div>"
+        return f"<div class='osp-hero'>{eyebrow}{body}{_hero_ai_chip(gid, ai_verdict)}</div>"
     except Exception:
         log.exception("hero_html failed for %s", s)
         if s in ("ATP", "WTA"):

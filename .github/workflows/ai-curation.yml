@@ -1,0 +1,55 @@
+name: AI slate curation
+
+# Run the day's whole schedule through Claude (Opus 4.8) and cache the AI's
+# curated plays + per-game agreement verdicts to data/output/ai_curation.json,
+# which the static site reads to show "Claude's read" beside the model's picks.
+#
+# Deliberately twice a day (NOT hourly): one whole-slate call is ~cents, so the
+# cost never scales with the hourly refresh, and a settled once/twice-daily read
+# is more honest than a churning tout. Needs the ANTHROPIC_API_KEY secret; the
+# job no-ops cleanly if it's missing. Scheduled runs only fire on main.
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Slate date (YYYY-MM-DD); defaults to the two nearest live slates"
+        required: false
+  schedule:
+    - cron: "0 16 * * *"   # ~12pm ET — after early lineups post
+    - cron: "0 22 * * *"   # ~6pm ET — pre-lock refresh before the main slate
+
+concurrency:
+  group: ai-curation
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Curate the slate with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Pin a different model here if desired (default: claude-opus-4-8).
+          OSP_AI_MODEL: ${{ vars.OSP_AI_MODEL }}
+        run: python scripts/ai_curation.py ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
+
+      - name: Commit curation
+        run: |
+          git config user.name "projections-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git add data/output/ai_curation.json
+          git diff --cached --quiet || git commit -m "data: AI slate curation $(date -u +'%F %H:%MZ')"
+          git push
