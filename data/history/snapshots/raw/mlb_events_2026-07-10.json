@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98619,
+  "sr_id": "48e6a0ae-1574-4eee-8deb-3f85d5284434",
+  "sport": "MLB",
+  "scheduled": "2026-07-10 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "DET",
+  "visitor": "PHI",
+  "link": "/mlb/matchups/detroit-tigers-vs-philadelphia-phillies/",
+  "series_summary": null,
+  "popularity": 0,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6021",
+    "name": "Jack Flaherty",
+    "link": "/mlb/props/jack-flaherty/",
+    "player": {
+     "short_name": "J. Flaherty",
+     "first_name": "Jack",
+     "last_name": "Flaherty",
+     "image": "https://images.fantasypros.com/images/players/mlb/6021/headshot/210x210.webp",
+     "position": "SP",
+     "team": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "jack-flaherty",
+     "jersey_number": 9
+    }
+   },
+   "visitor_probable": {
+    "id": "5682",
+    "name": "Aaron Nola",
+    "link": "/mlb/props/aaron-nola/",
+    "player": {
+     "short_name": "A. Nola",
+     "first_name": "Aaron",
+     "last_name": "Nola",
+     "image": "https://images.fantasypros.com/images/players/mlb/5682/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "slug": "aaron-nola",
+     "jersey_number": 27
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "DET",
+   "season": "2025",
+   "split": "A",
+   "r": "1.039",
+   "1b": "1.025",
+   "2b": "0.993",
+   "3b": "1.274",
+   "hr": "0.928",
+   "name": "Comerica Park"
+  },
+  "venue": {
+   "name": "Comerica Park",
+   "address": "2100 Woodward Avenue",
+   "city": "Detroit",
+   "state": "MI",
+   "country": "USA",
+   "zip": "48226",
+   "surface": "grass",
+   "capacity": 41083,
+   "stadium_type": "outdoor",
+   "id": "ef9a5eef-06c6-4963-ac70-7fd02c8c8d42"
+  },
+  "participants": [
+   {
+    "id": "DET",
+    "name": "Tigers",
+    "link": "/mlb/teams/detroit-tigers/",
+    "team": {
+     "city": "Detroit",
+     "abbreviation": "DET",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 42,
+      "L": 50,
+      "T": 0
+     },
+     "slug": "detroit-tigers",
+     "stadium_deg_offset": "150"
+    }
+   },
+   {
+    "id": "PHI",
+    "name": "Phillies",
+    "link": "/mlb/teams/philadelphia-phillies/",
+    "team": {
+     "city": "Philadelphia",
+     "abbreviation": "PHI",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 51,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "philadelphia-phillies",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 82,
+   "forecast_wind_speed": 11,
+   "forecast_wind_direction": "NE",
+   "forecast_wind_degree": 47,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1011,
+   "forecast_humidity": 0.59
+  },
+  "broadcasts": [
+   {
+    "network": "DSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99214,
+  "sr_id": "8b00e552-e816-4b38-8aba-6fbc10097511",
+  "sport": "MLB",
+  "scheduled": "2026-07-10 22:40:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "MIL",
+  "link": "/mlb/matchups/milwaukee-brewers-vs-pittsburgh-pirates/",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47807",
+    "name": "Braxton Ashcraft",
+    "link": "/mlb/props/braxton-ashcraft/",
+    "player": {
+     "short_name": "B. Ashcraft",
+     "first_name": "Braxton",
+     "last_name": "Ashcraft",
+     "image": "https://images.fantasypros.com/images/players/mlb/47807/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "braxton-ashcraft",
+     "jersey_number": 35
+    }
+   },
+   "visitor_probable": {
+    "id": "46394",
+    "name": "Brandon Sproat",
+    "link": "/mlb/props/brandon-sproat/",
+    "player": {
+     "short_name": "B. Sproat",
+     "first_name": "Brandon",
+     "last_name": "Sproat",
+     "image": "https://images.fantasypros.com/images/players/mlb/46394/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "brandon-sproat",
+     "jersey_number": 23
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 47,
+      "L": 46,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 58,
+      "L": 34,
+      "T": 0
+     },
+     "slug": "milwaukee-brewers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 80,
+   "forecast_wind_speed": 8,
+   "forecast_wind_direction": "W",
+   "forecast_wind_degree": 273,
+   "forecast_rain_chance": 17,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1011,
+   "forecast_humidity": 0.72
+  },
+  "broadcasts": [
+   {
+    "network": "SportsNet PT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

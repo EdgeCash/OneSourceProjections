@@ -1,0 +1,62 @@
+[
+ {
+  "id": 122,
+  "sport_id": 3,
+  "sport": "MLB",
+  "category": "game-odds",
+  "slug": "moneyline",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 00:59:54",
+  "sort": 111,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": false,
+   "player_id": -1,
+   "team_id": 1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Moneyline",
+   "short_label": "Moneyline",
+   "meta_title": "MLB Moneyline Odds {MM/DD/YY} | Best Baseball Lines",
+   "meta_description": "View {MM/DD/YY} MLB Moneyline {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "MLB Moneyline {ODDS_TYPE} - {MM/DD/YY} ({SEASON} Season)",
+   "page_subtitle": "Moneylines",
+   "app_top_label": "{pick_team_name_odds_fit}",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ },
+ {
+  "id": 175,
+  "sport_id": 3,
+  "sport": "MLB",
+  "category": "game-odds",
+  "slug": "total",
+  "period": "game",
+  "stat": "",
+  "active": true,
+  "updated": "2020-06-17 00:59:56",
+  "sort": 112,
+  "is_live_activity": true,
+  "validation": {
+   "has_spread": true,
+   "player_id": -1,
+   "team_id": -1,
+   "game_id": 1,
+   "opponent_id": -1
+  },
+  "meta": {
+   "label": "Total Runs",
+   "short_label": "Total Runs",
+   "meta_title": "MLB Total Runs Odds {MM/DD/YY} | Best Baseball Totals Lines",
+   "meta_description": "View {MM/DD/YY} MLB Total Runs {ODDS_TYPE} from the top sportsbooks in the US. Instantly locate the best sports betting lines and odds.",
+   "page_title": "MLB Total Runs {ODDS_TYPE} - {MM/DD/YY} ({SEASON} Season)",
+   "page_subtitle": "Total Runs",
+   "app_top_label": "{o_u_short}{line} {scoring_type_label} ({odds})",
+   "app_bottom_label": "{visitor_team_id} @ {home_team_id}"
+  }
+ }
+]
