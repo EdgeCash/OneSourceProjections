@@ -597,6 +597,16 @@ SITE_CSS = """
   .osp-hero a.prop { border-bottom: none; }
   .osp-hero .prop.pending { cursor: default; }
   .osp-hero .prop.pending .pick { color: var(--muted); font-weight: 400; font-size: .8rem; }
+  /* Ask-AI validator chip — a quiet secondary action, not a tout */
+  .osp-hero .hero-ai { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-top: 13px; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .askai.mini { margin: 0; background: transparent; color: var(--acc);
+    border: 1.5px solid var(--acc); border-radius: 999px; padding: 6px 13px;
+    font-family: var(--disp); font-weight: 700; font-size: .76rem; letter-spacing: .03em;
+    cursor: pointer; box-shadow: none; flex: none; }
+  .askai.mini:hover { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+  .osp-hero .hero-ai-note { font-family: var(--mono); font-size: .68rem; color: var(--muted);
+    line-height: 1.35; flex: 1; min-width: 120px; }
   /* deep-research disclosure (holds the full, unchanged research card) */
   details.deep { border-top: 1.5px solid var(--line); margin: 4px -18px 0; }
   details.deep > summary { list-style: none; cursor: pointer; padding: 13px 18px;
@@ -1129,12 +1139,20 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
         hero = ""
         try:
             if sport in ("ATP", "WTA"):
+                try:
+                    briefs[gid] = ui.ai_brief_tennis(sport, g)
+                except Exception:
+                    briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
-                                    props=props)
+                                    props=props, gid=gid if gid in briefs else None)
                 body = _tennis_card(sport, g)
             elif sport in MATCH_MODEL_SPORTS:
+                try:
+                    briefs[gid] = ui.ai_brief_game(sport, g, None, min_edge=MIN_EDGE)
+                except Exception:
+                    briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
-                                    props=props)
+                                    props=props, gid=gid if gid in briefs else None)
                 body = _match_body(sport, g)
             else:
                 m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
@@ -1152,7 +1170,8 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
                     briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, m, data=data, gate_table=gt,
                                     min_edge=MIN_EDGE, bankroll=BANKROLL,
-                                    best_line=best_line, props=props)
+                                    best_line=best_line, props=props,
+                                    gid=gid if gid in briefs else None)
                 body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
                                            gate_table=gt, bankroll=BANKROLL, props=props,
                                            best_line=best_line, data=data)
