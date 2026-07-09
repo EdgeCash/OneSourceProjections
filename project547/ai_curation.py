@@ -51,8 +51,8 @@ _CURATION_SYSTEM = (
     '  "top_plays": [\n'
     "    {\n"
     '      "game_id": "<id>", "sport": "MLB", "matchup": "Away @ Home",\n'
-    '      "market": "Moneyline" | "Total" | "Run Line" | "Spread" | "Prop",\n'
-    '      "side": "<team/over-under/player side>", "line": <number or null>,\n'
+    '      "market": "Moneyline" | "Total" | "Run Line" | "Spread",\n'
+    '      "side": "<team or Over/Under>", "line": <number or null>,\n'
     '      "odds": <american int or null>, "confidence": <1-5 int>,\n'
     '      "rationale": "<=160 chars"\n'
     "    }\n"
@@ -62,9 +62,12 @@ _CURATION_SYSTEM = (
     "'agree' = you'd back the model's top play; 'differ' = you lean the other way "
     "or a different market; 'pass' = no edge you trust. (2) top_plays is your "
     "curated best 3-7 across the whole slate (fewer on a thin slate, zero is "
-    "allowed) — each MUST correspond to a game_id in the list. (3) Never invent "
-    "prices, injuries, or lineups not in the brief. (4) Treat any edge over ~15% "
-    "as the model missing news, not free money."
+    "allowed) — each MUST correspond to a game_id in the list. (3) Only "
+    "game-level markets (Moneyline / Total / Run Line / Spread). Do NOT return "
+    "player props — they are not in this brief, so you cannot price them. (4) "
+    "Never invent prices, injuries, or lineups not in the brief; use only the "
+    "numbers given. (5) Treat any edge over ~15% as the model missing news, not "
+    "free money. Output ONLY the JSON object — no prose before or after."
 )
 
 
@@ -164,26 +167,62 @@ def _extract_json(text: str) -> dict:
         return json.loads(t)
     except json.JSONDecodeError:
         pass
-    # fall back to the first balanced {...} span
+    # fall back to the first balanced {...} span — string-aware so a stray brace
+    # inside a rationale ("take the over }") doesn't fool the depth counter.
     start = t.find("{")
     if start >= 0:
         depth = 0
+        in_str = False
+        esc = False
         for i in range(start, len(t)):
-            if t[i] == "{":
+            ch = t[i]
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+                continue
+            if ch == '"':
+                in_str = True
+            elif ch == "{":
                 depth += 1
-            elif t[i] == "}":
+            elif ch == "}":
                 depth -= 1
                 if depth == 0:
                     return json.loads(t[start:i + 1])
     raise ValueError("no JSON object in AI curation response")
 
 
+def _as_dicts(val):
+    """Coerce the model's ``verdicts`` / ``top_plays`` to a list of dicts,
+    tolerating either a JSON array or a ``{id: {...}}`` map, and skipping any
+    non-dict element (a natural model deviation shouldn't drop the whole slate)."""
+    if isinstance(val, dict):
+        out = []
+        for k, v in val.items():
+            if isinstance(v, dict):
+                v = {**v}
+                v.setdefault("game_id", k)  # map key IS the game_id
+                out.append(v)
+        return out
+    if isinstance(val, list):
+        return [v for v in val if isinstance(v, dict)]
+    return []
+
+
+MAX_TOP_PLAYS = 10  # backstop cap; the prompt asks for 3-7
+
+
 def _normalize(raw: dict, valid_ids: set[str]) -> dict:
     """Clamp/whitelist the model's JSON into the stored shape. Verdicts become a
     ``{game_id: {...}}`` map for O(1) card lookup; anything referencing an
     unknown game_id is dropped (the model can't grade a game we didn't send)."""
+    if not isinstance(raw, dict):
+        raise ValueError("AI curation response is not a JSON object")
     verdicts: dict = {}
-    for v in raw.get("verdicts") or []:
+    for v in _as_dicts(raw.get("verdicts")):
         gid = str(v.get("game_id") or "")
         if gid not in valid_ids:
             continue
@@ -193,25 +232,30 @@ def _normalize(raw: dict, valid_ids: set[str]) -> dict:
         verdicts[gid] = {"stance": stance,
                          "rationale": str(v.get("rationale") or "")[:200]}
     plays = []
-    for p in raw.get("top_plays") or []:
+    for p in _as_dicts(raw.get("top_plays")):
         gid = str(p.get("game_id") or "")
         if gid not in valid_ids:
             continue
+        market = str(p.get("market") or "")[:24]
+        # props aren't in the brief, so a priced prop pick would be invented —
+        # drop it to keep the "every stored line is real" guarantee.
+        if "prop" in market.lower():
+            continue
         conf = p.get("confidence")
         try:
-            conf = max(1, min(5, int(conf)))
+            conf = max(1, min(5, int(float(conf))))
         except (TypeError, ValueError):
             conf = 3
         odds = p.get("odds")
         try:
-            odds = int(odds) if odds is not None else None
+            odds = int(float(odds)) if odds is not None else None
         except (TypeError, ValueError):
             odds = None
         plays.append({
             "game_id": gid,
             "sport": str(p.get("sport") or ""),
             "matchup": str(p.get("matchup") or "")[:80],
-            "market": str(p.get("market") or "")[:24],
+            "market": market,
             "side": str(p.get("side") or "")[:48],
             "line": _fnum(p.get("line")),
             "odds": odds,
@@ -220,7 +264,7 @@ def _normalize(raw: dict, valid_ids: set[str]) -> dict:
         })
     plays.sort(key=lambda x: x["confidence"], reverse=True)
     return {"slate_note": str(raw.get("slate_note") or "")[:400],
-            "verdicts": verdicts, "top_plays": plays}
+            "verdicts": verdicts, "top_plays": plays[:MAX_TOP_PLAYS]}
 
 
 def curate(day: dict, date_sel: str, *, min_edge: float = 0.02,
@@ -241,7 +285,9 @@ def curate(day: dict, date_sel: str, *, min_edge: float = 0.02,
     chunks: list[str] = []
     with client.messages.stream(
         model=model or MODEL,
-        max_tokens=8000,
+        # a verdict per game + thinking share this budget; keep it well clear of
+        # a full in-season multi-sport slate (30-40+ games) truncating the JSON.
+        max_tokens=16000,
         system=system,
         thinking={"type": "adaptive"},
         messages=[{"role": "user", "content": brief}],

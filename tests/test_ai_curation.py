@@ -83,6 +83,42 @@ def test_normalize_whitelists_ids_and_clamps():
     assert play["game_id"] == "111" and play["confidence"] == 5 and play["odds"] == -140
 
 
+def test_extract_json_ignores_brace_inside_string():
+    # a stray '}' inside a rationale must not fool the balanced-brace fallback
+    msg = 'Sure:\n{"slate_note": "take the over }", "verdicts": [], "top_plays": []}\nDone.'
+    out = ai_curation._extract_json(msg)
+    assert out["slate_note"] == "take the over }"
+
+
+def test_as_dicts_accepts_list_map_and_skips_junk():
+    assert ai_curation._as_dicts([{"a": 1}, "junk", 5, {"b": 2}]) == [{"a": 1}, {"b": 2}]
+    mapped = ai_curation._as_dicts({"111": {"stance": "agree"}, "222": "bad"})
+    assert mapped == [{"stance": "agree", "game_id": "111"}]  # key injected, junk dropped
+
+
+def test_normalize_handles_verdicts_as_map():
+    raw = {"verdicts": {"111": {"stance": "differ", "rationale": "x"}},
+           "top_plays": []}
+    out = ai_curation._normalize(raw, {"111"})
+    assert out["verdicts"]["111"]["stance"] == "differ"
+
+
+def test_normalize_drops_props_and_caps_plays():
+    raw = {"verdicts": [],
+           "top_plays": [{"game_id": "111", "market": "Player Prop", "side": "x",
+                          "confidence": 5}]
+           + [{"game_id": "111", "market": "Total", "side": f"o{i}",
+               "confidence": 3} for i in range(15)]}
+    out = ai_curation._normalize(raw, {"111"})
+    assert all("prop" not in p["market"].lower() for p in out["top_plays"])
+    assert len(out["top_plays"]) <= ai_curation.MAX_TOP_PLAYS
+
+
+def test_normalize_rejects_non_dict_root():
+    with pytest.raises(ValueError):
+        ai_curation._normalize(["not", "a", "dict"], {"111"})
+
+
 def test_curate_parses_streamed_json(monkeypatch):
     """A fake anthropic client whose stream yields a JSON blob in chunks — curate
     should assemble, parse, normalize, and tag it with the model."""

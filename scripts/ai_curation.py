@@ -56,7 +56,11 @@ def main() -> int:
     if not latest.exists():
         print("ai_curation: no latest.json — run the pipeline first", file=sys.stderr)
         return 1
-    data = json.loads(latest.read_text())
+    try:
+        data = json.loads(latest.read_text())
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"ai_curation: latest.json unreadable — {e}", file=sys.stderr)
+        return 1
     slates = data.get("slates") or {}
     if not slates:
         print("ai_curation: no slates in latest.json")

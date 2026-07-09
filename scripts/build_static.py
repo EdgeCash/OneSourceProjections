@@ -984,7 +984,10 @@ def _load_ai_curation(date_sel: str) -> dict:
         cache = json.loads(path.read_text())
     except (json.JSONDecodeError, OSError):
         return {}
-    return cache.get(date_sel) or {}
+    if not isinstance(cache, dict):
+        return {}
+    entry = cache.get(date_sel)
+    return entry if isinstance(entry, dict) else {}
 
 
 _AI_CONF = {5: "★★★★★", 4: "★★★★☆", 3: "★★★☆☆", 2: "★★☆☆☆", 1: "★☆☆☆☆"}
@@ -998,48 +1001,77 @@ def _ai_model_name(model: str) -> str:
     return _AI_MODEL_LABEL.get(str(model), "Claude")
 
 
+def _ai_conf_stars(val) -> str:
+    """Confidence 1-5 → stars, tolerant of a float/str/garbage value from a
+    hand-edited or schema-drifted cache (defaults to 3)."""
+    try:
+        n = max(1, min(5, int(float(val))))
+    except (TypeError, ValueError):
+        n = 3
+    return _AI_CONF[n]
+
+
+def _ai_price(odds) -> str:
+    """American odds → display, tolerant of a non-numeric value (returns '')."""
+    if odds is None:
+        return ""
+    try:
+        return ui.fmt_american(odds) or ""
+    except (TypeError, ValueError):
+        return ""
+
+
 def _ai_curated_section(ai_cur: dict) -> str:
     """The 'Claude's read' block for the Plays page: an honest slate note plus
     the AI's curated top plays, shown *beside* the model's board as a second
-    opinion. Empty string when there's no curation for the slate."""
-    if not ai_cur:
+    opinion. Empty string when there's no curation for the slate.
+
+    Defensive by contract: the curation file is written normalized, but this is
+    the *consumer* — a malformed / hand-edited / partially-written cache must
+    degrade to 'no AI section', never abort the whole site build."""
+    if not isinstance(ai_cur, dict) or not ai_cur:
         return ""
-    plays = ai_cur.get("top_plays") or []
-    note = str(ai_cur.get("slate_note") or "")
-    when = str(ai_cur.get("generated_at") or "")[:16].replace("T", " ")
-    rows = ["<div class='ai-sec'>",
-            "<div class='ai-sec-head'><span class='ai-sec-mk'>◆</span>"
-            "<span class='ai-sec-t'>Claude's read</span>"
-            "<span class='ai-sec-tag'>second opinion · not the model</span></div>"]
-    if note:
-        rows.append(f"<div class='ai-sec-note'>{html.escape(note)}</div>")
-    if not plays:
-        rows.append("<div class='pl-none'>No AI plays on this slate — a pass is "
-                    "a valid read.</div>")
-    else:
-        rows.append("<div class='ai-plays'>")
-        for p in plays:
-            conf = _AI_CONF.get(int(p.get("confidence") or 3), "★★★☆☆")
-            price = ui.fmt_american(p.get("odds")) if p.get("odds") is not None else ""
-            line = p.get("line")
-            line_txt = f" {line:g}" if isinstance(line, (int, float)) else ""
-            pick = f"{p.get('side', '')}{line_txt} {price}".strip()
-            rows.append(
-                f"<div class='ai-play'>"
-                f"<div class='ai-play-top'><span class='ai-play-sport'>"
-                f"{html.escape(str(p.get('sport', '')))}</span>"
-                f"<span class='ai-play-mu'>{html.escape(str(p.get('matchup', '')))}</span>"
-                f"<span class='ai-play-conf'>{conf}</span></div>"
-                f"<div class='ai-play-pick'>{html.escape(str(p.get('market', '')))}: "
-                f"<b>{html.escape(pick)}</b></div>"
-                f"<div class='ai-play-why'>{html.escape(str(p.get('rationale', '')))}</div>"
-                f"</div>")
-        rows.append("</div>")
-    foot = (f"<div class='ai-sec-foot'>Curated by {html.escape(_ai_model_name(ai_cur.get('model')))}"
-            f"{f' · {when} ET' if when else ''} · graded on closing-line value like "
-            f"every play. A validator, never an automatic tail.</div>")
-    rows.append(foot + "</div>")
-    return "".join(rows)
+    try:
+        plays = [p for p in (ai_cur.get("top_plays") or []) if isinstance(p, dict)]
+        note = str(ai_cur.get("slate_note") or "")
+        when = str(ai_cur.get("generated_at") or "")[:16].replace("T", " ")
+        rows = ["<div class='ai-sec'>",
+                "<div class='ai-sec-head'><span class='ai-sec-mk'>◆</span>"
+                "<span class='ai-sec-t'>Claude's read</span>"
+                "<span class='ai-sec-tag'>second opinion · not the model</span></div>"]
+        if note:
+            rows.append(f"<div class='ai-sec-note'>{html.escape(note)}</div>")
+        if not plays:
+            rows.append("<div class='pl-none'>No AI plays on this slate — a pass is "
+                        "a valid read.</div>")
+        else:
+            rows.append("<div class='ai-plays'>")
+            for p in plays:
+                conf = _ai_conf_stars(p.get("confidence"))
+                price = _ai_price(p.get("odds"))
+                line = p.get("line")
+                line_txt = f" {line:g}" if isinstance(line, (int, float)) else ""
+                pick = f"{p.get('side', '')}{line_txt} {price}".strip()
+                rows.append(
+                    f"<div class='ai-play'>"
+                    f"<div class='ai-play-top'><span class='ai-play-sport'>"
+                    f"{html.escape(str(p.get('sport', '')))}</span>"
+                    f"<span class='ai-play-mu'>{html.escape(str(p.get('matchup', '')))}</span>"
+                    f"<span class='ai-play-conf'>{conf}</span></div>"
+                    f"<div class='ai-play-pick'>{html.escape(str(p.get('market', '')))}: "
+                    f"<b>{html.escape(pick)}</b></div>"
+                    f"<div class='ai-play-why'>{html.escape(str(p.get('rationale', '')))}</div>"
+                    f"</div>")
+            rows.append("</div>")
+        foot = (f"<div class='ai-sec-foot'>Curated by "
+                f"{html.escape(_ai_model_name(ai_cur.get('model')))}"
+                f"{f' · {html.escape(when)} ET' if when else ''} · graded on "
+                f"closing-line value like every play. A validator, never an "
+                f"automatic tail.</div>")
+        rows.append(foot + "</div>")
+        return "".join(rows)
+    except Exception:
+        return ""  # never let the AI layer break the build
 
 
 def _plays_board(day: dict, active_sports: list) -> str:
@@ -1225,7 +1257,9 @@ def _sport_feed(sport: str, day: dict, date_sel: str,
     if not games:
         return "<div class='feednote'>No games scheduled for this slate.</div>", {}, {}
     gt = _gate_table()
-    verdicts = (ai_cur or {}).get("verdicts") or {}
+    verdicts = (ai_cur or {}).get("verdicts")
+    if not isinstance(verdicts, dict):
+        verdicts = {}
     briefs: dict = {}
     out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — open a game for the full "
            "research card, tap any lineup name for that player's props, or ◆ Ask AI "
