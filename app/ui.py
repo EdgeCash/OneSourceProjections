@@ -4,6 +4,7 @@ shapes so they're testable without Streamlit."""
 
 from __future__ import annotations
 
+import html
 import logging
 import math
 import urllib.parse
@@ -1601,6 +1602,32 @@ def ai_brief_game(sport: str, g: dict, matchup: dict | None = None,
 
     parts.append("_360Five — model estimates, not financial "
                  "advice._")
+    return "\n\n".join(parts)
+
+
+def ai_brief_tennis(sport: str, g: dict) -> str:
+    """Markdown brief of one tennis match — surface, the surface-Elo win split,
+    and any priced moneyline edge — for pasting into an AI chat as a second read.
+    Robust to a missing price (the model read stands until the market attaches)."""
+    p1, p2 = g.get("player1", ""), g.get("player2", "")
+    surf = str(g.get("surface") or "").title()
+    tour = str(g.get("tournament") or "")
+    q1, q2 = _mcf(g.get("player1_win_prob")), _mcf(g.get("player2_win_prob"))
+    meta = " · ".join(x for x in (tour, f"{surf} court" if surf else "") if x)
+    head = f"# {sport} — {p1} v {p2}" + (f"\n*{meta}*" if meta else "")
+
+    reads = ["## Model read"]
+    if q1 is not None and q2 is not None:
+        fav, fq = (p1, q1) if q1 >= q2 else (p2, q2)
+        reads.append(f"- **Win probability** — surface-adjusted Elo makes "
+                     f"**{fav}** the favorite at **{fq * 100:.0f}%**")
+    for nm, ev, price in ((p1, _mcf(g.get("p1_ev")), g.get("p1_price")),
+                          (p2, _mcf(g.get("p2_ev")), g.get("p2_price"))):
+        if ev is not None:
+            reads.append(f"- **{nm} moneyline** — {fmt_american(price) or 'no price'}"
+                         f", EV **{ev * 100:+.1f}%**")
+    parts = [head, "\n".join(reads),
+             "_360Five — surface-Elo estimates, not financial advice._"]
     return "\n\n".join(parts)
 
 
@@ -3726,14 +3753,52 @@ def _hero_eyebrow(sport: str, g: dict) -> str:
     return (f"<div class='eyebrow'><span class='dot'></span>{label}{time_seg}{lock}</div>")
 
 
+_AI_VERDICT = {
+    "agree": ("ai-agree", "✓ AI agrees"),
+    "differ": ("ai-differ", "⚠ AI differs"),
+    "pass": ("ai-pass", "AI passes"),
+}
+
+
+def _hero_ai_verdict(verdict: dict | None) -> str:
+    """The automated second-opinion badge: how Claude's daily slate curation
+    lands on THIS game vs the model (agree / differ / pass) + its one-liner.
+    Rendered only when the curation cache carries a verdict for the game."""
+    if not verdict:
+        return ""
+    cls, txt = _AI_VERDICT.get(str(verdict.get("stance")), _AI_VERDICT["pass"])
+    why = str(verdict.get("rationale") or "")
+    why_html = (f"<span class='ai-why'>{html.escape(why)}</span>" if why else "")
+    return (f"<div class='ai-verdict {cls}'><span class='ai-tag'>{txt}</span>"
+            f"{why_html}</div>")
+
+
+def _hero_ai_chip(gid: str | None, verdict: dict | None = None) -> str:
+    """The card's AI footer: the automated agreement badge (if the daily
+    curation covered this game) above the manual 'Ask AI' chip, which copies a
+    paste-ready brief into the user's own chatbot (their subscription, our
+    second opinion). The chip is wired to ``window.BRIEFS[gid]`` by the drawer
+    JS; the badge is a static read from the curation cache."""
+    badge = _hero_ai_verdict(verdict)
+    chip = ""
+    if gid:
+        chip = (f"<div class='hero-ai'><button class='askai mini' "
+                f"data-gid='{html.escape(str(gid), quote=True)}'>◆ Ask AI</button>"
+                f"<span class='hero-ai-note'>run this game through your own chatbot "
+                f"for a second read</span></div>")
+    return badge + chip
+
+
 def hero_html(sport: str, g: dict, matchup: dict | None, *, data: dict | None = None,
               gate_table=None, min_edge: float = 0.02, bankroll: float = 0,
-              best_line: dict | None = None, props=None) -> str:
+              best_line: dict | None = None, props=None, gid: str | None = None,
+              ai_verdict: dict | None = None) -> str:
     """The scannable card hero: eyebrow → matchup → the play (+ conviction dial)
     → top-prop one-liner → projection bar → 4 sport-adaptive "why" chips → odds
-    row. Sport-aware; guards every field; never raises (a failure degrades to a
-    minimal matchup line so the feed keeps rendering). The deep research card
-    (unchanged) lives one tap away, added by the caller."""
+    row → AI second-opinion badge + Ask-AI validator chip. Sport-aware; guards
+    every field; never raises (a failure degrades to a minimal matchup line so
+    the feed keeps rendering). The deep research card (unchanged) lives one tap
+    away, added by the caller."""
     s = (sport or "").upper()
     g = g or {}
     try:
@@ -3743,7 +3808,7 @@ def hero_html(sport: str, g: dict, matchup: dict | None, *, data: dict | None = 
         else:
             body = _hero_play_team(sport, g, matchup or {}, data or {}, min_edge,
                                    gate_table, bankroll, best_line, props)
-        return f"<div class='osp-hero'>{eyebrow}{body}</div>"
+        return f"<div class='osp-hero'>{eyebrow}{body}{_hero_ai_chip(gid, ai_verdict)}</div>"
     except Exception:
         log.exception("hero_html failed for %s", s)
         if s in ("ATP", "WTA"):

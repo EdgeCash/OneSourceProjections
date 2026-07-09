@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - "data/output/latest.json"
+      - "data/output/ai_curation.json"
       - "app/**"
       - "scripts/build_static.py"
       - ".github/workflows/pages.yml"

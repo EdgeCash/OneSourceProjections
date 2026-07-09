@@ -597,6 +597,51 @@ SITE_CSS = """
   .osp-hero a.prop { border-bottom: none; }
   .osp-hero .prop.pending { cursor: default; }
   .osp-hero .prop.pending .pick { color: var(--muted); font-weight: 400; font-size: .8rem; }
+  /* AI second-opinion badge — the daily curation's take on this game */
+  .osp-hero .ai-verdict { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    margin-top: 14px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--card); font-size: .8rem; }
+  .osp-hero .ai-verdict .ai-tag { font-family: var(--disp); font-weight: 700; font-size: .72rem;
+    letter-spacing: .03em; flex: none; text-transform: uppercase; }
+  .osp-hero .ai-verdict .ai-why { color: var(--muted); line-height: 1.4; }
+  .osp-hero .ai-verdict.ai-agree { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+  .osp-hero .ai-verdict.ai-agree .ai-tag { color: var(--good); }
+  .osp-hero .ai-verdict.ai-differ { border-color: color-mix(in srgb, #e3b341 45%, var(--line)); }
+  .osp-hero .ai-verdict.ai-differ .ai-tag { color: var(--mid, #b8860b); }
+  .osp-hero .ai-verdict.ai-pass .ai-tag { color: var(--muted); }
+  /* Ask-AI validator chip — a quiet secondary action, not a tout */
+  .osp-hero .hero-ai { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .askai.mini { margin: 0; background: transparent; color: var(--acc);
+    border: 1.5px solid var(--acc); border-radius: 999px; padding: 6px 13px;
+    font-family: var(--disp); font-weight: 700; font-size: .76rem; letter-spacing: .03em;
+    cursor: pointer; box-shadow: none; flex: none; }
+  .askai.mini:hover { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+  .osp-hero .hero-ai-note { font-family: var(--mono); font-size: .68rem; color: var(--muted);
+    line-height: 1.35; flex: 1; min-width: 120px; }
+  /* ===== AI-curated section on the Plays page (Claude's read) ===== */
+  .ai-sec { border: 1.5px solid var(--acc); border-radius: 14px; padding: 15px 17px;
+    margin-top: 20px; background: color-mix(in srgb, var(--acc) 5%, transparent); }
+  .ai-sec-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .ai-sec-mk { color: var(--acc); font-size: 1rem; }
+  .ai-sec-t { font-family: var(--disp); font-weight: 700; font-size: 1.05rem; }
+  .ai-sec-tag { font-family: var(--mono); font-size: .64rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .06em; }
+  .ai-sec-note { color: var(--text); font-size: .9rem; line-height: 1.5; margin: 10px 0 6px; }
+  .ai-plays { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 4px; }
+  .ai-play { border: 1px solid var(--line); border-radius: 11px; padding: 11px 13px;
+    background: var(--card); }
+  .ai-play-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+  .ai-play-sport { font-family: var(--mono); font-size: .58rem; font-weight: 700; color: var(--acc);
+    text-transform: uppercase; letter-spacing: .06em; flex: none; }
+  .ai-play-mu { font-size: .74rem; color: var(--muted); flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ai-play-conf { font-size: .68rem; color: var(--acc); flex: none; letter-spacing: -1px; }
+  .ai-play-pick { font-size: .92rem; margin-bottom: 4px; }
+  .ai-play-why { font-size: .76rem; color: var(--muted); line-height: 1.45; }
+  .ai-sec-foot { font-size: .7rem; color: var(--muted); line-height: 1.45; margin-top: 12px;
+    padding-top: 11px; border-top: 1px dashed var(--line); }
+  @media (max-width: 620px) { .ai-plays { grid-template-columns: 1fr; } }
   /* deep-research disclosure (holds the full, unchanged research card) */
   details.deep { border-top: 1.5px solid var(--line); margin: 4px -18px 0; }
   details.deep > summary { list-style: none; cursor: pointer; padding: 13px 18px;
@@ -928,6 +973,107 @@ def _market_table() -> str:
             f"</div></div>")
 
 
+def _load_ai_curation(date_sel: str) -> dict:
+    """The AI curation for this slate date, or ``{}`` if the cache is missing (no
+    API key configured / job hasn't run). Never raises — a bad file degrades to
+    'no AI layer' rather than breaking the build."""
+    path = config.OUTPUT_DIR / "ai_curation.json"
+    if not path.exists():
+        return {}
+    try:
+        cache = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return {}
+    if not isinstance(cache, dict):
+        return {}
+    entry = cache.get(date_sel)
+    return entry if isinstance(entry, dict) else {}
+
+
+_AI_CONF = {5: "★★★★★", 4: "★★★★☆", 3: "★★★☆☆", 2: "★★☆☆☆", 1: "★☆☆☆☆"}
+_AI_MODEL_LABEL = {"claude-opus-4-8": "Claude Opus 4.8",
+                   "claude-opus-4-7": "Claude Opus 4.7",
+                   "claude-sonnet-5": "Claude Sonnet 5",
+                   "claude-haiku-4-5": "Claude Haiku 4.5"}
+
+
+def _ai_model_name(model: str) -> str:
+    return _AI_MODEL_LABEL.get(str(model), "Claude")
+
+
+def _ai_conf_stars(val) -> str:
+    """Confidence 1-5 → stars, tolerant of a float/str/garbage value from a
+    hand-edited or schema-drifted cache (defaults to 3)."""
+    try:
+        n = max(1, min(5, int(float(val))))
+    except (TypeError, ValueError):
+        n = 3
+    return _AI_CONF[n]
+
+
+def _ai_price(odds) -> str:
+    """American odds → display, tolerant of a non-numeric value (returns '')."""
+    if odds is None:
+        return ""
+    try:
+        return ui.fmt_american(odds) or ""
+    except (TypeError, ValueError):
+        return ""
+
+
+def _ai_curated_section(ai_cur: dict) -> str:
+    """The 'Claude's read' block for the Plays page: an honest slate note plus
+    the AI's curated top plays, shown *beside* the model's board as a second
+    opinion. Empty string when there's no curation for the slate.
+
+    Defensive by contract: the curation file is written normalized, but this is
+    the *consumer* — a malformed / hand-edited / partially-written cache must
+    degrade to 'no AI section', never abort the whole site build."""
+    if not isinstance(ai_cur, dict) or not ai_cur:
+        return ""
+    try:
+        plays = [p for p in (ai_cur.get("top_plays") or []) if isinstance(p, dict)]
+        note = str(ai_cur.get("slate_note") or "")
+        when = str(ai_cur.get("generated_at") or "")[:16].replace("T", " ")
+        rows = ["<div class='ai-sec'>",
+                "<div class='ai-sec-head'><span class='ai-sec-mk'>◆</span>"
+                "<span class='ai-sec-t'>Claude's read</span>"
+                "<span class='ai-sec-tag'>second opinion · not the model</span></div>"]
+        if note:
+            rows.append(f"<div class='ai-sec-note'>{html.escape(note)}</div>")
+        if not plays:
+            rows.append("<div class='pl-none'>No AI plays on this slate — a pass is "
+                        "a valid read.</div>")
+        else:
+            rows.append("<div class='ai-plays'>")
+            for p in plays:
+                conf = _ai_conf_stars(p.get("confidence"))
+                price = _ai_price(p.get("odds"))
+                line = p.get("line")
+                line_txt = f" {line:g}" if isinstance(line, (int, float)) else ""
+                pick = f"{p.get('side', '')}{line_txt} {price}".strip()
+                rows.append(
+                    f"<div class='ai-play'>"
+                    f"<div class='ai-play-top'><span class='ai-play-sport'>"
+                    f"{html.escape(str(p.get('sport', '')))}</span>"
+                    f"<span class='ai-play-mu'>{html.escape(str(p.get('matchup', '')))}</span>"
+                    f"<span class='ai-play-conf'>{conf}</span></div>"
+                    f"<div class='ai-play-pick'>{html.escape(str(p.get('market', '')))}: "
+                    f"<b>{html.escape(pick)}</b></div>"
+                    f"<div class='ai-play-why'>{html.escape(str(p.get('rationale', '')))}</div>"
+                    f"</div>")
+            rows.append("</div>")
+        foot = (f"<div class='ai-sec-foot'>Curated by "
+                f"{html.escape(_ai_model_name(ai_cur.get('model')))}"
+                f"{f' · {html.escape(when)} ET' if when else ''} · graded on "
+                f"closing-line value like every play. A validator, never an "
+                f"automatic tail.</div>")
+        rows.append(foot + "</div>")
+        return "".join(rows)
+    except Exception:
+        return ""  # never let the AI layer break the build
+
+
 def _plays_board(day: dict, active_sports: list) -> str:
     board = ui.build_best_bets(day, MIN_EDGE)
     if not board.empty:
@@ -1103,13 +1249,17 @@ def _game_header(sport: str, g: dict, gid: str) -> str:
     return f"<div class='ghead'>{away}{mid}{home}</div>"
 
 
-def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
+def _sport_feed(sport: str, day: dict, date_sel: str,
+                ai_cur: dict | None = None) -> tuple[str, dict, dict]:
     blob = day.get(sport, {})
     games = blob.get("games", []) or []
     props = blob.get("props") or []
     if not games:
         return "<div class='feednote'>No games scheduled for this slate.</div>", {}, {}
     gt = _gate_table()
+    verdicts = (ai_cur or {}).get("verdicts")
+    if not isinstance(verdicts, dict):
+        verdicts = {}
     briefs: dict = {}
     out = ["<div class='legend'>🟢 play · 🟡 lean · ⚪ pass — open a game for the full "
            "research card, tap any lineup name for that player's props, or ◆ Ask AI "
@@ -1129,12 +1279,22 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
         hero = ""
         try:
             if sport in ("ATP", "WTA"):
+                try:
+                    briefs[gid] = ui.ai_brief_tennis(sport, g)
+                except Exception:
+                    briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
-                                    props=props)
+                                    props=props, gid=gid if gid in briefs else None,
+                                    ai_verdict=verdicts.get(gid))
                 body = _tennis_card(sport, g)
             elif sport in MATCH_MODEL_SPORTS:
+                try:
+                    briefs[gid] = ui.ai_brief_game(sport, g, None, min_edge=MIN_EDGE)
+                except Exception:
+                    briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, {}, gate_table=gt, min_edge=MIN_EDGE,
-                                    props=props)
+                                    props=props, gid=gid if gid in briefs else None,
+                                    ai_verdict=verdicts.get(gid))
                 body = _match_body(sport, g)
             else:
                 m = _matchup(sport, g.get("home_team", ""), g.get("away_team", ""), date_sel)
@@ -1152,7 +1312,9 @@ def _sport_feed(sport: str, day: dict, date_sel: str) -> tuple[str, dict, dict]:
                     briefs.pop(gid, None)
                 hero = ui.hero_html(sport, g, m, data=data, gate_table=gt,
                                     min_edge=MIN_EDGE, bankroll=BANKROLL,
-                                    best_line=best_line, props=props)
+                                    best_line=best_line, props=props,
+                                    gid=gid if gid in briefs else None,
+                                    ai_verdict=verdicts.get(gid))
                 body = ui.sharp_sheet_html(sport, g, m, window="l5", min_edge=MIN_EDGE,
                                            gate_table=gt, bankroll=BANKROLL, props=props,
                                            best_line=best_line, data=data)
@@ -1196,6 +1358,11 @@ def main() -> int:
     day = slates.get(date_sel, {})
     gen = str(data.get("generated_at", ""))[:16].replace("T", " ")
 
+    # Daily AI slate curation (scripts/ai_curation.py) — optional; absent when
+    # the API key isn't configured, in which case the site renders exactly as
+    # before (no badges, no AI list).
+    ai_cur = _load_ai_curation(date_sel)
+
     # Only sports that actually have cards today appear in the nav / get a page.
     active_sports = [s for s in NAV_SPORTS if _has_cards(day, s)]
 
@@ -1203,7 +1370,8 @@ def main() -> int:
     shutil.rmtree(OUT, ignore_errors=True)  # never leave a dropped sport's stale page
     OUT.mkdir(parents=True, exist_ok=True)
     _copy_pwa_assets()   # manifest, sw.js, icons -> installable home-screen app
-    plays_html = _page("plays", "Plays", gen, _plays_board(day, active_sports), active_sports)
+    plays_body = _plays_board(day, active_sports) + _ai_curated_section(ai_cur)
+    plays_html = _page("plays", "Plays", gen, plays_body, active_sports)
     (OUT / "plays.html").write_text(plays_html)
     (OUT / "index.html").write_text(plays_html)
     (OUT / "record.html").write_text(
@@ -1212,7 +1380,7 @@ def main() -> int:
     pages = 2
 
     for sport in active_sports:
-        body, prop_idx, briefs = _sport_feed(sport, day, date_sel)
+        body, prop_idx, briefs = _sport_feed(sport, day, date_sel, ai_cur)
         (OUT / f"{sport.lower()}.html").write_text(
             _page(sport.lower(), SPORT_LABELS.get(sport, sport), gen, body,
                   active_sports, props=prop_idx, briefs=briefs))
