@@ -1,0 +1,454 @@
+[
+ {
+  "id": "fdadbee5d9697ccb6c29c91639e5cc35",
+  "market_id": 122,
+  "event_id": 98506,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "ATH",
+    "name": "Athletics",
+    "link": "/mlb/teams/athletics/",
+    "team": {
+     "city": "",
+     "abbreviation": "ATH",
+     "conference": "AL",
+     "division": "West",
+     "slug": "athletics"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "chicago-white-sox"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "ATH",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -104,
+     "book_id": 73,
+     "created": "2026-07-06 16:32:29"
+    },
+    "label": "Athletics",
+    "short_label": "ATH",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:37:01",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 49.51
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_7604ce6c332353c70a9a057036b4ea43",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:32:47",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.028763541277549542,
+         "fair_probability": 0.48561822936122523,
+         "pm_win_pct": 49.51
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_7604ce6c332353c70a9a057036b4ea43",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-10 07:37:01",
+        "cost": 104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul111410athcws",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 49.51
+        }
+       }
+      ]
+     }
+    ],
+    "id": "7604ce6c332353c70a9a057036b4ea43"
+   },
+   {
+    "participant": "CWS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": -170,
+     "book_id": 73,
+     "created": "2026-07-06 16:32:29"
+    },
+    "label": "White Sox",
+    "short_label": "CWS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:37:01",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 51.92
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_9eda2aa382bcbf80035a811021c95e63",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:32:47",
+        "cost": -108,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 51.92
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_9eda2aa382bcbf80035a811021c95e63",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-10 07:37:01",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul111410athcws",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 51.92
+        }
+       }
+      ]
+     }
+    ],
+    "id": "9eda2aa382bcbf80035a811021c95e63"
+   }
+  ]
+ },
+ {
+  "id": "7b50d59bdcf50f1aff88668bdeca55ca",
+  "market_id": 122,
+  "event_id": 99821,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "minnesota-twins"
+    }
+   },
+   {
+    "id": "LAA",
+    "name": "Angels",
+    "link": "/mlb/teams/los-angeles-angels/",
+    "team": {
+     "city": "Los Angeles",
+     "abbreviation": "LAA",
+     "conference": "AL",
+     "division": "West",
+     "slug": "los-angeles-angels"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "MIN",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1900,
+     "book_id": 68,
+     "created": "2026-07-08 18:28:26"
+    },
+    "label": "Twins",
+    "short_label": "MIN",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:40:26",
+        "cost": -178,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_757ac62a0b49243d6338a1d205261c7f",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-10 07:37:01",
+        "cost": -163,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul111410laamin",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_757ac62a0b49243d6338a1d205261c7f",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:32:47",
+        "cost": -178,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_757ac62a0b49243d6338a1d205261c7f",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:40:26",
+        "cost": -190,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=388843_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "757ac62a0b49243d6338a1d205261c7f"
+   },
+   {
+    "participant": "LAA",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1900,
+     "book_id": 68,
+     "created": "2026-07-08 18:28:26"
+    },
+    "label": "Angels",
+    "short_label": "LAA",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:40:26",
+        "cost": 170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_8e95e00fe224f5f90c598be91ee16394",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-10 07:37:01",
+        "cost": 170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul111410laamin",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_8e95e00fe224f5f90c598be91ee16394",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-10 07:32:47",
+        "cost": 170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_8e95e00fe224f5f90c598be91ee16394",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-10 07:40:26",
+        "cost": 150,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=388843_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "8e95e00fe224f5f90c598be91ee16394"
+   }
+  ]
+ }
+]

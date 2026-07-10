@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98506,
+  "sr_id": "3e81264b-4121-4fc0-a33f-4487bbfecce6",
+  "sport": "MLB",
+  "scheduled": "2026-07-11 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CWS",
+  "visitor": "ATH",
+  "link": "/mlb/matchups/athletics-vs-chicago-white-sox/?date=2026-07-11",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6029",
+    "name": "Erick Fedde",
+    "link": "/mlb/props/erick-fedde/",
+    "player": {
+     "short_name": "E. Fedde",
+     "first_name": "Erick",
+     "last_name": "Fedde",
+     "image": "https://images.fantasypros.com/images/players/mlb/6029/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "erick-fedde",
+     "jersey_number": 47
+    }
+   },
+   "visitor_probable": {
+    "id": "44719",
+    "name": "Gage Jump",
+    "link": "/mlb/props/gage-jump/",
+    "player": {
+     "short_name": "G. Jump",
+     "first_name": "Gage",
+     "last_name": "Jump",
+     "image": "https://images.fantasypros.com/images/players/mlb/44719/headshot/210x210.webp",
+     "position": "SP",
+     "team": "ATH",
+     "conference": "AL",
+     "division": "West",
+     "slug": "gage-jump",
+     "jersey_number": 61
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CWS",
+   "season": "2025",
+   "split": "A",
+   "r": "1.020",
+   "1b": "1.034",
+   "2b": "0.945",
+   "3b": "0.609",
+   "hr": "1.058",
+   "name": "Rate Field"
+  },
+  "venue": {
+   "name": "Rate Field",
+   "address": "333 West 35th Street",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60616",
+   "surface": "grass",
+   "capacity": 40241,
+   "stadium_type": "outdoor",
+   "id": "4a550fc1-c03d-4294-b63a-30ff197bedc4"
+  },
+  "participants": [
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 47,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   },
+   {
+    "id": "ATH",
+    "name": "Athletics",
+    "link": "/mlb/teams/athletics/",
+    "team": {
+     "city": "",
+     "abbreviation": "ATH",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 41,
+      "L": 52,
+      "T": 0
+     },
+     "slug": "athletics",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 81,
+   "forecast_wind_speed": 14,
+   "forecast_wind_direction": "NE",
+   "forecast_wind_degree": 38,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1018,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "CHSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99821,
+  "sr_id": "c97d741e-cd88-409d-9ef6-dcf1c8d964e5",
+  "sport": "MLB",
+  "scheduled": "2026-07-11 18:10:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIN",
+  "visitor": "LAA",
+  "link": "/mlb/matchups/los-angeles-angels-vs-minnesota-twins/?date=2026-07-11",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43688",
+    "name": "Joe Ryan",
+    "link": "/mlb/props/joe-ryan/",
+    "player": {
+     "short_name": "J. Ryan",
+     "first_name": "Joe",
+     "last_name": "Ryan",
+     "image": "https://images.fantasypros.com/images/players/mlb/43688/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "joe-ryan",
+     "jersey_number": 41
+    }
+   },
+   "visitor_probable": {
+    "id": "7354412",
+    "name": "Ryan Johnson",
+    "link": "/mlb/props/ryan-johnson-p/",
+    "player": {
+     "short_name": "R. Johnson",
+     "first_name": "Ryan",
+     "last_name": "Johnson",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354412/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "LAA",
+     "conference": "AL",
+     "division": "West",
+     "slug": "ryan-johnson-p",
+     "jersey_number": 32
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "MIN",
+   "season": "2025",
+   "split": "A",
+   "r": "1.001",
+   "1b": "1.004",
+   "2b": "1.144",
+   "3b": "0.892",
+   "hr": "1.003",
+   "name": "Target Field"
+  },
+  "venue": {
+   "name": "Target Field",
+   "address": "1 Twins Way",
+   "city": "Minneapolis",
+   "state": "MN",
+   "country": "USA",
+   "zip": "55403",
+   "surface": "grass",
+   "capacity": 38544,
+   "stadium_type": "outdoor",
+   "id": "302f8dcd-eed6-4b83-8609-81548d51e955"
+  },
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 46,
+      "L": 48,
+      "T": 0
+     },
+     "slug": "minnesota-twins",
+     "stadium_deg_offset": "75"
+    }
+   },
+   {
+    "id": "LAA",
+    "name": "Angels",
+    "link": "/mlb/teams/los-angeles-angels/",
+    "team": {
+     "city": "Los Angeles",
+     "abbreviation": "LAA",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 37,
+      "L": 57,
+      "T": 0
+     },
+     "slug": "los-angeles-angels",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 87,
+   "forecast_wind_speed": 9,
+   "forecast_wind_direction": "SSW",
+   "forecast_wind_degree": 206,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1017,
+   "forecast_humidity": 0.55
+  },
+  "broadcasts": [
+   {
+    "network": "MNNT",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]
