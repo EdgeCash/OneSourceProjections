@@ -28,7 +28,9 @@ from app import ui
 from project547 import ai as _ai
 from project547.ai_modes import system_for_mode
 
-MODEL = os.environ.get("OSP_AI_MODEL", _ai.MODEL)
+# `or` so an empty OSP_AI_MODEL (undefined Actions var → "") falls back to the
+# Opus default rather than an empty model string the API rejects.
+MODEL = os.environ.get("OSP_AI_MODEL") or _ai.MODEL
 
 _CURATION_SYSTEM = (
     _ai.SYSTEM

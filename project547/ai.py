@@ -17,7 +17,10 @@ from __future__ import annotations
 import os
 
 # Default to the most capable Opus-tier model; let the user pin another via env.
-MODEL = os.environ.get("OSP_AI_MODEL", "claude-opus-4-8")
+# `or` (not a get-default) so an env var set to "" — e.g. an undefined GitHub
+# Actions `vars.OSP_AI_MODEL` expands to empty, not unset — still falls back to
+# Opus instead of sending an empty model string (the API 400s on empty model).
+MODEL = os.environ.get("OSP_AI_MODEL") or "claude-opus-4-8"
 
 SYSTEM = (
     "You are a sharp, disciplined sports-betting analyst embedded in a personal "
