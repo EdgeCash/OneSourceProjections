@@ -119,6 +119,24 @@ def test_normalize_rejects_non_dict_root():
         ai_curation._normalize(["not", "a", "dict"], {"111"})
 
 
+def test_empty_osp_ai_model_env_falls_back_to_opus(monkeypatch):
+    # An undefined GitHub Actions `vars.OSP_AI_MODEL` expands to "" (set, not
+    # unset); the model must fall back to Opus, never an empty string (API 400).
+    import importlib
+    monkeypatch.setenv("OSP_AI_MODEL", "")
+    import project547.ai as ai_mod
+    import project547.ai_curation as cur_mod
+    importlib.reload(ai_mod)
+    importlib.reload(cur_mod)
+    try:
+        assert ai_mod.MODEL == "claude-opus-4-8"
+        assert cur_mod.MODEL and cur_mod.MODEL.startswith("claude-")
+    finally:
+        monkeypatch.delenv("OSP_AI_MODEL", raising=False)
+        importlib.reload(ai_mod)
+        importlib.reload(cur_mod)
+
+
 def test_curate_parses_streamed_json(monkeypatch):
     """A fake anthropic client whose stream yields a JSON blob in chunks — curate
     should assemble, parse, normalize, and tag it with the model."""

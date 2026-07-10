@@ -47,6 +47,9 @@ jobs:
 
       - name: Commit curation
         run: |
+          if [ ! -f data/output/ai_curation.json ]; then
+            echo "no curation file produced — nothing to commit"; exit 0
+          fi
           git config user.name "projections-bot"
           git config user.email "actions@users.noreply.github.com"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
