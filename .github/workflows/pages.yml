@@ -1,9 +1,16 @@
 name: pages
 
 # Build the static site from data/output/latest.json and publish to GitHub
-# Pages. Runs whenever the hourly data update (or the site code) lands on the
-# default branch, and can be kicked off by hand. No secrets needed — the build
-# is a pure transform of the already-committed JSON.
+# Pages. No secrets needed — the build is a pure transform of the
+# already-committed JSON.
+#
+# IMPORTANT: the hourly + AI-curation jobs commit their data with the default
+# GITHUB_TOKEN, and GitHub does NOT fire `push`-triggered workflows for commits
+# made by GITHUB_TOKEN. So a `push` trigger alone would only ever deploy on
+# human/PR pushes, leaving the live site frozen on stale data between merges.
+# The `workflow_run` trigger below is what actually keeps the site fresh: it
+# runs after those data workflows finish, regardless of who pushed. The `push`
+# trigger remains for code/site changes landed by a person.
 on:
   push:
     branches: [main]
@@ -13,6 +20,9 @@ on:
       - "app/**"
       - "scripts/build_static.py"
       - ".github/workflows/pages.yml"
+  workflow_run:
+    workflows: ["Hourly update", "AI slate curation"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
