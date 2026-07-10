@@ -1,88 +1,69 @@
 {
   "2026-07-10": {
-    "slate_note": "Half this slate carries [verify-news] flags with 15-37% edges \u2014 that's the model missing lineups/weather, not free money. Handful of clean small edges; lean thin.",
+    "slate_note": "Nearly every double-digit edge here is a [verify-news] Over \u2014 the model is systematically overprojecting totals, so strip those out and the slate is thin. The trustworthy edges are a few clean underdog moneylines and one Under untouched by the total bias.",
     "verdicts": {
       "824252": {
         "stance": "pass",
-        "rationale": "Top Over edge (+18%) is verify-flagged; ML at +2.5% is under the floor. Nothing clean."
+        "rationale": "Top play is Over +18.7% [verify-news]; remaining edges (ML 2.8%, RL 5.1%) too thin to trust"
       },
       "823357": {
         "stance": "pass",
-        "rationale": "Over +20% flagged; rookie SPs (Sproat/Ashcraft) add noise. ML/RL edges too thin to trust."
+        "rationale": "Over 21.6% and RL 15.5% both news-flagged; clean Pirates ML +3.9% doesn't clear a real edge"
       },
       "822709": {
-        "stance": "pass",
-        "rationale": "Model floating Nats over Yankees (+13.4% ML) plus a flagged 27% under \u2014 big market disagreement, distrust."
+        "stance": "differ",
+        "rationale": "Under +28.9% is a news flag; I'd take the clean Nationals ML +144 at a model 52% instead"
       },
       "824817": {
         "stance": "pass",
-        "rationale": "13.5% under EV off only a 0.2-run model/market gap is internally inconsistent; skeptic vetoes."
+        "rationale": "Only edge is Under +20.8% [verify-news] \u2014 no clean market to back"
       },
       "824493": {
-        "stance": "differ",
-        "rationale": "Model's top is Over but 11.1 vs Hunter Greene looks aggressive; I'd take Cubs ML at even money instead."
+        "stance": "pass",
+        "rationale": "Over +7.8% rides the model's total bias (11.1 vs 9.5); ML 2.6% under floor"
       },
       "822955": {
-        "stance": "pass",
-        "rationale": "Under +15.3% flagged despite model total = market 8.5; the edge has no source I trust."
+        "stance": "agree",
+        "rationale": "Under +105 +10% is clean and unaffected by over-bias since model total = market 8.5"
       },
       "823845": {
-        "stance": "differ",
-        "rationale": "Over +19.7% flagged; prefer Marlins RL +180 as home dog behind Alcantara at a cleaner 10%."
+        "stance": "pass",
+        "rationale": "Over +22.6% news-flagged vs Alcantara; RL Marlins +180 11.3% too rich to trust"
       },
       "823604": {
         "stance": "pass",
-        "rationale": "Model total 7.9 > market 7.5 yet it recommends the Under \u2014 contradictory read, skip."
+        "rationale": "Under +42.9% is an implausible edge \u2014 model is missing news, not printing money"
       },
       "824575": {
         "stance": "pass",
-        "rationale": "37% Over and 26% RL both flagged with a 10.3 vs 7.5 total gap \u2014 classic missing-news signal."
+        "rationale": "Top play Over +19.5% [verify-news]; RL 3.0% too thin"
       },
       "822878": {
         "stance": "differ",
-        "rationale": "Over +16.5% flagged; Rangers ML +128 is the cleaner 10.2% edge, though Hunter Brown is a real threat."
+        "rationale": "Model tops Over +11.7% (over-bias); I prefer clean Rangers ML +127 at model 52%"
       },
       "823685": {
         "stance": "pass",
-        "rationale": "No edge clears the floor and no market total posted."
+        "rationale": "No edge clears the floor"
       },
       "823033": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; nothing to price."
+        "rationale": "No edge clears the floor"
       },
       "823278": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; no market."
+        "rationale": "No edge clears the floor"
       },
       "823927": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; Ohtani start, no line."
+        "rationale": "No edge clears the floor"
       },
       "823200": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; no market total."
-      },
-      "177489": {
-        "stance": "pass",
-        "rationale": "Fery +32% ML edge is implausible on grass vs Zverev \u2014 model missing news, not value."
-      },
-      "177490": {
-        "stance": "pass",
-        "rationale": "Djokovic +24.4% underdog edge is too large to be real; treat as stale, pass."
+        "rationale": "No edge clears the floor"
       }
     },
     "top_plays": [
-      {
-        "game_id": "824493",
-        "sport": "MLB",
-        "matchup": "Chicago Cubs @ Cincinnati Reds",
-        "market": "Moneyline",
-        "side": "Chicago Cubs",
-        "line": null,
-        "odds": 100,
-        "confidence": 3,
-        "rationale": "Model has Cubs 59% and Imanaga edge; plus-money on the favorite is fair value even if the 11-run total looks hot."
-      },
       {
         "game_id": "822878",
         "sport": "MLB",
@@ -90,112 +71,104 @@
         "market": "Moneyline",
         "side": "Texas Rangers",
         "line": null,
-        "odds": 128,
-        "confidence": 2,
-        "rationale": "Model likes Rangers 52% as home dog, +10.2% edge; unflagged, but Hunter Brown caps confidence to 1u."
+        "odds": 127,
+        "confidence": 3,
+        "rationale": "Clean +9.5% on a home dog the model has at 52%; prefer ML to the over-biased total. 1.0u"
       },
       {
-        "game_id": "823845",
+        "game_id": "822955",
         "sport": "MLB",
-        "matchup": "Cleveland Guardians @ Miami Marlins",
-        "market": "Run Line",
-        "side": "Miami Marlins",
-        "line": 1.5,
-        "odds": 180,
+        "matchup": "Seattle Mariners @ Tampa Bay Rays",
+        "market": "Total",
+        "side": "Under",
+        "line": 8.5,
+        "odds": 105,
         "confidence": 2,
-        "rationale": "Home dog +1.5 at +180 behind Alcantara, +10.3% and unflagged \u2014 safer than the verify-flagged Over."
+        "rationale": "Castillo/Martinez, model total matches market at 8.5 so the +10% is odds-driven, not over-bias. 1.0u"
+      },
+      {
+        "game_id": "822709",
+        "sport": "MLB",
+        "matchup": "New York Yankees @ Washington Nationals",
+        "market": "Moneyline",
+        "side": "Washington Nationals",
+        "line": null,
+        "odds": 144,
+        "confidence": 2,
+        "rationale": "Clean +12.8% home dog at model 52%; market disagrees hard, so keep it small. 1.0u"
       }
     ],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 17,
-    "generated_at": "2026-07-10T12:54:16+00:00",
+    "game_count": 15,
+    "generated_at": "2026-07-10T17:50:10+00:00",
     "date": "2026-07-10"
   },
   "2026-07-11": {
-    "slate_note": "Thin edge slate \u2014 most games have no qualifying model edge, and the two biggest numbers (Marlins +13.1%, ATP +24-32%) reek of missing news rather than value. A handful of modest MLB dog/favorite edges are the only trustworthy plays.",
+    "slate_note": "Thin edges across a big MLB card \u2014 most games sit near coin-flip with no market totals posted. Best edges are small dog moneylines; the two double-digit-EV plays (Marlins, WNBA) reek of missing news, not free money.",
     "verdicts": {
       "823682": {
         "stance": "agree",
-        "rationale": "Twins -163 at +7.5% EV, and Angels' unknown starter only tilts uncertainty toward Minnesota."
+        "rationale": "Twins -163 EV +4.8% clears floor, but Angels SP unknown adds risk to laying juice"
       },
       "824576": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; A's projected winners but nothing priced."
+        "rationale": "No edge clears the floor"
       },
       "823198": {
-        "stance": "differ",
-        "rationale": "Model likes Rockies +156 but 5.1% on a road coin-flip dog I don't trust; lean pass."
+        "stance": "pass",
+        "rationale": "Rockies +144 only +2.8% EV, under 3% floor and a true coin flip"
       },
       "822711": {
         "stance": "pass",
-        "rationale": "Nationals +2.2% EV is below the 3% floor \u2014 noise."
+        "rationale": "No edge clears the floor"
       },
       "823356": {
         "stance": "agree",
-        "rationale": "Pirates +113 home dog at 6.3% EV; rookie-vs-rookie variance but fair value."
+        "rationale": "Pirates +113 EV +6.4% home dog in a near even matchup, fair value"
       },
       "823603": {
         "stance": "pass",
-        "rationale": "No qualifying edge and Boston starter unknown."
+        "rationale": "No edge; Boston SP unknown"
       },
       "822953": {
         "stance": "pass",
-        "rationale": "No edge clears the floor despite Gilbert on the mound."
+        "rationale": "No edge clears the floor"
       },
       "823844": {
-        "stance": "pass",
-        "rationale": "Marlins -117 at +13.1% is implausibly large \u2014 model likely missing lineup/news, not free money."
+        "stance": "differ",
+        "rationale": "Marlins -122 EV +11.5% too hot \u2014 likely model missing news on Eury Perez/lineups, not real"
       },
       "824249": {
         "stance": "agree",
-        "rationale": "Tigers +113 home dog at 5.1% EV; modest but honest value vs Sanchez."
+        "rationale": "Tigers +117 EV +6.4% home dog, but Sanchez is a tough LHP so keep it small"
       },
       "824813": {
         "stance": "pass",
-        "rationale": "No edge clears the floor."
+        "rationale": "No edge clears the floor"
       },
       "822875": {
         "stance": "pass",
-        "rationale": "True coin flip, no priced edge."
+        "rationale": "No edge; dead-even projection"
       },
       "824492": {
         "stance": "pass",
-        "rationale": "Cubs projected big but no edge cleared \u2014 line already respects them."
+        "rationale": "No edge despite Cubs favored"
       },
       "823030": {
         "stance": "pass",
-        "rationale": "50/50 projection, no edge."
+        "rationale": "No edge; true 50/50"
       },
       "823276": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; low-scoring toss-up."
+        "rationale": "No edge; low-scoring coin flip"
       },
       "823926": {
         "stance": "pass",
-        "rationale": "No edge; Dodgers -Yamamoto priced fairly."
-      },
-      "177489": {
-        "stance": "pass",
-        "rationale": "Fery +550 at +32% EV is a mispriced mismatch, not a live dog \u2014 fade the number."
-      },
-      "177490": {
-        "stance": "pass",
-        "rationale": "Djokovic +375 at +24.4% is too large to trust; likely model overrating an aging fave on grass."
+        "rationale": "No edge; Dodgers priced correctly"
       }
     },
     "top_plays": [
-      {
-        "game_id": "823682",
-        "sport": "MLB",
-        "matchup": "Los Angeles Angels @ Minnesota Twins",
-        "market": "Moneyline",
-        "side": "Minnesota Twins",
-        "line": null,
-        "odds": -163,
-        "confidence": 3,
-        "rationale": "Highest trustworthy edge (+7.5%); Ryan starting and Angels' unknown arm both favor Minnesota. Quarter-Kelly 1u."
-      },
       {
         "game_id": "823356",
         "sport": "MLB",
@@ -205,7 +178,7 @@
         "line": null,
         "odds": 113,
         "confidence": 2,
-        "rationale": "Home dog at +6.3% EV; plus-money value but rookie-vs-rookie variance keeps it a 1u single-confirmation play."
+        "rationale": "Home dog +113, model gives +6.4% EV in a near-even matchup; single edge so keep to 1u"
       },
       {
         "game_id": "824249",
@@ -214,15 +187,26 @@
         "market": "Moneyline",
         "side": "Detroit Tigers",
         "line": null,
-        "odds": 113,
+        "odds": 117,
         "confidence": 2,
-        "rationale": "+5.1% EV on a home dog vs Sanchez; modest engine-only edge, size at 1u."
+        "rationale": "Home dog +117, +6.4% EV \u2014 but Sanchez is a strong LHP, so 1u only, no confirmation stack"
+      },
+      {
+        "game_id": "823682",
+        "sport": "MLB",
+        "matchup": "Los Angeles Angels @ Minnesota Twins",
+        "market": "Moneyline",
+        "side": "Minnesota Twins",
+        "line": null,
+        "odds": -163,
+        "confidence": 1,
+        "rationale": "Ryan-led Twins +4.8% EV, but Angels SP is TBD; laying -163 on incomplete info, so smallest stake"
       }
     ],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 17,
-    "generated_at": "2026-07-10T12:54:16+00:00",
+    "game_count": 15,
+    "generated_at": "2026-07-10T17:50:10+00:00",
     "date": "2026-07-11"
   }
 }
