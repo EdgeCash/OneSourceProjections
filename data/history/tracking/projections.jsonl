@@ -870,3 +870,6 @@
 {"date": "2026-07-11", "sport": "World Cup", "event_id": "760512", "game": "England @ Norway", "source": "bettingpros", "home_wp": 0.3132, "away_wp": 0.6868, "draw_wp": null}
 {"date": "2026-07-11", "sport": "World Cup", "event_id": "760513", "game": "Switzerland @ Argentina", "source": "bettingpros", "home_wp": 0.765, "away_wp": 0.235, "draw_wp": null}
 {"date": "2026-07-11", "sport": "UFC", "event_id": "600059148", "game": "Alessandro Costa @ Cody Durden", "source": "bettingpros", "home_wp": 0.3201, "away_wp": 0.6799, "draw_wp": null}
+{"date": "2026-07-11", "sport": "MLB", "event_id": "823357", "game": "Milwaukee Brewers @ Pittsburgh Pirates", "source": "model", "home_wp": 0.5103, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-11", "sport": "MLB", "event_id": "823357", "game": "Milwaukee Brewers @ Pittsburgh Pirates", "source": "market", "home_wp": 0.4919, "away_wp": 0.5081, "draw_wp": null}
+{"date": "2026-07-11", "sport": "MLB", "event_id": "823357", "game": "Milwaukee Brewers @ Pittsburgh Pirates", "source": "bettingpros", "home_wp": 0.5325, "away_wp": 0.4675, "draw_wp": null}
