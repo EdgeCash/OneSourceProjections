@@ -1,0 +1,382 @@
+[
+ {
+  "id": "d307505c55694236fb1a3fcb7ce9f216",
+  "market_id": 371,
+  "event_id": 2647,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Tempo",
+    "link": "/wnba/teams/toronto-tempo/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "toronto-tempo"
+    }
+   },
+   {
+    "id": "NYL",
+    "name": "Liberty",
+    "link": "/wnba/teams/new-york-liberty/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYL",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "new-york-liberty"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "TOR",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -669,
+     "book_id": 68,
+     "created": "2026-07-10 19:14:17"
+    },
+    "label": "Tempo",
+    "short_label": "TOR",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.95
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_a287c36bdfc3c881c4f4e64c7854fbe7",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul12nytor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.95
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_a287c36bdfc3c881c4f4e64c7854fbe7",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:47:06",
+        "cost": -122,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.95
+        }
+       }
+      ]
+     }
+    ],
+    "id": "a287c36bdfc3c881c4f4e64c7854fbe7"
+   },
+   {
+    "participant": "NYL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -669,
+     "book_id": 68,
+     "created": "2026-07-10 19:14:17"
+    },
+    "label": "Liberty",
+    "short_label": "NYL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -133,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 57.08
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_e091aa5700f5c2e9eb18f0bf57a046be",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -133,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul12nytor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 57.08
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_e091aa5700f5c2e9eb18f0bf57a046be",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:47:06",
+        "cost": -133,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.10743373826615121,
+         "fair_probability": 0.5094906129210381,
+         "pm_win_pct": 57.08
+        }
+       }
+      ]
+     }
+    ],
+    "id": "e091aa5700f5c2e9eb18f0bf57a046be"
+   }
+  ]
+ },
+ {
+  "id": "9bd0046c050563f6ad3ed4614367a622",
+  "market_id": 371,
+  "event_id": 2648,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "SEA",
+    "name": "Storm",
+    "link": "/wnba/teams/seattle-storm/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "Western",
+     "division": "",
+     "slug": "seattle-storm"
+    }
+   },
+   {
+    "id": "WAS",
+    "name": "Mystics",
+    "link": "/wnba/teams/washington-mystics/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WAS",
+     "conference": "Eastern",
+     "division": "",
+     "slug": "washington-mystics"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "SEA",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -669,
+     "book_id": 68,
+     "created": "2026-07-10 19:14:17"
+    },
+    "label": "Storm",
+    "short_label": "SEA",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:47:19",
+        "cost": 108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_1d295aba5ed2555076de647b381e90eb",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:47:19",
+        "cost": 108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul12seawsh",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "1d295aba5ed2555076de647b381e90eb"
+   },
+   {
+    "participant": "WAS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -669,
+     "book_id": 68,
+     "created": "2026-07-10 19:14:17"
+    },
+    "label": "Mystics",
+    "short_label": "WAS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -213,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_d2dc0fa02471d8f1ba12ee70e328f801",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:47:19",
+        "cost": -213,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxwnbagame/-/kxwnbagame-26jul12seawsh",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "d2dc0fa02471d8f1ba12ee70e328f801"
+   }
+  ]
+ }
+]

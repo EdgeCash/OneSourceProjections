@@ -1,0 +1,128 @@
+[
+ {
+  "id": 2647,
+  "sr_id": "8d5011ca-f6e7-4b2d-bd04-d4b6f38e78a1",
+  "sport": "WNBA",
+  "scheduled": "2026-07-12 19:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TOR",
+  "visitor": "NYL",
+  "link": "/wnba/matchups/new-york-liberty-vs-toronto-tempo/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Bell Centre",
+   "city": "Montreal",
+   "state": "QC",
+   "country": "CAN",
+   "zip": "H3B 5E8",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Tempo",
+    "link": "/wnba/teams/toronto-tempo/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 9,
+      "L": 12,
+      "T": 0
+     },
+     "slug": "toronto-tempo"
+    }
+   },
+   {
+    "id": "NYL",
+    "name": "Liberty",
+    "link": "/wnba/teams/new-york-liberty/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYL",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 13,
+      "L": 9,
+      "T": 0
+     },
+     "slug": "new-york-liberty"
+    }
+   }
+  ],
+  "broadcasts": [
+   {
+    "network": "NBA TV",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nba-tv-us.png"
+   }
+  ]
+ },
+ {
+  "id": 2648,
+  "sr_id": "e8a8439b-3b15-478d-b43d-93e6042f1b6a",
+  "sport": "WNBA",
+  "scheduled": "2026-07-12 19:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WAS",
+  "visitor": "SEA",
+  "link": "/wnba/matchups/seattle-storm-vs-washington-mystics/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "CareFirst Arena",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20032",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "WAS",
+    "name": "Mystics",
+    "link": "/wnba/teams/washington-mystics/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WAS",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 10,
+      "L": 10,
+      "T": 0
+     },
+     "slug": "washington-mystics"
+    }
+   },
+   {
+    "id": "SEA",
+    "name": "Storm",
+    "link": "/wnba/teams/seattle-storm/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 6,
+      "L": 18,
+      "T": 0
+     },
+     "slug": "seattle-storm"
+    }
+   }
+  ],
+  "broadcasts": []
+ }
+]

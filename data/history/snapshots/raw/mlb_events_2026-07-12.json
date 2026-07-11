@@ -1,0 +1,274 @@
+[
+ {
+  "id": 98297,
+  "sr_id": "288c6313-0c7b-45ef-ab7b-2d7f550b8fbe",
+  "sport": "MLB",
+  "scheduled": "2026-07-12 16:15:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "PIT",
+  "visitor": "MIL",
+  "link": "/mlb/matchups/milwaukee-brewers-vs-pittsburgh-pirates/?date=2026-07-12",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "47239",
+    "name": "Paul Skenes",
+    "link": "/mlb/props/paul-skenes/",
+    "player": {
+     "short_name": "P. Skenes",
+     "first_name": "Paul",
+     "last_name": "Skenes",
+     "image": "https://images.fantasypros.com/images/players/mlb/47239/headshot/210x210.webp",
+     "position": "SP",
+     "team": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "paul-skenes",
+     "jersey_number": 30
+    }
+   },
+   "visitor_probable": {
+    "id": "46366",
+    "name": "Jacob Misiorowski",
+    "link": "/mlb/props/jacob-misiorowski/",
+    "player": {
+     "short_name": "J. Misiorowski",
+     "first_name": "Jacob",
+     "last_name": "Misiorowski",
+     "image": "https://images.fantasypros.com/images/players/mlb/46366/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "jacob-misiorowski",
+     "jersey_number": 32
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "PIT",
+   "season": "2025",
+   "split": "A",
+   "r": "1.054",
+   "1b": "1.076",
+   "2b": "1.090",
+   "3b": "0.775",
+   "hr": "0.893",
+   "name": "PNC Park"
+  },
+  "venue": {
+   "name": "PNC Park",
+   "address": "115 Federal Street",
+   "city": "Pittsburgh",
+   "state": "PA",
+   "country": "USA",
+   "zip": "15212",
+   "surface": "grass",
+   "capacity": 38753,
+   "stadium_type": "outdoor",
+   "id": "61314394-c8b8-411e-b891-ca41285d5362"
+  },
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 47,
+      "L": 47,
+      "T": 0
+     },
+     "slug": "pittsburgh-pirates",
+     "stadium_deg_offset": "120"
+    }
+   },
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 59,
+      "L": 34,
+      "T": 0
+     },
+     "slug": "milwaukee-brewers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 80,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "E",
+   "forecast_wind_degree": 93,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1020,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "Peacock",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nbc-peacock-alt-us.png"
+   }
+  ]
+ },
+ {
+  "id": 98018,
+  "sr_id": "0a0187ca-0fee-4f33-ae22-a2951970c1b5",
+  "sport": "MLB",
+  "scheduled": "2026-07-12 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "WSH",
+  "visitor": "NYY",
+  "link": "/mlb/matchups/new-york-yankees-vs-washington-nationals/?date=2026-07-12",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "43871",
+    "name": "Cade Cavalli",
+    "link": "/mlb/props/cade-cavalli-p/",
+    "player": {
+     "short_name": "C. Cavalli",
+     "first_name": "Cade",
+     "last_name": "Cavalli",
+     "image": "https://images.fantasypros.com/images/players/mlb/43871/headshot/210x210.webp",
+     "position": "SP",
+     "team": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "cade-cavalli-p",
+     "jersey_number": 24
+    }
+   },
+   "visitor_probable": {
+    "id": "46420",
+    "name": "Will Warren",
+    "link": "/mlb/props/will-warren/",
+    "player": {
+     "short_name": "W. Warren",
+     "first_name": "Will",
+     "last_name": "Warren",
+     "image": "https://images.fantasypros.com/images/players/mlb/46420/headshot/210x210.webp",
+     "position": "SP",
+     "team": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "will-warren",
+     "jersey_number": 29
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "WSH",
+   "season": "2025",
+   "split": "A",
+   "r": "1.011",
+   "1b": "0.976",
+   "2b": "1.004",
+   "3b": "0.889",
+   "hr": "1.054",
+   "name": "Nationals Park"
+  },
+  "venue": {
+   "name": "Nationals Park",
+   "address": "1500 South Capitol Street SE",
+   "city": "Washington",
+   "state": "DC",
+   "country": "USA",
+   "zip": "20003",
+   "surface": "grass",
+   "capacity": 41376,
+   "stadium_type": "outdoor",
+   "id": "bb062fb1-e268-412e-b3d2-2ddb6acc1822"
+  },
+  "participants": [
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 48,
+      "L": 47,
+      "T": 0
+     },
+     "slug": "washington-nationals",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 52,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 82,
+   "forecast_wind_speed": 13,
+   "forecast_wind_direction": "ENE",
+   "forecast_wind_degree": 76,
+   "forecast_rain_chance": 7,
+   "forecast_icon": "Cloudy",
+   "forecast_pressure": 1020,
+   "forecast_humidity": 0.64
+  },
+  "broadcasts": [
+   {
+    "network": "NATS",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

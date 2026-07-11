@@ -1,0 +1,510 @@
+[
+ {
+  "id": "b52b23d029e1bea3544d94ac467e312a",
+  "market_id": 122,
+  "event_id": 98297,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "PIT",
+    "name": "Pirates",
+    "link": "/mlb/teams/pittsburgh-pirates/",
+    "team": {
+     "city": "Pittsburgh",
+     "abbreviation": "PIT",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "pittsburgh-pirates"
+    }
+   },
+   {
+    "id": "MIL",
+    "name": "Brewers",
+    "link": "/mlb/teams/milwaukee-brewers/",
+    "team": {
+     "city": "Milwaukee",
+     "abbreviation": "MIL",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "milwaukee-brewers"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "PIT",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-07-06 13:10:27"
+    },
+    "label": "Pirates",
+    "short_label": "PIT",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:45:48",
+        "cost": 113,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.95
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_1684715f33d9a58743fa375218e0a6b5",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:42:39",
+        "cost": 113,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.95
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_1684715f33d9a58743fa375218e0a6b5",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:45:48",
+        "cost": 113,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul121215milpit",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.95
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_1684715f33d9a58743fa375218e0a6b5",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 00:28:03",
+        "cost": 110,
+        "line": 1,
+        "is_off": true,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389128_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 46.95
+        }
+       }
+      ]
+     }
+    ],
+    "id": "1684715f33d9a58743fa375218e0a6b5"
+   },
+   {
+    "participant": "MIL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-07-06 13:10:27"
+    },
+    "label": "Brewers",
+    "short_label": "MIL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:45:48",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.44
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_55c96458e646e1205889c9790be7eb4f",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:42:39",
+        "cost": -117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.00021285041830432228,
+         "fair_probability": 0.539285269580376,
+         "pm_win_pct": 54.44
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_55c96458e646e1205889c9790be7eb4f",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:45:48",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul121215milpit",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.44
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_55c96458e646e1205889c9790be7eb4f",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 00:28:03",
+        "cost": -135,
+        "line": 1,
+        "is_off": true,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389128_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 54.44
+        }
+       }
+      ]
+     }
+    ],
+    "id": "55c96458e646e1205889c9790be7eb4f"
+   }
+  ]
+ },
+ {
+  "id": "b36274690293c6e72ef15e0fd79584d3",
+  "market_id": 122,
+  "event_id": 98018,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "slug": "new-york-yankees"
+    }
+   },
+   {
+    "id": "WSH",
+    "name": "Nationals",
+    "link": "/mlb/teams/washington-nationals/",
+    "team": {
+     "city": "Washington",
+     "abbreviation": "WSH",
+     "conference": "NL",
+     "division": "East",
+     "slug": "washington-nationals"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "NYY",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-07-06 13:10:27"
+    },
+    "label": "Yankees",
+    "short_label": "NYY",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:46:37",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_24dc97989fbda87cb48f3bb1873e8ae4",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:42:39",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_24dc97989fbda87cb48f3bb1873e8ae4",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:45:48",
+        "cost": -117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul121335nyywsh",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_24dc97989fbda87cb48f3bb1873e8ae4",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:46:37",
+        "cost": -125,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389122_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "24dc97989fbda87cb48f3bb1873e8ae4"
+   },
+   {
+    "participant": "WSH",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": 100,
+     "book_id": 73,
+     "created": "2026-07-06 13:10:27"
+    },
+    "label": "Nationals",
+    "short_label": "WSH",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:46:37",
+        "cost": 113,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_3a5df5b0ea92a58ff71cbf29eb19f990",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:42:39",
+        "cost": 117,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_3a5df5b0ea92a58ff71cbf29eb19f990",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-11 05:45:48",
+        "cost": 113,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul121335nyywsh",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_3a5df5b0ea92a58ff71cbf29eb19f990",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-11 05:46:37",
+        "cost": 100,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389122_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "3a5df5b0ea92a58ff71cbf29eb19f990"
+   }
+  ]
+ }
+]
