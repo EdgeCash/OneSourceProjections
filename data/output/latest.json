@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-13T14:46:40.376231-04:00",
+ "generated_at": "2026-07-13T15:29:58.935135-04:00",
  "primary_date": "2026-07-13",
  "dates": [
   "2026-07-13",
@@ -1154,36 +1154,50 @@
       "note": ""
      },
      {
-      "player": "Mario Pesca",
-      "norm": "mario pesca",
+      "player": "Drew Whalen",
+      "norm": "drew whalen",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Benjamin Stubbs",
-      "norm": "benjamin stubbs",
+      "player": "Kenneth Ward",
+      "norm": "kenneth ward",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Ryan Pruitt",
-      "norm": "ryan pruitt",
+      "player": "Chase Mora",
+      "norm": "chase mora",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Ryan Tayman",
-      "norm": "ryan tayman",
+      "player": "Cooper Consiglio",
+      "norm": "cooper consiglio",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Damian Ruiz",
-      "norm": "damian ruiz",
+      "player": "Kyeler Thompson",
+      "norm": "kyeler thompson",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Joey Urban",
+      "norm": "joey urban",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "David Leslie",
+      "norm": "david leslie",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1196,6 +1210,13 @@
       "note": ""
      },
      {
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Aaron Piasecki",
       "norm": "aaron piasecki",
       "team": "",
@@ -1203,8 +1224,29 @@
       "note": ""
      },
      {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Jayden Lobliner",
       "norm": "jayden lobliner",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chase Meyer",
+      "norm": "chase meyer",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1245,27 +1287,6 @@
       "note": ""
      },
      {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tai Jones",
-      "norm": "tai jones",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kaden Carpenter",
-      "norm": "kaden carpenter",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Parker Brosius",
       "norm": "parker brosius",
       "team": "",
@@ -1280,13 +1301,6 @@
       "note": ""
      },
      {
-      "player": "Chris Katz",
-      "norm": "chris katz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Mike Mancini",
       "norm": "mike mancini",
       "team": "",
@@ -1294,8 +1308,15 @@
       "note": ""
      },
      {
-      "player": "Brady Neal",
-      "norm": "brady neal",
+      "player": "Kaden Carpenter",
+      "norm": "kaden carpenter",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Tayman",
+      "norm": "ryan tayman",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1343,24 +1364,31 @@
       "note": ""
      },
      {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Brady Neal",
+      "norm": "brady neal",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Matt Scott",
       "norm": "matt scott",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Sean Fitzpatrick",
-      "norm": "sean fitzpatrick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Mike Burrows",
-      "norm": "mike burrows",
-      "team": "",
-      "status": "IL15",
       "note": ""
      },
      {
@@ -1375,6 +1403,34 @@
       "norm": "miles gosztola",
       "team": "",
       "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mario Pesca",
+      "norm": "mario pesca",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Burrows",
+      "norm": "mike burrows",
+      "team": "",
+      "status": "IL15",
       "note": ""
      },
      {
@@ -1446,62 +1502,6 @@
       "team": "",
       "status": "DUP",
       "note": ""
-     },
-     {
-      "player": "Daniel Cuvet",
-      "norm": "daniel cuvet",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Matt Krook",
-      "norm": "matt krook",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Dean West",
-      "norm": "dean west",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Cooney",
-      "norm": "ryan cooney",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nolan Higgins",
-      "norm": "nolan higgins",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gable Mitchell",
-      "norm": "gable mitchell",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cole Carlon",
-      "norm": "cole carlon",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Will Brick",
-      "norm": "will brick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -1518,22 +1518,22 @@
       "home_win_prob": 0.681,
       "away_win_prob": 0.319,
       "home_ml": -115,
-      "away_ml": 317,
+      "away_ml": 320,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.668753,
       "home_ml_fair": null,
       "total_line": 182.5,
       "over_odds": 108.0,
-      "under_odds": 106.0,
+      "under_odds": 108.0,
       "model_over_prob": 0.4848,
       "over_ev": null,
       "under_ev": null,
       "over_p_used": 0.4847500404119037,
       "over_p_push": 0.0,
       "spread_home_line": -9.5,
-      "spread_home_odds": 122.0,
-      "spread_away_odds": -105.0,
+      "spread_home_odds": 117.0,
+      "spread_away_odds": 102.0,
       "model_home_cover": 0.3905,
       "spread_home_ev": null,
       "spread_away_ev": null,
@@ -1561,14 +1561,14 @@
       "away_ml_ev": null,
       "home_ml_p_used": 0.92045,
       "home_ml_fair": null,
-      "total_line": 169.5,
-      "over_odds": 100.0,
-      "under_odds": 106.0,
-      "model_over_prob": 0.53,
-      "over_ev": 0.0374,
-      "under_ev": -0.0085,
-      "over_p_used": 0.5187,
-      "over_p_push": 0.0,
+      "total_line": 170.0,
+      "over_odds": 107.0,
+      "under_odds": -102.0,
+      "model_over_prob": 0.5183,
+      "over_ev": 0.0541,
+      "under_ev": -0.0286,
+      "over_p_used": 0.4979,
+      "over_p_push": 0.0234,
       "spread_home_line": -12.5,
       "spread_home_odds": 108.0,
       "spread_away_odds": 104.0,
@@ -1943,24 +1943,6 @@
       "player2_win_prob": 0.4417,
       "p1_matches": 25,
       "p2_matches": 85,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178779",
-      "match_time": "2026-07-13T19:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Dino Prizmic",
-      "player2": "Vit Kopriva",
-      "player1_win_prob": 0.571,
-      "player2_win_prob": 0.429,
-      "p1_matches": 46,
-      "p2_matches": 69,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -3415,36 +3397,50 @@
       "note": ""
      },
      {
-      "player": "Mario Pesca",
-      "norm": "mario pesca",
+      "player": "Drew Whalen",
+      "norm": "drew whalen",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Benjamin Stubbs",
-      "norm": "benjamin stubbs",
+      "player": "Kenneth Ward",
+      "norm": "kenneth ward",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Ryan Pruitt",
-      "norm": "ryan pruitt",
+      "player": "Chase Mora",
+      "norm": "chase mora",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Ryan Tayman",
-      "norm": "ryan tayman",
+      "player": "Cooper Consiglio",
+      "norm": "cooper consiglio",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Damian Ruiz",
-      "norm": "damian ruiz",
+      "player": "Kyeler Thompson",
+      "norm": "kyeler thompson",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Joey Urban",
+      "norm": "joey urban",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "David Leslie",
+      "norm": "david leslie",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3457,6 +3453,13 @@
       "note": ""
      },
      {
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Aaron Piasecki",
       "norm": "aaron piasecki",
       "team": "",
@@ -3464,8 +3467,29 @@
       "note": ""
      },
      {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Jayden Lobliner",
       "norm": "jayden lobliner",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chase Meyer",
+      "norm": "chase meyer",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3506,27 +3530,6 @@
       "note": ""
      },
      {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tai Jones",
-      "norm": "tai jones",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kaden Carpenter",
-      "norm": "kaden carpenter",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Parker Brosius",
       "norm": "parker brosius",
       "team": "",
@@ -3541,13 +3544,6 @@
       "note": ""
      },
      {
-      "player": "Chris Katz",
-      "norm": "chris katz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Mike Mancini",
       "norm": "mike mancini",
       "team": "",
@@ -3555,8 +3551,15 @@
       "note": ""
      },
      {
-      "player": "Brady Neal",
-      "norm": "brady neal",
+      "player": "Kaden Carpenter",
+      "norm": "kaden carpenter",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Tayman",
+      "norm": "ryan tayman",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3604,24 +3607,31 @@
       "note": ""
      },
      {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Brady Neal",
+      "norm": "brady neal",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Matt Scott",
       "norm": "matt scott",
       "team": "",
       "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Sean Fitzpatrick",
-      "norm": "sean fitzpatrick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Mike Burrows",
-      "norm": "mike burrows",
-      "team": "",
-      "status": "IL15",
       "note": ""
      },
      {
@@ -3636,6 +3646,34 @@
       "norm": "miles gosztola",
       "team": "",
       "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mario Pesca",
+      "norm": "mario pesca",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Burrows",
+      "norm": "mike burrows",
+      "team": "",
+      "status": "IL15",
       "note": ""
      },
      {
@@ -3707,62 +3745,6 @@
       "team": "",
       "status": "DUP",
       "note": ""
-     },
-     {
-      "player": "Daniel Cuvet",
-      "norm": "daniel cuvet",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Matt Krook",
-      "norm": "matt krook",
-      "team": "",
-      "status": "DFA",
-      "note": ""
-     },
-     {
-      "player": "Dean West",
-      "norm": "dean west",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Cooney",
-      "norm": "ryan cooney",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nolan Higgins",
-      "norm": "nolan higgins",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gable Mitchell",
-      "norm": "gable mitchell",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cole Carlon",
-      "norm": "cole carlon",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Will Brick",
-      "norm": "will brick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3779,11 +3761,11 @@
       "home_win_prob": 0.5401,
       "away_win_prob": 0.4599,
       "home_ml": 100,
-      "away_ml": 108,
-      "home_ml_ev": 0.0974,
-      "away_ml_ev": -0.0613,
-      "home_ml_p_used": 0.5487,
-      "home_ml_fair": 0.5098,
+      "away_ml": 104,
+      "home_ml_ev": 0.0926,
+      "away_ml_ev": -0.0744,
+      "home_ml_p_used": 0.5463,
+      "home_ml_fair": 0.505,
       "total_line": 166.5,
       "over_odds": -104.0,
       "under_odds": 104.0,
@@ -3816,12 +3798,12 @@
       "proj_total": 175.33,
       "home_win_prob": 0.5524,
       "away_win_prob": 0.4476,
-      "home_ml": 104,
+      "home_ml": 100,
       "away_ml": -104,
-      "home_ml_ev": 0.0994,
-      "away_ml_ev": -0.0956,
-      "home_ml_p_used": 0.5389,
-      "home_ml_fair": 0.4902,
+      "home_ml_ev": 0.0828,
+      "away_ml_ev": -0.1004,
+      "home_ml_p_used": 0.5414,
+      "home_ml_fair": 0.4951,
       "total_line": 171.5,
       "over_odds": 111.0,
       "under_odds": 108.0,
@@ -3832,11 +3814,11 @@
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
       "spread_home_odds": 100.0,
-      "spread_away_odds": 104.0,
+      "spread_away_odds": 108.0,
       "model_home_cover": 0.5053,
-      "spread_home_ev": 0.0103,
-      "spread_away_ev": 0.0095,
-      "spread_home_p_used": 0.5051,
+      "spread_home_ev": 0.0151,
+      "spread_away_ev": 0.0243,
+      "spread_home_p_used": 0.5076,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.5524,
       "proj_total_pub": 175.33,
@@ -4212,24 +4194,6 @@
       "market": null
      },
      {
-      "match_id": "178779",
-      "match_time": "2026-07-13T19:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Dino Prizmic",
-      "player2": "Vit Kopriva",
-      "player1_win_prob": 0.571,
-      "player2_win_prob": 0.429,
-      "p1_matches": 46,
-      "p2_matches": 69,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178768",
       "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
@@ -4478,5 +4442,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98960
+ "odds_api_credits": 98956
 }
