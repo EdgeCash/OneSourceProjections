@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-13T11:46:23.136589-04:00",
+ "generated_at": "2026-07-13T14:46:40.376231-04:00",
  "primary_date": "2026-07-13",
  "dates": [
   "2026-07-13",
@@ -11,6 +11,36 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Jake Irvin (shoulder) to begin rehab assignment Monday ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:38:14"
+     },
+     {
+      "title": "Cam Sanders traded to Orioles, optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:36:46"
+     },
+     {
+      "title": "Keegan Akin (elbow) transferred to 60-day IL ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:35:31"
+     },
+     {
+      "title": "Alimber Santa optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:34:36"
+     },
+     {
+      "title": "Mike Burrows (elbow) placed on IL",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:33:46"
+     },
      {
       "title": "Bligh Madris released by Cardinals ",
       "body": "",
@@ -70,36 +100,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 12:11:29"
-     },
-     {
-      "title": "James Wood tags Yankees with a long ball in Sunday's loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:09:46"
-     },
-     {
-      "title": "Petey Halpin's bat stays quiet, but his legs still show up",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:57:22"
-     },
-     {
-      "title": "Kahlil Watson Swipes Bag, Drives In Run in Win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:56:01"
-     },
-     {
-      "title": "Steven Kwan Chips In, Still Waiting on the Bat to Wake Up",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:53:05"
-     },
-     {
-      "title": "Travis Bazzana scores twice despite hitless day",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:51:14"
      }
     ],
     "injuries": [
@@ -1154,8 +1154,43 @@
       "note": ""
      },
      {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
+      "player": "Mario Pesca",
+      "norm": "mario pesca",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Tayman",
+      "norm": "ryan tayman",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Camden Johnson",
+      "norm": "camden johnson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1168,15 +1203,15 @@
       "note": ""
      },
      {
-      "player": "Lance Williams",
-      "norm": "lance williams",
+      "player": "Jayden Lobliner",
+      "norm": "jayden lobliner",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Jake Bennett",
-      "norm": "jake bennett",
+      "player": "Tanner Sagouspe",
+      "norm": "tanner sagouspe",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1210,8 +1245,22 @@
       "note": ""
      },
      {
-      "player": "Tanner Marsh",
-      "norm": "tanner marsh",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Kaden Carpenter",
+      "norm": "kaden carpenter",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1224,6 +1273,27 @@
       "note": ""
      },
      {
+      "player": "Nic Tolbert",
+      "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Mancini",
+      "norm": "mike mancini",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Brady Neal",
       "norm": "brady neal",
       "team": "",
@@ -1231,8 +1301,8 @@
       "note": ""
      },
      {
-      "player": "Matt Scott",
-      "norm": "matt scott",
+      "player": "Martin Shelar",
+      "norm": "martin shelar",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1245,8 +1315,36 @@
       "note": ""
      },
      {
-      "player": "Miles Gosztola",
-      "norm": "miles gosztola",
+      "player": "Luke Craytor",
+      "norm": "luke craytor",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Lance Williams",
+      "norm": "lance williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jake Bennett",
+      "norm": "jake bennett",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Tanner Marsh",
+      "norm": "tanner marsh",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Matt Scott",
+      "norm": "matt scott",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1256,6 +1354,34 @@
       "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Burrows",
+      "norm": "mike burrows",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "JT Raab",
+      "norm": "jt raab",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Miles Gosztola",
+      "norm": "miles gosztola",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mick Abel",
+      "norm": "mick abel",
+      "team": "",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -1376,132 +1502,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Lazaro-DUP Estrada-DUP",
-      "norm": "lazaro-dup estrada-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Hudson Calhoun",
-      "norm": "hudson calhoun",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Michael Anderson",
-      "norm": "michael anderson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Aidan Brainard",
-      "norm": "aidan brainard",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Caden Aoki",
-      "norm": "caden aoki",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kolby Branch",
-      "norm": "kolby branch",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gio Rojas",
-      "norm": "gio rojas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brody Bumila",
-      "norm": "brody bumila",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Connor Comeau",
-      "norm": "connor comeau",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Wady-DUP Mendezz-DUP",
-      "norm": "wady-dup mendezz-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "AJ Rice",
-      "norm": "aj rice",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Owen Kramkowski",
-      "norm": "owen kramkowski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Griffin Long",
-      "norm": "griffin long",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Collin Bland",
-      "norm": "collin bland",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Taj Marchand",
-      "norm": "taj marchand",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ben Blair",
-      "norm": "ben blair",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gavin Giese",
-      "norm": "gavin giese",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kyle Johnson",
-      "norm": "kyle johnson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -1524,8 +1524,8 @@
       "home_ml_p_used": 0.668753,
       "home_ml_fair": null,
       "total_line": 182.5,
-      "over_odds": 117.0,
-      "under_odds": 100.0,
+      "over_odds": 108.0,
+      "under_odds": 106.0,
       "model_over_prob": 0.4848,
       "over_ev": null,
       "under_ev": null,
@@ -1533,7 +1533,7 @@
       "over_p_push": 0.0,
       "spread_home_line": -9.5,
       "spread_home_odds": 122.0,
-      "spread_away_odds": 102.0,
+      "spread_away_odds": -105.0,
       "model_home_cover": 0.3905,
       "spread_home_ev": null,
       "spread_away_ev": null,
@@ -1561,14 +1561,14 @@
       "away_ml_ev": null,
       "home_ml_p_used": 0.92045,
       "home_ml_fair": null,
-      "total_line": 170.0,
-      "over_odds": -101.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.5183,
-      "over_ev": 0.0311,
-      "under_ev": -0.0173,
-      "over_p_used": 0.5063,
-      "over_p_push": 0.0234,
+      "total_line": 169.5,
+      "over_odds": 100.0,
+      "under_odds": 106.0,
+      "model_over_prob": 0.53,
+      "over_ev": 0.0374,
+      "under_ev": -0.0085,
+      "over_p_used": 0.5187,
+      "over_p_push": 0.0,
       "spread_home_line": -12.5,
       "spread_home_odds": 108.0,
       "spread_away_odds": 104.0,
@@ -1951,42 +1951,6 @@
       "market": null
      },
      {
-      "match_id": "178767",
-      "match_time": "2026-07-13T16:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Marco Trungelliti",
-      "player2": "Kyrian Jacquet",
-      "player1_win_prob": 0.4,
-      "player2_win_prob": 0.6,
-      "p1_matches": 45,
-      "p2_matches": 29,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178774",
-      "match_time": "2026-07-13T16:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Luca Van Assche",
-      "player2": "Dusan Lajovic",
-      "player1_win_prob": 0.4625,
-      "player2_win_prob": 0.5375,
-      "p1_matches": 35,
-      "p2_matches": 49,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178779",
       "match_time": "2026-07-13T19:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
@@ -2006,7 +1970,7 @@
      },
      {
       "match_id": "178768",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Camilo Ugo Carabelli",
@@ -2024,7 +1988,7 @@
      },
      {
       "match_id": "178769",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Valentin Royer",
@@ -2041,34 +2005,16 @@
       "market": null
      },
      {
-      "match_id": "178771",
-      "match_time": "2026-07-14T04:00Z",
+      "match_id": "178789",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
-      "player1": "Juan Carlos Prado Angelo",
-      "player2": "Fabian Marozsan",
-      "player1_win_prob": 0.5039,
-      "player2_win_prob": 0.4961,
-      "p1_matches": 9,
-      "p2_matches": 81,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178772",
-      "match_time": "2026-07-14T04:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Alexander Blockx",
-      "player2": "Titouan Droguet",
-      "player1_win_prob": 0.575,
-      "player2_win_prob": 0.425,
-      "p1_matches": 54,
-      "p2_matches": 40,
+      "player1": "Pablo Carreno Busta",
+      "player2": "Matej Dodig",
+      "player1_win_prob": 0.5703,
+      "player2_win_prob": 0.4297,
+      "p1_matches": 49,
+      "p2_matches": 6,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -2078,7 +2024,7 @@
      },
      {
       "match_id": "178766",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T15:30Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Niels McDonald",
@@ -2096,7 +2042,7 @@
      },
      {
       "match_id": "178787",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T16:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Daniel Merida",
@@ -2113,26 +2059,8 @@
       "market": null
      },
      {
-      "match_id": "178789",
-      "match_time": "2026-07-14T04:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Pablo Carreno Busta",
-      "player2": "Matej Dodig",
-      "player1_win_prob": 0.5703,
-      "player2_win_prob": 0.4297,
-      "p1_matches": 49,
-      "p2_matches": 6,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178791",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T16:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Roman Andres Burruchaga",
@@ -2141,6 +2069,60 @@
       "player2_win_prob": 0.5223,
       "p1_matches": 44,
       "p2_matches": 10,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178771",
+      "match_time": "2026-07-14T17:30Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Juan Carlos Prado Angelo",
+      "player2": "Fabian Marozsan",
+      "player1_win_prob": 0.5039,
+      "player2_win_prob": 0.4961,
+      "p1_matches": 9,
+      "p2_matches": 81,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178772",
+      "match_time": "2026-07-14T19:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Alexander Blockx",
+      "player2": "Titouan Droguet",
+      "player1_win_prob": 0.575,
+      "player2_win_prob": 0.425,
+      "p1_matches": 54,
+      "p2_matches": 40,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178792",
+      "match_time": "2026-07-15T04:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Alejandro Davidovich Fokina",
+      "player2": "Marco Trungelliti",
+      "player1_win_prob": 0.6895,
+      "player2_win_prob": 0.3105,
+      "p1_matches": 103,
+      "p2_matches": 46,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -2165,12 +2147,59 @@
     "games": [
      {
       "weather": null,
-      "umpire": null,
+      "umpire": {
+       "name": "Alan Porter",
+       "id": 484198,
+       "games": 246,
+       "runs_idx": 1.0341,
+       "k_idx": 0.9853,
+       "bb_idx": null,
+       "runs_factor": 1.0,
+       "k_factor": 0.9949
+      },
       "lineups": {
-       "home": [],
-       "away": []
+       "home": [
+        "Kyle Schwarber",
+        "Juan Soto",
+        "Freddie Freeman",
+        "CJ Abrams",
+        "Max Muncy",
+        "Ozzie Albies",
+        "Brandon Marsh",
+        "Andy Pages",
+        "Drake Baldwin"
+       ],
+       "away": [
+        "Mike Trout",
+        "Yordan Alvarez",
+        "Shea Langeliers",
+        "Junior Caminero",
+        "Bobby Witt Jr.",
+        "Cody Bellinger",
+        "Ben Rice",
+        "Riley Greene",
+        "Ernie Clement"
+       ]
       },
       "player_ids": {
+       "kyle schwarber": 656941,
+       "juan soto": 665742,
+       "freddie freeman": 518692,
+       "cj abrams": 682928,
+       "max muncy": 571970,
+       "ozzie albies": 645277,
+       "brandon marsh": 669016,
+       "andy pages": 681624,
+       "drake baldwin": 686948,
+       "mike trout": 545361,
+       "yordan alvarez": 670541,
+       "shea langeliers": 669127,
+       "junior caminero": 691406,
+       "bobby witt": 677951,
+       "cody bellinger": 641355,
+       "ben rice": 700250,
+       "riley greene": 682985,
+       "ernie clement": 676391,
        "cristopher sanchez": 650911,
        "dylan cease": 656302
       },
@@ -2182,35 +2211,35 @@
       "home_pitcher": "Cristopher S\u00e1nchez",
       "away_pitcher_id": 656302,
       "home_pitcher_id": 650911,
-      "home_exp_runs": 3.818,
-      "away_exp_runs": 3.857,
-      "proj_total": 7.675,
-      "home_win_prob": 0.5102,
-      "away_win_prob": 0.4898,
+      "home_exp_runs": 4.23,
+      "away_exp_runs": 4.331,
+      "proj_total": 8.561,
+      "home_win_prob": 0.4995,
+      "away_win_prob": 0.5006,
       "over_probs": {
-       "6.0": 0.58995,
-       "6.5": 0.58995,
-       "7.0": 0.4722,
-       "7.5": 0.4722,
-       "8.0": 0.3888,
-       "8.5": 0.3888,
-       "9.0": 0.2991,
-       "9.5": 0.2991,
-       "10.0": 0.23935,
-       "10.5": 0.23935,
-       "11.0": 0.17915,
-       "11.5": 0.17915,
-       "12.0": 0.1389,
-       "12.5": 0.1389,
-       "13.0": 0.09675,
-       "13.5": 0.09675,
-       "14.0": 0.0742,
-       "14.5": 0.0742,
-       "15.0": 0.05045
+       "6.0": 0.66955,
+       "6.5": 0.66955,
+       "7.0": 0.5576,
+       "7.5": 0.5576,
+       "8.0": 0.4752,
+       "8.5": 0.4752,
+       "9.0": 0.37345,
+       "9.5": 0.37345,
+       "10.0": 0.3074,
+       "10.5": 0.3074,
+       "11.0": 0.23405,
+       "11.5": 0.23405,
+       "12.0": 0.1872,
+       "12.5": 0.1872,
+       "13.0": 0.13715,
+       "13.5": 0.13715,
+       "14.0": 0.10695,
+       "14.5": 0.10695,
+       "15.0": 0.07665
       },
       "home_rl_cover": {
-       "-1.5": 0.34335,
-       "1.5": 0.64185
+       "-1.5": 0.3505,
+       "1.5": 0.6294
       },
       "home_ml": null,
       "away_ml": null,
@@ -2233,16 +2262,46 @@
       "over_p_used": null,
       "over_p_push": null,
       "rl_home_p_used": null,
-      "home_win_prob_pub": 0.5102,
-      "proj_total_pub": 7.675,
-      "margin_pub": -0.039000000000000146,
-      "home_exp_pub": 3.8179999999999996,
-      "away_exp_pub": 3.857
+      "home_win_prob_pub": 0.4995,
+      "proj_total_pub": 8.561,
+      "margin_pub": -0.10099999999999998,
+      "home_exp_pub": 4.23,
+      "away_exp_pub": 4.3309999999999995
      }
     ],
     "props": [],
     "error": "props unavailable (HTTPError: 404 Client Error: Not Found for url: https://statsapi.mlb.com/api/v1/teams/159/stats?stats=season&season=2026&group=hitting)",
     "news": [
+     {
+      "title": "Jake Irvin (shoulder) to begin rehab assignment Monday ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:38:14"
+     },
+     {
+      "title": "Cam Sanders traded to Orioles, optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:36:46"
+     },
+     {
+      "title": "Keegan Akin (elbow) transferred to 60-day IL ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:35:31"
+     },
+     {
+      "title": "Alimber Santa optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:34:36"
+     },
+     {
+      "title": "Mike Burrows (elbow) placed on IL",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 16:33:46"
+     },
      {
       "title": "Bligh Madris released by Cardinals ",
       "body": "",
@@ -2302,36 +2361,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 12:11:29"
-     },
-     {
-      "title": "James Wood tags Yankees with a long ball in Sunday's loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:09:46"
-     },
-     {
-      "title": "Petey Halpin's bat stays quiet, but his legs still show up",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:57:22"
-     },
-     {
-      "title": "Kahlil Watson Swipes Bag, Drives In Run in Win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:56:01"
-     },
-     {
-      "title": "Steven Kwan Chips In, Still Waiting on the Bat to Wake Up",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:53:05"
-     },
-     {
-      "title": "Travis Bazzana scores twice despite hitless day",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 11:51:14"
      }
     ],
     "injuries": [
@@ -3386,8 +3415,43 @@
       "note": ""
      },
      {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
+      "player": "Mario Pesca",
+      "norm": "mario pesca",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Tayman",
+      "norm": "ryan tayman",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Camden Johnson",
+      "norm": "camden johnson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3400,15 +3464,15 @@
       "note": ""
      },
      {
-      "player": "Lance Williams",
-      "norm": "lance williams",
+      "player": "Jayden Lobliner",
+      "norm": "jayden lobliner",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Jake Bennett",
-      "norm": "jake bennett",
+      "player": "Tanner Sagouspe",
+      "norm": "tanner sagouspe",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3442,8 +3506,22 @@
       "note": ""
      },
      {
-      "player": "Tanner Marsh",
-      "norm": "tanner marsh",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Kaden Carpenter",
+      "norm": "kaden carpenter",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3456,6 +3534,27 @@
       "note": ""
      },
      {
+      "player": "Nic Tolbert",
+      "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Mancini",
+      "norm": "mike mancini",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Brady Neal",
       "norm": "brady neal",
       "team": "",
@@ -3463,8 +3562,8 @@
       "note": ""
      },
      {
-      "player": "Matt Scott",
-      "norm": "matt scott",
+      "player": "Martin Shelar",
+      "norm": "martin shelar",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3477,8 +3576,36 @@
       "note": ""
      },
      {
-      "player": "Miles Gosztola",
-      "norm": "miles gosztola",
+      "player": "Luke Craytor",
+      "norm": "luke craytor",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Lance Williams",
+      "norm": "lance williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jake Bennett",
+      "norm": "jake bennett",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Tanner Marsh",
+      "norm": "tanner marsh",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Matt Scott",
+      "norm": "matt scott",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3488,6 +3615,34 @@
       "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mike Burrows",
+      "norm": "mike burrows",
+      "team": "",
+      "status": "IL15",
+      "note": ""
+     },
+     {
+      "player": "JT Raab",
+      "norm": "jt raab",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Miles Gosztola",
+      "norm": "miles gosztola",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Mick Abel",
+      "norm": "mick abel",
+      "team": "",
+      "status": "IL60",
       "note": ""
      },
      {
@@ -3608,132 +3763,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Lazaro-DUP Estrada-DUP",
-      "norm": "lazaro-dup estrada-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "Hudson Calhoun",
-      "norm": "hudson calhoun",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Michael Anderson",
-      "norm": "michael anderson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Aidan Brainard",
-      "norm": "aidan brainard",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Caden Aoki",
-      "norm": "caden aoki",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kolby Branch",
-      "norm": "kolby branch",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gio Rojas",
-      "norm": "gio rojas",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Brody Bumila",
-      "norm": "brody bumila",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Connor Comeau",
-      "norm": "connor comeau",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Wady-DUP Mendezz-DUP",
-      "norm": "wady-dup mendezz-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
-     },
-     {
-      "player": "AJ Rice",
-      "norm": "aj rice",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Owen Kramkowski",
-      "norm": "owen kramkowski",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Griffin Long",
-      "norm": "griffin long",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Collin Bland",
-      "norm": "collin bland",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Taj Marchand",
-      "norm": "taj marchand",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ben Blair",
-      "norm": "ben blair",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gavin Giese",
-      "norm": "gavin giese",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Kyle Johnson",
-      "norm": "kyle johnson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3749,22 +3778,22 @@
       "proj_total": 177.64,
       "home_win_prob": 0.5401,
       "away_win_prob": 0.4599,
-      "home_ml": -110,
-      "away_ml": 113,
-      "home_ml_ev": 0.0643,
-      "away_ml_ev": -0.0574,
-      "home_ml_p_used": 0.5575,
-      "home_ml_fair": 0.5273,
-      "total_line": 167.5,
-      "over_odds": -108.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.7246,
-      "over_ev": 0.1883,
-      "under_ev": -0.234,
-      "over_p_used": 0.617,
+      "home_ml": 100,
+      "away_ml": 108,
+      "home_ml_ev": 0.0974,
+      "away_ml_ev": -0.0613,
+      "home_ml_p_used": 0.5487,
+      "home_ml_fair": 0.5098,
+      "total_line": 166.5,
+      "over_odds": -104.0,
+      "under_odds": 104.0,
+      "model_over_prob": 0.7439,
+      "over_ev": 0.2296,
+      "under_ev": -0.2387,
+      "over_p_used": 0.6268,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
-      "spread_home_odds": -102.0,
+      "spread_home_odds": 108.0,
       "spread_away_odds": 122.0,
       "model_home_cover": 0.4931,
       "spread_home_ev": null,
@@ -3787,27 +3816,27 @@
       "proj_total": 175.33,
       "home_win_prob": 0.5524,
       "away_win_prob": 0.4476,
-      "home_ml": 100,
-      "away_ml": 100,
-      "home_ml_ev": 0.0876,
-      "away_ml_ev": -0.0876,
-      "home_ml_p_used": 0.5438,
-      "home_ml_fair": 0.5,
-      "total_line": 170.5,
-      "over_odds": -104.0,
-      "under_odds": -104.0,
-      "model_over_prob": 0.6118,
-      "over_ev": 0.0905,
-      "under_ev": -0.1289,
-      "over_p_used": 0.5559,
+      "home_ml": 104,
+      "away_ml": -104,
+      "home_ml_ev": 0.0994,
+      "away_ml_ev": -0.0956,
+      "home_ml_p_used": 0.5389,
+      "home_ml_fair": 0.4902,
+      "total_line": 171.5,
+      "over_odds": 111.0,
+      "under_odds": 108.0,
+      "model_over_prob": 0.5891,
+      "over_ev": null,
+      "under_ev": null,
+      "over_p_used": 0.589124762254717,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
       "spread_home_odds": 100.0,
-      "spread_away_odds": 111.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.5053,
-      "spread_home_ev": null,
-      "spread_away_ev": null,
-      "spread_home_p_used": 0.5053400127859651,
+      "spread_home_ev": 0.0103,
+      "spread_away_ev": 0.0095,
+      "spread_home_p_used": 0.5051,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.5524,
       "proj_total_pub": 175.33,
@@ -4183,42 +4212,6 @@
       "market": null
      },
      {
-      "match_id": "178767",
-      "match_time": "2026-07-13T16:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Marco Trungelliti",
-      "player2": "Kyrian Jacquet",
-      "player1_win_prob": 0.4,
-      "player2_win_prob": 0.6,
-      "p1_matches": 45,
-      "p2_matches": 29,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178774",
-      "match_time": "2026-07-13T16:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Luca Van Assche",
-      "player2": "Dusan Lajovic",
-      "player1_win_prob": 0.4625,
-      "player2_win_prob": 0.5375,
-      "p1_matches": 35,
-      "p2_matches": 49,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178779",
       "match_time": "2026-07-13T19:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
@@ -4238,7 +4231,7 @@
      },
      {
       "match_id": "178768",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Camilo Ugo Carabelli",
@@ -4256,7 +4249,7 @@
      },
      {
       "match_id": "178769",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Valentin Royer",
@@ -4273,34 +4266,16 @@
       "market": null
      },
      {
-      "match_id": "178771",
-      "match_time": "2026-07-14T04:00Z",
+      "match_id": "178789",
+      "match_time": "2026-07-14T14:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
-      "player1": "Juan Carlos Prado Angelo",
-      "player2": "Fabian Marozsan",
-      "player1_win_prob": 0.5039,
-      "player2_win_prob": 0.4961,
-      "p1_matches": 9,
-      "p2_matches": 81,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178772",
-      "match_time": "2026-07-14T04:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Alexander Blockx",
-      "player2": "Titouan Droguet",
-      "player1_win_prob": 0.575,
-      "player2_win_prob": 0.425,
-      "p1_matches": 54,
-      "p2_matches": 40,
+      "player1": "Pablo Carreno Busta",
+      "player2": "Matej Dodig",
+      "player1_win_prob": 0.5703,
+      "player2_win_prob": 0.4297,
+      "p1_matches": 49,
+      "p2_matches": 6,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -4310,7 +4285,7 @@
      },
      {
       "match_id": "178766",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T15:30Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Niels McDonald",
@@ -4328,7 +4303,7 @@
      },
      {
       "match_id": "178787",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T16:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Daniel Merida",
@@ -4345,26 +4320,8 @@
       "market": null
      },
      {
-      "match_id": "178789",
-      "match_time": "2026-07-14T04:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Pablo Carreno Busta",
-      "player2": "Matej Dodig",
-      "player1_win_prob": 0.5703,
-      "player2_win_prob": 0.4297,
-      "p1_matches": 49,
-      "p2_matches": 6,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178791",
-      "match_time": "2026-07-14T04:00Z",
+      "match_time": "2026-07-14T16:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Roman Andres Burruchaga",
@@ -4373,6 +4330,60 @@
       "player2_win_prob": 0.5223,
       "p1_matches": 44,
       "p2_matches": 10,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178771",
+      "match_time": "2026-07-14T17:30Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Juan Carlos Prado Angelo",
+      "player2": "Fabian Marozsan",
+      "player1_win_prob": 0.5039,
+      "player2_win_prob": 0.4961,
+      "p1_matches": 9,
+      "p2_matches": 81,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178772",
+      "match_time": "2026-07-14T19:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Alexander Blockx",
+      "player2": "Titouan Droguet",
+      "player1_win_prob": 0.575,
+      "player2_win_prob": 0.425,
+      "p1_matches": 54,
+      "p2_matches": 40,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178792",
+      "match_time": "2026-07-15T04:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Alejandro Davidovich Fokina",
+      "player2": "Marco Trungelliti",
+      "player1_win_prob": 0.6895,
+      "player2_win_prob": 0.3105,
+      "p1_matches": 103,
+      "p2_matches": 46,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -4467,5 +4478,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98964
+ "odds_api_credits": 98960
 }
