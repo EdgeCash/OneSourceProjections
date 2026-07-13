@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-13T15:29:58.935135-04:00",
+ "generated_at": "2026-07-13T17:02:29.603768-04:00",
  "primary_date": "2026-07-13",
  "dates": [
   "2026-07-13",
@@ -11,6 +11,36 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Emmet Sheehan fans seven but Dodgers fall short",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:37:05"
+     },
+     {
+      "title": "Lane Thomas racks up three hits in loss to Baltimore",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:33:21"
+     },
+     {
+      "title": "Matt Strahm implodes vs. Orioles",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:31:33"
+     },
+     {
+      "title": "Seth Lugo fans six but exits early in 8-2 loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:26:52"
+     },
+     {
+      "title": "Luis Arraez prefers to remain at 2B if traded",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:04:46"
+     },
      {
       "title": "Jake Irvin (shoulder) to begin rehab assignment Monday ",
       "body": "",
@@ -70,36 +100,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 12:20:10"
-     },
-     {
-      "title": "Samuel Basallo goes deep as Orioles thump Royals 8-2",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:19:04"
-     },
-     {
-      "title": "Leody Taveras cashes in with a three-RBI blast in 8-2 win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:16:36"
-     },
-     {
-      "title": "Gunnar Henderson logs three hits in 8-2 win over Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:15:34"
-     },
-     {
-      "title": "Cade Cavalli solid, but Nats bullpen blinks in 5-3 loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:13:27"
-     },
-     {
-      "title": "Curtis Mead's Blast Not Enough in 5-3 Loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:11:29"
      }
     ],
     "injuries": [
@@ -1154,50 +1154,64 @@
       "note": ""
      },
      {
-      "player": "Drew Whalen",
-      "norm": "drew whalen",
+      "player": "Michael Gibson",
+      "norm": "michael gibson",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Kenneth Ward",
-      "norm": "kenneth ward",
+      "player": "Kole Klecker",
+      "norm": "kole klecker",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Chase Mora",
-      "norm": "chase mora",
+      "player": "Mikiah Negrete",
+      "norm": "mikiah negrete",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Cooper Consiglio",
-      "norm": "cooper consiglio",
+      "player": "Luc Rising",
+      "norm": "luc rising",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Kyeler Thompson",
-      "norm": "kyeler thompson",
+      "player": "Devin Bell",
+      "norm": "devin bell",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Joey Urban",
-      "norm": "joey urban",
+      "player": "Bryce Chance",
+      "norm": "bryce chance",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "David Leslie",
-      "norm": "david leslie",
+      "player": "Carlos Sanchez",
+      "norm": "carlos sanchez",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Matthew Bucciero",
+      "norm": "matthew bucciero",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nick Williams",
+      "norm": "nick williams",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1205,13 +1219,6 @@
      {
       "player": "Camden Johnson",
       "norm": "camden johnson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1240,6 +1247,20 @@
      {
       "player": "Damian Ruiz",
       "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Joey Urban",
+      "norm": "joey urban",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "David Leslie",
+      "norm": "david leslie",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1287,15 +1308,8 @@
       "note": ""
      },
      {
-      "player": "Parker Brosius",
-      "norm": "parker brosius",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nic Tolbert",
-      "norm": "nic tolbert",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1315,8 +1329,57 @@
       "note": ""
      },
      {
+      "player": "Brady Neal",
+      "norm": "brady neal",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Parker Brosius",
+      "norm": "parker brosius",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nic Tolbert",
+      "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Ryan Tayman",
       "norm": "ryan tayman",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chase Mora",
+      "norm": "chase mora",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Cooper Consiglio",
+      "norm": "cooper consiglio",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Kyeler Thompson",
+      "norm": "kyeler thompson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1364,8 +1427,8 @@
       "note": ""
      },
      {
-      "player": "Chris Katz",
-      "norm": "chris katz",
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1378,8 +1441,8 @@
       "note": ""
      },
      {
-      "player": "Brady Neal",
-      "norm": "brady neal",
+      "player": "Kenneth Ward",
+      "norm": "kenneth ward",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1387,6 +1450,13 @@
      {
       "player": "Matt Scott",
       "norm": "matt scott",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1406,13 +1476,6 @@
       "note": ""
      },
      {
-      "player": "Sean Fitzpatrick",
-      "norm": "sean fitzpatrick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Mario Pesca",
       "norm": "mario pesca",
       "team": "",
@@ -1420,8 +1483,8 @@
       "note": ""
      },
      {
-      "player": "Benjamin Stubbs",
-      "norm": "benjamin stubbs",
+      "player": "Drew Whalen",
+      "norm": "drew whalen",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1439,69 +1502,6 @@
       "team": "",
       "status": "IL60",
       "note": ""
-     },
-     {
-      "player": "Cashel Dugger",
-      "norm": "cashel dugger",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gage Peterson",
-      "norm": "gage peterson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Allen",
-      "norm": "cooper allen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Max Hansmann",
-      "norm": "max hansmann",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Luke Williams",
-      "norm": "luke williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Hacopian",
-      "norm": "chris hacopian",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chase Brunson",
-      "norm": "chase brunson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Harris",
-      "norm": "cooper harris",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yeremy Cabrera-DUP",
-      "norm": "yeremy cabrera-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
      }
     ]
    },
@@ -1517,23 +1517,23 @@
       "proj_total": 181.85,
       "home_win_prob": 0.681,
       "away_win_prob": 0.319,
-      "home_ml": -115,
-      "away_ml": 320,
+      "home_ml": -120,
+      "away_ml": 317,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.668753,
       "home_ml_fair": null,
-      "total_line": 182.5,
-      "over_odds": 108.0,
-      "under_odds": 108.0,
-      "model_over_prob": 0.4848,
+      "total_line": 181.5,
+      "over_odds": 104.0,
+      "under_odds": 117.0,
+      "model_over_prob": 0.5082,
       "over_ev": null,
       "under_ev": null,
-      "over_p_used": 0.4847500404119037,
+      "over_p_used": 0.5082129373231845,
       "over_p_push": 0.0,
       "spread_home_line": -9.5,
-      "spread_home_odds": 117.0,
-      "spread_away_odds": 102.0,
+      "spread_home_odds": 113.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.3905,
       "spread_home_ev": null,
       "spread_away_ev": null,
@@ -1555,19 +1555,19 @@
       "proj_total": 170.78,
       "home_win_prob": 0.8351,
       "away_win_prob": 0.1649,
-      "home_ml": -115,
+      "home_ml": -110,
       "away_ml": 669,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.92045,
       "home_ml_fair": null,
       "total_line": 170.0,
-      "over_odds": 107.0,
+      "over_odds": 106.0,
       "under_odds": -102.0,
       "model_over_prob": 0.5183,
-      "over_ev": 0.0541,
-      "under_ev": -0.0286,
-      "over_p_used": 0.4979,
+      "over_ev": 0.0503,
+      "under_ev": -0.0298,
+      "over_p_used": 0.4985,
       "over_p_push": 0.0234,
       "spread_home_line": -12.5,
       "spread_home_odds": 108.0,
@@ -2255,6 +2255,36 @@
     "error": "props unavailable (HTTPError: 404 Client Error: Not Found for url: https://statsapi.mlb.com/api/v1/teams/159/stats?stats=season&season=2026&group=hitting)",
     "news": [
      {
+      "title": "Emmet Sheehan fans seven but Dodgers fall short",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:37:05"
+     },
+     {
+      "title": "Lane Thomas racks up three hits in loss to Baltimore",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:33:21"
+     },
+     {
+      "title": "Matt Strahm implodes vs. Orioles",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:31:33"
+     },
+     {
+      "title": "Seth Lugo fans six but exits early in 8-2 loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:26:52"
+     },
+     {
+      "title": "Luis Arraez prefers to remain at 2B if traded",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 20:04:46"
+     },
+     {
       "title": "Jake Irvin (shoulder) to begin rehab assignment Monday ",
       "body": "",
       "player": "",
@@ -2313,36 +2343,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 12:20:10"
-     },
-     {
-      "title": "Samuel Basallo goes deep as Orioles thump Royals 8-2",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:19:04"
-     },
-     {
-      "title": "Leody Taveras cashes in with a three-RBI blast in 8-2 win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:16:36"
-     },
-     {
-      "title": "Gunnar Henderson logs three hits in 8-2 win over Royals",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:15:34"
-     },
-     {
-      "title": "Cade Cavalli solid, but Nats bullpen blinks in 5-3 loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:13:27"
-     },
-     {
-      "title": "Curtis Mead's Blast Not Enough in 5-3 Loss",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:11:29"
      }
     ],
     "injuries": [
@@ -3397,50 +3397,64 @@
       "note": ""
      },
      {
-      "player": "Drew Whalen",
-      "norm": "drew whalen",
+      "player": "Michael Gibson",
+      "norm": "michael gibson",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Kenneth Ward",
-      "norm": "kenneth ward",
+      "player": "Kole Klecker",
+      "norm": "kole klecker",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Chase Mora",
-      "norm": "chase mora",
+      "player": "Mikiah Negrete",
+      "norm": "mikiah negrete",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Cooper Consiglio",
-      "norm": "cooper consiglio",
+      "player": "Luc Rising",
+      "norm": "luc rising",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Kyeler Thompson",
-      "norm": "kyeler thompson",
+      "player": "Devin Bell",
+      "norm": "devin bell",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Joey Urban",
-      "norm": "joey urban",
+      "player": "Bryce Chance",
+      "norm": "bryce chance",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "David Leslie",
-      "norm": "david leslie",
+      "player": "Carlos Sanchez",
+      "norm": "carlos sanchez",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Matthew Bucciero",
+      "norm": "matthew bucciero",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nick Williams",
+      "norm": "nick williams",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3448,13 +3462,6 @@
      {
       "player": "Camden Johnson",
       "norm": "camden johnson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3483,6 +3490,20 @@
      {
       "player": "Damian Ruiz",
       "norm": "damian ruiz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Joey Urban",
+      "norm": "joey urban",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "David Leslie",
+      "norm": "david leslie",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3530,15 +3551,8 @@
       "note": ""
      },
      {
-      "player": "Parker Brosius",
-      "norm": "parker brosius",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Nic Tolbert",
-      "norm": "nic tolbert",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3558,8 +3572,57 @@
       "note": ""
      },
      {
+      "player": "Brady Neal",
+      "norm": "brady neal",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Parker Brosius",
+      "norm": "parker brosius",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Nic Tolbert",
+      "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Ryan Tayman",
       "norm": "ryan tayman",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chase Mora",
+      "norm": "chase mora",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Cooper Consiglio",
+      "norm": "cooper consiglio",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Kyeler Thompson",
+      "norm": "kyeler thompson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3607,8 +3670,8 @@
       "note": ""
      },
      {
-      "player": "Chris Katz",
-      "norm": "chris katz",
+      "player": "Benjamin Stubbs",
+      "norm": "benjamin stubbs",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3621,8 +3684,8 @@
       "note": ""
      },
      {
-      "player": "Brady Neal",
-      "norm": "brady neal",
+      "player": "Kenneth Ward",
+      "norm": "kenneth ward",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3630,6 +3693,13 @@
      {
       "player": "Matt Scott",
       "norm": "matt scott",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3649,13 +3719,6 @@
       "note": ""
      },
      {
-      "player": "Sean Fitzpatrick",
-      "norm": "sean fitzpatrick",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
       "player": "Mario Pesca",
       "norm": "mario pesca",
       "team": "",
@@ -3663,8 +3726,8 @@
       "note": ""
      },
      {
-      "player": "Benjamin Stubbs",
-      "norm": "benjamin stubbs",
+      "player": "Drew Whalen",
+      "norm": "drew whalen",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3682,69 +3745,6 @@
       "team": "",
       "status": "IL60",
       "note": ""
-     },
-     {
-      "player": "Cashel Dugger",
-      "norm": "cashel dugger",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Gage Peterson",
-      "norm": "gage peterson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Allen",
-      "norm": "cooper allen",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Max Hansmann",
-      "norm": "max hansmann",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Luke Williams",
-      "norm": "luke williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Hacopian",
-      "norm": "chris hacopian",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chase Brunson",
-      "norm": "chase brunson",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Cooper Harris",
-      "norm": "cooper harris",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Yeremy Cabrera-DUP",
-      "norm": "yeremy cabrera-dup",
-      "team": "",
-      "status": "DUP",
-      "note": ""
      }
     ]
    },
@@ -3760,19 +3760,19 @@
       "proj_total": 177.64,
       "home_win_prob": 0.5401,
       "away_win_prob": 0.4599,
-      "home_ml": 100,
+      "home_ml": -104,
       "away_ml": 104,
-      "home_ml_ev": 0.0926,
-      "away_ml_ev": -0.0744,
-      "home_ml_p_used": 0.5463,
-      "home_ml_fair": 0.505,
-      "total_line": 166.5,
+      "home_ml_ev": 0.0763,
+      "away_ml_ev": -0.0794,
+      "home_ml_p_used": 0.5487,
+      "home_ml_fair": 0.5098,
+      "total_line": 167.5,
       "over_odds": -104.0,
       "under_odds": 104.0,
-      "model_over_prob": 0.7439,
-      "over_ev": 0.2296,
-      "under_ev": -0.2387,
-      "over_p_used": 0.6268,
+      "model_over_prob": 0.7246,
+      "over_ev": 0.2106,
+      "under_ev": -0.2191,
+      "over_p_used": 0.6172,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
       "spread_home_odds": 108.0,
@@ -3799,26 +3799,26 @@
       "home_win_prob": 0.5524,
       "away_win_prob": 0.4476,
       "home_ml": 100,
-      "away_ml": -104,
-      "home_ml_ev": 0.0828,
-      "away_ml_ev": -0.1004,
-      "home_ml_p_used": 0.5414,
-      "home_ml_fair": 0.4951,
-      "total_line": 171.5,
-      "over_odds": 111.0,
+      "away_ml": -102,
+      "home_ml_ev": 0.0852,
+      "away_ml_ev": -0.0941,
+      "home_ml_p_used": 0.5426,
+      "home_ml_fair": 0.4975,
+      "total_line": 170.5,
+      "over_odds": -104.0,
       "under_odds": 108.0,
-      "model_over_prob": 0.5891,
-      "over_ev": null,
-      "under_ev": null,
-      "over_p_used": 0.589124762254717,
+      "model_over_prob": 0.6118,
+      "over_ev": 0.1048,
+      "under_ev": -0.0916,
+      "over_p_used": 0.5632,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
       "spread_home_odds": 100.0,
-      "spread_away_odds": 108.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.5053,
-      "spread_home_ev": 0.0151,
-      "spread_away_ev": 0.0243,
-      "spread_home_p_used": 0.5076,
+      "spread_home_ev": 0.0103,
+      "spread_away_ev": 0.0095,
+      "spread_home_p_used": 0.5051,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.5524,
       "proj_total_pub": 175.33,
@@ -4442,5 +4442,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98956
+ "odds_api_credits": 98952
 }
