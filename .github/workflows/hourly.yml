@@ -50,6 +50,19 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
         run: python scripts/hourly_update.py ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
 
+      # Comparison pipeline (sports_wagering_pipeline/) — runs right after the
+      # pull so it consumes the warm FantasyPros cache the step above populated.
+      # No API secrets on purpose: the FantasyPros client only reads its key on a
+      # cache MISS, so with no key this step can only read the cache — a second,
+      # billable API call is structurally impossible. continue-on-error keeps it
+      # from ever breaking the main data pipeline.
+      - name: Comparison pipeline (reuses warm cache, no extra API calls)
+        continue-on-error: true
+        run: |
+          pip install "pulp>=2.7"
+          cd sports_wagering_pipeline
+          PYTHONPATH=.. python -m src.app --mode both --sport MLB --source shared
+
       - name: Commit data
         run: |
           git config user.name "projections-bot"

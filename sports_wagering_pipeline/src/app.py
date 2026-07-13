@@ -12,12 +12,34 @@ Run from the ``sports_wagering_pipeline/`` directory.
 from __future__ import annotations
 
 import argparse
+import json
+from pathlib import Path
 
 from . import api_client, db_manager, engine
 
 
 def _hr(char: str = "=", width: int = 72) -> str:
     return char * width
+
+
+def _anchor_date(cli_date: str | None) -> str | None:
+    """Resolve the slate date so the shared FantasyPros cache key matches the
+    main engine's pull. Priority: explicit --date, then the committed slate's
+    ``primary_date`` (what the main engine just used), then today ET."""
+    if cli_date:
+        return cli_date
+    latest = Path(__file__).resolve().parents[2] / "data" / "output" / "latest.json"
+    try:
+        return json.loads(latest.read_text())["primary_date"]
+    except Exception:
+        pass
+    try:
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+
+        return datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+    except Exception:
+        return None
 
 
 def print_dfs(sport: str, budget: int, lineup: list) -> None:
@@ -73,22 +95,36 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--platform", default="PrizePicks",
                     help="Pick'em book: PrizePicks | Underdog | DraftKings_Pick6")
     ap.add_argument("--budget", type=int, default=50000, help="DK salary cap")
+    ap.add_argument(
+        "--source", choices=["shared", "sample"], default="shared",
+        help="shared: reuse the main engine's warm FantasyPros cache "
+             "(zero extra API calls); sample: offline baked-in slate",
+    )
+    ap.add_argument("--date", default=None,
+                    help="slate date YYYY-MM-DD (default: main engine's date)")
     args = ap.parse_args(argv)
 
     sport = args.sport.upper()
+    date = _anchor_date(args.date)
     conn = db_manager.connect()
     db_manager.init_db(conn)
 
     try:
         if args.mode in ("dfs", "both"):
-            n = api_client.refresh_projections(conn, sport)
-            print(f"[cache] projections: {'refreshed ' + str(n) if n else 'hit'}")
+            n = api_client.refresh_projections(
+                conn, sport, date=date, source=args.source)
+            print(f"[cache] projections ({args.source}): "
+                  f"{'refreshed ' + str(n) if n else 'hit'}")
             lineup = engine.optimize_salary_cap_dfs(sport, args.budget, conn=conn)
             print_dfs(sport, args.budget, lineup)
+            if not lineup and args.source == "shared":
+                print("  (shared FantasyPros data carries no DK salary/position; "
+                      "run --source sample for the salary-cap demo.)")
 
         if args.mode in ("pickem", "both"):
-            n = api_client.refresh_market_lines(conn, sport, args.platform)
-            print(f"[cache] {args.platform} lines: "
+            n = api_client.refresh_market_lines(
+                conn, sport, args.platform, source=args.source, date=date)
+            print(f"[cache] {args.platform} lines ({args.source}): "
                   f"{'refreshed ' + str(n) if n else 'hit'}")
             plays = engine.generate_optimal_pickem_slips(
                 sport, args.platform, conn=conn

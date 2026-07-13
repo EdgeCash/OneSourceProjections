@@ -1,110 +1,150 @@
-"""API ingestion with 30-minute cache enforcement + request logging.
+"""Ingestion with 30-min cache enforcement + request logging.
 
-Every ingestion function is cache-first: it asks ``db_manager.is_fresh`` before
-spending an external request, honoring the 5,000 req/day token budget. Real
-calls are logged to ``api_log``.
+Two data sources, selected by ``source``:
 
-Live source: FantasyPros public API (projections) when ``FANTASYPROS_API_KEY``
-is set. Pick'em books (PrizePicks / Underdog / DK Pick6) and offline runs fall
-back to a deterministic sample slate so the whole pipeline is runnable end to
-end for the A/B comparison without credentials.
+* ``"shared"`` (default) -- consume the projections the main ``project547``
+  engine has *already fetched*. We call the same
+  ``project547.clients.fantasypros`` functions with the same arguments, so when
+  this runs in the same hourly job it is a warm 1-hour-cache hit and issues
+  **zero** external requests. The FantasyPros client only reads the API key on a
+  cache *miss*, so running this step with no key at all makes a billable call
+  structurally impossible -- it can only consume the cache. This is how both
+  models run on one API-call schedule without double usage.
+* ``"sample"`` -- a deterministic offline slate (positions + DK salaries baked
+  in) so the whole pipeline, including the salary-cap DFS optimizer, is runnable
+  with no credentials and no network.
+
+FantasyPros MLB projections are per-game *stat lines* (hits, HR, RBI ...), so we
+convert them to DraftKings fantasy points here. They carry no position or DK
+salary, so the salary-cap DFS optimizer only runs on the ``"sample"`` source
+until a real salary feed is wired in.
 """
 
 from __future__ import annotations
 
-import os
 import sqlite3
-
-import requests
 
 from . import db_manager
 
 CACHE_MINUTES = db_manager.CACHE_MINUTES
 DAILY_BUDGET = 5000
-FANTASYPROS_BASE = "https://api.fantasypros.com/public/v2/json"
+
+# DraftKings scoring. MLB hitter / pitcher and basketball (NBA/WNBA).
+DK_MLB_HITTER = {"1b": 3, "2b": 5, "3b": 8, "hrs": 10, "rbi": 2,
+                 "runs": 2, "bb": 2, "hbp": 2, "sb": 5}
+DK_MLB_PITCHER = {"ip": 2.25, "so": 2, "w": 4, "er": -2,
+                  "hits": -0.6, "bb": -0.6, "hbp": -0.6}
+DK_HOOPS = {"pts": 1.0, "3pm": 0.5, "reb": 1.25, "ast": 1.5,
+            "stl": 2.0, "blk": 2.0, "to": -0.5}
 
 
 # --------------------------------------------------------------------------- #
 # Projections (player_projections)
 # --------------------------------------------------------------------------- #
 def refresh_projections(
-    conn: sqlite3.Connection, sport: str, date: str | None = None
+    conn: sqlite3.Connection,
+    sport: str,
+    date: str | None = None,
+    source: str = "shared",
 ) -> int:
-    """Ensure fresh projections for ``sport`` exist; return row count touched.
+    """Ensure fresh projections for ``sport``; return rows touched.
 
-    Serves from cache when the newest row for the sport is < 30 min old.
+    Serves from our own DB when the newest row is < 30 min old (token budget).
     """
     sport = sport.upper()
     if db_manager.is_fresh(conn, "player_projections", "sport = ?", (sport,)):
-        return 0  # cache hit — no external request spent
+        return 0  # local cache hit — nothing fetched
 
-    if db_manager.api_usage_today(conn) >= DAILY_BUDGET:
-        raise RuntimeError("daily API budget (5000) exhausted; serving cache only")
-
-    key = os.environ.get("FANTASYPROS_API_KEY")
-    if key:
-        records = _fetch_fantasypros(conn, sport, date, key)
-        if records:
-            _write_projections(conn, records)
-            return len(records)
-
-    # Offline / no-key / unsupported sport -> deterministic sample slate.
-    records = _sample_projections(sport)
+    records, endpoint = _load_projections(conn, sport, date, source)
     _write_projections(conn, records)
-    db_manager.log_api_call(conn, f"sample:projections:{sport}", 0)
+    # request_count=0: shared mode never issues a billable request (warm cache /
+    # keyless), and the sample source is offline. Real external spend is owned by
+    # the main engine's hourly pull and logged there.
+    db_manager.log_api_call(conn, endpoint, 0)
     return len(records)
 
 
-def _fetch_fantasypros(
-    conn: sqlite3.Connection, sport: str, date: str | None, key: str
-) -> list[dict]:
-    """Pull daily projections from FantasyPros. Best-effort; [] on failure."""
-    season = int((date or "2026-01-01")[:4]) if date else 2026
-    path_map = {
-        "MLB": f"mlb/{season}/projections",
-        "NBA": f"nba/{season}/projections",
-        "WNBA": f"wnba/{season}/projections",
-    }
-    path = path_map.get(sport)
-    if not path:
-        return []
-    params = {"type": "daily"}
-    if date:
-        params["date"] = date
+def _load_projections(
+    conn: sqlite3.Connection, sport: str, date: str | None, source: str
+) -> tuple[list[dict], str]:
+    """Return (records, endpoint_label). Falls back to sample when shared data
+    is unavailable (project547 not importable, or an empty/offseason slate)."""
+    if source == "sample":
+        return _sample_projections(sport), f"sample:projections:{sport}"
+
+    records = _shared_projections(sport, date)
+    if records:
+        return records, f"shared:fantasypros:{sport}"
+    # Nothing in the shared cache (offseason, cold cache, or no project547).
+    return _sample_projections(sport), f"sample:fallback:{sport}"
+
+
+def _shared_projections(sport: str, date: str | None) -> list[dict]:
+    """Read projections through project547's cached FantasyPros client.
+
+    In the hourly job this is a warm-cache hit -> no external request. Returns
+    [] (never raises) when the cache is cold and no key is present, so the
+    caller can fall back to the sample slate.
+    """
     try:
-        resp = requests.get(
-            f"{FANTASYPROS_BASE}/{path}",
-            params=params,
-            headers={"x-api-key": key, "Accept": "application/json"},
-            timeout=30,
-        )
-        db_manager.log_api_call(conn, f"fantasypros:{path}", 1)
-        resp.raise_for_status()
-        raw = resp.json().get("player", [])
-    except (requests.RequestException, ValueError):
+        from project547.clients import fantasypros as fp
+    except Exception:
         return []
 
-    out = []
-    for p in raw:
-        name = p.get("name") or p.get("player_name")
-        team = p.get("team") or p.get("team_id") or ""
-        if not name:
-            continue
-        pts = _num(p.get("points") or p.get("fpts") or p.get("projected_points"))
-        out.append(
-            {
-                "player_name": name,
-                "team": team,
-                "sport": sport,
-                "position": (p.get("position") or p.get("position_id") or "UTIL"),
-                "projected_points": pts,
-                # FantasyPros gives means, not spreads; approximate a per-game
-                # std at ~35% of the mean (documented heuristic, tune per stat).
-                "std_dev": round(pts * 0.35, 2) if pts else 0.0,
-                "salary_dk": int(_num(p.get("salary") or p.get("dk_salary")) or 0),
-            }
-        )
-    return out
+    season = int((date or "2026-01-01")[:4]) if date else 2026
+    try:
+        if sport == "MLB":
+            raw = fp.mlb_projections(season, proj_type="daily", date=date)
+            return [r for r in (_score_mlb(p) for p in raw) if r]
+        if sport == "NBA":
+            return [r for r in (_score_hoops(p, "NBA") for p in
+                                fp.nba_projections(season, date)) if r]
+        if sport == "WNBA":
+            # wnba endpoint mirrors nba on the FantasyPros public API
+            get = getattr(fp, "wnba_projections", None)
+            raw = get(season, date) if get else []
+            return [r for r in (_score_hoops(p, "WNBA") for p in raw) if r]
+    except Exception:
+        # A cache miss with no key raises inside the client; treat as "no data".
+        return []
+    return []
+
+
+def _score_mlb(p: dict) -> dict | None:
+    name = p.get("name") or p.get("player_name")
+    if not name:
+        return None
+    team = p.get("team_id") or p.get("team") or ""
+    is_pitcher = p.get("ip") is not None or (
+        p.get("so") is not None and p.get("ab") is None
+    )
+    table = DK_MLB_PITCHER if is_pitcher else DK_MLB_HITTER
+    pts = round(sum(w * _num(p.get(k)) for k, w in table.items()), 2)
+    # FantasyPros carries no per-game std; approximate at ~40% of the mean
+    # (documented heuristic — swap for a modeled spread when available).
+    return {
+        "player_name": name, "team": team, "sport": "MLB",
+        "position": "P" if is_pitcher else "UTIL",
+        "projected_points": pts, "std_dev": round(abs(pts) * 0.40, 2),
+        "salary_dk": 0,  # FantasyPros supplies no DK salary
+    }
+
+
+def _score_hoops(p: dict, sport: str) -> dict | None:
+    name = p.get("name") or p.get("player_name")
+    if not name:
+        return None
+    team = p.get("team_id") or p.get("team") or ""
+    if any(k in p for k in DK_HOOPS):
+        pts = round(sum(w * _num(p.get(k)) for k, w in DK_HOOPS.items()), 2)
+    else:
+        pts = _num(p.get("points") or p.get("fpts"))
+    return {
+        "player_name": name, "team": team, "sport": sport,
+        "position": (p.get("position") or "UTIL"),
+        "projected_points": pts, "std_dev": round(abs(pts) * 0.25, 2),
+        "salary_dk": int(_num(p.get("salary") or p.get("dk_salary"))),
+    }
 
 
 def _write_projections(conn: sqlite3.Connection, records: list[dict]) -> None:
@@ -126,26 +166,56 @@ def _write_projections(conn: sqlite3.Connection, records: list[dict]) -> None:
 # Market lines (market_lines)
 # --------------------------------------------------------------------------- #
 def refresh_market_lines(
-    conn: sqlite3.Connection, sport: str, platform: str = "PrizePicks"
+    conn: sqlite3.Connection,
+    sport: str,
+    platform: str = "PrizePicks",
+    source: str = "shared",
+    date: str | None = None,
 ) -> int:
-    """Ensure fresh Pick'em lines for ``platform`` exist; return rows touched."""
+    """Ensure fresh Pick'em lines for ``platform``; return rows touched.
+
+    Real book prop lines are not a stable committed artifact in this repo, so
+    lines are derived from the (shared, real) projections as an over/under
+    threshold. Wire a live Pick'em odds feed here to replace the derivation.
+    """
     sport = sport.upper()
-    if db_manager.is_fresh(
-        conn, "market_lines", "bookmaker = ?", (platform,)
-    ):
+    if db_manager.is_fresh(conn, "market_lines", "bookmaker = ?", (platform,)):
         return 0
 
-    # Pick'em props require projections to exist first (id alignment).
-    refresh_projections(conn, sport)
-    lines = _sample_market_lines(conn, sport, platform)
+    refresh_projections(conn, sport, date=date, source=source)  # ids first
+    lines = _derive_market_lines(conn, sport, platform)
     for ln in lines:
         db_manager.upsert_market_line(conn, **ln)
-    db_manager.log_api_call(conn, f"sample:lines:{platform}:{sport}", 0)
+    db_manager.log_api_call(conn, f"derived:lines:{platform}:{sport}", 0)
     return len(lines)
 
 
+def _derive_market_lines(
+    conn: sqlite3.Connection, sport: str, platform: str
+) -> list[dict]:
+    """Offset each player's projection to seed both viable and non-viable
+    over/under plays — exercises the ranking without a live odds feed."""
+    stat = "Fantasy Points"
+    projections = db_manager.get_projections(conn, sport)
+    lines = []
+    for i, p in enumerate(projections):
+        offset = (0.6 if i % 2 == 0 else -0.6) * (p["std_dev"] or 1.0)
+        lines.append(
+            {
+                "line_id": f"{platform}:{p['master_player_id']}:{stat}",
+                "master_player_id": p["master_player_id"],
+                "stat_type": stat,
+                "bookmaker": platform,
+                "line_value": round(p["projected_points"] + offset, 1),
+                "over_odds": 0,   # flat Pick'em book
+                "under_odds": 0,
+            }
+        )
+    return lines
+
+
 # --------------------------------------------------------------------------- #
-# Deterministic sample slates (offline demo / comparison harness)
+# Deterministic sample slate (offline demo / DFS salary-cap input)
 # --------------------------------------------------------------------------- #
 def _sample_projections(sport: str) -> list[dict]:
     slates = {
@@ -191,37 +261,6 @@ def _sample_projections(sport: str) -> list[dict]:
         }
         for (n, t, pos, pts, std, sal) in rows
     ]
-
-
-def _sample_market_lines(
-    conn: sqlite3.Connection, sport: str, platform: str
-) -> list[dict]:
-    """Derive Pick'em prop lines from the cached projections for the sport.
-
-    Lines are offset from each player's projected points so both viable and
-    non-viable plays appear — enough to exercise the ranking logic.
-    """
-    stat_for = {"MLB": "Fantasy Points", "WNBA": "Fantasy Points"}
-    stat = stat_for.get(sport, "Fantasy Points")
-    projections = db_manager.get_projections(conn, sport)
-
-    lines = []
-    for i, p in enumerate(projections):
-        # Alternate the line above/below projection to seed both sides.
-        offset = (0.6 if i % 2 == 0 else -0.6) * (p["std_dev"] or 1.0)
-        line_value = round(p["projected_points"] + offset, 1)
-        lines.append(
-            {
-                "line_id": f"{platform}:{p['master_player_id']}:{stat}",
-                "master_player_id": p["master_player_id"],
-                "stat_type": stat,
-                "bookmaker": platform,
-                "line_value": line_value,
-                "over_odds": 0,   # flat Pick'em book
-                "under_odds": 0,
-            }
-        )
-    return lines
 
 
 def _num(v) -> float:

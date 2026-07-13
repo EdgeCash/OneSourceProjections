@@ -36,29 +36,48 @@ sports_wagering_pipeline/
 cd sports_wagering_pipeline
 pip install -r requirements.txt
 
-# DFS lineup + Pick'em slip for an MLB slate
-python -m src.app --mode both --sport MLB
+# Reuse the main engine's data (default) — zero extra API calls
+python -m src.app --mode both --sport MLB                 # --source shared
 
-# WNBA DraftKings lineup only
-python -m src.app --mode dfs --sport WNBA --budget 50000
+# Offline demo slate (also the only way to see the salary-cap DFS optimizer)
+python -m src.app --mode both --sport MLB   --source sample
+python -m src.app --mode dfs  --sport WNBA  --source sample --budget 50000
 
 # PrizePicks slip only
 python -m src.app --mode pickem --sport MLB --platform PrizePicks
 ```
 
 Run **from the `sports_wagering_pipeline/` directory** so `python -m src.app`
-resolves the package.
+resolves the package. Add the repo root to `PYTHONPATH` (`PYTHONPATH=..`) so the
+shared source can import `project547`.
 
-### Data sources
+## Running alongside the main engine — no double API usage
 
-- **Projections** come live from the **FantasyPros public API** when
-  `FANTASYPROS_API_KEY` is set in the environment (same key the main engine
-  uses). MLB / NBA / WNBA are wired.
-- **Pick'em prop lines** (PrizePicks / Underdog / DraftKings Pick6) and any
-  offline run fall back to a **deterministic sample slate** baked into
-  `api_client.py`, so the whole pipeline runs end to end with no credentials —
-  which is what you want for a clean comparison harness. Swap the sample
-  functions for real book pulls when you wire live Pick'em odds.
+Both models run on the **existing hourly schedule with one set of API calls**.
+The `--source shared` path (default) does **not** call FantasyPros itself — it
+calls the *same* `project547.clients.fantasypros` functions the main engine's
+hourly pull already used, with the same arguments, so it lands on the same
+1-hour disk cache as a **warm hit**.
+
+The guarantee is structural, not best-effort: the FantasyPros client only reads
+`FANTASYPROS_API_KEY` on a cache **miss**. The workflow step runs **with no API
+secrets at all**, so it *cannot* issue a billable request — it can only consume
+the cache. If the cache is cold (no key, offseason), it falls back to the sample
+slate and logs `req_count=0`. It is wired into `.github/workflows/hourly.yml`
+right after the pull, with `continue-on-error` so it can never break the main
+pipeline.
+
+To keep the shared cache key aligned, the pipeline resolves the slate date from
+`data/output/latest.json` (`primary_date`) — the exact date the main engine just
+pulled — falling back to today ET.
+
+### What is real vs. sample in shared mode
+
+| feature | shared source | note |
+| --- | --- | --- |
+| Pick'em projections & win rates | **real** | FantasyPros stat lines → DraftKings fantasy points (`DK_MLB_*` / `DK_HOOPS` in `api_client.py`) |
+| Pick'em lines | derived | offset from the real projection; wire a live PrizePicks/Underdog odds feed to replace |
+| Salary-cap DFS | **sample only** | FantasyPros projections carry no position or DK salary, and this repo ingests no DK salary feed, so `--source shared` DFS is empty by design — use `--source sample`, or add a salaries source to `player_projections` |
 
 ## Design principles
 
