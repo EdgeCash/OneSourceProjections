@@ -934,3 +934,10 @@
 {"date": "2026-07-13", "sport": "WNBA", "event_id": "401857065", "game": "Phoenix Mercury @ Minnesota Lynx", "source": "model", "home_wp": 0.8351, "away_wp": null, "draw_wp": null}
 {"date": "2026-07-13", "sport": "WNBA", "event_id": "401857065", "game": "Phoenix Mercury @ Minnesota Lynx", "source": "market", "home_wp": 0.7374, "away_wp": 0.2626, "draw_wp": null}
 {"date": "2026-07-13", "sport": "WNBA", "event_id": "401857065", "game": "Phoenix Mercury @ Minnesota Lynx", "source": "bettingpros", "home_wp": 0.8088, "away_wp": 0.1912, "draw_wp": null}
+{"date": "2026-07-14", "sport": "MLB", "event_id": "823443", "game": "American League All-Stars @ National League All-Stars", "source": "model", "home_wp": 0.5102, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-14", "sport": "WNBA", "event_id": "401857066", "game": "Portland Fire @ Connecticut Sun", "source": "model", "home_wp": 0.5401, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-14", "sport": "WNBA", "event_id": "401857066", "game": "Portland Fire @ Connecticut Sun", "source": "market", "home_wp": 0.5218, "away_wp": 0.4782, "draw_wp": null}
+{"date": "2026-07-14", "sport": "WNBA", "event_id": "401857067", "game": "Washington Mystics @ Toronto Tempo", "source": "model", "home_wp": 0.5524, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-14", "sport": "WNBA", "event_id": "401857067", "game": "Washington Mystics @ Toronto Tempo", "source": "market", "home_wp": 0.5157, "away_wp": 0.4843, "draw_wp": null}
+{"date": "2026-07-14", "sport": "WNBA", "event_id": "401857067", "game": "Washington Mystics @ Toronto Tempo", "source": "bettingpros", "home_wp": 0.4892, "away_wp": 0.5108, "draw_wp": null}
+{"date": "2026-07-14", "sport": "World Cup", "event_id": "760514", "game": "Spain @ France", "source": "bettingpros", "home_wp": 0.5804, "away_wp": 0.4196, "draw_wp": null}
