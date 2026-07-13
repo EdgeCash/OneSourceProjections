@@ -22,6 +22,7 @@ until a real salary feed is wired in.
 
 from __future__ import annotations
 
+import re as _re
 import sqlite3
 
 from . import db_manager
@@ -79,12 +80,12 @@ def _load_projections(
     return _sample_projections(sport), f"sample:fallback:{sport}"
 
 
-def _shared_projections(sport: str, date: str | None) -> list[dict]:
-    """Read projections through project547's cached FantasyPros client.
+def _fp_raw(sport: str, date: str | None) -> list[dict]:
+    """Raw FantasyPros rows via project547's cached client.
 
-    In the hourly job this is a warm-cache hit -> no external request. Returns
-    [] (never raises) when the cache is cold and no key is present, so the
-    caller can fall back to the sample slate.
+    In the hourly job this is a warm-cache hit -> no external request. Returns []
+    (never raises) when the cache is cold and no key is present, so callers can
+    fall back to the sample slate.
     """
     try:
         from project547.clients import fantasypros as fp
@@ -94,20 +95,24 @@ def _shared_projections(sport: str, date: str | None) -> list[dict]:
     season = int((date or "2026-01-01")[:4]) if date else 2026
     try:
         if sport == "MLB":
-            raw = fp.mlb_projections(season, proj_type="daily", date=date)
-            return [r for r in (_score_mlb(p) for p in raw) if r]
+            return fp.mlb_projections(season, proj_type="daily", date=date)
         if sport == "NBA":
-            return [r for r in (_score_hoops(p, "NBA") for p in
-                                fp.nba_projections(season, date)) if r]
+            return fp.nba_projections(season, date)
         if sport == "WNBA":
-            # wnba endpoint mirrors nba on the FantasyPros public API
-            get = getattr(fp, "wnba_projections", None)
-            raw = get(season, date) if get else []
-            return [r for r in (_score_hoops(p, "WNBA") for p in raw) if r]
+            get = getattr(fp, "wnba_projections", None)  # mirrors the nba endpoint
+            return get(season, date) if get else []
     except Exception:
         # A cache miss with no key raises inside the client; treat as "no data".
         return []
     return []
+
+
+def _shared_projections(sport: str, date: str | None) -> list[dict]:
+    """Convert the shared FantasyPros rows into DK fantasy-point projections."""
+    raw = _fp_raw(sport, date)
+    if sport == "MLB":
+        return [r for r in (_score_mlb(p) for p in raw) if r]
+    return [r for r in (_score_hoops(p, sport) for p in raw) if r]
 
 
 def _score_mlb(p: dict) -> dict | None:
@@ -183,22 +188,178 @@ def refresh_market_lines(
         return 0
 
     refresh_projections(conn, sport, date=date, source=source)  # ids first
-    lines = _derive_market_lines(conn, sport, platform)
+
+    lines, endpoint = [], f"derived:lines:{platform}:{sport}"
+    if source == "shared":
+        lines = _shared_market_lines(conn, sport, date, platform)
+        if lines:
+            endpoint = f"shared:bettingpros:{platform}:{sport}"
+    if not lines:  # cold cache / unknown book / sample source -> derived
+        lines = _derive_market_lines(conn, sport, platform)
+
     for ln in lines:
         db_manager.upsert_market_line(conn, **ln)
-    db_manager.log_api_call(conn, f"derived:lines:{platform}:{sport}", 0)
+    db_manager.log_api_call(conn, endpoint, 0)
     return len(lines)
+
+
+# BettingPros market name -> (display stat, mean-from-FP-row fn, std model key).
+MLB_BATTER_STATS = {
+    "batter_hits": (
+        "Hits",
+        lambda r: _num(r.get("hits")) or (
+            _num(r.get("1b")) + _num(r.get("2b"))
+            + _num(r.get("3b")) + _num(r.get("hrs"))),
+        "count",
+    ),
+    "batter_home_runs": ("Home Runs", lambda r: _num(r.get("hrs")), "count"),
+    "batter_total_bases": (
+        "Total Bases",
+        lambda r: (_num(r.get("1b")) + 2 * _num(r.get("2b"))
+                   + 3 * _num(r.get("3b")) + 4 * _num(r.get("hrs"))),
+        "tb",
+    ),
+}
+MLB_PITCHER_STATS = {
+    "pitcher_strikeouts": ("Strikeouts",
+                           lambda r: _num(r.get("so") or r.get("k")), "count"),
+    "pitcher_outs": ("Outs",
+                     lambda r: _num(r.get("outs") or _num(r.get("ip")) * 3), "count"),
+    "pitcher_hits_allowed": ("Hits Allowed", lambda r: _num(r.get("hits")), "count"),
+    "pitcher_earned_runs": ("Earned Runs", lambda r: _num(r.get("er")), "count"),
+    "pitcher_walks": ("Walks", lambda r: _num(r.get("bb")), "count"),
+}
+HOOPS_STATS = {
+    "Points": ("Points", lambda r: _num(r.get("pts")), "hoops"),
+    "Rebounds": ("Rebounds", lambda r: _num(r.get("reb")), "hoops"),
+    "Assists": ("Assists", lambda r: _num(r.get("ast")), "hoops"),
+    "3-Pointers Made": ("3-Pointers Made", lambda r: _num(r.get("3pm")), "hoops3"),
+}
+
+
+def _stat_std(mean: float, kind: str) -> float:
+    """Per-stat spread model (documented heuristics; swap for a fitted spread)."""
+    if kind == "count":   # Poisson-ish counting stat
+        return (max(mean, 0.5)) ** 0.5
+    if kind == "tb":      # total bases, overdispersed
+        return (max(mean, 0.5) * 1.6) ** 0.5
+    if kind == "hoops":   # points / reb / ast per game
+        return max(mean * 0.30, 3.0)
+    if kind == "hoops3":  # threes made
+        return max((max(mean, 0.5)) ** 0.5, 0.9)
+    return max(mean * 0.35, 1.0)
+
+
+def _shared_market_lines(
+    conn: sqlite3.Connection, sport: str, date: str | None, platform: str
+) -> list[dict]:
+    """Real PrizePicks/Underdog lines from the warm BettingPros cache, each
+    paired with the matching per-stat FantasyPros projection.
+
+    Reuses ``project547.clients.bettingpros`` with the same args the main engine
+    used, so this is a warm-cache hit and issues no external request. Returns []
+    (falling back to derived lines) when the cache is cold, the book is unknown,
+    or no player matches a projection.
+    """
+    try:
+        from project547.clients import bettingpros as bp
+    except Exception:
+        return []
+
+    book_id = {"prizepicks": bp.PRIZEPICKS_BOOK_ID,
+               "underdog": bp.UNDERDOG_BOOK_ID}.get(platform.lower())
+    if book_id is None:
+        return []  # e.g. DraftKings_Pick6 — no book id available; use derived
+
+    try:
+        offer_rows = bp.prop_offer_lines(sport, date)          # warm hits
+        dfs = bp.dfs_offer_lines(offer_rows, {book_id: platform.lower()})
+    except Exception:
+        return []
+    if not dfs:
+        return []
+
+    hitters, pitchers, hoops = _fp_indices(sport, date)
+    out = []
+    for r in dfs:
+        name, market = r.get("participant"), r.get("market")
+        if not name or not market:
+            continue
+        spec, index = _resolve_stat(sport, market, hitters, pitchers, hoops)
+        rec = index.get(_slug(name)) if spec else None
+        if not rec:
+            continue  # unmatched player/market — skip, never fabricate
+        fp_row, team = rec
+        label, mean_fn, kind = spec
+        mean = round(mean_fn(fp_row), 3)
+        line_value = r.get("over_line")
+        if line_value is None:
+            line_value = r.get("under_line")
+        if line_value is None or mean <= 0:
+            continue
+        mid = db_manager.master_id(conn, name, team, sport)
+        out.append(
+            {
+                "line_id": f"{platform}:{mid}:{market}",
+                "master_player_id": mid,
+                "stat_type": label,
+                "bookmaker": platform,
+                "line_value": float(line_value),
+                "over_odds": int(r.get("over_odds") or 0),
+                "under_odds": int(r.get("under_odds") or 0),
+                "proj_mean": mean,
+                "proj_std": round(_stat_std(mean, kind), 3),
+            }
+        )
+    return out
+
+
+def _fp_indices(sport: str, date: str | None):
+    """(hitters, pitchers, hoops) name-slug -> (fp_row, team) from shared FP."""
+    hitters, pitchers, hoops = {}, {}, {}
+    for p in _fp_raw(sport, date):
+        name = p.get("name") or p.get("player_name")
+        if not name:
+            continue
+        team = p.get("team_id") or p.get("team") or ""
+        key = _slug(name)
+        if sport == "MLB":
+            is_pitcher = p.get("ip") is not None or (
+                p.get("er") is not None and p.get("ab") is None
+            )
+            (pitchers if is_pitcher else hitters)[key] = (p, team)
+        else:
+            hoops[key] = (p, team)
+    return hitters, pitchers, hoops
+
+
+def _resolve_stat(sport: str, market: str, hitters, pitchers, hoops):
+    """Map a BettingPros market to (stat spec, matching FP index)."""
+    if sport == "MLB":
+        if market in MLB_BATTER_STATS:
+            return MLB_BATTER_STATS[market], hitters
+        if market in MLB_PITCHER_STATS:
+            return MLB_PITCHER_STATS[market], pitchers
+        return None, None
+    if market in HOOPS_STATS:
+        return HOOPS_STATS[market], hoops
+    return None, None
+
+
+def _slug(s: str) -> str:
+    return _re.sub(r"[^a-z0-9]", "", (s or "").lower())
 
 
 def _derive_market_lines(
     conn: sqlite3.Connection, sport: str, platform: str
 ) -> list[dict]:
-    """Offset each player's projection to seed both viable and non-viable
-    over/under plays — exercises the ranking without a live odds feed."""
+    """Fallback lines: offset each player's fantasy-point projection to seed both
+    viable and non-viable plays. Used for the sample source and when the shared
+    BettingPros cache has no real lines. proj_mean/proj_std stay NULL so the
+    engine falls back to the player's fantasy-point projection."""
     stat = "Fantasy Points"
-    projections = db_manager.get_projections(conn, sport)
     lines = []
-    for i, p in enumerate(projections):
+    for i, p in enumerate(db_manager.get_projections(conn, sport)):
         offset = (0.6 if i % 2 == 0 else -0.6) * (p["std_dev"] or 1.0)
         lines.append(
             {
@@ -207,7 +368,7 @@ def _derive_market_lines(
                 "stat_type": stat,
                 "bookmaker": platform,
                 "line_value": round(p["projected_points"] + offset, 1),
-                "over_odds": 0,   # flat Pick'em book
+                "over_odds": 0,
                 "under_odds": 0,
             }
         )

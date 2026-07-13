@@ -53,6 +53,13 @@ def init_db(conn: sqlite3.Connection) -> None:
             line_value        REAL,
             over_odds         INTEGER,
             under_odds        INTEGER,
+            -- Per-stat projection that pairs with THIS line's stat_type (e.g. a
+            -- projected mean/std of hits for a "Hits" line). Real BettingPros
+            -- lines are per stat, so the Pick'em edge is computed against the
+            -- matching stat, not the DK fantasy-point aggregate. NULL for the
+            -- sample source, which falls back to player_projections.
+            proj_mean         REAL,
+            proj_std          REAL,
             last_updated      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -151,13 +158,15 @@ def upsert_market_line(
     line_value: float,
     over_odds: int = 0,
     under_odds: int = 0,
+    proj_mean: float | None = None,
+    proj_std: float | None = None,
 ) -> None:
     conn.execute(
         """
         INSERT INTO market_lines
-            (line_id, master_player_id, stat_type, bookmaker,
-             line_value, over_odds, under_odds, last_updated)
-        VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            (line_id, master_player_id, stat_type, bookmaker, line_value,
+             over_odds, under_odds, proj_mean, proj_std, last_updated)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         ON CONFLICT(line_id) DO UPDATE SET
             master_player_id=excluded.master_player_id,
             stat_type=excluded.stat_type,
@@ -165,10 +174,12 @@ def upsert_market_line(
             line_value=excluded.line_value,
             over_odds=excluded.over_odds,
             under_odds=excluded.under_odds,
+            proj_mean=excluded.proj_mean,
+            proj_std=excluded.proj_std,
             last_updated=CURRENT_TIMESTAMP
         """,
-        (line_id, master_player_id, stat_type, bookmaker,
-         line_value, over_odds, under_odds),
+        (line_id, master_player_id, stat_type, bookmaker, line_value,
+         over_odds, under_odds, proj_mean, proj_std),
     )
     conn.commit()
 
@@ -216,7 +227,12 @@ def get_market_lines(
     rows = conn.execute(
         """
         SELECT ml.*, pp.player_name, pp.sport, pp.position,
-               pp.projected_points, pp.std_dev
+               pp.projected_points, pp.std_dev,
+               -- Prefer the line's own per-stat projection (real BettingPros
+               -- path); fall back to the player's fantasy-point projection
+               -- (sample path, where the line is derived from it).
+               COALESCE(ml.proj_mean, pp.projected_points) AS eff_mean,
+               COALESCE(ml.proj_std,  pp.std_dev)          AS eff_std
         FROM market_lines ml
         JOIN player_projections pp
           ON pp.master_player_id = ml.master_player_id

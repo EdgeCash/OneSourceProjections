@@ -75,9 +75,28 @@ pulled — falling back to today ET.
 
 | feature | shared source | note |
 | --- | --- | --- |
-| Pick'em projections & win rates | **real** | FantasyPros stat lines → DraftKings fantasy points (`DK_MLB_*` / `DK_HOOPS` in `api_client.py`) |
-| Pick'em lines | derived | offset from the real projection; wire a live PrizePicks/Underdog odds feed to replace |
+| Pick'em **lines** (PrizePicks / Underdog) | **real** | pulled from the warm BettingPros cache via `bettingpros.prop_offer_lines` → `dfs_offer_lines`, filtered to the book id (37 / 36) |
+| Pick'em **projections** (per stat) | **real** | each line is paired with the matching per-stat FantasyPros projection (Hits, Home Runs, Total Bases, Strikeouts, Outs, Hits/Earned-Runs/Walks Allowed; WNBA/NBA Points, Rebounds, Assists, 3PM) |
 | Salary-cap DFS | **sample only** | FantasyPros projections carry no position or DK salary, and this repo ingests no DK salary feed, so `--source shared` DFS is empty by design — use `--source sample`, or add a salaries source to `player_projections` |
+
+When the warm BettingPros cache has no lines for a book/sport (cold cache, or a
+sport the main engine didn't pull DFS offers for), the Pick'em side falls back to
+lines **derived** from the projection (`Fantasy Points` stat) so it still runs.
+MLB is the fully-wired real-data sport (the hourly job pulls MLB prop offers);
+other sports degrade to real projections + derived lines, then to the sample
+slate, logging the source in `api_log` each step.
+
+### Pick'em edge on a real line
+
+For a real line like *Strikeouts O/U 6.5*, the engine takes the matching per-stat
+projection — e.g. FantasyPros projects the pitcher at 7.8 K, modeled as
+`Normal(7.8, √7.8)` — and reads the CDF at 6.5: `P(over) = 67.9%`, which clears
+the 54.3% break-even, so it becomes an OVER play. A 0.5-HR line projected at 0.45
+comes back 52.8% and is correctly dropped as non-viable. The per-stat spread
+models (Poisson-ish counts, over-dispersed total bases, basketball scaling) live
+in `_stat_std` in `api_client.py` and are documented heuristics — swap them for a
+fitted spread when you have one. The real book odds (`over_odds` / `under_odds`)
+are stored on each line for de-vig / EV work.
 
 ## Design principles
 
@@ -99,7 +118,7 @@ Four tables:
 | table | purpose |
 | --- | --- |
 | `player_projections` | `master_player_id` PK, name/sport/position, `projected_points`, `std_dev`, `salary_dk`, `last_updated` |
-| `market_lines` | `line_id` PK, `master_player_id`, `stat_type`, `bookmaker`, `line_value`, `over_odds`, `under_odds`, `last_updated` |
+| `market_lines` | `line_id` PK, `master_player_id`, `stat_type`, `bookmaker`, `line_value`, `over_odds`, `under_odds`, `proj_mean`, `proj_std`, `last_updated` — `proj_mean`/`proj_std` hold the per-stat projection that pairs with this line's stat (NULL for derived lines, which fall back to the player's fantasy-point projection) |
 | `player_id_map` | normalization slug → `master_player_id` (backs ID normalization) |
 | `api_log` | `id` PK, `timestamp`, `endpoint`, `request_count` — the token-budget ledger |
 

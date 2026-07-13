@@ -150,8 +150,10 @@ def generate_optimal_pickem_slips(
 
     plays = []
     for ln in lines:
+        # eff_mean/eff_std is the projection for this line's stat (real per-stat
+        # BettingPros projection when present, else the fantasy-point fallback).
         edge = calculate_pickem_edge(
-            ln["projected_points"], ln["std_dev"], ln["line_value"]
+            ln["eff_mean"], ln["eff_std"], ln["line_value"]
         )
         if not edge["is_viable"]:
             continue

@@ -61,7 +61,10 @@ jobs:
         run: |
           pip install "pulp>=2.7"
           cd sports_wagering_pipeline
-          PYTHONPATH=.. python -m src.app --mode both --sport MLB --source shared
+          for SPORT in MLB WNBA; do
+            echo "===================== $SPORT ====================="
+            PYTHONPATH=.. python -m src.app --mode both --sport "$SPORT" --source shared || true
+          done
 
       - name: Commit data
         run: |
