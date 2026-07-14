@@ -88,7 +88,7 @@ views are fused:
 
 | signal | source |
 | --- | --- |
-| `model` | our FantasyPros-driven per-stat Normal CDF at the DFS line |
+| `model` | our per-stat Normal CDF at the DFS line, from the FantasyPros projection — or, for sports FantasyPros doesn't cover (e.g. WNBA), from BettingPros' own projection as the mean (less independent, still market-anchored and CLV-graded) |
 | `bp` | BettingPros' own projection probability (premium `auth=user` field) |
 | `form` | the player's recent over-rate (BP L10 performance window) |
 | `market` | the **de-vigged sharp consensus** probability |
