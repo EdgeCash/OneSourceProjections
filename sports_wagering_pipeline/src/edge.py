@@ -39,6 +39,17 @@ def american_to_prob(odds) -> float | None:
     return (-o) / (-o + 100) if o < 0 else 100 / (o + 100)
 
 
+def american_to_decimal(odds) -> float | None:
+    """Decimal (payout multiplier incl. stake) from American odds."""
+    try:
+        o = float(odds)
+    except (TypeError, ValueError):
+        return None
+    if o == 0:
+        return None
+    return 1 + (o / 100 if o > 0 else 100 / -o)
+
+
 def devig_two_way(over_odds, under_odds) -> float | None:
     """Fair P(over) from a two-way price (proportional de-vig)."""
     po, pu = american_to_prob(over_odds), american_to_prob(under_odds)

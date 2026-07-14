@@ -25,7 +25,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from . import api_client, db_manager, engine, grade
+from . import api_client, clv, db_manager, engine, grade
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -139,31 +139,38 @@ def game_plays(min_edge: float | None = None) -> list[dict]:
                 mop = _f(g.get("model_over_prob"))
                 mhc = _f(g.get("model_home_cover"))
                 shl = _f(g.get("spread_home_line"))
+                tl = _f(g.get("total_line"))
+                # (market, side_key, selection, line, ev, odds, model_prob)
                 cands = [
-                    ("Moneyline", g.get("home_team"), "", g.get("home_ml_ev"),
-                     g.get("home_ml"), _f(g.get("home_win_prob"))),
-                    ("Moneyline", g.get("away_team"), "", g.get("away_ml_ev"),
-                     g.get("away_ml"), _f(g.get("away_win_prob"))),
-                    ("Total", f"Over {g.get('total_line')}", "", g.get("over_ev"),
-                     g.get("over_odds"), mop),
-                    ("Total", f"Under {g.get('total_line')}", "", g.get("under_ev"),
-                     g.get("under_odds"), None if mop is None else round(1 - mop, 4)),
-                    ("Spread", f"{g.get('home_team')} {shl:+g}" if shl is not None
-                     else g.get("home_team"), "", g.get("spread_home_ev"),
-                     g.get("spread_home_odds"), mhc),
-                    ("Spread", f"{g.get('away_team')} {-shl:+g}" if shl is not None
-                     else g.get("away_team"), "", g.get("spread_away_ev"),
-                     g.get("spread_away_odds"),
+                    ("Moneyline", "home", g.get("home_team"), None,
+                     g.get("home_ml_ev"), g.get("home_ml"), _f(g.get("home_win_prob"))),
+                    ("Moneyline", "away", g.get("away_team"), None,
+                     g.get("away_ml_ev"), g.get("away_ml"), _f(g.get("away_win_prob"))),
+                    ("Total", "over", f"Over {g.get('total_line')}", tl,
+                     g.get("over_ev"), g.get("over_odds"), mop),
+                    ("Total", "under", f"Under {g.get('total_line')}", tl,
+                     g.get("under_ev"), g.get("under_odds"),
+                     None if mop is None else round(1 - mop, 4)),
+                    ("Spread", "home",
+                     f"{g.get('home_team')} {shl:+g}" if shl is not None
+                     else g.get("home_team"), shl,
+                     g.get("spread_home_ev"), g.get("spread_home_odds"), mhc),
+                    ("Spread", "away",
+                     f"{g.get('away_team')} {-shl:+g}" if shl is not None
+                     else g.get("away_team"), None if shl is None else -shl,
+                     g.get("spread_away_ev"), g.get("spread_away_odds"),
                      None if mhc is None else round(1 - mhc, 4)),
                 ]
-                for market, sel, _line, ev, odds, prob in cands:
+                for market, side_key, sel, line, ev, odds, prob in cands:
                     ev = _f(ev)
                     if ev is None or ev < min_edge:
                         continue
                     out.append({
                         "sport": sport, "game": matchup, "market": market,
-                        "selection": sel, "odds": _f(odds), "ev": round(ev, 4),
-                        "model_prob": prob, "game_time": gt,
+                        "side_key": side_key, "selection": sel, "line": line,
+                        "odds": _f(odds), "ev": round(ev, 4), "model_prob": prob,
+                        "away_team": g.get("away_team"), "home_team": g.get("home_team"),
+                        "game_time": gt,
                     })
     out.sort(key=lambda p: p["ev"], reverse=True)
     return out
@@ -316,11 +323,18 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
     if tr is not None:
         ws = wb.create_sheet("Track Record")
         row = _title(ws, "Track Record",
-                     "graded on actual results — higher Confidence should hit "
-                     "more, and we should beat BP when we disagree")
+                     "pick'em graded on actual results; game plays graded on "
+                     "closing-line value (beating the close = real edge)")
+        gclv = tr.get("game_clv") or {}
+        if gclv.get("graded"):
+            ws.cell(row=row, column=1,
+                    value=f"Game Plays CLV: beat the close {gclv['beat_close']}/"
+                          f"{gclv['graded']} ({gclv.get('beat_rate', 0):.1%})  |  "
+                          f"avg CLV {gclv.get('avg_clv', 0):+.2%}")
+            row += 2
         if not tr.get("graded"):
             ws.cell(row=row, column=1,
-                    value=f"No graded picks yet — {tr.get('pending', 0)} pending "
+                    value=f"No graded pick'em yet — {tr.get('pending', 0)} pending "
                           "until games are final.")
         else:
             ov = tr["overall"]
@@ -409,6 +423,42 @@ def append_picks_history(payload: dict, path: str | Path) -> int:
     return len(new_rows)
 
 
+def append_game_history(payload: dict, path: str | Path) -> int:
+    """Append the day's game plays (with the price we took) to a committed
+    JSONL, deduped by slate date, for closing-line-value grading."""
+    path = Path(path)
+    date = payload.get("date") or ""
+    stamp = payload["generated_at"]
+    new_rows = []
+    for p in payload["game_plays"]:
+        new_rows.append({
+            "date": date, "logged_at": stamp, "sport": p["sport"],
+            "game": p["game"], "away_team": p.get("away_team"),
+            "home_team": p.get("home_team"), "market": p["market"],
+            "side_key": p.get("side_key"), "selection": p["selection"],
+            "line": p.get("line"), "odds": p.get("odds"), "ev": p.get("ev"),
+            "model_prob": p.get("model_prob"), "game_time": p.get("game_time"),
+            # graded later by clv.grade_games:
+            "closing_odds": None, "closing_line": None, "line_delta": None,
+            "clv": None, "beat_close": None,
+        })
+    existing = []
+    if path.exists():
+        for ln in path.read_text().splitlines():
+            if not ln.strip():
+                continue
+            try:
+                row = json.loads(ln)
+            except ValueError:
+                continue
+            if row.get("date") != date:
+                existing.append(row)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(json.dumps(r, default=str)
+                              for r in existing + new_rows) + "\n")
+    return len(new_rows)
+
+
 # --------------------------------------------------------------------------- #
 # CLI
 # --------------------------------------------------------------------------- #
@@ -441,10 +491,15 @@ def main(argv: list[str] | None = None) -> int:
             "daily_budget": api_client.DAILY_BUDGET,
             "operators": operators, "game_plays": gp,
         }
-        hist_path = Path(args.out).parent / "picks_history.jsonl"
+        out_dir = Path(args.out).parent
+        hist_path = out_dir / "picks_history.jsonl"
+        game_path = out_dir / "game_history.jsonl"
         hist = append_picks_history(payload, hist_path)
-        graded = grade.grade_history(hist_path)       # grade any now-final games
+        append_game_history(payload, game_path)
+        graded = grade.grade_history(hist_path)       # pick'em results
+        clv.grade_games(game_path)                    # game-play CLV
         payload["track_record"] = grade.summarize(hist_path)
+        payload["track_record"]["game_clv"] = clv.summarize_games(game_path)
         out = write_workbook(payload, logs, args.out)
         msg = f"wrote {out} ({sum(len(v) for v in operators.values())} pick'em plays, " \
               f"{len(gp)} game plays across {', '.join(sports)}; logged {hist} picks, " \

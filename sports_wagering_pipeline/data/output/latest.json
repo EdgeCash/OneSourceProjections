@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-14T13:13:31",
+ "generated_at": "2026-07-14T13:28:44",
  "source": "sample",
  "date": "2026-07-14",
  "sports": [
@@ -2457,80 +2457,112 @@
    "sport": "WNBA",
    "game": "Portland Fire @ Connecticut Sun",
    "market": "Total",
+   "side_key": "over",
    "selection": "Over 167.5",
+   "line": 167.5,
    "odds": 100.0,
    "ev": 0.2246,
    "model_prob": 0.7246,
+   "away_team": "Portland Fire",
+   "home_team": "Connecticut Sun",
    "game_time": "2026-07-14T15:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Washington Mystics @ Toronto Tempo",
    "market": "Moneyline",
+   "side_key": "home",
    "selection": "Toronto Tempo",
+   "line": null,
    "odds": 108.0,
    "ev": 0.1111,
    "model_prob": 0.5524,
+   "away_team": "Washington Mystics",
+   "home_team": "Toronto Tempo",
    "game_time": "2026-07-14T23:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Seattle Storm @ Chicago Sky",
    "market": "Total",
+   "side_key": "over",
    "selection": "Over 170.5",
+   "line": 170.5,
    "odds": -105.0,
    "ev": 0.1086,
    "model_prob": 0.639,
+   "away_team": "Seattle Storm",
+   "home_team": "Chicago Sky",
    "game_time": "2026-07-15T16:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Washington Mystics @ Toronto Tempo",
    "market": "Spread",
+   "side_key": "home",
    "selection": "Toronto Tempo +1.5",
+   "line": 1.5,
    "odds": -104.0,
    "ev": 0.087,
    "model_prob": 0.5986,
+   "away_team": "Washington Mystics",
+   "home_team": "Toronto Tempo",
    "game_time": "2026-07-14T23:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Washington Mystics @ Toronto Tempo",
    "market": "Total",
+   "side_key": "over",
    "selection": "Over 173.5",
+   "line": 173.5,
    "odds": 108.0,
    "ev": 0.0744,
    "model_prob": 0.5429,
+   "away_team": "Washington Mystics",
+   "home_team": "Toronto Tempo",
    "game_time": "2026-07-14T23:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Portland Fire @ Connecticut Sun",
    "market": "Moneyline",
+   "side_key": "home",
    "selection": "Connecticut Sun",
+   "line": null,
    "odds": -104.0,
    "ev": 0.0739,
    "model_prob": 0.5401,
+   "away_team": "Portland Fire",
+   "home_team": "Connecticut Sun",
    "game_time": "2026-07-14T15:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Golden State Valkyries @ Indiana Fever",
    "market": "Total",
+   "side_key": "over",
    "selection": "Over 168.5",
+   "line": 168.5,
    "odds": -105.0,
    "ev": 0.0579,
    "model_prob": 0.5619,
+   "away_team": "Golden State Valkyries",
+   "home_team": "Indiana Fever",
    "game_time": "2026-07-16T00:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Los Angeles Sparks @ Minnesota Lynx",
    "market": "Total",
+   "side_key": "over",
    "selection": "Over 180.5",
+   "line": 180.5,
    "odds": -104.0,
    "ev": 0.0472,
    "model_prob": 0.5689,
+   "away_team": "Los Angeles Sparks",
+   "home_team": "Minnesota Lynx",
    "game_time": "2026-07-15T17:00Z"
   }
  ],
@@ -2561,6 +2593,10 @@
     "hit": null
    }
   },
-  "pending": 90
+  "pending": 90,
+  "game_clv": {
+   "graded": 0,
+   "pending": 8
+  }
  }
 }
