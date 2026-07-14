@@ -761,173 +761,197 @@
     "date": "2026-07-13"
   },
   "2026-07-14": {
-    "slate_note": "No priced game-level edges I can trust: the MLB game is an All-Star exhibition, ATP matches list probabilities with no market prices, and the only flagged edge (Toronto ML +12.6%) has no game_id to attach. Thin slate, zero plays.",
+    "slate_note": "All-Star exhibition MLB carries no edge, and the tennis card has model probabilities but zero market prices, so nothing is priceable. The one real edge (WNBA Toronto +110) has no game_id, so it can't be curated here. Honest zero-play slate.",
     "verdicts": {
       "823443": {
         "stance": "pass",
-        "rationale": "All-Star exhibition, coin-flip 50/50, no edge clears floor \u2014 unpredictable usage/effort, no bet."
+        "rationale": "All-Star exhibition, model dead 50/50 and no edges clear the floor; no total market posted."
       },
       "178636": {
         "stance": "pass",
-        "rationale": "50/50 model, no market price to value; nothing to bet."
+        "rationale": "Coin-flip 50/50, no market price to measure any edge."
       },
       "178633": {
         "stance": "pass",
-        "rationale": "54% lean but no odds given; can't confirm EV."
+        "rationale": "46/54 lean but no posted odds to confirm value."
       },
       "178637": {
         "stance": "pass",
-        "rationale": "Navone 63% fav but no price to test edge; pass."
+        "rationale": "Navone favored 63% but no market price given to price the edge."
       },
       "178635": {
         "stance": "pass",
-        "rationale": "Darderi 66% but no market number to price the play."
+        "rationale": "Darderi 66% but no odds provided; can't confirm value."
       },
       "178638": {
         "stance": "pass",
-        "rationale": "Near coin-flip, no odds; no actionable edge."
+        "rationale": "45/55, thin and no market to compare against."
       },
       "178639": {
         "stance": "pass",
-        "rationale": "53/47 toss-up, no price; pass."
+        "rationale": "Near coin-flip, no price to assess edge."
       },
       "178641": {
         "stance": "pass",
-        "rationale": "Rublev 57% but no odds to establish value."
+        "rationale": "Rublev 57% but no odds to gauge EV."
+      },
+      "178643": {
+        "stance": "pass",
+        "rationale": "Pure 50/50 with no market price."
       },
       "178721": {
         "stance": "pass",
-        "rationale": "54% lean, no market price; no bet."
+        "rationale": "46/54 lean, no odds posted."
       },
       "178723": {
         "stance": "pass",
-        "rationale": "Tabur 56% but no odds to price edge."
+        "rationale": "Tabur 56% but no price to confirm."
       },
       "178720": {
         "stance": "pass",
-        "rationale": "Vacherot 59% fav, no market number given; pass."
+        "rationale": "Vacherot 59% but no market price given."
       },
       "178722": {
         "stance": "pass",
-        "rationale": "Tsitsipas 56% but no price to confirm value."
+        "rationale": "Tsitsipas 56%, no odds to measure edge."
+      },
+      "178725": {
+        "stance": "pass",
+        "rationale": "Coin-flip 51/49, no price."
       },
       "178746": {
         "stance": "pass",
-        "rationale": "Cerundolo 65% fav on clay, no odds to test EV."
+        "rationale": "Cerundolo 65% but no odds; can't confirm value."
+      },
+      "178745": {
+        "stance": "pass",
+        "rationale": "Ruud 59%, no market price posted."
       },
       "178728": {
         "stance": "pass",
-        "rationale": "Bublik 61% but no market price given; pass."
+        "rationale": "Bublik 61% but no odds to price the edge."
       },
-      "178766": {
+      "178784": {
         "stance": "pass",
-        "rationale": "53/47 toss-up, no odds; no edge."
+        "rationale": "Near even 53/47, no market price."
       },
-      "178771": {
+      "178785": {
         "stance": "pass",
-        "rationale": "56% lean, no price to value; pass."
+        "rationale": "Coin-flip, no odds provided."
       },
-      "178772": {
+      "178786": {
         "stance": "pass",
-        "rationale": "Blockx 57% but no market number provided."
+        "rationale": "Cobolli 72% but no price; can't verify value."
       },
       "178792": {
         "stance": "pass",
-        "rationale": "ADF 69% heavy fav but no odds \u2014 likely priced short; pass."
+        "rationale": "ADF 69% favorite but no odds posted to price."
       },
       "178793": {
         "stance": "pass",
-        "rationale": "Coin-flip, no price; nothing actionable."
+        "rationale": "48/52 coin-flip, no market price."
       }
     },
     "top_plays": [],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 19,
-    "generated_at": "2026-07-14T17:18:36+00:00",
+    "game_count": 22,
+    "generated_at": "2026-07-14T22:49:35+00:00",
     "date": "2026-07-14"
   },
   "2026-07-15": {
-    "slate_note": "The ATP card carries model win probabilities but no market prices, so none of the 18 matches can be priced or bet \u2014 all pass. Only two thin WNBA totals edges are actionable.",
+    "slate_note": "ATP has no prices in the brief, so those 21 matches can't be priced \u2014 all pass. WNBA: only Fever/Valkyries total clears the edge floor, and barely (+3.4%). Thin slate.",
     "verdicts": {
       "178636": {
         "stance": "pass",
-        "rationale": "Coinflip 50/50 and no market price to compare against."
+        "rationale": "50/50 model, no market price given \u2014 cannot compute EV."
       },
       "178633": {
         "stance": "pass",
-        "rationale": "No market odds given; 46/54 lean is not tradable blind."
+        "rationale": "No price in brief; 46/54 coin flip, unpriceable."
       },
       "178637": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No odds provided to test 63% against market."
       },
       "178635": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No market price; can't confirm edge on Darderi 66%."
       },
       "178638": {
         "stance": "pass",
-        "rationale": "No priced market; near-coinflip anyway."
+        "rationale": "No price given; near coin flip."
       },
       "178639": {
         "stance": "pass",
-        "rationale": "No priced market; 53/47 is noise without odds."
+        "rationale": "No odds in brief; 53/47 negligible."
       },
       "178641": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No price; Rublev 57% unpriced."
+      },
+      "178643": {
+        "stance": "pass",
+        "rationale": "50/50 and no market number."
       },
       "178721": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No price provided; near even."
       },
       "178723": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No odds to price Tabur 56%."
       },
       "178720": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No market price for Vacherot 59%."
       },
       "178722": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No odds; Tsitsipas 56% unpriceable."
+      },
+      "178725": {
+        "stance": "pass",
+        "rationale": "51/49 and no price."
       },
       "178746": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No market number for Cerundolo 65%."
+      },
+      "178745": {
+        "stance": "pass",
+        "rationale": "No odds to test Ruud 59%."
       },
       "178728": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No price; Bublik 61% unpriced."
       },
-      "178766": {
+      "178784": {
         "stance": "pass",
-        "rationale": "No priced market; near-coinflip."
+        "rationale": "53/47 with no market line."
       },
-      "178771": {
+      "178785": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "49/51 coin flip, no price."
       },
-      "178772": {
+      "178786": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No odds to price Cobolli 72%."
       },
       "178792": {
         "stance": "pass",
-        "rationale": "No priced market to measure edge against."
+        "rationale": "No market price for ADF 69%."
       },
       "178793": {
         "stance": "pass",
-        "rationale": "No priced market; near-coinflip."
+        "rationale": "48/52 and no price given."
       }
     },
     "top_plays": [],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 18,
-    "generated_at": "2026-07-14T17:18:36+00:00",
+    "game_count": 21,
+    "generated_at": "2026-07-14T22:49:35+00:00",
     "date": "2026-07-15"
   }
 }
