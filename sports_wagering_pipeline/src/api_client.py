@@ -281,9 +281,14 @@ def _shared_market_lines(
     try:
         offer_rows = bp.prop_offer_lines(sport, date)          # warm / cached
         dfs = bp.dfs_offer_lines(offer_rows, {book_id: platform.lower()})
-    except Exception:
+    except Exception as e:
+        # diagnostic: distinguish "BP errored" from "BP returned nothing"
+        db_manager.log_api_call(
+            conn, f"bpdiag:{sport}:{platform}:error={type(e).__name__}", 0)
         return []
     if not dfs:
+        db_manager.log_api_call(
+            conn, f"bpdiag:{sport}:{platform}:offers=0,rows={len(offer_rows or [])}", 0)
         return []
 
     hitters, pitchers, hoops = _fp_indices(sport, date)
@@ -338,6 +343,8 @@ def _shared_market_lines(
                 "extra_json": json.dumps(extra) if extra else None,
             }
         )
+    db_manager.log_api_call(
+        conn, f"bpdiag:{sport}:{platform}:offers={len(dfs)},matched={len(out)}", 0)
     return out
 
 
