@@ -46,8 +46,8 @@ python -m src.app --mode dfs  --sport WNBA  --source sample --budget 50000
 # PrizePicks slip only
 python -m src.app --mode pickem --sport MLB --platform PrizePicks
 
-# Daily Excel workbook across sports (the automated deliverable)
-python -m src.export --sports MLB,WNBA --source shared \
+# Daily ready-to-play workbook — all operators, all in-season sports
+python -m src.export --daily --source shared \
     --out data/output/latest.xlsx --json data/output/latest.json
 ```
 
@@ -57,26 +57,28 @@ shared source can import `project547`.
 
 ## Automated daily Excel workbook
 
-The daily deliverable is a plain `.xlsx` at
+The daily deliverable is a **ready-to-play** `.xlsx` at
 [`data/output/latest.xlsx`](data/output/latest.xlsx), built by `src/export.py`
 with openpyxl. **Excel, not Google Sheets, on purpose** — openpyxl is already a
 repo dependency, so this needs no Google Cloud project, service account, or
-secrets; the job just writes the file and commits it. Open it directly in Excel,
-or import/open it in Google Sheets if you want it there.
+secrets; the job just writes the file and commits it. Open it in Excel (or import
+to Google Sheets) and the picks are ranked and ready.
 
-Tabs:
+Tabs — **one per DFS operator**, plus game plays:
 
 | tab | contents |
 | --- | --- |
-| `Summary` | one row per sport — lines source, DFS proj/salary, Pick'em count, top play, and the pipeline's API spend (always 0 external calls) |
-| `Pickem` | every viable play across sports — stat, line, side, win %, edge vs 54.3%, per-stat projection (mean/std), and real book odds |
-| `DFS` | the salary-cap lineups with per-sport totals |
-| `Run_Log` | the cache/source ledger (`request_count=0` = warm-cache read) |
+| `Summary` | play counts per tab + the top play in each |
+| `PrizePicks` / `Underdog` / `Betr` / `Sleeper` / `Dabble` | that operator's pick'em board across every in-season sport, ranked by model win probability — stat, line, side, win %, edge vs 54.3%, our projection, **plus BettingPros' second opinion** (EV, recommended side, public %) and the book's O/U odds. Operators BettingPros doesn't carry that day are honestly empty (no fabricated lines). |
+| `Game Plays` | moneyline / total / spread edges (≥ 2% EV) from the mature `project547` engine's `data/output/latest.json`, all sports, highest EV first |
+| `Run_Log` | the cache/source ledger |
 
-It is regenerated **once per day** inside `.github/workflows/hourly.yml` — on the
-15:00 UTC run (or any manual `--date` run) — from the same warm cache as the
-hourly step, so it adds no API calls, then committed to the repo at that stable
-path. A JSON sidecar (`latest.json`) is written alongside for programmatic use.
+Built **once per day** inside `.github/workflows/hourly.yml` (the 15:00 UTC run,
+or any manual `--date` run) in its own step. Unlike the keyless hourly step, the
+workbook step **does** get the BP/FP/Odds keys so it can pull per-operator DFS
+lines and any in-season sport the hourly step didn't warm. It stays cache-first
+and once-a-day, so the spend against the **5,000/day** BettingPros budget is
+small. A JSON sidecar (`latest.json`) is written alongside.
 
 ## Running alongside the main engine — no double API usage
 

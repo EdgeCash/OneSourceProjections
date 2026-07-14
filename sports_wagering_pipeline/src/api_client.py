@@ -22,6 +22,7 @@ until a real salary feed is wired in.
 
 from __future__ import annotations
 
+import json
 import re as _re
 import sqlite3
 
@@ -29,6 +30,12 @@ from . import db_manager
 
 CACHE_MINUTES = db_manager.CACHE_MINUTES
 DAILY_BUDGET = 5000
+
+# DFS pick'em operators BettingPros carries, by book id. A tab per operator in
+# the daily workbook. DraftKings Pick6 has no BP book id, so it stays derived.
+DFS_OPERATORS = {
+    "PrizePicks": 37, "Underdog": 36, "Betr": 45, "Sleeper": 63, "Dabble": 53,
+}
 
 # DraftKings scoring. MLB hitter / pitcher and basketball (NBA/WNBA).
 DK_MLB_HITTER = {"1b": 3, "2b": 5, "3b": 8, "hrs": 10, "rbi": 2,
@@ -179,9 +186,9 @@ def refresh_market_lines(
 ) -> int:
     """Ensure fresh Pick'em lines for ``platform``; return rows touched.
 
-    Real book prop lines are not a stable committed artifact in this repo, so
-    lines are derived from the (shared, real) projections as an over/under
-    threshold. Wire a live Pick'em odds feed here to replace the derivation.
+    ``shared`` uses real BettingPros lines only — if the book doesn't carry this
+    sport today, the tab is honestly empty (no fabricated plays). ``sample``
+    derives demo lines from the projection so the offline workbook is populated.
     """
     sport = sport.upper()
     if db_manager.is_fresh(conn, "market_lines", "bookmaker = ?", (platform,)):
@@ -189,13 +196,13 @@ def refresh_market_lines(
 
     refresh_projections(conn, sport, date=date, source=source)  # ids first
 
-    lines, endpoint = [], f"derived:lines:{platform}:{sport}"
     if source == "shared":
         lines = _shared_market_lines(conn, sport, date, platform)
-        if lines:
-            endpoint = f"shared:bettingpros:{platform}:{sport}"
-    if not lines:  # cold cache / unknown book / sample source -> derived
+        endpoint = (f"shared:bettingpros:{platform}:{sport}" if lines
+                    else f"shared:none:{platform}:{sport}")
+    else:  # sample -> derived demo lines
         lines = _derive_market_lines(conn, sport, platform)
+        endpoint = f"derived:lines:{platform}:{sport}"
 
     for ln in lines:
         db_manager.upsert_market_line(conn, **ln)
@@ -266,13 +273,12 @@ def _shared_market_lines(
     except Exception:
         return []
 
-    book_id = {"prizepicks": bp.PRIZEPICKS_BOOK_ID,
-               "underdog": bp.UNDERDOG_BOOK_ID}.get(platform.lower())
+    book_id = DFS_OPERATORS.get(platform)
     if book_id is None:
         return []  # e.g. DraftKings_Pick6 — no book id available; use derived
 
     try:
-        offer_rows = bp.prop_offer_lines(sport, date)          # warm hits
+        offer_rows = bp.prop_offer_lines(sport, date)          # warm / cached
         dfs = bp.dfs_offer_lines(offer_rows, {book_id: platform.lower()})
     except Exception:
         return []
@@ -280,6 +286,7 @@ def _shared_market_lines(
         return []
 
     hitters, pitchers, hoops = _fp_indices(sport, date)
+    board = _bp_board_index(sport, date)   # BettingPros second opinion, by player+stat
     out = []
     for r in dfs:
         name, market = r.get("participant"), r.get("market")
@@ -298,6 +305,7 @@ def _shared_market_lines(
         if line_value is None or mean <= 0:
             continue
         mid = db_manager.master_id(conn, name, team, sport)
+        extra = board.get((_slug(name), market))
         out.append(
             {
                 "line_id": f"{platform}:{mid}:{market}",
@@ -309,9 +317,49 @@ def _shared_market_lines(
                 "under_odds": int(r.get("under_odds") or 0),
                 "proj_mean": mean,
                 "proj_std": round(_stat_std(mean, kind), 3),
+                "extra_json": json.dumps(extra) if extra else None,
             }
         )
     return out
+
+
+def _bp_board_index(sport: str, date: str | None) -> dict:
+    """(player-slug, our-market) -> BettingPros second-opinion fields.
+
+    Reads the BP props board (a call the main engine already warms) and keeps
+    BP's own projection, EV, recommended side, opening prices, and public pick %
+    — signal we already pay for. Returns {} (never raises) when unavailable.
+    """
+    try:
+        from project547.clients import bettingpros as bp
+    except Exception:
+        return {}
+    try:
+        raw = bp.props(sport, date)
+        flat = bp.flatten_props(raw)
+        lookup = bp.market_lookup(sport)
+    except Exception:
+        return {}
+
+    idx: dict = {}
+    for r in flat:
+        name, mid = r.get("participant"), r.get("market_id")
+        if not name or mid is None:
+            continue
+        info = lookup.get(int(mid), {})
+        market = bp._match_market_name(
+            sport, f"{info.get('name', '')} {info.get('slug', '')}")
+        if not market:
+            continue
+        idx[(_slug(name), market)] = {
+            "bp_projection": r.get("bp_projection"),
+            "bp_ev": r.get("bp_ev"),
+            "bp_recommended": r.get("bp_recommended_side"),
+            "open_over": r.get("over_open"),
+            "open_under": r.get("under_open"),
+            "public_pct_over": r.get("pick_pct_over"),
+        }
+    return idx
 
 
 def _fp_indices(sport: str, date: str | None):

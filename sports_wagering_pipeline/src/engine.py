@@ -131,14 +131,18 @@ def optimize_salary_cap_dfs(sport: str, budget: int = 50000, conn=None) -> list:
 # 3. Pick'em slip generator
 # --------------------------------------------------------------------------- #
 def generate_optimal_pickem_slips(
-    sport: str, platform: str = "PrizePicks", conn=None
+    sport: str, platform: str = "PrizePicks", conn=None, limit: int = 6
 ) -> list:
     """Rank the highest-probability over/under plays for a Pick'em book.
 
     Joins ``player_projections`` with ``market_lines`` where
     ``bookmaker == platform``, scores each with :func:`calculate_pickem_edge`,
-    and returns the top 2-6 viable plays sorted by distance from break-even.
+    and returns the top ``limit`` viable plays sorted by distance from
+    break-even (default 6 for a slip; pass a larger limit for a full board).
+    Each play also carries BettingPros' second opinion (projection / EV /
+    recommended side / opening price / public %) when present.
     """
+    import json as _json
     own_conn = conn is None
     if own_conn:
         conn = db_manager.connect()
@@ -159,6 +163,12 @@ def generate_optimal_pickem_slips(
             continue
         side = "OVER" if edge["over_win_rate"] >= edge["under_win_rate"] else "UNDER"
         win_rate = max(edge["over_win_rate"], edge["under_win_rate"])
+        extra = {}
+        if ln.get("extra_json"):
+            try:
+                extra = _json.loads(ln["extra_json"]) or {}
+            except (ValueError, TypeError):
+                extra = {}
         plays.append(
             {
                 "player_name": ln["player_name"],
@@ -172,10 +182,15 @@ def generate_optimal_pickem_slips(
                 "proj_std": round(ln["eff_std"], 3) if ln["eff_std"] is not None else None,
                 "over_odds": ln["over_odds"],
                 "under_odds": ln["under_odds"],
+                # BettingPros second opinion (premium fields; None when absent).
+                "bp_ev": extra.get("bp_ev"),
+                "bp_projection": extra.get("bp_projection"),
+                "bp_recommended": extra.get("bp_recommended"),
+                "public_pct_over": extra.get("public_pct_over"),
                 "platform": platform,
             }
         )
 
     # Sort by absolute distance from the 54.3% break-even threshold.
     plays.sort(key=lambda p: abs(p["win_rate"] - BREAK_EVEN), reverse=True)
-    return plays[:6]
+    return plays[:limit]

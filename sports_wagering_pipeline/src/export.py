@@ -1,15 +1,20 @@
 """Structured runner + daily Excel (.xlsx) workbook writer.
 
-``run_one`` executes the engines for one sport and returns a plain dict (reused
-by the CLI printer in ``app.py`` and by the workbook builder here). ``main``
-builds a multi-sport ``.xlsx`` — the automated daily deliverable — plus an
-optional JSON sidecar.
+The daily deliverable is a **ready-to-play** workbook:
+
+* one tab per DFS pick'em operator (PrizePicks, Underdog, Betr, Sleeper,
+  Dabble) — the highest-probability over/under plays across every in-season
+  sport, each with our model edge *and* BettingPros' second opinion;
+* a Game Plays tab — moneyline / total / spread edges from the mature
+  ``project547`` engine's committed ``data/output/latest.json``;
+* Summary and Run_Log.
 
 Excel, not Google Sheets, on purpose: openpyxl is already a repo dependency and
-this needs no Google Cloud project, service account, or secrets. The workbook is
-just written to disk and committed by the hourly job.
+this needs no Google Cloud project, service account, or secrets. Run inside the
+hourly job (keys present) so the BP/FP pulls it needs are cache-first and
+bounded to once a day.
 
-    python -m src.export --sports MLB,WNBA --source shared \
+    python -m src.export --daily --source shared \
         --out data/output/latest.xlsx --json data/output/latest.json
 """
 
@@ -22,6 +27,8 @@ from pathlib import Path
 
 from . import api_client, db_manager, engine
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 # --------------------------------------------------------------------------- #
 # Shared runner
@@ -32,7 +39,7 @@ def anchor_date(cli_date: str | None) -> str | None:
     today ET."""
     if cli_date:
         return cli_date
-    latest = Path(__file__).resolve().parents[2] / "data" / "output" / "latest.json"
+    latest = REPO_ROOT / "data" / "output" / "latest.json"
     try:
         return json.loads(latest.read_text())["primary_date"]
     except Exception:
@@ -45,6 +52,16 @@ def anchor_date(cli_date: str | None) -> str | None:
         return None
 
 
+def in_season_sports(date: str | None) -> list[str]:
+    """In-season sports for the slate (falls back to MLB+WNBA offline)."""
+    try:
+        from project547.sports import active_sports
+
+        return active_sports(date) or ["MLB", "WNBA"]
+    except Exception:
+        return ["MLB", "WNBA"]
+
+
 def run_one(
     conn,
     sport: str,
@@ -54,39 +71,110 @@ def run_one(
     date: str | None = None,
     mode: str = "both",
 ) -> dict:
-    """Run the engines for one sport; return a structured result dict."""
+    """Run the engines for one sport / one operator; return a result dict."""
     sport = sport.upper()
     res: dict = {
         "sport": sport, "platform": platform, "budget": budget,
         "source": source, "dfs": [], "pickem": [],
         "proj_refreshed": 0, "lines_refreshed": 0, "lines_source": None,
     }
-
     if mode in ("dfs", "both"):
         res["proj_refreshed"] = api_client.refresh_projections(
             conn, sport, date=date, source=source)
         res["dfs"] = engine.optimize_salary_cap_dfs(sport, budget, conn=conn)
-
     if mode in ("pickem", "both"):
         res["lines_refreshed"] = api_client.refresh_market_lines(
             conn, sport, platform, source=source, date=date)
         res["pickem"] = engine.generate_optimal_pickem_slips(
             sport, platform, conn=conn)
-        # Real BettingPros lines carry a per-stat proj_mean; derived ones don't.
         lines = db_manager.get_market_lines(conn, sport, platform)
         res["lines_source"] = (
             "bettingpros" if any(l.get("proj_mean") is not None for l in lines)
-            else "derived" if lines else "none"
-        )
+            else "derived" if lines else "none")
     return res
+
+
+def collect_operators(conn, date, sports, source, per_op: int = 25) -> dict:
+    """{operator: [ranked plays across all sports]} for every DFS operator."""
+    for sport in sports:
+        api_client.refresh_projections(conn, sport, date=date, source=source)
+
+    operators: dict = {}
+    for op in api_client.DFS_OPERATORS:            # PrizePicks, Underdog, ...
+        plays: list = []
+        for sport in sports:
+            api_client.refresh_market_lines(conn, sport, op, source=source, date=date)
+            plays += engine.generate_optimal_pickem_slips(
+                sport, op, conn=conn, limit=per_op * 2)
+        plays.sort(key=lambda p: p["win_rate"], reverse=True)
+        operators[op] = plays[:per_op]
+    return operators
+
+
+def game_plays(min_edge: float | None = None) -> list[dict]:
+    """Moneyline / total / spread edges from the main engine's latest.json."""
+    if min_edge is None:
+        try:
+            from project547 import config
+            min_edge = config.MIN_EDGE
+        except Exception:
+            min_edge = 0.02
+    try:
+        data = json.loads((REPO_ROOT / "data" / "output" / "latest.json").read_text())
+    except Exception:
+        return []
+
+    def _f(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    out: list[dict] = []
+    for _dt, sports in (data.get("slates") or {}).items():
+        for sport, blob in (sports or {}).items():
+            for g in (blob.get("games") if isinstance(blob, dict) else None) or []:
+                matchup = f"{g.get('away_team')} @ {g.get('home_team')}"
+                gt = g.get("game_time")
+                mop = _f(g.get("model_over_prob"))
+                mhc = _f(g.get("model_home_cover"))
+                shl = _f(g.get("spread_home_line"))
+                cands = [
+                    ("Moneyline", g.get("home_team"), "", g.get("home_ml_ev"),
+                     g.get("home_ml"), _f(g.get("home_win_prob"))),
+                    ("Moneyline", g.get("away_team"), "", g.get("away_ml_ev"),
+                     g.get("away_ml"), _f(g.get("away_win_prob"))),
+                    ("Total", f"Over {g.get('total_line')}", "", g.get("over_ev"),
+                     g.get("over_odds"), mop),
+                    ("Total", f"Under {g.get('total_line')}", "", g.get("under_ev"),
+                     g.get("under_odds"), None if mop is None else round(1 - mop, 4)),
+                    ("Spread", f"{g.get('home_team')} {shl:+g}" if shl is not None
+                     else g.get("home_team"), "", g.get("spread_home_ev"),
+                     g.get("spread_home_odds"), mhc),
+                    ("Spread", f"{g.get('away_team')} {-shl:+g}" if shl is not None
+                     else g.get("away_team"), "", g.get("spread_away_ev"),
+                     g.get("spread_away_odds"),
+                     None if mhc is None else round(1 - mhc, 4)),
+                ]
+                for market, sel, _line, ev, odds, prob in cands:
+                    ev = _f(ev)
+                    if ev is None or ev < min_edge:
+                        continue
+                    out.append({
+                        "sport": sport, "game": matchup, "market": market,
+                        "selection": sel, "odds": _f(odds), "ev": round(ev, 4),
+                        "model_prob": prob, "game_time": gt,
+                    })
+    out.sort(key=lambda p: p["ev"], reverse=True)
+    return out
 
 
 # --------------------------------------------------------------------------- #
 # Excel workbook
 # --------------------------------------------------------------------------- #
-_HEADER_FILL = "1F2937"     # graphite
+_HEADER_FILL = "1F2937"
 _HEADER_FONT = "FFFFFF"
-_BAND_FILL = "F3F4F6"       # light zebra band
+_BAND_FILL = "F3F4F6"
 _TITLE_FONT = "111827"
 
 
@@ -111,13 +199,11 @@ def _autosize(ws, widths: dict[int, int]):
 
 def _write_table(ws, start_row: int, headers: list, rows: list[list],
                  fmts: dict[int, str] | None = None) -> int:
-    """Write a header + rows block; return the next free row."""
-    from openpyxl.styles import Font, PatternFill
+    from openpyxl.styles import PatternFill
 
     for j, h in enumerate(headers, 1):
         ws.cell(row=start_row, column=j, value=h)
     _style_header(ws, start_row, len(headers))
-
     band = PatternFill("solid", fgColor=_BAND_FILL)
     r = start_row + 1
     for i, row in enumerate(rows):
@@ -131,7 +217,7 @@ def _write_table(ws, start_row: int, headers: list, rows: list[list],
     return r
 
 
-def _title(ws, text: str, sub: str | None = None):
+def _title(ws, text: str, sub: str | None = None) -> int:
     from openpyxl.styles import Font
 
     ws["A1"] = text
@@ -142,91 +228,89 @@ def _title(ws, text: str, sub: str | None = None):
     return 4 if sub else 3
 
 
+PCT, EDGE, ODDS, NUM, MONEY = "0.0%", "+0.0%;-0.0%", "+0;-0", "0.0", "#,##0"
+
+
+def _odds_str(o, u) -> str:
+    def a(v):
+        return "" if v in (None, 0) else (f"+{int(v)}" if v > 0 else f"{int(v)}")
+    return f"O {a(o)} / U {a(u)}".strip()
+
+
 def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Path:
     from openpyxl import Workbook
-
-    PCT, EDGE = "0.0%", "+0.0%;-0.0%"
-    MONEY, ODDS, NUM = "#,##0", "+0;-0", "0.0"
 
     wb = Workbook()
 
     # --- Summary -----------------------------------------------------------
     ws = wb.active
     ws.title = "Summary"
-    row = _title(ws, "Sports Wagering — Daily Comparison Workbook",
-                 f"generated {payload['generated_at']}  |  source: "
-                 f"{payload['source']}  |  slate date: {payload.get('date')}")
-    headers = ["Sport", "Lines source", "DFS proj", "DFS salary",
-               "Pick'em plays", "Top play", "Top win%"]
+    row = _title(ws, "Daily Plays — ready to play",
+                 f"generated {payload['generated_at']}  |  slate {payload.get('date')}"
+                 f"  |  source: {payload['source']}")
+    headers = ["Tab", "Plays", "Top play", "Top win%"]
     rows = []
-    for s in payload["sports"]:
-        dfs_pts = round(sum(p["projected_points"] for p in s["dfs"]), 1)
-        dfs_sal = int(sum(p["salary_dk"] for p in s["dfs"]))
-        top = s["pickem"][0] if s["pickem"] else None
-        rows.append([
-            s["sport"], s.get("lines_source") or "-",
-            dfs_pts if s["dfs"] else None,
-            dfs_sal if s["dfs"] else None,
-            len(s["pickem"]),
-            f"{top['player_name']} {top['stat_type']} {top['side']} "
-            f"{top['line_value']}" if top else "-",
-            top["win_rate"] if top else None,
-        ])
-    _write_table(ws, row, headers, rows,
-                 fmts={3: NUM, 4: MONEY, 7: PCT})
-    ws["A" + str(row + len(rows) + 2)] = (
-        f"API requests spent by this pipeline (last 24h): "
-        f"{payload['budget_used']} / {payload['daily_budget']}  "
-        f"— shared cache reuse, no double usage."
-    )
-    _autosize(ws, {1: 8, 2: 14, 3: 10, 4: 12, 5: 14, 6: 34, 7: 10})
+    for op, plays in payload["operators"].items():
+        top = plays[0] if plays else None
+        rows.append([op, len(plays),
+                     f"{top['player_name']} {top['stat_type']} {top['side']} "
+                     f"{top['line_value']}" if top else "-",
+                     top["win_rate"] if top else None])
+    gp = payload["game_plays"]
+    rows.append(["Game Plays", len(gp),
+                 f"{gp[0]['selection']} ({gp[0]['market']})" if gp else "-",
+                 gp[0]["ev"] if gp else None])
+    end = _write_table(ws, row, headers, rows, fmts={4: PCT})
+    ws.cell(row=end + 1, column=1,
+            value="Highest win probability first. Pick'em break-even ~54.3%. "
+                  "BP = BettingPros second opinion. Not financial advice.")
+    _autosize(ws, {1: 14, 2: 8, 3: 40, 4: 10})
 
-    # --- Pickem ------------------------------------------------------------
-    ws = wb.create_sheet("Pickem")
-    row = _title(ws, "Pick'em Slips", "ranked by distance from the 54.3% "
-                 "break-even; each line paired with its per-stat projection")
-    headers = ["Sport", "Player", "Stat", "Line", "Side", "Win%",
-               "Edge vs 54.3%", "Proj mean", "Proj std", "Over", "Under",
-               "Platform"]
-    rows = []
-    for s in payload["sports"]:
-        for p in s["pickem"]:
+    # --- One tab per DFS operator -----------------------------------------
+    op_headers = ["#", "Sport", "Player", "Stat", "Line", "Side", "Win%",
+                  "Edge", "Our proj", "BP EV", "BP rec", "Pub% O", "Odds (O/U)"]
+    for op, plays in payload["operators"].items():
+        ws = wb.create_sheet(op[:31])
+        row = _title(ws, f"{op} — pick'em board",
+                     "ranked by model win probability; play the highest first")
+        rows = []
+        for i, p in enumerate(plays, 1):
             rows.append([
-                s["sport"], p["player_name"], p["stat_type"], p["line_value"],
+                i, p["sport"], p["player_name"], p["stat_type"], p["line_value"],
                 p["side"], p["win_rate"], p["edge_vs_breakeven"],
-                p.get("proj_mean"), p.get("proj_std"),
-                p.get("over_odds"), p.get("under_odds"), p["platform"],
+                p.get("proj_mean"), p.get("bp_ev"),
+                (p.get("bp_recommended") or ""), p.get("public_pct_over"),
+                _odds_str(p.get("over_odds"), p.get("under_odds")),
             ])
-    _write_table(ws, row, headers, rows,
-                 fmts={4: NUM, 6: PCT, 7: EDGE, 8: NUM, 9: NUM,
-                       10: ODDS, 11: ODDS})
-    _autosize(ws, {1: 7, 2: 22, 3: 14, 4: 7, 5: 7, 6: 8, 7: 13, 8: 10,
-                   9: 9, 10: 7, 11: 7, 12: 12})
+        if not rows:
+            ws.cell(row=row, column=1, value="No plays for this operator today.")
+        else:
+            _write_table(ws, row, op_headers, rows,
+                         fmts={5: NUM, 7: PCT, 8: EDGE, 9: NUM, 10: EDGE, 12: PCT})
+        _autosize(ws, {1: 4, 2: 6, 3: 22, 4: 14, 5: 6, 6: 6, 7: 8, 8: 8,
+                       9: 9, 10: 8, 11: 8, 12: 7, 13: 16})
 
-    # --- DFS ---------------------------------------------------------------
-    ws = wb.create_sheet("DFS")
-    row = _title(ws, "DraftKings Salary-Cap Lineups",
-                 "sample-salary slate (FantasyPros carries no DK salary/position)")
-    headers = ["Sport", "Pos", "Player", "Proj", "Salary"]
-    rows = []
-    for s in payload["sports"]:
-        for p in s["dfs"]:
-            rows.append([s["sport"], p["position"], p["player_name"],
-                         p["projected_points"], p["salary_dk"]])
-        if s["dfs"]:
-            rows.append([s["sport"], "TOT", "",
-                         round(sum(p["projected_points"] for p in s["dfs"]), 1),
-                         int(sum(p["salary_dk"] for p in s["dfs"]))])
-    _write_table(ws, row, headers, rows, fmts={4: NUM, 5: MONEY})
-    _autosize(ws, {1: 7, 2: 6, 3: 24, 4: 8, 5: 10})
+    # --- Game Plays --------------------------------------------------------
+    ws = wb.create_sheet("Game Plays")
+    row = _title(ws, "Game Plays — moneyline / total / spread",
+                 "from the project547 engine (edges ≥ 2% EV), highest EV first")
+    rows = [[p["sport"], p["game"], p["market"], p["selection"], p["odds"],
+             p["model_prob"], p["ev"], p["game_time"]] for p in gp]
+    if not rows:
+        ws.cell(row=row, column=1, value="No qualifying game plays on this slate.")
+    else:
+        _write_table(ws, row, ["Sport", "Game", "Market", "Selection", "Odds",
+                               "Model%", "EV", "Start (UTC)"],
+                     rows, fmts={5: ODDS, 6: PCT, 7: EDGE})
+    _autosize(ws, {1: 6, 2: 34, 3: 10, 4: 22, 5: 7, 6: 8, 7: 8, 8: 20})
 
     # --- Run_Log -----------------------------------------------------------
     ws = wb.create_sheet("Run_Log")
-    row = _title(ws, "Run Log", "cache/source ledger — request_count=0 means a "
-                 "warm-cache read, no external call")
+    row = _title(ws, "Run Log", "cache/source ledger — real BP/FP spend is "
+                 "cache-first and bounded to this once-a-day build")
     rows = [[lg["timestamp"], lg["endpoint"], lg["request_count"]] for lg in logs]
     _write_table(ws, row, ["Timestamp", "Endpoint", "Requests"], rows)
-    _autosize(ws, {1: 22, 2: 40, 3: 10})
+    _autosize(ws, {1: 22, 2: 44, 3: 10})
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -238,34 +322,37 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
 # CLI
 # --------------------------------------------------------------------------- #
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Build the daily comparison workbook")
-    ap.add_argument("--sports", default="MLB", help="comma-separated, e.g. MLB,WNBA")
-    ap.add_argument("--platform", default="PrizePicks")
-    ap.add_argument("--budget", type=int, default=50000)
+    ap = argparse.ArgumentParser(description="Build the daily ready-to-play workbook")
+    ap.add_argument("--daily", action="store_true",
+                    help="auto in-season sports + all DFS operators + game plays")
+    ap.add_argument("--sports", default=None, help="comma-separated; default: in-season")
     ap.add_argument("--source", choices=["shared", "sample"], default="shared")
     ap.add_argument("--date", default=None)
-    ap.add_argument("--out", default="data/output/latest.xlsx", help="xlsx path")
-    ap.add_argument("--json", default=None, help="optional JSON sidecar path")
+    ap.add_argument("--out", default="data/output/latest.xlsx")
+    ap.add_argument("--json", default=None)
     args = ap.parse_args(argv)
 
     date = anchor_date(args.date)
+    sports = ([s.strip().upper() for s in args.sports.split(",") if s.strip()]
+              if args.sports else in_season_sports(date))
+
     conn = db_manager.connect()
     db_manager.init_db(conn)
     try:
-        sports = [s.strip().upper() for s in args.sports.split(",") if s.strip()]
-        results = [run_one(conn, s, args.platform, args.budget, args.source, date)
-                   for s in sports]
+        operators = collect_operators(conn, date, sports, args.source)
+        gp = game_plays()
         logs = [dict(r) for r in conn.execute(
             "SELECT timestamp, endpoint, request_count FROM api_log ORDER BY id")]
         payload = {
             "generated_at": datetime.now().isoformat(timespec="seconds"),
-            "source": args.source, "platform": args.platform, "date": date,
+            "source": args.source, "date": date, "sports": sports,
             "budget_used": db_manager.api_usage_today(conn),
             "daily_budget": api_client.DAILY_BUDGET,
-            "sports": results,
+            "operators": operators, "game_plays": gp,
         }
         out = write_workbook(payload, logs, args.out)
-        msg = f"wrote {out}"
+        msg = f"wrote {out} ({sum(len(v) for v in operators.values())} pick'em plays, " \
+              f"{len(gp)} game plays across {', '.join(sports)})"
         if args.json:
             jp = Path(args.json)
             jp.parent.mkdir(parents=True, exist_ok=True)
