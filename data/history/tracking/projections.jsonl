@@ -941,3 +941,12 @@
 {"date": "2026-07-14", "sport": "WNBA", "event_id": "401857067", "game": "Washington Mystics @ Toronto Tempo", "source": "market", "home_wp": 0.5157, "away_wp": 0.4843, "draw_wp": null}
 {"date": "2026-07-14", "sport": "WNBA", "event_id": "401857067", "game": "Washington Mystics @ Toronto Tempo", "source": "bettingpros", "home_wp": 0.4892, "away_wp": 0.5108, "draw_wp": null}
 {"date": "2026-07-14", "sport": "World Cup", "event_id": "760514", "game": "Spain @ France", "source": "bettingpros", "home_wp": 0.5804, "away_wp": 0.4196, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857068", "game": "Seattle Storm @ Chicago Sky", "source": "model", "home_wp": 0.5942, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857068", "game": "Seattle Storm @ Chicago Sky", "source": "market", "home_wp": 0.5728, "away_wp": 0.4272, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857069", "game": "Los Angeles Sparks @ Minnesota Lynx", "source": "model", "home_wp": 0.8242, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857069", "game": "Los Angeles Sparks @ Minnesota Lynx", "source": "market", "home_wp": 0.7782, "away_wp": 0.2218, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857069", "game": "Los Angeles Sparks @ Minnesota Lynx", "source": "bettingpros", "home_wp": 0.8525, "away_wp": 0.1475, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857070", "game": "Golden State Valkyries @ Indiana Fever", "source": "model", "home_wp": 0.538, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857070", "game": "Golden State Valkyries @ Indiana Fever", "source": "market", "home_wp": 0.5355, "away_wp": 0.4645, "draw_wp": null}
+{"date": "2026-07-15", "sport": "WNBA", "event_id": "401857070", "game": "Golden State Valkyries @ Indiana Fever", "source": "bettingpros", "home_wp": 0.5108, "away_wp": 0.4892, "draw_wp": null}
+{"date": "2026-07-15", "sport": "World Cup", "event_id": "760515", "game": "Argentina @ England", "source": "bettingpros", "home_wp": 0.5351, "away_wp": 0.4649, "draw_wp": null}

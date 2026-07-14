@@ -1,0 +1,122 @@
+[
+ {
+  "id": 2655,
+  "sr_id": "5eb79ccc-1e20-4118-b420-7af4c832cb77",
+  "sport": "WNBA",
+  "scheduled": "2026-07-15 16:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CHI",
+  "visitor": "SEA",
+  "link": "/wnba/matchups/chicago-sky-vs-seattle-storm/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Wintrust Arena",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60616",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "CHI",
+    "name": "Sky",
+    "link": "/wnba/teams/chicago-sky/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHI",
+     "conference": "Eastern",
+     "division": "",
+     "record": {
+      "W": 7,
+      "L": 16,
+      "T": 0
+     },
+     "slug": "chicago-sky"
+    }
+   },
+   {
+    "id": "SEA",
+    "name": "Storm",
+    "link": "/wnba/teams/seattle-storm/",
+    "team": {
+     "city": "Seattle",
+     "abbreviation": "SEA",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 6,
+      "L": 19,
+      "T": 0
+     },
+     "slug": "seattle-storm"
+    }
+   }
+  ],
+  "broadcasts": []
+ },
+ {
+  "id": 2656,
+  "sr_id": "3833dea6-920a-4f49-839e-b0ac043f46b2",
+  "sport": "WNBA",
+  "scheduled": "2026-07-15 17:00:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "MIN",
+  "visitor": "LAS",
+  "link": "/wnba/matchups/los-angeles-sparks-vs-minnesota-lynx/",
+  "series_summary": null,
+  "popularity": 0,
+  "venue": {
+   "name": "Target Center",
+   "city": "Minneapolis",
+   "state": "MN",
+   "country": "USA",
+   "zip": "55403",
+   "id": null
+  },
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Lynx",
+    "link": "/wnba/teams/minnesota-lynx/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 17,
+      "L": 6,
+      "T": 0
+     },
+     "slug": "minnesota-lynx"
+    }
+   },
+   {
+    "id": "LAS",
+    "name": "Sparks",
+    "link": "/wnba/teams/los-angeles-sparks/",
+    "team": {
+     "city": "Los Angeles",
+     "abbreviation": "LAS",
+     "conference": "Western",
+     "division": "",
+     "record": {
+      "W": 10,
+      "L": 11,
+      "T": 0
+     },
+     "slug": "los-angeles-sparks"
+    }
+   }
+  ],
+  "broadcasts": []
+ }
+]
