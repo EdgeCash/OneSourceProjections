@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from statistics import NormalDist
 
-from . import db_manager
+from . import db_manager, edge
 
 # Break-even-to-profitable Pick'em win rate. A 2-pick power play pays ~3x, and
 # most flat books need ~54% just to overcome the hold, so 0.543 is the viability
@@ -154,43 +154,69 @@ def generate_optimal_pickem_slips(
 
     plays = []
     for ln in lines:
-        # eff_mean/eff_std is the projection for this line's stat (real per-stat
-        # BettingPros projection when present, else the fantasy-point fallback).
-        edge = calculate_pickem_edge(
-            ln["eff_mean"], ln["eff_std"], ln["line_value"]
-        )
-        if not edge["is_viable"]:
+        mean, std, line = ln["eff_mean"], ln["eff_std"], ln["line_value"]
+        if mean is None or line is None:
             continue
-        side = "OVER" if edge["over_win_rate"] >= edge["under_win_rate"] else "UNDER"
-        win_rate = max(edge["over_win_rate"], edge["under_win_rate"])
         extra = {}
         if ln.get("extra_json"):
             try:
                 extra = _json.loads(ln["extra_json"]) or {}
             except (ValueError, TypeError):
                 extra = {}
+
+        # Our per-stat model probability at the DFS line.
+        model_over = edge.model_over_prob(mean, std, line)
+        # BettingPros' probability, oriented to P(over).
+        bp_prob = extra.get("bp_probability")
+        bp_rec = (extra.get("bp_recommended") or "").lower()
+        bp_over = (bp_prob if bp_rec == "over"
+                   else (1 - bp_prob) if (bp_prob is not None and bp_rec == "under")
+                   else None)
+        # De-vigged sharp market and recent form.
+        market_over = edge.devig_two_way(extra.get("over_odds"), extra.get("under_odds"))
+        form_over = extra.get("form_l10")
+
+        s = edge.score(
+            model_over=model_over, bp_over=bp_over, form_over=form_over,
+            market_over=market_over, dfs_line=line,
+            consensus_line=extra.get("bp_line"),
+            break_even=BREAK_EVEN, bet_rating=extra.get("bet_rating"),
+        )
+        if s["win_rate"] <= BREAK_EVEN:
+            continue
+
+        model_win = round(model_over if s["side"] == "OVER" else 1 - model_over, 4)
         plays.append(
             {
                 "player_name": ln["player_name"],
                 "sport": ln["sport"],
                 "stat_type": ln["stat_type"],
-                "line_value": ln["line_value"],
-                "side": side,
-                "win_rate": win_rate,
-                "edge_vs_breakeven": round(win_rate - BREAK_EVEN, 4),
-                "proj_mean": round(ln["eff_mean"], 3) if ln["eff_mean"] is not None else None,
-                "proj_std": round(ln["eff_std"], 3) if ln["eff_std"] is not None else None,
+                "line_value": line,
+                "side": s["side"],
+                "win_rate": s["win_rate"],          # calibrated ensemble
+                "model_win": model_win,             # our model alone
+                "confidence": s["confidence"],      # 0-100 composite
+                "edge_vs_breakeven": s["edge_vs_breakeven"],
+                "edge_vs_market": s["edge_vs_market"],
+                "line_edge": s["line_edge"],        # soft-line gap vs sharp
+                "agreement": s["agreement"],
+                "n_signals": s["n_signals"],
+                "proj_mean": round(mean, 3) if mean is not None else None,
+                "proj_std": round(std, 3) if std is not None else None,
+                "consensus_line": extra.get("bp_line"),
                 "over_odds": ln["over_odds"],
                 "under_odds": ln["under_odds"],
                 # BettingPros second opinion (premium fields; None when absent).
                 "bp_ev": extra.get("bp_ev"),
                 "bp_projection": extra.get("bp_projection"),
                 "bp_recommended": extra.get("bp_recommended"),
+                "bet_rating": extra.get("bet_rating"),
                 "public_pct_over": extra.get("public_pct_over"),
+                "form_l10": extra.get("form_l10"),
                 "platform": platform,
             }
         )
 
-    # Sort by absolute distance from the 54.3% break-even threshold.
-    plays.sort(key=lambda p: abs(p["win_rate"] - BREAK_EVEN), reverse=True)
+    # Rank by our composite confidence (edge vs market + agreement + soft line).
+    plays.sort(key=lambda p: p["confidence"], reverse=True)
     return plays[:limit]

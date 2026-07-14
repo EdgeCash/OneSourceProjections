@@ -103,7 +103,7 @@ jobs:
           # run while the (committed) dedup state falsely records success — which
           # silently froze the MLB game log at the import cutoff (staleness bug).
           git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track
-          # daily comparison workbook (built once/day by the step above)
-          git add sports_wagering_pipeline/data/output/latest.xlsx sports_wagering_pipeline/data/output/latest.json
+          # daily comparison workbook + growing picks history (built once/day)
+          git add sports_wagering_pipeline/data/output/latest.xlsx sports_wagering_pipeline/data/output/latest.json sports_wagering_pipeline/data/output/picks_history.jsonl
           git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"
           git push

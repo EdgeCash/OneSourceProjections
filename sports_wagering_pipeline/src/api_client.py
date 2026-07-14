@@ -352,12 +352,19 @@ def _bp_board_index(sport: str, date: str | None) -> dict:
         if not market:
             continue
         idx[(_slug(name), market)] = {
+            "bp_line": r.get("bp_line"),                 # sharp consensus line
             "bp_projection": r.get("bp_projection"),
             "bp_ev": r.get("bp_ev"),
+            "bp_probability": r.get("bp_probability"),   # P(recommended side)
             "bp_recommended": r.get("bp_recommended_side"),
+            "bet_rating": r.get("bp_bet_rating"),        # BP 1-5 confidence
+            # two-way price for de-vig (best, then consensus)
+            "over_odds": r.get("over_odds") or r.get("over_consensus"),
+            "under_odds": r.get("under_odds") or r.get("under_consensus"),
             "open_over": r.get("over_open"),
             "open_under": r.get("under_open"),
             "public_pct_over": r.get("pick_pct_over"),
+            "form_l10": r.get("perf_l10"),               # recent over-rate
         }
     return idx
 
