@@ -1,0 +1,279 @@
+{
+ "generated_at": "2026-07-14T02:01:51",
+ "source": "sample",
+ "platform": "PrizePicks",
+ "date": "2026-07-13",
+ "budget_used": 0,
+ "daily_budget": 5000,
+ "sports": [
+  {
+   "sport": "MLB",
+   "platform": "PrizePicks",
+   "budget": 50000,
+   "source": "sample",
+   "dfs": [
+    {
+     "master_player_id": "mlb|det|tarikskubal",
+     "player_name": "Tarik Skubal",
+     "sport": "MLB",
+     "position": "P",
+     "projected_points": 24.1,
+     "std_dev": 7.5,
+     "salary_dk": 9400,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|phi|zackwheeler",
+     "player_name": "Zack Wheeler",
+     "sport": "MLB",
+     "position": "P",
+     "projected_points": 20.8,
+     "std_dev": 6.8,
+     "salary_dk": 7600,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|nyy|juansoto",
+     "player_name": "Juan Soto",
+     "sport": "MLB",
+     "position": "OF",
+     "projected_points": 11.1,
+     "std_dev": 6.0,
+     "salary_dk": 4800,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|lad|freddiefreeman",
+     "player_name": "Freddie Freeman",
+     "sport": "MLB",
+     "position": "1B",
+     "projected_points": 10.4,
+     "std_dev": 5.8,
+     "salary_dk": 4400,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|bal|gunnarhenderson",
+     "player_name": "Gunnar Henderson",
+     "sport": "MLB",
+     "position": "SS",
+     "projected_points": 10.5,
+     "std_dev": 5.9,
+     "salary_dk": 4400,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|hou|kyletucker",
+     "player_name": "Kyle Tucker",
+     "sport": "MLB",
+     "position": "OF",
+     "projected_points": 10.2,
+     "std_dev": 5.7,
+     "salary_dk": 4300,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|bos|rafaeldevers",
+     "player_name": "Rafael Devers",
+     "sport": "MLB",
+     "position": "3B",
+     "projected_points": 9.8,
+     "std_dev": 5.6,
+     "salary_dk": 4100,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|hou|josealtuve",
+     "player_name": "Jose Altuve",
+     "sport": "MLB",
+     "position": "2B",
+     "projected_points": 9.3,
+     "std_dev": 5.4,
+     "salary_dk": 3800,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|mil|williamcontreras",
+     "player_name": "William Contreras",
+     "sport": "MLB",
+     "position": "C",
+     "projected_points": 9.1,
+     "std_dev": 5.2,
+     "salary_dk": 3600,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "mlb|ari|corbincarroll",
+     "player_name": "Corbin Carroll",
+     "sport": "MLB",
+     "position": "OF",
+     "projected_points": 9.9,
+     "std_dev": 5.6,
+     "salary_dk": 3600,
+     "last_updated": "2026-07-14 02:01:51"
+    }
+   ],
+   "pickem": [
+    {
+     "player_name": "Rafael Devers",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 6.4,
+     "side": "OVER",
+     "win_rate": 0.7281,
+     "edge_vs_breakeven": 0.1851,
+     "proj_mean": 9.8,
+     "proj_std": 5.6,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    },
+    {
+     "player_name": "Corbin Carroll",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 6.5,
+     "side": "OVER",
+     "win_rate": 0.7281,
+     "edge_vs_breakeven": 0.1851,
+     "proj_mean": 9.9,
+     "proj_std": 5.6,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    },
+    {
+     "player_name": "Bobby Witt Jr.",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 14.9,
+     "side": "UNDER",
+     "win_rate": 0.7279,
+     "edge_vs_breakeven": 0.1849,
+     "proj_mean": 11.2,
+     "proj_std": 6.1,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    },
+    {
+     "player_name": "Freddie Freeman",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 13.9,
+     "side": "UNDER",
+     "win_rate": 0.7269,
+     "edge_vs_breakeven": 0.1839,
+     "proj_mean": 10.4,
+     "proj_std": 5.8,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    },
+    {
+     "player_name": "Aaron Judge",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 8.0,
+     "side": "OVER",
+     "win_rate": 0.7268,
+     "edge_vs_breakeven": 0.1838,
+     "proj_mean": 11.8,
+     "proj_std": 6.3,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    },
+    {
+     "player_name": "Zack Wheeler",
+     "sport": "MLB",
+     "stat_type": "Fantasy Points",
+     "line_value": 24.9,
+     "side": "UNDER",
+     "win_rate": 0.7267,
+     "edge_vs_breakeven": 0.1837,
+     "proj_mean": 20.8,
+     "proj_std": 6.8,
+     "over_odds": 0,
+     "under_odds": 0,
+     "platform": "PrizePicks"
+    }
+   ],
+   "proj_refreshed": 18,
+   "lines_refreshed": 18,
+   "lines_source": "derived"
+  },
+  {
+   "sport": "WNBA",
+   "platform": "PrizePicks",
+   "budget": 50000,
+   "source": "sample",
+   "dfs": [
+    {
+     "master_player_id": "wnba|lv|ajawilson",
+     "player_name": "A'ja Wilson",
+     "sport": "WNBA",
+     "position": "F",
+     "projected_points": 48.5,
+     "std_dev": 11.0,
+     "salary_dk": 10200,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "wnba|ny|sabrinaionescu",
+     "player_name": "Sabrina Ionescu",
+     "sport": "WNBA",
+     "position": "G",
+     "projected_points": 40.2,
+     "std_dev": 9.7,
+     "salary_dk": 8400,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "wnba|conn|alyssathomas",
+     "player_name": "Alyssa Thomas",
+     "sport": "WNBA",
+     "position": "F",
+     "projected_points": 41.8,
+     "std_dev": 9.9,
+     "salary_dk": 8200,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "wnba|dal|arikeogunbowale",
+     "player_name": "Arike Ogunbowale",
+     "sport": "WNBA",
+     "position": "G",
+     "projected_points": 38.8,
+     "std_dev": 9.4,
+     "salary_dk": 8000,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "wnba|lv|kelseyplum",
+     "player_name": "Kelsey Plum",
+     "sport": "WNBA",
+     "position": "G",
+     "projected_points": 37.9,
+     "std_dev": 9.2,
+     "salary_dk": 7800,
+     "last_updated": "2026-07-14 02:01:51"
+    },
+    {
+     "master_player_id": "wnba|chi|angelreese",
+     "player_name": "Angel Reese",
+     "sport": "WNBA",
+     "position": "F",
+     "projected_points": 39.4,
+     "std_dev": 9.6,
+     "salary_dk": 7400,
+     "last_updated": "2026-07-14 02:01:51"
+    }
+   ],
+   "pickem": [],
+   "proj_refreshed": 10,
+   "lines_refreshed": 0,
+   "lines_source": "none"
+  }
+ ]
+}

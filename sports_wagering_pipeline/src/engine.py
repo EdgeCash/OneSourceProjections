@@ -168,6 +168,10 @@ def generate_optimal_pickem_slips(
                 "side": side,
                 "win_rate": win_rate,
                 "edge_vs_breakeven": round(win_rate - BREAK_EVEN, 4),
+                "proj_mean": round(ln["eff_mean"], 3) if ln["eff_mean"] is not None else None,
+                "proj_std": round(ln["eff_std"], 3) if ln["eff_std"] is not None else None,
+                "over_odds": ln["over_odds"],
+                "under_odds": ln["under_odds"],
                 "platform": platform,
             }
         )

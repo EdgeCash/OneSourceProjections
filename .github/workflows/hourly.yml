@@ -65,6 +65,16 @@ jobs:
             echo "===================== $SPORT ====================="
             PYTHONPATH=.. python -m src.app --mode both --sport "$SPORT" --source shared || true
           done
+          # Daily comparison workbook (Excel). Built once per day — on the 15:00
+          # UTC run, or on any manual --date run — from the same warm cache, so
+          # no extra API calls. openpyxl comes from the root requirements above;
+          # no Google Cloud, no service account, no secrets.
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" = "15" ] || [ -n "${{ inputs.date }}" ]; then
+            echo "building daily comparison workbook (data/output/latest.xlsx)"
+            PYTHONPATH=.. python -m src.export --sports MLB,WNBA --source shared \
+              --out data/output/latest.xlsx --json data/output/latest.json || true
+          fi
 
       - name: Commit data
         run: |
@@ -77,5 +87,7 @@ jobs:
           # run while the (committed) dedup state falsely records success — which
           # silently froze the MLB game log at the import cutoff (staleness bug).
           git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track
+          # daily comparison workbook (built once/day by the step above)
+          git add sports_wagering_pipeline/data/output/latest.xlsx sports_wagering_pipeline/data/output/latest.json
           git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"
           git push

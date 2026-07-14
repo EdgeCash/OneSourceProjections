@@ -45,11 +45,38 @@ python -m src.app --mode dfs  --sport WNBA  --source sample --budget 50000
 
 # PrizePicks slip only
 python -m src.app --mode pickem --sport MLB --platform PrizePicks
+
+# Daily Excel workbook across sports (the automated deliverable)
+python -m src.export --sports MLB,WNBA --source shared \
+    --out data/output/latest.xlsx --json data/output/latest.json
 ```
 
 Run **from the `sports_wagering_pipeline/` directory** so `python -m src.app`
 resolves the package. Add the repo root to `PYTHONPATH` (`PYTHONPATH=..`) so the
 shared source can import `project547`.
+
+## Automated daily Excel workbook
+
+The daily deliverable is a plain `.xlsx` at
+[`data/output/latest.xlsx`](data/output/latest.xlsx), built by `src/export.py`
+with openpyxl. **Excel, not Google Sheets, on purpose** — openpyxl is already a
+repo dependency, so this needs no Google Cloud project, service account, or
+secrets; the job just writes the file and commits it. Open it directly in Excel,
+or import/open it in Google Sheets if you want it there.
+
+Tabs:
+
+| tab | contents |
+| --- | --- |
+| `Summary` | one row per sport — lines source, DFS proj/salary, Pick'em count, top play, and the pipeline's API spend (always 0 external calls) |
+| `Pickem` | every viable play across sports — stat, line, side, win %, edge vs 54.3%, per-stat projection (mean/std), and real book odds |
+| `DFS` | the salary-cap lineups with per-sport totals |
+| `Run_Log` | the cache/source ledger (`request_count=0` = warm-cache read) |
+
+It is regenerated **once per day** inside `.github/workflows/hourly.yml` — on the
+15:00 UTC run (or any manual `--date` run) — from the same warm cache as the
+hourly step, so it adds no API calls, then committed to the repo at that stable
+path. A JSON sidecar (`latest.json`) is written alongside for programmatic use.
 
 ## Running alongside the main engine — no double API usage
 
