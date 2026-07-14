@@ -60,6 +60,10 @@ def init_db(conn: sqlite3.Connection) -> None:
             -- sample source, which falls back to player_projections.
             proj_mean         REAL,
             proj_std          REAL,
+            -- BettingPros "second opinion" for this line, JSON-encoded:
+            -- {bp_projection, bp_ev, bp_recommended, open_over, open_under,
+            --  public_pct_over}. Premium BP fields (auth=user); NULL otherwise.
+            extra_json        TEXT,
             last_updated      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -160,13 +164,14 @@ def upsert_market_line(
     under_odds: int = 0,
     proj_mean: float | None = None,
     proj_std: float | None = None,
+    extra_json: str | None = None,
 ) -> None:
     conn.execute(
         """
         INSERT INTO market_lines
             (line_id, master_player_id, stat_type, bookmaker, line_value,
-             over_odds, under_odds, proj_mean, proj_std, last_updated)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+             over_odds, under_odds, proj_mean, proj_std, extra_json, last_updated)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         ON CONFLICT(line_id) DO UPDATE SET
             master_player_id=excluded.master_player_id,
             stat_type=excluded.stat_type,
@@ -176,10 +181,11 @@ def upsert_market_line(
             under_odds=excluded.under_odds,
             proj_mean=excluded.proj_mean,
             proj_std=excluded.proj_std,
+            extra_json=excluded.extra_json,
             last_updated=CURRENT_TIMESTAMP
         """,
         (line_id, master_player_id, stat_type, bookmaker, line_value,
-         over_odds, under_odds, proj_mean, proj_std),
+         over_odds, under_odds, proj_mean, proj_std, extra_json),
     )
     conn.commit()
 

@@ -58,6 +58,8 @@ jobs:
       # from ever breaking the main data pipeline.
       - name: Comparison pipeline (reuses warm cache, no extra API calls)
         continue-on-error: true
+        # No API secrets on purpose: this consumes the warm cache only, proving
+        # the pipeline adds zero API calls on the hourly cadence.
         run: |
           pip install "pulp>=2.7"
           cd sports_wagering_pipeline
@@ -65,15 +67,29 @@ jobs:
             echo "===================== $SPORT ====================="
             PYTHONPATH=.. python -m src.app --mode both --sport "$SPORT" --source shared || true
           done
-          # Daily comparison workbook (Excel). Built once per day — on the 15:00
-          # UTC run, or on any manual --date run — from the same warm cache, so
-          # no extra API calls. openpyxl comes from the root requirements above;
-          # no Google Cloud, no service account, no secrets.
+
+      - name: Daily ready-to-play workbook (Excel)
+        continue-on-error: true
+        # Built once per day (15:00 UTC run or a manual --date run). This step
+        # DOES get the BP/FP/Odds keys so it can pull per-operator DFS lines and
+        # any in-season sport the hourly step didn't warm — cache-first, so the
+        # daily spend against the 5,000/day BP budget stays small. openpyxl comes
+        # from the root requirements; no Google Cloud, no Sheets secrets.
+        env:
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+          BP_PARTNER_KEY: ${{ secrets.BP_PARTNER_KEY }}
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_USER_KEY: ${{ secrets.BP_USER_KEY }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+        run: |
           HOUR=$(date -u +%H)
           if [ "$HOUR" = "15" ] || [ -n "${{ inputs.date }}" ]; then
-            echo "building daily comparison workbook (data/output/latest.xlsx)"
-            PYTHONPATH=.. python -m src.export --sports MLB,WNBA --source shared \
+            cd sports_wagering_pipeline
+            echo "building daily ready-to-play workbook (data/output/latest.xlsx)"
+            PYTHONPATH=.. python -m src.export --daily --source shared \
               --out data/output/latest.xlsx --json data/output/latest.json || true
+          else
+            echo "not the daily workbook hour ($HOUR UTC); skipping"
           fi
 
       - name: Commit data
