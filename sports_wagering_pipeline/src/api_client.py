@@ -75,16 +75,17 @@ def refresh_projections(
 def _load_projections(
     conn: sqlite3.Connection, sport: str, date: str | None, source: str
 ) -> tuple[list[dict], str]:
-    """Return (records, endpoint_label). Falls back to sample when shared data
-    is unavailable (project547 not importable, or an empty/offseason slate)."""
+    """Return (records, endpoint_label).
+
+    ``sample`` returns the offline slate. ``shared`` returns real FantasyPros
+    projections only (no sample fallback) — for sports FantasyPros doesn't cover
+    (e.g. WNBA), projections come from BettingPros' own numbers, populated per
+    line in ``_shared_market_lines``, so an empty FP result here is expected."""
     if source == "sample":
         return _sample_projections(sport), f"sample:projections:{sport}"
-
     records = _shared_projections(sport, date)
-    if records:
-        return records, f"shared:fantasypros:{sport}"
-    # Nothing in the shared cache (offseason, cold cache, or no project547).
-    return _sample_projections(sport), f"sample:fallback:{sport}"
+    return ((records, f"shared:fantasypros:{sport}") if records
+            else ([], f"shared:none:proj:{sport}"))
 
 
 def _fp_raw(sport: str, date: str | None) -> list[dict]:
@@ -293,19 +294,36 @@ def _shared_market_lines(
         if not name or not market:
             continue
         spec, index = _resolve_stat(sport, market, hitters, pitchers, hoops)
-        rec = index.get(_slug(name)) if spec else None
-        if not rec:
-            continue  # unmatched player/market — skip, never fabricate
-        fp_row, team = rec
+        if not spec:
+            continue
         label, mean_fn, kind = spec
-        mean = round(mean_fn(fp_row), 3)
+        extra = board.get((_slug(name), market)) or {}
+        rec = index.get(_slug(name))
+        anchor = False
+        if rec:                                   # FantasyPros projection (preferred)
+            fp_row, team = rec
+            mean = round(mean_fn(fp_row), 3)
+        elif extra.get("bp_projection") is not None:  # BettingPros' own projection
+            team = extra.get("player_team") or ""
+            mean = round(_num(extra["bp_projection"]), 3)
+            anchor = True
+        else:
+            continue  # no projection from FP or BP — skip, never fabricate
         line_value = r.get("over_line")
         if line_value is None:
             line_value = r.get("under_line")
         if line_value is None or mean <= 0:
             continue
         mid = db_manager.master_id(conn, name, team, sport)
-        extra = board.get((_slug(name), market))
+        std = round(_stat_std(mean, kind), 3)
+        if anchor:
+            # No FP row exists for this sport (e.g. WNBA); anchor a projection
+            # row so the market line joins and the player name resolves. The
+            # per-stat mean lives on the line (proj_mean), so this row's
+            # projected_points is just a join anchor.
+            db_manager.upsert_projection(
+                conn, master_player_id=mid, player_name=name, sport=sport,
+                position="UTIL", projected_points=0.0, std_dev=0.0, salary_dk=0)
         out.append(
             {
                 "line_id": f"{platform}:{mid}:{market}",
@@ -316,7 +334,7 @@ def _shared_market_lines(
                 "over_odds": int(r.get("over_odds") or 0),
                 "under_odds": int(r.get("under_odds") or 0),
                 "proj_mean": mean,
-                "proj_std": round(_stat_std(mean, kind), 3),
+                "proj_std": std,
                 "extra_json": json.dumps(extra) if extra else None,
             }
         )
@@ -352,6 +370,7 @@ def _bp_board_index(sport: str, date: str | None) -> dict:
         if not market:
             continue
         idx[(_slug(name), market)] = {
+            "player_team": r.get("player_team"),         # for sports FP misses
             "bp_line": r.get("bp_line"),                 # sharp consensus line
             "bp_projection": r.get("bp_projection"),
             "bp_ev": r.get("bp_ev"),
