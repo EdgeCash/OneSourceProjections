@@ -264,6 +264,20 @@ and the engine never disagree. The hourly job rebuilds it into
 the dashboard download button builds it fresh on demand. Build manually with
 `python scripts/build_workbook.py`. Full design notes: [`docs/WORKBOOK.md`](docs/WORKBOOK.md).
 
+## Comparison pipeline — daily Excel workbook
+
+A separate, flat A/B pipeline (`sports_wagering_pipeline/`) runs beside the main
+engine as a performance/architecture comparison: a SQLite-cached ingest, a PuLP
+salary-cap DFS optimizer, and a CDF-based Pick'em +EV engine. It reuses the main
+engine's **warm** FantasyPros/BettingPros cache (keyless, cache-hit only), so it
+adds **zero** API calls, and the hourly job rebuilds its own Excel workbook once
+a day (best-effort; it can never sink the run).
+
+**⬇️ [Download the latest comparison workbook (`latest.xlsx`)](https://github.com/EdgeCash/OneSourceProjections/raw/main/sports_wagering_pipeline/data/output/latest.xlsx)**
+— tabs: Summary, Pickem (line, side, win %, edge vs 54.3%, per-stat projection,
+book odds), DFS lineups, and a cache/source Run Log. Details:
+[`sports_wagering_pipeline/README.md`](sports_wagering_pipeline/README.md).
+
 ## Per-sport game models
 
 MLB has its own richer pipeline (Statcast, xFIP, park factors → Poisson Monte

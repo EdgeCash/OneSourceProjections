@@ -69,6 +69,21 @@ def _copy_pwa_assets() -> None:
         if f.is_file():
             _sh.copy2(f, OUT / f.name)
 
+
+# Comparison pipeline's daily Excel workbook — copied into the site so the
+# sidebar can offer a same-origin download (works even when the repo is private).
+WORKBOOK_SRC = ROOT / "sports_wagering_pipeline" / "data" / "output" / "latest.xlsx"
+
+
+def _copy_comparison_workbook() -> None:
+    """Copy the comparison workbook into the site (best-effort)."""
+    import shutil as _sh
+    try:
+        if WORKBOOK_SRC.exists():
+            _sh.copy2(WORKBOOK_SRC, OUT / "comparison.xlsx")
+    except Exception:
+        pass
+
 NAV_SPORTS = [s for s in ("MLB", "WNBA", "NBA", "NFL", "NCAAF", "NHL", "MLS", "ATP")
               if s in SPORTS]
 MATCH_MODEL_SPORTS = {"MLS", "EPL", "ATP", "WTA"}
@@ -823,6 +838,10 @@ def _nav(active: str, active_sports: list) -> str:
         f'<a href="{href}" class="{"active" if key == active else ""}">'
         f'{html.escape(label)}</a>'
         for key, label, href in items)
+    # Same-origin download of the comparison pipeline's daily workbook, when built.
+    if (OUT / "comparison.xlsx").exists():
+        links += ('<a href="comparison.xlsx" class="wb" download '
+                  'title="Daily comparison pipeline workbook (Excel)">⬇ Workbook</a>')
     return (f'<aside class="sb"><div class="osp-logo"><span class="mk">◈</span>'
             f'<span class="osp-brand">360Five</span></div><nav>{links}</nav>'
             f'<div class="osp-acct"><span class="av">E</span>'
@@ -1370,6 +1389,7 @@ def main() -> int:
     shutil.rmtree(OUT, ignore_errors=True)  # never leave a dropped sport's stale page
     OUT.mkdir(parents=True, exist_ok=True)
     _copy_pwa_assets()   # manifest, sw.js, icons -> installable home-screen app
+    _copy_comparison_workbook()   # comparison pipeline's daily .xlsx (sidebar link)
     plays_body = _plays_board(day, active_sports) + _ai_curated_section(ai_cur)
     plays_html = _page("plays", "Plays", gen, plays_body, active_sports)
     (OUT / "plays.html").write_text(plays_html)
