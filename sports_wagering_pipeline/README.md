@@ -80,6 +80,42 @@ lines and any in-season sport the hourly step didn't warm. It stays cache-first
 and once-a-day, so the spend against the **5,000/day** BettingPros budget is
 small. A JSON sidecar (`latest.json`) is written alongside.
 
+## The edge engine — our math on top of BP/FP (`src/edge.py`)
+
+Each pick is not one model's guess — it's an **ensemble** shrunk toward the sharp
+market so no single overconfident source runs away with it. Four independent
+views are fused:
+
+| signal | source |
+| --- | --- |
+| `model` | our FantasyPros-driven per-stat Normal CDF at the DFS line |
+| `bp` | BettingPros' own projection probability (premium `auth=user` field) |
+| `form` | the player's recent over-rate (BP L10 performance window) |
+| `market` | the **de-vigged sharp consensus** probability |
+
+The blended probability is then **market-anchored** (pulled ~35% toward the
+de-vigged market), which is what curbs the model's tail overconfidence. From that
+we compute, per pick:
+
+- **Win%** — the calibrated ensemble probability (vs **Model%**, our model alone);
+- **Edge vs Mkt** — how much we beat the de-vigged sharp number (the real edge);
+- **Line edge** — the soft-line gap: how far the DFS operator's line sits off the
+  sharp consensus line *in our favour* (a half-strikeout of free ground is edge
+  you can see);
+- **Agree** — how many of the four signals back our side;
+- **Confidence (0–100)** — a transparent composite of edge-vs-market, agreement,
+  soft-line gap, and BP's bet rating. **Operator tabs are ranked by Confidence.**
+
+### Graded on closing-line value
+
+Every pick'em play is appended to a committed track record,
+[`data/output/picks_history.jsonl`](data/output/picks_history.jsonl) (deduped by
+slate date), with `closing_line` / `clv` / `result` fields reserved for grading.
+CLV is the honest scoreboard: if our picked number consistently beats the closing
+line, the edge is real regardless of any single day's variance. The grader that
+fills those fields is the next build. **Personal research — not financial advice;
+no system guarantees profit.**
+
 ## Running alongside the main engine — no double API usage
 
 Both models run on the **existing hourly schedule with one set of API calls**.

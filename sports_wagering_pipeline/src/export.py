@@ -106,7 +106,7 @@ def collect_operators(conn, date, sports, source, per_op: int = 25) -> dict:
             api_client.refresh_market_lines(conn, sport, op, source=source, date=date)
             plays += engine.generate_optimal_pickem_slips(
                 sport, op, conn=conn, limit=per_op * 2)
-        plays.sort(key=lambda p: p["win_rate"], reverse=True)
+        plays.sort(key=lambda p: p["confidence"], reverse=True)
         operators[op] = plays[:per_op]
     return operators
 
@@ -248,47 +248,54 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
     row = _title(ws, "Daily Plays — ready to play",
                  f"generated {payload['generated_at']}  |  slate {payload.get('date')}"
                  f"  |  source: {payload['source']}")
-    headers = ["Tab", "Plays", "Top play", "Top win%"]
+    headers = ["Tab", "Plays", "Top play", "Top conf / EV"]
     rows = []
     for op, plays in payload["operators"].items():
         top = plays[0] if plays else None
         rows.append([op, len(plays),
                      f"{top['player_name']} {top['stat_type']} {top['side']} "
                      f"{top['line_value']}" if top else "-",
-                     top["win_rate"] if top else None])
+                     top["confidence"] if top else None])
     gp = payload["game_plays"]
     rows.append(["Game Plays", len(gp),
                  f"{gp[0]['selection']} ({gp[0]['market']})" if gp else "-",
-                 gp[0]["ev"] if gp else None])
-    end = _write_table(ws, row, headers, rows, fmts={4: PCT})
+                 f"{gp[0]['ev'] * 100:.1f}% EV" if gp else None])
+    end = _write_table(ws, row, headers, rows)
     ws.cell(row=end + 1, column=1,
-            value="Highest win probability first. Pick'em break-even ~54.3%. "
-                  "BP = BettingPros second opinion. Not financial advice.")
-    _autosize(ws, {1: 14, 2: 8, 3: 40, 4: 10})
+            value="Ranked by Confidence: our ensemble (model + BettingPros + "
+                  "recent form) anchored to the sharp market, plus edge-vs-market, "
+                  "signal agreement, and soft-line gap. Graded on closing-line "
+                  "value. Personal research — not financial advice.")
+    _autosize(ws, {1: 14, 2: 8, 3: 40, 4: 14})
 
     # --- One tab per DFS operator -----------------------------------------
-    op_headers = ["#", "Sport", "Player", "Stat", "Line", "Side", "Win%",
-                  "Edge", "Our proj", "BP EV", "BP rec", "Pub% O", "Odds (O/U)"]
+    op_headers = ["#", "Sport", "Player", "Stat", "Line", "Side", "Conf",
+                  "Win%", "Model%", "Edge vs Mkt", "Line edge", "Agree",
+                  "BP EV", "BP★", "L10% O", "Odds (O/U)"]
+    SIGNED = "+0.0;-0.0;0"
     for op, plays in payload["operators"].items():
         ws = wb.create_sheet(op[:31])
         row = _title(ws, f"{op} — pick'em board",
-                     "ranked by model win probability; play the highest first")
+                     "ranked by our Confidence (ensemble edge vs the sharp "
+                     "market + signal agreement + soft-line gap). Play the top.")
         rows = []
         for i, p in enumerate(plays, 1):
             rows.append([
                 i, p["sport"], p["player_name"], p["stat_type"], p["line_value"],
-                p["side"], p["win_rate"], p["edge_vs_breakeven"],
-                p.get("proj_mean"), p.get("bp_ev"),
-                (p.get("bp_recommended") or ""), p.get("public_pct_over"),
+                p["side"], p.get("confidence"), p["win_rate"], p.get("model_win"),
+                p.get("edge_vs_market"), p.get("line_edge"),
+                f"{p.get('agreement', 0)}/{p.get('n_signals', 0)}",
+                p.get("bp_ev"), p.get("bet_rating"), p.get("form_l10"),
                 _odds_str(p.get("over_odds"), p.get("under_odds")),
             ])
         if not rows:
             ws.cell(row=row, column=1, value="No plays for this operator today.")
         else:
             _write_table(ws, row, op_headers, rows,
-                         fmts={5: NUM, 7: PCT, 8: EDGE, 9: NUM, 10: EDGE, 12: PCT})
-        _autosize(ws, {1: 4, 2: 6, 3: 22, 4: 14, 5: 6, 6: 6, 7: 8, 8: 8,
-                       9: 9, 10: 8, 11: 8, 12: 7, 13: 16})
+                         fmts={5: NUM, 7: "0", 8: PCT, 9: PCT, 10: EDGE,
+                               11: SIGNED, 13: EDGE, 14: "0.0", 15: PCT})
+        _autosize(ws, {1: 4, 2: 6, 3: 22, 4: 13, 5: 6, 6: 6, 7: 6, 8: 8, 9: 8,
+                       10: 11, 11: 9, 12: 7, 13: 8, 14: 6, 15: 8, 16: 15})
 
     # --- Game Plays --------------------------------------------------------
     ws = wb.create_sheet("Game Plays")
@@ -316,6 +323,51 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
     out_path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(str(out_path))
     return out_path
+
+
+# --------------------------------------------------------------------------- #
+# Picks history — the track record (foundation for closing-line-value grading)
+# --------------------------------------------------------------------------- #
+def append_picks_history(payload: dict, path: str | Path) -> int:
+    """Append the day's pick'em plays to a committed JSONL, deduped by slate
+    date, so the CLV track record accrues from day one. The grader (next build)
+    reads this and scores each pick's line against the closing line.
+    """
+    path = Path(path)
+    date = payload.get("date") or ""
+    stamp = payload["generated_at"]
+    new_rows = []
+    for op, plays in payload["operators"].items():
+        for p in plays:
+            new_rows.append({
+                "date": date, "logged_at": stamp, "operator": op,
+                "sport": p["sport"], "player": p["player_name"],
+                "stat": p["stat_type"], "line": p["line_value"], "side": p["side"],
+                "win_rate": p["win_rate"], "model_win": p.get("model_win"),
+                "confidence": p.get("confidence"),
+                "edge_vs_market": p.get("edge_vs_market"),
+                "line_edge": p.get("line_edge"), "consensus_line": p.get("consensus_line"),
+                "over_odds": p.get("over_odds"), "under_odds": p.get("under_odds"),
+                "bp_ev": p.get("bp_ev"), "bp_recommended": p.get("bp_recommended"),
+                # graded later:
+                "closing_line": None, "closing_over_odds": None,
+                "closing_under_odds": None, "clv": None, "result": None,
+            })
+    existing = []
+    if path.exists():
+        for ln in path.read_text().splitlines():
+            if not ln.strip():
+                continue
+            try:
+                row = json.loads(ln)
+            except ValueError:
+                continue
+            if row.get("date") != date:      # replace this slate's block on re-run
+                existing.append(row)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(json.dumps(r, default=str)
+                              for r in existing + new_rows) + "\n")
+    return len(new_rows)
 
 
 # --------------------------------------------------------------------------- #
@@ -351,8 +403,11 @@ def main(argv: list[str] | None = None) -> int:
             "operators": operators, "game_plays": gp,
         }
         out = write_workbook(payload, logs, args.out)
+        hist = append_picks_history(
+            payload, Path(args.out).parent / "picks_history.jsonl")
         msg = f"wrote {out} ({sum(len(v) for v in operators.values())} pick'em plays, " \
-              f"{len(gp)} game plays across {', '.join(sports)})"
+              f"{len(gp)} game plays across {', '.join(sports)}; " \
+              f"logged {hist} picks to history)"
         if args.json:
             jp = Path(args.json)
             jp.parent.mkdir(parents=True, exist_ok=True)
