@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-13T19:02:53.621700-04:00",
+ "generated_at": "2026-07-13T20:02:06.228878-04:00",
  "primary_date": "2026-07-13",
  "dates": [
   "2026-07-13",
@@ -11,6 +11,30 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "JoJo Romero takes loss vs. Braves",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:55:45"
+     },
+     {
+      "title": "Dustin May's shaky command puts Cardinals in early hole",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:38:44"
+     },
+     {
+      "title": "Shohei Ohtani homers, doubles, but Dodgers fall short vs. Arizona",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:34:49"
+     },
+     {
+      "title": "Edgardo Henriquez tagged with blown save, loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:28:04"
+     },
      {
       "title": "Emmet Sheehan fans seven but Dodgers fall short",
       "body": "",
@@ -76,30 +100,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 15:05:22"
-     },
-     {
-      "title": "Bruce Zimmerman sent to Triple-A ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:58:27"
-     },
-     {
-      "title": "Ha-Seong Kim (finger) will start a rehab assignment Monday ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:52:17"
-     },
-     {
-      "title": "Ronald Acuna Jr. (hamstring) beginning rehab assignment ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:40:08"
-     },
-     {
-      "title": "Shane Baz racks up 9 Ks but can't finish five in win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:20:10"
      }
     ],
     "injuries": [
@@ -1154,43 +1154,8 @@
       "note": ""
      },
      {
-      "player": "Nate Isler",
-      "norm": "nate isler",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tazwell Butler",
-      "norm": "tazwell butler",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Grant Fontenot",
-      "norm": "grant fontenot",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ian Korn",
-      "norm": "ian korn",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Conner Griffin",
-      "norm": "conner griffin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Bilka",
-      "norm": "ryan bilka",
+      "player": "Camden Johnson",
+      "norm": "camden johnson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1203,8 +1168,8 @@
       "note": ""
      },
      {
-      "player": "Camden Johnson",
-      "norm": "camden johnson",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1217,8 +1182,22 @@
       "note": ""
      },
      {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Jayden Lobliner",
       "norm": "jayden lobliner",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1233,6 +1212,13 @@
      {
       "player": "Nick Williams",
       "norm": "nick williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ben Zeigler-Namoa",
+      "norm": "ben zeigler-namoa",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1259,36 +1245,15 @@
       "note": ""
      },
      {
+      "player": "Ryan Bilka",
+      "norm": "ryan bilka",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Chase Meyer",
       "norm": "chase meyer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tai Jones",
-      "norm": "tai jones",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Damian Ruiz",
-      "norm": "damian ruiz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ben Zeigler-Namoa",
-      "norm": "ben zeigler-namoa",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1329,6 +1294,13 @@
       "note": ""
      },
      {
+      "player": "Conner Griffin",
+      "norm": "conner griffin",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Tanner Sagouspe",
       "norm": "tanner sagouspe",
       "team": "",
@@ -1364,6 +1336,13 @@
       "note": ""
      },
      {
+      "player": "Dominic Mauro",
+      "norm": "dominic mauro",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Mason Steele",
       "norm": "mason steele",
       "team": "",
@@ -1378,6 +1357,13 @@
       "note": ""
      },
      {
+      "player": "Ian Korn",
+      "norm": "ian korn",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Kaleb LaFavor",
       "norm": "kaleb lafavor",
       "team": "",
@@ -1385,8 +1371,43 @@
       "note": ""
      },
      {
+      "player": "Luke Craytor",
+      "norm": "luke craytor",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Lance Williams",
+      "norm": "lance williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jake Bennett",
+      "norm": "jake bennett",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Nic Tolbert",
       "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1420,15 +1441,22 @@
       "note": ""
      },
      {
-      "player": "Luke Alwood",
-      "norm": "luke alwood",
+      "player": "Bryce Chance",
+      "norm": "bryce chance",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Dominic Mauro",
-      "norm": "dominic mauro",
+      "player": "Reece Moroney",
+      "norm": "reece moroney",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Luke Alwood",
+      "norm": "luke alwood",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1441,6 +1469,13 @@
       "note": ""
      },
      {
+      "player": "Matt Scott",
+      "norm": "matt scott",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Martin Shelar",
       "norm": "martin shelar",
       "team": "",
@@ -1448,22 +1483,15 @@
       "note": ""
      },
      {
-      "player": "Luke Craytor",
-      "norm": "luke craytor",
+      "player": "Robert Omidi",
+      "norm": "robert omidi",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Lance Williams",
-      "norm": "lance williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jake Bennett",
-      "norm": "jake bennett",
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1471,34 +1499,6 @@
      {
       "player": "Tanner Marsh",
       "norm": "tanner marsh",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Katz",
-      "norm": "chris katz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Pruitt",
-      "norm": "ryan pruitt",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Bryce Chance",
-      "norm": "bryce chance",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Reece Moroney",
-      "norm": "reece moroney",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1524,20 +1524,20 @@
       "home_ml_p_used": 0.668753,
       "home_ml_fair": null,
       "total_line": 182.5,
-      "over_odds": 108.0,
-      "under_odds": 113.0,
+      "over_odds": 117.0,
+      "under_odds": 103.0,
       "model_over_prob": 0.4848,
       "over_ev": null,
       "under_ev": null,
       "over_p_used": 0.4847500404119037,
       "over_p_push": 0.0,
-      "spread_home_line": -9.5,
-      "spread_home_odds": 104.0,
-      "spread_away_odds": 115.0,
-      "model_home_cover": 0.3905,
+      "spread_home_line": -10.5,
+      "spread_home_odds": -102.0,
+      "spread_away_odds": 117.0,
+      "model_home_cover": 0.3607,
       "spread_home_ev": null,
       "spread_away_ev": null,
-      "spread_home_p_used": 0.39052431274296484,
+      "spread_home_p_used": 0.3606608556669979,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.681,
       "proj_total_pub": 181.85,
@@ -1562,16 +1562,16 @@
       "home_ml_p_used": 0.92045,
       "home_ml_fair": null,
       "total_line": 169.5,
-      "over_odds": 100.0,
-      "under_odds": 102.0,
+      "over_odds": -104.0,
+      "under_odds": 112.0,
       "model_over_prob": 0.53,
-      "over_ev": 0.0325,
-      "under_ev": -0.0228,
-      "over_p_used": 0.5162,
+      "over_ev": 0.0292,
+      "under_ev": 0.0076,
+      "over_p_used": 0.5247,
       "over_p_push": 0.0,
       "spread_home_line": -12.5,
-      "spread_home_odds": 113.0,
-      "spread_away_odds": 100.0,
+      "spread_home_odds": 118.0,
+      "spread_away_odds": -105.0,
       "model_home_cover": 0.4962,
       "spread_home_ev": null,
       "spread_away_ev": null,
@@ -2255,6 +2255,30 @@
     "error": "props unavailable (HTTPError: 404 Client Error: Not Found for url: https://statsapi.mlb.com/api/v1/teams/159/stats?stats=season&season=2026&group=hitting)",
     "news": [
      {
+      "title": "JoJo Romero takes loss vs. Braves",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:55:45"
+     },
+     {
+      "title": "Dustin May's shaky command puts Cardinals in early hole",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:38:44"
+     },
+     {
+      "title": "Shohei Ohtani homers, doubles, but Dodgers fall short vs. Arizona",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:34:49"
+     },
+     {
+      "title": "Edgardo Henriquez tagged with blown save, loss",
+      "body": "",
+      "player": "",
+      "when": "2026-07-13 23:28:04"
+     },
+     {
       "title": "Emmet Sheehan fans seven but Dodgers fall short",
       "body": "",
       "player": "",
@@ -2319,30 +2343,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-13 15:05:22"
-     },
-     {
-      "title": "Bruce Zimmerman sent to Triple-A ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:58:27"
-     },
-     {
-      "title": "Ha-Seong Kim (finger) will start a rehab assignment Monday ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:52:17"
-     },
-     {
-      "title": "Ronald Acuna Jr. (hamstring) beginning rehab assignment ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 14:40:08"
-     },
-     {
-      "title": "Shane Baz racks up 9 Ks but can't finish five in win",
-      "body": "",
-      "player": "",
-      "when": "2026-07-13 12:20:10"
      }
     ],
     "injuries": [
@@ -3397,43 +3397,8 @@
       "note": ""
      },
      {
-      "player": "Nate Isler",
-      "norm": "nate isler",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tazwell Butler",
-      "norm": "tazwell butler",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Grant Fontenot",
-      "norm": "grant fontenot",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ian Korn",
-      "norm": "ian korn",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Conner Griffin",
-      "norm": "conner griffin",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Bilka",
-      "norm": "ryan bilka",
+      "player": "Camden Johnson",
+      "norm": "camden johnson",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3446,8 +3411,8 @@
       "note": ""
      },
      {
-      "player": "Camden Johnson",
-      "norm": "camden johnson",
+      "player": "Josh Volmerding",
+      "norm": "josh volmerding",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3460,8 +3425,22 @@
       "note": ""
      },
      {
+      "player": "Tai Jones",
+      "norm": "tai jones",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Jayden Lobliner",
       "norm": "jayden lobliner",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Damian Ruiz",
+      "norm": "damian ruiz",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3476,6 +3455,13 @@
      {
       "player": "Nick Williams",
       "norm": "nick williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ben Zeigler-Namoa",
+      "norm": "ben zeigler-namoa",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3502,36 +3488,15 @@
       "note": ""
      },
      {
+      "player": "Ryan Bilka",
+      "norm": "ryan bilka",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Chase Meyer",
       "norm": "chase meyer",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Josh Volmerding",
-      "norm": "josh volmerding",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Tai Jones",
-      "norm": "tai jones",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Damian Ruiz",
-      "norm": "damian ruiz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ben Zeigler-Namoa",
-      "norm": "ben zeigler-namoa",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3572,6 +3537,13 @@
       "note": ""
      },
      {
+      "player": "Conner Griffin",
+      "norm": "conner griffin",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Tanner Sagouspe",
       "norm": "tanner sagouspe",
       "team": "",
@@ -3607,6 +3579,13 @@
       "note": ""
      },
      {
+      "player": "Dominic Mauro",
+      "norm": "dominic mauro",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Mason Steele",
       "norm": "mason steele",
       "team": "",
@@ -3621,6 +3600,13 @@
       "note": ""
      },
      {
+      "player": "Ian Korn",
+      "norm": "ian korn",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Kaleb LaFavor",
       "norm": "kaleb lafavor",
       "team": "",
@@ -3628,8 +3614,43 @@
       "note": ""
      },
      {
+      "player": "Luke Craytor",
+      "norm": "luke craytor",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Lance Williams",
+      "norm": "lance williams",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Jake Bennett",
+      "norm": "jake bennett",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Nic Tolbert",
       "norm": "nic tolbert",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Chris Katz",
+      "norm": "chris katz",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Ryan Pruitt",
+      "norm": "ryan pruitt",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3663,15 +3684,22 @@
       "note": ""
      },
      {
-      "player": "Luke Alwood",
-      "norm": "luke alwood",
+      "player": "Bryce Chance",
+      "norm": "bryce chance",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Dominic Mauro",
-      "norm": "dominic mauro",
+      "player": "Reece Moroney",
+      "norm": "reece moroney",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
+      "player": "Luke Alwood",
+      "norm": "luke alwood",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3684,6 +3712,13 @@
       "note": ""
      },
      {
+      "player": "Matt Scott",
+      "norm": "matt scott",
+      "team": "",
+      "status": "UDP",
+      "note": ""
+     },
+     {
       "player": "Martin Shelar",
       "norm": "martin shelar",
       "team": "",
@@ -3691,22 +3726,15 @@
       "note": ""
      },
      {
-      "player": "Luke Craytor",
-      "norm": "luke craytor",
+      "player": "Robert Omidi",
+      "norm": "robert omidi",
       "team": "",
       "status": "UDP",
       "note": ""
      },
      {
-      "player": "Lance Williams",
-      "norm": "lance williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Jake Bennett",
-      "norm": "jake bennett",
+      "player": "Sean Fitzpatrick",
+      "norm": "sean fitzpatrick",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3714,34 +3742,6 @@
      {
       "player": "Tanner Marsh",
       "norm": "tanner marsh",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Katz",
-      "norm": "chris katz",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Ryan Pruitt",
-      "norm": "ryan pruitt",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Bryce Chance",
-      "norm": "bryce chance",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Reece Moroney",
-      "norm": "reece moroney",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3766,16 +3766,16 @@
       "away_ml_ev": -0.0744,
       "home_ml_p_used": 0.5463,
       "home_ml_fair": 0.505,
-      "total_line": 168.5,
-      "over_odds": 110.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.7046,
+      "total_line": 167.5,
+      "over_odds": 113.0,
+      "under_odds": 100.0,
+      "model_over_prob": 0.7246,
       "over_ev": null,
       "under_ev": null,
-      "over_p_used": 0.7045896324040164,
+      "over_p_used": 0.7245695517138792,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
-      "spread_home_odds": 106.0,
+      "spread_home_odds": 104.0,
       "spread_away_odds": 113.0,
       "model_home_cover": 0.4931,
       "spread_home_ev": null,
@@ -3804,21 +3804,21 @@
       "away_ml_ev": -0.0956,
       "home_ml_p_used": 0.5389,
       "home_ml_fair": 0.4902,
-      "total_line": 170.5,
-      "over_odds": -104.0,
+      "total_line": 171.5,
+      "over_odds": 100.0,
       "under_odds": 108.0,
-      "model_over_prob": 0.6118,
-      "over_ev": 0.1048,
-      "under_ev": -0.0916,
-      "over_p_used": 0.5632,
+      "model_over_prob": 0.5891,
+      "over_ev": 0.0989,
+      "under_ev": -0.0629,
+      "over_p_used": 0.5495,
       "over_p_push": 0.0,
-      "spread_home_line": -1.5,
-      "spread_home_odds": 100.0,
+      "spread_home_line": 0.5,
+      "spread_home_odds": -106.0,
       "spread_away_odds": 104.0,
-      "model_home_cover": 0.5053,
-      "spread_home_ev": 0.0103,
-      "spread_away_ev": 0.0095,
-      "spread_home_p_used": 0.5051,
+      "model_home_cover": 0.5678,
+      "spread_home_ev": 0.0494,
+      "spread_away_ev": -0.0616,
+      "spread_home_p_used": 0.54,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.5524,
       "proj_total_pub": 175.33,
@@ -4442,5 +4442,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98948
+ "odds_api_credits": 98944
 }
