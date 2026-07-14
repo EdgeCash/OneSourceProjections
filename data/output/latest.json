@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-14T14:08:44.871997-04:00",
+ "generated_at": "2026-07-14T15:27:57.737791-04:00",
  "primary_date": "2026-07-14",
  "dates": [
   "2026-07-14",
@@ -1468,6 +1468,13 @@
       "note": ""
      },
      {
+      "player": "Nick Mears",
+      "norm": "nick mears",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
       "player": "Landon Koenig",
       "norm": "landon koenig",
       "team": "",
@@ -1620,13 +1627,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Kaleb LaFavor",
-      "norm": "kaleb lafavor",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -1642,12 +1642,12 @@
       "proj_total": 175.33,
       "home_win_prob": 0.5524,
       "away_win_prob": 0.4476,
-      "home_ml": 115,
-      "away_ml": -115,
-      "home_ml_ev": 0.1317,
-      "away_ml_ev": -0.1145,
-      "home_ml_p_used": 0.5264,
-      "home_ml_fair": 0.4651,
+      "home_ml": 113,
+      "away_ml": -113,
+      "home_ml_ev": 0.1258,
+      "away_ml_ev": -0.1114,
+      "home_ml_p_used": 0.5286,
+      "home_ml_fair": 0.4695,
       "total_line": 173.5,
       "over_odds": 108.0,
       "under_odds": 100.0,
@@ -1657,12 +1657,12 @@
       "over_p_used": 0.5165,
       "over_p_push": 0.0,
       "spread_home_line": 1.5,
-      "spread_home_odds": 100.0,
-      "spread_away_odds": 104.0,
+      "spread_home_odds": 104.0,
+      "spread_away_odds": -103.0,
       "model_home_cover": 0.5986,
-      "spread_home_ev": 0.1035,
-      "spread_away_ev": -0.0856,
-      "spread_home_p_used": 0.5518,
+      "spread_home_ev": 0.1117,
+      "spread_away_ev": -0.1032,
+      "spread_home_p_used": 0.545,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.5524,
       "proj_total_pub": 175.33,
@@ -1904,24 +1904,6 @@
       "player2_win_prob": 0.614,
       "p1_matches": 84,
       "p2_matches": 96,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
-      "match_id": "178772",
-      "match_time": "2026-07-14T19:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Alexander Blockx",
-      "player2": "Titouan Droguet",
-      "player1_win_prob": 0.575,
-      "player2_win_prob": 0.425,
-      "p1_matches": 54,
-      "p2_matches": 40,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -3314,6 +3296,13 @@
       "note": ""
      },
      {
+      "player": "Nick Mears",
+      "norm": "nick mears",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
       "player": "Landon Koenig",
       "norm": "landon koenig",
       "team": "",
@@ -3466,13 +3455,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Kaleb LaFavor",
-      "norm": "kaleb lafavor",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3527,26 +3509,26 @@
       "home_win_prob": 0.8242,
       "away_win_prob": 0.1758,
       "home_ml": -115,
-      "away_ml": 614,
+      "away_ml": 600,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.92045,
       "home_ml_fair": null,
       "total_line": 183.5,
       "over_odds": 100.0,
-      "under_odds": -108.0,
+      "under_odds": 108.0,
       "model_over_prob": 0.4988,
-      "over_ev": -0.0106,
-      "under_ev": -0.0268,
-      "over_p_used": 0.4947,
+      "over_ev": 0.0086,
+      "under_ev": 0.031,
+      "over_p_used": 0.5043,
       "over_p_push": 0.0,
       "spread_home_line": -12.5,
-      "spread_home_odds": -104.0,
-      "spread_away_odds": -104.0,
+      "spread_home_odds": 100.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.479,
-      "spread_home_ev": -0.0399,
-      "spread_away_ev": 0.0014,
-      "spread_home_p_used": 0.4895,
+      "spread_home_ev": -0.0161,
+      "spread_away_ev": 0.0364,
+      "spread_home_p_used": 0.492,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.8242,
       "proj_total_pub": 183.45,
@@ -3834,24 +3816,6 @@
       "market": null
      },
      {
-      "match_id": "178772",
-      "match_time": "2026-07-14T19:00Z",
-      "tournament": "Plava Laguna Croatia Open Umag",
-      "surface": "clay",
-      "player1": "Alexander Blockx",
-      "player2": "Titouan Droguet",
-      "player1_win_prob": 0.575,
-      "player2_win_prob": 0.425,
-      "p1_matches": 54,
-      "p2_matches": 40,
-      "p1_price": null,
-      "p2_price": null,
-      "p1_ev": null,
-      "p2_ev": null,
-      "kelly": null,
-      "market": null
-     },
-     {
       "match_id": "178792",
       "match_time": "2026-07-15T04:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
@@ -3974,5 +3938,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98916
+ "odds_api_credits": 98912
 }
