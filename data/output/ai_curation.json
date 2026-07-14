@@ -761,134 +761,173 @@
     "date": "2026-07-13"
   },
   "2026-07-14": {
-    "slate_note": "Thin, low-conviction slate: MLB is the All-Star exhibition with no edges, every ATP match lists win probabilities but no market prices so nothing can be graded, and both WNBA games (no game_id, expansion teams Fire/Tempo) show the model 5-10 pts over market on totals plus a >21% flagged over \u2014 that's model bias/missing news, not value. Zero plays is the honest call.",
+    "slate_note": "No priced game-level edges I can trust: the MLB game is an All-Star exhibition, ATP matches list probabilities with no market prices, and the only flagged edge (Toronto ML +12.6%) has no game_id to attach. Thin slate, zero plays.",
     "verdicts": {
       "823443": {
         "stance": "pass",
-        "rationale": "All-Star exhibition, 50/50, model concedes no edge clears the floor"
+        "rationale": "All-Star exhibition, coin-flip 50/50, no edge clears floor \u2014 unpredictable usage/effort, no bet."
       },
-      "178634": {
+      "178636": {
         "stance": "pass",
-        "rationale": "No market price given; 58% edge uncheckable"
+        "rationale": "50/50 model, no market price to value; nothing to bet."
       },
-      "178651": {
+      "178633": {
         "stance": "pass",
-        "rationale": "No odds listed, cannot price 60% projection"
+        "rationale": "54% lean but no odds given; can't confirm EV."
       },
-      "178649": {
+      "178637": {
         "stance": "pass",
-        "rationale": "Coin-flip 48/52 and no price"
+        "rationale": "Navone 63% fav but no price to test edge; pass."
       },
-      "178653": {
+      "178635": {
         "stance": "pass",
-        "rationale": "No market price to compute edge"
+        "rationale": "Darderi 66% but no market number to price the play."
       },
-      "178645": {
+      "178638": {
         "stance": "pass",
-        "rationale": "49/51 toss-up, no odds"
+        "rationale": "Near coin-flip, no odds; no actionable edge."
       },
-      "178652": {
+      "178639": {
         "stance": "pass",
-        "rationale": "No price; can't grade 62% favorite"
+        "rationale": "53/47 toss-up, no price; pass."
       },
-      "178650": {
+      "178641": {
         "stance": "pass",
-        "rationale": "No odds listed"
-      },
-      "178654": {
-        "stance": "pass",
-        "rationale": "No market price to value 60%"
-      },
-      "178627": {
-        "stance": "pass",
-        "rationale": "No odds; edge uncheckable"
-      },
-      "178648": {
-        "stance": "pass",
-        "rationale": "No price listed"
-      },
-      "178656": {
-        "stance": "pass",
-        "rationale": "50/50 and no odds"
-      },
-      "178730": {
-        "stance": "pass",
-        "rationale": "No market price given"
-      },
-      "178732": {
-        "stance": "pass",
-        "rationale": "No odds to grade 61%"
-      },
-      "178736": {
-        "stance": "pass",
-        "rationale": "52/48, no price"
-      },
-      "178727": {
-        "stance": "pass",
-        "rationale": "Toss-up, no odds"
-      },
-      "178743": {
-        "stance": "pass",
-        "rationale": "51/49, no market price"
-      },
-      "178735": {
-        "stance": "pass",
-        "rationale": "Close call, no odds listed"
-      },
-      "178726": {
-        "stance": "pass",
-        "rationale": "No price; 73% Faria uncheckable vs market"
+        "rationale": "Rublev 57% but no odds to establish value."
       },
       "178721": {
         "stance": "pass",
-        "rationale": "46/54, no odds"
+        "rationale": "54% lean, no market price; no bet."
       },
       "178723": {
         "stance": "pass",
-        "rationale": "No market price given"
+        "rationale": "Tabur 56% but no odds to price edge."
       },
-      "178768": {
+      "178720": {
         "stance": "pass",
-        "rationale": "51/49 coin flip, no odds"
+        "rationale": "Vacherot 59% fav, no market number given; pass."
       },
-      "178769": {
+      "178722": {
         "stance": "pass",
-        "rationale": "No price to value 66% Molcan"
+        "rationale": "Tsitsipas 56% but no price to confirm value."
       },
-      "178789": {
+      "178746": {
         "stance": "pass",
-        "rationale": "No odds listed"
+        "rationale": "Cerundolo 65% fav on clay, no odds to test EV."
+      },
+      "178728": {
+        "stance": "pass",
+        "rationale": "Bublik 61% but no market price given; pass."
       },
       "178766": {
         "stance": "pass",
-        "rationale": "47/53, no price"
-      },
-      "178787": {
-        "stance": "pass",
-        "rationale": "No market price for 62%"
-      },
-      "178791": {
-        "stance": "pass",
-        "rationale": "48/52, no odds"
+        "rationale": "53/47 toss-up, no odds; no edge."
       },
       "178771": {
         "stance": "pass",
-        "rationale": "50/50, no price"
+        "rationale": "56% lean, no price to value; pass."
       },
       "178772": {
         "stance": "pass",
-        "rationale": "No odds to grade 57%"
+        "rationale": "Blockx 57% but no market number provided."
       },
       "178792": {
         "stance": "pass",
-        "rationale": "No market price given for 69% favorite"
+        "rationale": "ADF 69% heavy fav but no odds \u2014 likely priced short; pass."
+      },
+      "178793": {
+        "stance": "pass",
+        "rationale": "Coin-flip, no price; nothing actionable."
       }
     },
     "top_plays": [],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 30,
-    "generated_at": "2026-07-13T22:47:42+00:00",
+    "game_count": 19,
+    "generated_at": "2026-07-14T17:18:36+00:00",
     "date": "2026-07-14"
+  },
+  "2026-07-15": {
+    "slate_note": "The ATP card carries model win probabilities but no market prices, so none of the 18 matches can be priced or bet \u2014 all pass. Only two thin WNBA totals edges are actionable.",
+    "verdicts": {
+      "178636": {
+        "stance": "pass",
+        "rationale": "Coinflip 50/50 and no market price to compare against."
+      },
+      "178633": {
+        "stance": "pass",
+        "rationale": "No market odds given; 46/54 lean is not tradable blind."
+      },
+      "178637": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178635": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178638": {
+        "stance": "pass",
+        "rationale": "No priced market; near-coinflip anyway."
+      },
+      "178639": {
+        "stance": "pass",
+        "rationale": "No priced market; 53/47 is noise without odds."
+      },
+      "178641": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178721": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178723": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178720": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178722": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178746": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178728": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178766": {
+        "stance": "pass",
+        "rationale": "No priced market; near-coinflip."
+      },
+      "178771": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178772": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178792": {
+        "stance": "pass",
+        "rationale": "No priced market to measure edge against."
+      },
+      "178793": {
+        "stance": "pass",
+        "rationale": "No priced market; near-coinflip."
+      }
+    },
+    "top_plays": [],
+    "model": "claude-opus-4-8",
+    "mode": "standard",
+    "game_count": 18,
+    "generated_at": "2026-07-14T17:18:36+00:00",
+    "date": "2026-07-15"
   }
 }
