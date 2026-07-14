@@ -123,10 +123,19 @@ push). The workbook's **Track Record** tab summarizes it:
   who's right? That's the direct test of whether this beats tailing BP.
 
 The record grades in with a natural one-day lag (games must finish first) and
-accrues automatically. Next layer: closing-line-value grading of the Game Plays
-against `data/history/closing_lines`. **Personal research — not financial advice;
-no system guarantees profit; a hot or cold stretch proves nothing — the process
-does.**
+accrues automatically.
+
+### Closing-line value on the Game Plays
+
+Game plays are logged with the price we took (`data/output/game_history.jsonl`)
+and graded by `src/clv.py` against the **closing consensus** read from the
+committed closing lines (`data/history/closing_lines/<sport>/<season>.jsonl.gz`).
+For each pick we record the closing odds, the CLV (how much our price beat the
+close), and the line movement in our favour; the Track Record tab shows the
+**beat-the-close rate** and **average CLV**. CLV is the lowest-variance edge
+signal — beating the close consistently is real edge even before results land.
+**Personal research — not financial advice; no system guarantees profit; a hot
+or cold stretch proves nothing — the process does.**
 
 ## Running alongside the main engine — no double API usage
 
