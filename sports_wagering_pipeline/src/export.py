@@ -25,7 +25,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from . import api_client, db_manager, engine
+from . import api_client, db_manager, engine, grade
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -311,6 +311,45 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
                      rows, fmts={5: ODDS, 6: PCT, 7: EDGE})
     _autosize(ws, {1: 6, 2: 34, 3: 10, 4: 22, 5: 7, 6: 8, 7: 8, 8: 20})
 
+    # --- Track Record ------------------------------------------------------
+    tr = payload.get("track_record")
+    if tr is not None:
+        ws = wb.create_sheet("Track Record")
+        row = _title(ws, "Track Record",
+                     "graded on actual results — higher Confidence should hit "
+                     "more, and we should beat BP when we disagree")
+        if not tr.get("graded"):
+            ws.cell(row=row, column=1,
+                    value=f"No graded picks yet — {tr.get('pending', 0)} pending "
+                          "until games are final.")
+        else:
+            ov = tr["overall"]
+
+            def _pct(v):
+                return "-" if v is None else f"{v:.1%}"
+
+            ws.cell(row=row, column=1,
+                    value=f"Overall: {ov['w']}-{ov['l']}-{ov['p']}  |  Hit "
+                          f"{_pct(ov['hit'])}  |  vs 54.3% break-even: "
+                          f"{'-' if ov['hit'] is None else format(ov['hit'] - 0.543, '+.1%')}"
+                          f"  ({ov['n']} graded)")
+            row += 2
+            row = _write_table(ws, row, ["Confidence", "N", "W", "L", "Hit%"],
+                               [[b["bucket"], b["n"], b["w"], b["l"], b["hit"]]
+                                for b in tr["by_confidence"]], fmts={5: PCT})
+            row += 1
+            row = _write_table(ws, row, ["Operator", "N", "W", "L", "Hit%"],
+                               [[o["operator"], o["n"], o["w"], o["l"], o["hit"]]
+                                for o in tr["by_operator"]], fmts={5: PCT})
+            row += 1
+            vb = tr["vs_bp"]
+            _write_table(ws, row, ["vs BettingPros", "N", "W", "L", "Hit%"],
+                         [["Agreed with BP", vb["agree"]["n"], vb["agree"]["w"],
+                           vb["agree"]["l"], vb["agree"]["hit"]],
+                          ["Disagreed with BP", vb["disagree"]["n"], vb["disagree"]["w"],
+                           vb["disagree"]["l"], vb["disagree"]["hit"]]], fmts={5: PCT})
+        _autosize(ws, {1: 20, 2: 6, 3: 6, 4: 6, 5: 8})
+
     # --- Run_Log -----------------------------------------------------------
     ws = wb.create_sheet("Run_Log")
     row = _title(ws, "Run Log", "cache/source ledger — real BP/FP spend is "
@@ -402,12 +441,14 @@ def main(argv: list[str] | None = None) -> int:
             "daily_budget": api_client.DAILY_BUDGET,
             "operators": operators, "game_plays": gp,
         }
+        hist_path = Path(args.out).parent / "picks_history.jsonl"
+        hist = append_picks_history(payload, hist_path)
+        graded = grade.grade_history(hist_path)       # grade any now-final games
+        payload["track_record"] = grade.summarize(hist_path)
         out = write_workbook(payload, logs, args.out)
-        hist = append_picks_history(
-            payload, Path(args.out).parent / "picks_history.jsonl")
         msg = f"wrote {out} ({sum(len(v) for v in operators.values())} pick'em plays, " \
-              f"{len(gp)} game plays across {', '.join(sports)}; " \
-              f"logged {hist} picks to history)"
+              f"{len(gp)} game plays across {', '.join(sports)}; logged {hist} picks, " \
+              f"graded {graded['graded']} ({graded['wins']}-{graded['losses']}-{graded['pushes']}))"
         if args.json:
             jp = Path(args.json)
             jp.parent.mkdir(parents=True, exist_ok=True)

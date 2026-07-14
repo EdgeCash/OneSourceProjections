@@ -106,15 +106,27 @@ we compute, per pick:
 - **Confidence (0–100)** — a transparent composite of edge-vs-market, agreement,
   soft-line gap, and BP's bet rating. **Operator tabs are ranked by Confidence.**
 
-### Graded on closing-line value
+### Graded on actual results — the Track Record
 
 Every pick'em play is appended to a committed track record,
 [`data/output/picks_history.jsonl`](data/output/picks_history.jsonl) (deduped by
-slate date), with `closing_line` / `clv` / `result` fields reserved for grading.
-CLV is the honest scoreboard: if our picked number consistently beats the closing
-line, the edge is real regardless of any single day's variance. The grader that
-fills those fields is the next build. **Personal research — not financial advice;
-no system guarantees profit.**
+slate date). Each daily build then runs the **grader** (`src/grade.py`), which
+looks up each past pick's *actual* stat in the repo's committed player game logs
+(`data/history/playerlogs/<sport>.jsonl`) and fills in `result` (win / loss /
+push). The workbook's **Track Record** tab summarizes it:
+
+- overall record and hit % vs the 54.3% break-even;
+- **hit % by Confidence bucket** — the model is calibrated if higher confidence
+  really does hit more;
+- hit % **by operator**;
+- **head-to-head vs BettingPros' recommended side** — when we disagree with BP,
+  who's right? That's the direct test of whether this beats tailing BP.
+
+The record grades in with a natural one-day lag (games must finish first) and
+accrues automatically. Next layer: closing-line-value grading of the Game Plays
+against `data/history/closing_lines`. **Personal research — not financial advice;
+no system guarantees profit; a hot or cold stretch proves nothing — the process
+does.**
 
 ## Running alongside the main engine — no double API usage
 
