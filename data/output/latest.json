@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-15T15:21:49.860466-04:00",
+ "generated_at": "2026-07-15T17:06:26.253921-04:00",
  "primary_date": "2026-07-15",
  "dates": [
   "2026-07-15",
@@ -12,94 +12,94 @@
     "props": [],
     "news": [
      {
-      "title": "Colton Gordon traded to Brewers ",
+      "title": "Pavin Smith outrighted by Diamondbacks ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:57:59"
+      "when": "2026-07-15 20:39:07"
      },
      {
-      "title": "Lance McCullers Jr. traded to Brewers ",
+      "title": "Keegan Akin undergoes elbow reconstruction surgery",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:53:45"
+      "when": "2026-07-15 20:38:53"
      },
      {
-      "title": "Drew Millas (finger) placed on IL",
+      "title": "Paul Skenes to start Sunday for Pirates ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:51:43"
+      "when": "2026-07-15 20:35:04"
      },
      {
-      "title": "Max Kranick activated from 60-day IL",
+      "title": "Braxton Ashcraft to start Saturday for Pirates",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:50:49"
+      "when": "2026-07-15 20:33:31"
      },
      {
-      "title": "Harry Ford to be called up after All-Star break",
+      "title": "Jadyn Fielder traded to Astros",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:49:44"
+      "when": "2026-07-15 20:33:14"
      },
      {
-      "title": "Nick Mears (shoulder) transferred to 60-day IL",
+      "title": "Jared Jones to start Friday for Pirates ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:56:27"
+      "when": "2026-07-15 20:32:19"
      },
      {
-      "title": "Easton McGee acquired by Royals",
+      "title": "Robbie Ray to start Sunday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:53:56"
+      "when": "2026-07-15 20:29:31"
      },
      {
-      "title": "Nate Eaton optioned to Triple-A",
+      "title": "Logan Webb to start Saturday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:39:15"
+      "when": "2026-07-15 20:27:34"
      },
      {
-      "title": "Jahmai Jones traded to Red Sox",
+      "title": "Grant Holmes to start Sunday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:37:23"
+      "when": "2026-07-15 20:27:09"
      },
      {
-      "title": "Nick Raquet optioned to Triple-A",
+      "title": "Landen Roupp to start Friday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:34:56"
+      "when": "2026-07-15 20:25:34"
      },
      {
-      "title": "Junior Caminero (hand) has X-rays return negative ",
+      "title": "Owen Murphy to start Saturday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-15 01:59:24"
+      "when": "2026-07-15 20:25:01"
      },
      {
-      "title": "Jacob Misiorowski, Brewers have not began extension talks",
+      "title": "Chris Sale to start Friday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-14 01:04:42"
+      "when": "2026-07-15 20:22:59"
      },
      {
-      "title": "Daulton Varsho swipes base in loss to Padres",
+      "title": "Sean Burke to start Sunday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:28:42"
+      "when": "2026-07-15 20:22:50"
      },
      {
-      "title": "Ernie Clement goes yard in loss to Padres",
+      "title": "Davis Martin to start Saturday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:25:20"
+      "when": "2026-07-15 20:21:35"
      },
      {
-      "title": "Kevin Gausman labors through six in loss to Padres",
+      "title": "Anthony Kay to start Friday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:21:51"
+      "when": "2026-07-15 20:19:50"
      }
     ],
     "injuries": [
@@ -1140,6 +1140,13 @@
       "note": ""
      },
      {
+      "player": "Tommy Troy",
+      "norm": "tommy troy",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
       "player": "Drew Millas",
       "norm": "drew millas",
       "team": "",
@@ -1495,13 +1502,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Rocco Maniscalco",
-      "norm": "rocco maniscalco",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -1523,14 +1523,14 @@
       "away_ml_ev": -0.0222,
       "home_ml_p_used": 0.5409,
       "home_ml_fair": 0.5273,
-      "total_line": 167.5,
+      "total_line": 167.0,
       "over_odds": 113.0,
-      "under_odds": -101.0,
-      "model_over_prob": 0.585,
+      "under_odds": 113.0,
+      "model_over_prob": 0.5964,
       "over_ev": null,
       "under_ev": null,
-      "over_p_used": 0.5850016819596556,
-      "over_p_push": 0.0,
+      "over_p_used": 0.5964301472202969,
+      "over_p_push": 0.0228,
       "spread_home_line": -2.5,
       "spread_home_odds": 113.0,
       "spread_away_odds": 117.0,
@@ -1697,6 +1697,24 @@
       "market": null
      },
      {
+      "match_id": "178722",
+      "match_time": "2026-07-16T12:00Z",
+      "tournament": "EFG Swiss Open Gstaad",
+      "surface": "clay",
+      "player1": "Stefanos Tsitsipas",
+      "player2": "Jerome Kym",
+      "player1_win_prob": 0.5594,
+      "player2_win_prob": 0.4406,
+      "p1_matches": 64,
+      "p2_matches": 24,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
       "match_id": "178728",
       "match_time": "2026-07-16T13:00Z",
       "tournament": "EFG Swiss Open Gstaad",
@@ -1739,10 +1757,28 @@
       "surface": "clay",
       "player1": "Valentin Vacherot",
       "player2": "Raphael Collignon",
-      "player1_win_prob": 0.5731,
-      "player2_win_prob": 0.4269,
-      "p1_matches": 47,
+      "player1_win_prob": 0.5869,
+      "player2_win_prob": 0.4131,
+      "p1_matches": 48,
       "p2_matches": 45,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178790",
+      "match_time": "2026-07-16T04:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Camilo Ugo Carabelli",
+      "player2": "Roman Andres Burruchaga",
+      "player1_win_prob": 0.5273,
+      "player2_win_prob": 0.4727,
+      "p1_matches": 79,
+      "p2_matches": 46,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -1785,9 +1821,9 @@
     "games": [
      {
       "weather": {
-       "temp_f": 100,
-       "wind_mph": 11,
-       "wind_dir": "W",
+       "temp_f": 98,
+       "wind_mph": 10,
+       "wind_dir": "WSW",
        "precip_pct": 6
       },
       "umpire": null,
@@ -1807,66 +1843,66 @@
       "home_pitcher": "Aaron Nola",
       "away_pitcher_id": 681035,
       "home_pitcher_id": 605400,
-      "home_exp_runs": 5.068,
-      "away_exp_runs": 5.166,
-      "proj_total": 10.235,
-      "home_win_prob": 0.5021,
-      "away_win_prob": 0.4979,
+      "home_exp_runs": 5.059,
+      "away_exp_runs": 5.156,
+      "proj_total": 10.216,
+      "home_win_prob": 0.5015,
+      "away_win_prob": 0.4985,
       "over_probs": {
-       "6.0": 0.7944,
-       "6.5": 0.7944,
-       "7.0": 0.69815,
-       "7.5": 0.69815,
-       "8.0": 0.6225,
-       "8.5": 0.6225,
-       "9.0": 0.51925,
-       "9.5": 0.51925,
-       "10.0": 0.4476,
-       "10.5": 0.4476,
-       "11.0": 0.35785,
-       "11.5": 0.35785,
-       "12.0": 0.2951,
-       "12.5": 0.2951,
-       "13.0": 0.2259,
-       "13.5": 0.2259,
-       "14.0": 0.1835,
-       "14.5": 0.1835,
-       "15.0": 0.1388
+       "6.0": 0.7904,
+       "6.5": 0.7904,
+       "7.0": 0.6939,
+       "7.5": 0.6939,
+       "8.0": 0.6196,
+       "8.5": 0.6196,
+       "9.0": 0.5172,
+       "9.5": 0.5172,
+       "10.0": 0.4444,
+       "10.5": 0.4444,
+       "11.0": 0.35845,
+       "11.5": 0.35845,
+       "12.0": 0.29795,
+       "12.5": 0.29795,
+       "13.0": 0.2296,
+       "13.5": 0.2296,
+       "14.0": 0.1847,
+       "14.5": 0.1847,
+       "15.0": 0.1421
       },
       "home_rl_cover": {
-       "-1.5": 0.36985,
-       "1.5": 0.61695
+       "-1.5": 0.3654,
+       "1.5": 0.6173
       },
       "model_nrfi_prob": 0.4785,
       "model_yrfi_prob": 0.5215,
       "nrfi_p_top": 0.3096,
       "nrfi_p_bot": 0.3069,
       "home_ml": -124.0,
-      "away_ml": 127.0,
-      "home_ml_ev": -0.0003,
-      "away_ml_ev": 0.0138,
-      "home_ml_fair": 0.5569,
+      "away_ml": 125.0,
+      "home_ml_ev": -0.003,
+      "away_ml_ev": 0.0082,
+      "home_ml_fair": 0.5547,
       "total_line": 9.5,
-      "over_odds": -108.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.5192,
-      "over_ev": -0.0061,
-      "under_ev": -0.0128,
+      "over_odds": -104.0,
+      "under_odds": 100.0,
+      "model_over_prob": 0.5172,
+      "over_ev": -0.0012,
+      "under_ev": -0.0184,
       "rl_home_line": -1.5,
-      "rl_home_odds": 158.0,
-      "rl_away_odds": -175.0,
-      "model_home_rl": 0.3699,
-      "rl_home_ev": -0.0312,
-      "rl_away_ev": -0.0186,
-      "home_ml_p_used": 0.5534,
-      "over_p_used": 0.5161,
+      "rl_home_odds": 162.0,
+      "rl_away_odds": 160.0,
+      "model_home_rl": 0.3654,
+      "rl_home_ev": -0.0427,
+      "rl_away_ev": 0.65,
+      "home_ml_p_used": 0.5519,
+      "over_p_used": 0.5092,
       "over_p_push": 0.0,
-      "rl_home_p_used": 0.3755,
-      "home_win_prob_pub": 0.5295,
-      "proj_total_pub": 9.8675,
-      "margin_pub": -0.09800000000000075,
-      "home_exp_pub": 4.8847499999999995,
-      "away_exp_pub": 4.98275
+      "rl_home_p_used": 0.3654,
+      "home_win_prob_pub": 0.5281,
+      "proj_total_pub": 9.858,
+      "margin_pub": -0.09699999999999953,
+      "home_exp_pub": 4.8805000000000005,
+      "away_exp_pub": 4.9775
      }
     ],
     "props": [
@@ -2253,94 +2289,94 @@
     ],
     "news": [
      {
-      "title": "Colton Gordon traded to Brewers ",
+      "title": "Pavin Smith outrighted by Diamondbacks ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:57:59"
+      "when": "2026-07-15 20:39:07"
      },
      {
-      "title": "Lance McCullers Jr. traded to Brewers ",
+      "title": "Keegan Akin undergoes elbow reconstruction surgery",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:53:45"
+      "when": "2026-07-15 20:38:53"
      },
      {
-      "title": "Drew Millas (finger) placed on IL",
+      "title": "Paul Skenes to start Sunday for Pirates ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:51:43"
+      "when": "2026-07-15 20:35:04"
      },
      {
-      "title": "Max Kranick activated from 60-day IL",
+      "title": "Braxton Ashcraft to start Saturday for Pirates",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:50:49"
+      "when": "2026-07-15 20:33:31"
      },
      {
-      "title": "Harry Ford to be called up after All-Star break",
+      "title": "Jadyn Fielder traded to Astros",
       "body": "",
       "player": "",
-      "when": "2026-07-15 16:49:44"
+      "when": "2026-07-15 20:33:14"
      },
      {
-      "title": "Nick Mears (shoulder) transferred to 60-day IL",
+      "title": "Jared Jones to start Friday for Pirates ",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:56:27"
+      "when": "2026-07-15 20:32:19"
      },
      {
-      "title": "Easton McGee acquired by Royals",
+      "title": "Robbie Ray to start Sunday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:53:56"
+      "when": "2026-07-15 20:29:31"
      },
      {
-      "title": "Nate Eaton optioned to Triple-A",
+      "title": "Logan Webb to start Saturday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:39:15"
+      "when": "2026-07-15 20:27:34"
      },
      {
-      "title": "Jahmai Jones traded to Red Sox",
+      "title": "Grant Holmes to start Sunday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:37:23"
+      "when": "2026-07-15 20:27:09"
      },
      {
-      "title": "Nick Raquet optioned to Triple-A",
+      "title": "Landen Roupp to start Friday for Giants",
       "body": "",
       "player": "",
-      "when": "2026-07-15 14:34:56"
+      "when": "2026-07-15 20:25:34"
      },
      {
-      "title": "Junior Caminero (hand) has X-rays return negative ",
+      "title": "Owen Murphy to start Saturday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-15 01:59:24"
+      "when": "2026-07-15 20:25:01"
      },
      {
-      "title": "Jacob Misiorowski, Brewers have not began extension talks",
+      "title": "Chris Sale to start Friday versus Rangers",
       "body": "",
       "player": "",
-      "when": "2026-07-14 01:04:42"
+      "when": "2026-07-15 20:22:59"
      },
      {
-      "title": "Daulton Varsho swipes base in loss to Padres",
+      "title": "Sean Burke to start Sunday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:28:42"
+      "when": "2026-07-15 20:22:50"
      },
      {
-      "title": "Ernie Clement goes yard in loss to Padres",
+      "title": "Davis Martin to start Saturday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:25:20"
+      "when": "2026-07-15 20:21:35"
      },
      {
-      "title": "Kevin Gausman labors through six in loss to Padres",
+      "title": "Anthony Kay to start Friday for White Sox ",
       "body": "",
       "player": "",
-      "when": "2026-07-14 00:21:51"
+      "when": "2026-07-15 20:19:50"
      }
     ],
     "injuries": [
@@ -3381,6 +3417,13 @@
       "note": ""
      },
      {
+      "player": "Tommy Troy",
+      "norm": "tommy troy",
+      "team": "",
+      "status": "IL10",
+      "note": ""
+     },
+     {
       "player": "Drew Millas",
       "norm": "drew millas",
       "team": "",
@@ -3736,13 +3779,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Rocco Maniscalco",
-      "norm": "rocco maniscalco",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3759,26 +3795,26 @@
       "home_win_prob": 0.692,
       "away_win_prob": 0.308,
       "home_ml": -115,
-      "away_ml": 182,
+      "away_ml": 194,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.6875,
       "home_ml_fair": null,
       "total_line": 163.5,
-      "over_odds": 100.0,
+      "over_odds": -102.0,
       "under_odds": -108.0,
       "model_over_prob": 0.7226,
-      "over_ev": 0.2132,
-      "under_ev": -0.2423,
-      "over_p_used": 0.6066,
+      "over_ev": 0.2037,
+      "under_ev": -0.2447,
+      "over_p_used": 0.6078,
       "over_p_push": 0.0,
-      "spread_home_line": -5.5,
-      "spread_home_odds": -105.0,
-      "spread_away_odds": -108.0,
-      "model_home_cover": 0.527,
-      "spread_home_ev": -0.0008,
-      "spread_away_ev": -0.0597,
-      "spread_home_p_used": 0.5118,
+      "spread_home_line": -6.5,
+      "spread_home_odds": 113.0,
+      "spread_away_odds": 104.0,
+      "model_home_cover": 0.4956,
+      "spread_home_ev": null,
+      "spread_away_ev": null,
+      "spread_home_p_used": 0.49560230015062845,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.692,
       "proj_total_pub": 173.54,
@@ -3804,19 +3840,19 @@
       "home_ml_fair": 0.5386,
       "total_line": 175.5,
       "over_odds": -104.0,
-      "under_odds": -104.0,
+      "under_odds": 104.0,
       "model_over_prob": 0.5638,
-      "over_ev": 0.0433,
-      "under_ev": -0.0818,
-      "over_p_used": 0.5319,
+      "over_ev": 0.0529,
+      "under_ev": -0.0551,
+      "over_p_used": 0.5368,
       "over_p_push": 0.0,
       "spread_home_line": -1.5,
-      "spread_home_odds": 104.0,
+      "spread_home_odds": -104.0,
       "spread_away_odds": 100.0,
       "model_home_cover": 0.5783,
-      "spread_home_ev": 0.0949,
-      "spread_away_ev": -0.0734,
-      "spread_home_p_used": 0.5367,
+      "spread_home_ev": 0.0624,
+      "spread_away_ev": -0.0832,
+      "spread_home_p_used": 0.5416,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.6241,
       "proj_total_pub": 178.23,
@@ -3976,6 +4012,24 @@
       "market": null
      },
      {
+      "match_id": "178722",
+      "match_time": "2026-07-16T12:00Z",
+      "tournament": "EFG Swiss Open Gstaad",
+      "surface": "clay",
+      "player1": "Stefanos Tsitsipas",
+      "player2": "Jerome Kym",
+      "player1_win_prob": 0.5594,
+      "player2_win_prob": 0.4406,
+      "p1_matches": 64,
+      "p2_matches": 24,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
       "match_id": "178728",
       "match_time": "2026-07-16T13:00Z",
       "tournament": "EFG Swiss Open Gstaad",
@@ -4022,6 +4076,24 @@
       "player2_win_prob": 0.4131,
       "p1_matches": 48,
       "p2_matches": 45,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178790",
+      "match_time": "2026-07-16T04:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Camilo Ugo Carabelli",
+      "player2": "Roman Andres Burruchaga",
+      "player1_win_prob": 0.5273,
+      "player2_win_prob": 0.4727,
+      "p1_matches": 79,
+      "p2_matches": 46,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -4120,16 +4192,16 @@
       "over_2_5": 0.554,
       "btts": 0.5947,
       "home_ml": -222,
-      "draw_ml": 410,
+      "draw_ml": 425,
       "away_ml": 575,
-      "home_ev": -0.2014,
-      "draw_ev": 0.1824,
-      "away_ev": 0.4688,
+      "home_ev": -0.1988,
+      "draw_ev": 0.2055,
+      "away_ev": 0.4714,
       "over_price": null,
       "under_price": null,
       "over_ev": null,
       "under_ev": null,
-      "kelly": 0.0204,
+      "kelly": 0.0205,
       "market": "soccer_moneyline"
      },
      {
@@ -4239,5 +4311,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98836
+ "odds_api_credits": 98824
 }
