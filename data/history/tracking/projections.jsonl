@@ -950,3 +950,22 @@
 {"date": "2026-07-15", "sport": "WNBA", "event_id": "401857070", "game": "Golden State Valkyries @ Indiana Fever", "source": "market", "home_wp": 0.5355, "away_wp": 0.4645, "draw_wp": null}
 {"date": "2026-07-15", "sport": "WNBA", "event_id": "401857070", "game": "Golden State Valkyries @ Indiana Fever", "source": "bettingpros", "home_wp": 0.5108, "away_wp": 0.4892, "draw_wp": null}
 {"date": "2026-07-15", "sport": "World Cup", "event_id": "760515", "game": "Argentina @ England", "source": "bettingpros", "home_wp": 0.5351, "away_wp": 0.4649, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLB", "event_id": "823440", "game": "New York Mets @ Philadelphia Phillies", "source": "model", "home_wp": 0.523, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLB", "event_id": "823440", "game": "New York Mets @ Philadelphia Phillies", "source": "market", "home_wp": 0.5595, "away_wp": 0.4405, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLB", "event_id": "823440", "game": "New York Mets @ Philadelphia Phillies", "source": "bettingpros", "home_wp": 0.5427, "away_wp": 0.4573, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857071", "game": "Portland Fire @ Washington Mystics", "source": "model", "home_wp": 0.692, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857071", "game": "Portland Fire @ Washington Mystics", "source": "market", "home_wp": 0.5956, "away_wp": 0.4044, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857071", "game": "Portland Fire @ Washington Mystics", "source": "bettingpros", "home_wp": 0.6245, "away_wp": 0.3755, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857072", "game": "New York Liberty @ Dallas Wings", "source": "model", "home_wp": 0.6241, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857072", "game": "New York Liberty @ Dallas Wings", "source": "market", "home_wp": 0.523, "away_wp": 0.477, "draw_wp": null}
+{"date": "2026-07-16", "sport": "WNBA", "event_id": "401857072", "game": "New York Liberty @ Dallas Wings", "source": "bettingpros", "home_wp": 0.5236, "away_wp": 0.4764, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761659", "game": "Toronto FC @ CF Montr\u00e9al", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761659", "game": "Toronto FC @ CF Montr\u00e9al", "source": "market", "home_wp": 0.646, "away_wp": 0.354, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761660", "game": "Vancouver Whitecaps @ Chicago Fire FC", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761660", "game": "Vancouver Whitecaps @ Chicago Fire FC", "source": "market", "home_wp": 0.4487, "away_wp": 0.5513, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761661", "game": "Sporting Kansas City @ St. Louis CITY SC", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761661", "game": "Sporting Kansas City @ St. Louis CITY SC", "source": "market", "home_wp": 0.8201, "away_wp": 0.1799, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761662", "game": "Portland Timbers @ Seattle Sounders FC", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761662", "game": "Portland Timbers @ Seattle Sounders FC", "source": "market", "home_wp": 0.8, "away_wp": 0.2, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761660", "game": "Vancouver Whitecaps @ Chicago Fire FC", "source": "bettingpros", "home_wp": 0.4511, "away_wp": 0.5489, "draw_wp": null}
+{"date": "2026-07-16", "sport": "MLS", "event_id": "761662", "game": "Portland Timbers @ Seattle Sounders FC", "source": "bettingpros", "home_wp": 0.7969, "away_wp": 0.2031, "draw_wp": null}
