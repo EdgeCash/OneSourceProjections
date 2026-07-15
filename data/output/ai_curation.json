@@ -860,98 +860,109 @@
     "date": "2026-07-14"
   },
   "2026-07-15": {
-    "slate_note": "ATP has no prices in the brief, so those 21 matches can't be priced \u2014 all pass. WNBA: only Fever/Valkyries total clears the edge floor, and barely (+3.4%). Thin slate.",
+    "slate_note": "Thin actionable slate: tennis has model probabilities but no market prices, so nothing is checkable. Only one WNBA total clears the edge floor.",
     "verdicts": {
-      "178636": {
-        "stance": "pass",
-        "rationale": "50/50 model, no market price given \u2014 cannot compute EV."
-      },
-      "178633": {
-        "stance": "pass",
-        "rationale": "No price in brief; 46/54 coin flip, unpriceable."
-      },
-      "178637": {
-        "stance": "pass",
-        "rationale": "No odds provided to test 63% against market."
-      },
-      "178635": {
-        "stance": "pass",
-        "rationale": "No market price; can't confirm edge on Darderi 66%."
-      },
-      "178638": {
-        "stance": "pass",
-        "rationale": "No price given; near coin flip."
-      },
       "178639": {
         "stance": "pass",
-        "rationale": "No odds in brief; 53/47 negligible."
+        "rationale": "No market price given; can't verify edge on a 53/47 coin flip."
       },
       "178641": {
         "stance": "pass",
-        "rationale": "No price; Rublev 57% unpriced."
+        "rationale": "No odds listed; Rublev 57% favorite unpriced, no edge to trust."
+      },
+      "178638": {
+        "stance": "pass",
+        "rationale": "No market price; 55/45 lean is not actionable without a line."
       },
       "178643": {
         "stance": "pass",
-        "rationale": "50/50 and no market number."
-      },
-      "178721": {
-        "stance": "pass",
-        "rationale": "No price provided; near even."
-      },
-      "178723": {
-        "stance": "pass",
-        "rationale": "No odds to price Tabur 56%."
-      },
-      "178720": {
-        "stance": "pass",
-        "rationale": "No market price for Vacherot 59%."
-      },
-      "178722": {
-        "stance": "pass",
-        "rationale": "No odds; Tsitsipas 56% unpriceable."
+        "rationale": "True 50/50 with no price; nothing to bet."
       },
       "178725": {
         "stance": "pass",
-        "rationale": "51/49 and no price."
+        "rationale": "51/49 pick-em, no odds \u2014 pure noise."
       },
       "178746": {
         "stance": "pass",
-        "rationale": "No market number for Cerundolo 65%."
+        "rationale": "Cerundolo 65% but unpriced; can't confirm value."
       },
       "178745": {
         "stance": "pass",
-        "rationale": "No odds to test Ruud 59%."
+        "rationale": "Ruud 59% favorite with no line to gauge edge."
       },
       "178728": {
         "stance": "pass",
-        "rationale": "No price; Bublik 61% unpriced."
+        "rationale": "Bublik 61% unpriced; no market comparison possible."
       },
-      "178784": {
+      "178782": {
         "stance": "pass",
-        "rationale": "53/47 with no market line."
-      },
-      "178785": {
-        "stance": "pass",
-        "rationale": "49/51 coin flip, no price."
-      },
-      "178786": {
-        "stance": "pass",
-        "rationale": "No odds to price Cobolli 72%."
-      },
-      "178792": {
-        "stance": "pass",
-        "rationale": "No market price for ADF 69%."
+        "rationale": "Droguet 62% but no odds given; not actionable."
       },
       "178793": {
         "stance": "pass",
-        "rationale": "48/52 and no price given."
+        "rationale": "52/48 near coin flip, no price to justify a play."
       }
     },
     "top_plays": [],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 21,
-    "generated_at": "2026-07-14T22:49:35+00:00",
+    "game_count": 10,
+    "generated_at": "2026-07-15T17:21:09+00:00",
     "date": "2026-07-15"
+  },
+  "2026-07-16": {
+    "slate_note": "Thin slate for a game-market check: the MLB game lacks a listed opponent starter and shows no edge, the tennis card has no prices to compare against, and the WNBA/MLS games carry no usable game_id. The one big number (WNBA Over +20.4%) is flagged verify-news and screams a missing-injury/pace signal, not free money. Zero plays is the honest call.",
+    "verdicts": {
+      "823440": {
+        "stance": "pass",
+        "rationale": "Model total 10.0 = market, coin-flip ML (53%), opposing SP unlisted; no edge clears the floor."
+      },
+      "178639": {
+        "stance": "pass",
+        "rationale": "53/47 near coin-flip, no odds provided to price an edge."
+      },
+      "178641": {
+        "stance": "pass",
+        "rationale": "Rublev 57% but no price given; can't confirm value."
+      },
+      "178638": {
+        "stance": "pass",
+        "rationale": "Tabilo 55%, no odds to evaluate EV."
+      },
+      "178643": {
+        "stance": "pass",
+        "rationale": "Dead 50/50, no market number; zero edge."
+      },
+      "178725": {
+        "stance": "pass",
+        "rationale": "51/49 toss-up, no prices; no play."
+      },
+      "178746": {
+        "stance": "pass",
+        "rationale": "Cerundolo 65% but no odds listed; can't confirm value."
+      },
+      "178745": {
+        "stance": "pass",
+        "rationale": "Ruud 59% favorite, no price to gauge edge."
+      },
+      "178728": {
+        "stance": "pass",
+        "rationale": "Bublik 61% but no odds provided; unpriced."
+      },
+      "178782": {
+        "stance": "pass",
+        "rationale": "Droguet 62% but no market line to compare."
+      },
+      "178793": {
+        "stance": "pass",
+        "rationale": "48/52 near coin-flip, no odds; no edge."
+      }
+    },
+    "top_plays": [],
+    "model": "claude-opus-4-8",
+    "mode": "standard",
+    "game_count": 11,
+    "generated_at": "2026-07-15T17:21:09+00:00",
+    "date": "2026-07-16"
   }
 }
