@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-15T17:06:26.253921-04:00",
+ "generated_at": "2026-07-15T19:04:45.929070-04:00",
  "primary_date": "2026-07-15",
  "dates": [
   "2026-07-15",
@@ -12,94 +12,94 @@
     "props": [],
     "news": [
      {
+      "title": "Austin Voth granted release by Rangers",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:52:00"
+     },
+     {
+      "title": "Colton Gordon being viewed as starter by Brewers ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:47:04"
+     },
+     {
+      "title": "German Marquez starting Sunday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:46:43"
+     },
+     {
+      "title": "Brandon Woodruff (shoulder) 'still working through' injury",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:44:03"
+     },
+     {
+      "title": "Griffin Canning starting Saturday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:44:03"
+     },
+     {
+      "title": "Michael King to start Friday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:41:47"
+     },
+     {
+      "title": "Mike Burrows (elbow) could resume throwing in 7-to-10 days",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:39:36"
+     },
+     {
+      "title": "Noah Cameron to start Sunday versus Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:39:28"
+     },
+     {
+      "title": "Lance McCullers Jr. could make next outing in majors ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:38:03"
+     },
+     {
+      "title": "Seth Lugo to start Friday versus Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:37:20"
+     },
+     {
+      "title": "Jhony Brito recalled from Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:36:32"
+     },
+     {
+      "title": "Wandy Peralta placed on bereavement list",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:35:36"
+     },
+     {
+      "title": "Kyle Harrison (forearm) trending in right direction ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:34:42"
+     },
+     {
+      "title": "Tommy Troy (shoulder) placed on IL",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 21:17:09"
+     },
+     {
       "title": "Pavin Smith outrighted by Diamondbacks ",
       "body": "",
       "player": "",
       "when": "2026-07-15 20:39:07"
-     },
-     {
-      "title": "Keegan Akin undergoes elbow reconstruction surgery",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:38:53"
-     },
-     {
-      "title": "Paul Skenes to start Sunday for Pirates ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:35:04"
-     },
-     {
-      "title": "Braxton Ashcraft to start Saturday for Pirates",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:33:31"
-     },
-     {
-      "title": "Jadyn Fielder traded to Astros",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:33:14"
-     },
-     {
-      "title": "Jared Jones to start Friday for Pirates ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:32:19"
-     },
-     {
-      "title": "Robbie Ray to start Sunday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:29:31"
-     },
-     {
-      "title": "Logan Webb to start Saturday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:27:34"
-     },
-     {
-      "title": "Grant Holmes to start Sunday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:27:09"
-     },
-     {
-      "title": "Landen Roupp to start Friday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:25:34"
-     },
-     {
-      "title": "Owen Murphy to start Saturday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:25:01"
-     },
-     {
-      "title": "Chris Sale to start Friday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:22:59"
-     },
-     {
-      "title": "Sean Burke to start Sunday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:22:50"
-     },
-     {
-      "title": "Davis Martin to start Saturday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:21:35"
-     },
-     {
-      "title": "Anthony Kay to start Friday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:19:50"
      }
     ],
     "injuries": [
@@ -1140,6 +1140,13 @@
       "note": ""
      },
      {
+      "player": "Rob Zastryzny",
+      "norm": "rob zastryzny",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
       "player": "Tommy Troy",
       "norm": "tommy troy",
       "team": "",
@@ -1495,13 +1502,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Dawson Montesa",
-      "norm": "dawson montesa",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -1517,27 +1517,27 @@
       "proj_total": 171.15,
       "home_win_prob": 0.538,
       "away_win_prob": 0.462,
-      "home_ml": -110,
-      "away_ml": 113,
-      "home_ml_ev": 0.0327,
-      "away_ml_ev": -0.0222,
-      "home_ml_p_used": 0.5409,
-      "home_ml_fair": 0.5273,
-      "total_line": 167.0,
-      "over_odds": 113.0,
-      "under_odds": 113.0,
-      "model_over_prob": 0.5964,
+      "home_ml": -120,
+      "away_ml": 150,
+      "home_ml_ev": null,
+      "away_ml_ev": null,
+      "home_ml_p_used": 0.554548,
+      "home_ml_fair": null,
+      "total_line": 167.5,
+      "over_odds": 108.0,
+      "under_odds": 104.0,
+      "model_over_prob": 0.585,
       "over_ev": null,
       "under_ev": null,
-      "over_p_used": 0.5964301472202969,
-      "over_p_push": 0.0228,
-      "spread_home_line": -2.5,
-      "spread_home_odds": 113.0,
+      "over_p_used": 0.5850016819596556,
+      "over_p_push": 0.0,
+      "spread_home_line": -3.5,
+      "spread_home_odds": 104.0,
       "spread_away_odds": 117.0,
-      "model_home_cover": 0.4595,
+      "model_home_cover": 0.4285,
       "spread_home_ev": null,
       "spread_away_ev": null,
-      "spread_home_p_used": 0.45954709007894423,
+      "spread_home_p_used": 0.4284526556424175,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.538,
       "proj_total_pub": 171.15,
@@ -1769,8 +1769,44 @@
       "market": null
      },
      {
+      "match_id": "178788",
+      "match_time": "2026-07-16T14:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Titouan Droguet",
+      "player2": "Daniel Merida",
+      "player1_win_prob": 0.4619,
+      "player2_win_prob": 0.5381,
+      "p1_matches": 42,
+      "p2_matches": 34,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178777",
+      "match_time": "2026-07-16T16:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Matteo Arnaldi",
+      "player2": "Damir Dzumhur",
+      "player1_win_prob": 0.5626,
+      "player2_win_prob": 0.4374,
+      "p1_matches": 72,
+      "p2_matches": 78,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
       "match_id": "178790",
-      "match_time": "2026-07-16T04:00Z",
+      "match_time": "2026-07-16T16:30Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Camilo Ugo Carabelli",
@@ -1787,16 +1823,16 @@
       "market": null
      },
      {
-      "match_id": "178777",
-      "match_time": "2026-07-16T04:00Z",
+      "match_id": "178776",
+      "match_time": "2026-07-16T19:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
-      "player1": "Matteo Arnaldi",
-      "player2": "Damir Dzumhur",
-      "player1_win_prob": 0.5626,
-      "player2_win_prob": 0.4374,
-      "p1_matches": 72,
-      "p2_matches": 78,
+      "player1": "Alejandro Davidovich Fokina",
+      "player2": "Alex Molcan",
+      "player1_win_prob": 0.5338,
+      "player2_win_prob": 0.4662,
+      "p1_matches": 104,
+      "p2_matches": 24,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -1824,7 +1860,7 @@
        "temp_f": 98,
        "wind_mph": 10,
        "wind_dir": "WSW",
-       "precip_pct": 6
+       "precip_pct": 8
       },
       "umpire": null,
       "lineups": {
@@ -1878,27 +1914,27 @@
       "nrfi_p_top": 0.3096,
       "nrfi_p_bot": 0.3069,
       "home_ml": -124.0,
-      "away_ml": 125.0,
-      "home_ml_ev": -0.003,
-      "away_ml_ev": 0.0082,
-      "home_ml_fair": 0.5547,
+      "away_ml": 124.0,
+      "home_ml_ev": -0.0043,
+      "away_ml_ev": 0.0053,
+      "home_ml_fair": 0.5536,
       "total_line": 9.5,
-      "over_odds": -104.0,
+      "over_odds": 104.0,
       "under_odds": 100.0,
       "model_over_prob": 0.5172,
-      "over_ev": -0.0012,
-      "under_ev": -0.0184,
+      "over_ev": 0.0257,
+      "under_ev": -0.0056,
       "rl_home_line": -1.5,
-      "rl_home_odds": 162.0,
-      "rl_away_odds": 160.0,
+      "rl_home_odds": 160.0,
+      "rl_away_odds": 158.0,
       "model_home_rl": 0.3654,
-      "rl_home_ev": -0.0427,
-      "rl_away_ev": 0.65,
-      "home_ml_p_used": 0.5519,
-      "over_p_used": 0.5092,
+      "rl_home_ev": -0.05,
+      "rl_away_ev": 0.6373,
+      "home_ml_p_used": 0.5512,
+      "over_p_used": 0.5028,
       "over_p_push": 0.0,
       "rl_home_p_used": 0.3654,
-      "home_win_prob_pub": 0.5281,
+      "home_win_prob_pub": 0.52755,
       "proj_total_pub": 9.858,
       "margin_pub": -0.09699999999999953,
       "home_exp_pub": 4.8805000000000005,
@@ -2289,94 +2325,94 @@
     ],
     "news": [
      {
+      "title": "Austin Voth granted release by Rangers",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:52:00"
+     },
+     {
+      "title": "Colton Gordon being viewed as starter by Brewers ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:47:04"
+     },
+     {
+      "title": "German Marquez starting Sunday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:46:43"
+     },
+     {
+      "title": "Brandon Woodruff (shoulder) 'still working through' injury",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:44:03"
+     },
+     {
+      "title": "Griffin Canning starting Saturday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:44:03"
+     },
+     {
+      "title": "Michael King to start Friday versus Royals",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:41:47"
+     },
+     {
+      "title": "Mike Burrows (elbow) could resume throwing in 7-to-10 days",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:39:36"
+     },
+     {
+      "title": "Noah Cameron to start Sunday versus Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:39:28"
+     },
+     {
+      "title": "Lance McCullers Jr. could make next outing in majors ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:38:03"
+     },
+     {
+      "title": "Seth Lugo to start Friday versus Padres",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:37:20"
+     },
+     {
+      "title": "Jhony Brito recalled from Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:36:32"
+     },
+     {
+      "title": "Wandy Peralta placed on bereavement list",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:35:36"
+     },
+     {
+      "title": "Kyle Harrison (forearm) trending in right direction ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 22:34:42"
+     },
+     {
+      "title": "Tommy Troy (shoulder) placed on IL",
+      "body": "",
+      "player": "",
+      "when": "2026-07-15 21:17:09"
+     },
+     {
       "title": "Pavin Smith outrighted by Diamondbacks ",
       "body": "",
       "player": "",
       "when": "2026-07-15 20:39:07"
-     },
-     {
-      "title": "Keegan Akin undergoes elbow reconstruction surgery",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:38:53"
-     },
-     {
-      "title": "Paul Skenes to start Sunday for Pirates ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:35:04"
-     },
-     {
-      "title": "Braxton Ashcraft to start Saturday for Pirates",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:33:31"
-     },
-     {
-      "title": "Jadyn Fielder traded to Astros",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:33:14"
-     },
-     {
-      "title": "Jared Jones to start Friday for Pirates ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:32:19"
-     },
-     {
-      "title": "Robbie Ray to start Sunday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:29:31"
-     },
-     {
-      "title": "Logan Webb to start Saturday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:27:34"
-     },
-     {
-      "title": "Grant Holmes to start Sunday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:27:09"
-     },
-     {
-      "title": "Landen Roupp to start Friday for Giants",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:25:34"
-     },
-     {
-      "title": "Owen Murphy to start Saturday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:25:01"
-     },
-     {
-      "title": "Chris Sale to start Friday versus Rangers",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:22:59"
-     },
-     {
-      "title": "Sean Burke to start Sunday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:22:50"
-     },
-     {
-      "title": "Davis Martin to start Saturday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:21:35"
-     },
-     {
-      "title": "Anthony Kay to start Friday for White Sox ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:19:50"
      }
     ],
     "injuries": [
@@ -3417,6 +3453,13 @@
       "note": ""
      },
      {
+      "player": "Rob Zastryzny",
+      "norm": "rob zastryzny",
+      "team": "",
+      "status": "IL60",
+      "note": ""
+     },
+     {
       "player": "Tommy Troy",
       "norm": "tommy troy",
       "team": "",
@@ -3772,13 +3815,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Dawson Montesa",
-      "norm": "dawson montesa",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3802,19 +3838,19 @@
       "home_ml_fair": null,
       "total_line": 163.5,
       "over_odds": -102.0,
-      "under_odds": -108.0,
+      "under_odds": -104.0,
       "model_over_prob": 0.7226,
-      "over_ev": 0.2037,
-      "under_ev": -0.2447,
-      "over_p_used": 0.6078,
+      "over_ev": 0.2082,
+      "under_ev": -0.2352,
+      "over_p_used": 0.6101,
       "over_p_push": 0.0,
       "spread_home_line": -6.5,
-      "spread_home_odds": 113.0,
-      "spread_away_odds": 104.0,
+      "spread_home_odds": 108.0,
+      "spread_away_odds": -104.0,
       "model_home_cover": 0.4956,
-      "spread_home_ev": null,
-      "spread_away_ev": null,
-      "spread_home_p_used": 0.49560230015062845,
+      "spread_home_ev": 0.0202,
+      "spread_away_ev": -0.0005,
+      "spread_home_p_used": 0.4905,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.692,
       "proj_total_pub": 173.54,
@@ -3832,12 +3868,12 @@
       "proj_total": 178.23,
       "home_win_prob": 0.6241,
       "away_win_prob": 0.3759,
-      "home_ml": -113,
-      "away_ml": 120,
-      "home_ml_ev": 0.0731,
-      "away_ml_ev": -0.0524,
-      "home_ml_p_used": 0.5693,
-      "home_ml_fair": 0.5386,
+      "home_ml": -115,
+      "away_ml": 117,
+      "home_ml_ev": 0.063,
+      "away_ml_ev": -0.0638,
+      "home_ml_p_used": 0.5686,
+      "home_ml_fair": 0.5372,
       "total_line": 175.5,
       "over_odds": -104.0,
       "under_odds": 104.0,
@@ -4084,8 +4120,44 @@
       "market": null
      },
      {
+      "match_id": "178788",
+      "match_time": "2026-07-16T14:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Titouan Droguet",
+      "player2": "Daniel Merida",
+      "player1_win_prob": 0.4619,
+      "player2_win_prob": 0.5381,
+      "p1_matches": 42,
+      "p2_matches": 34,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
+      "match_id": "178777",
+      "match_time": "2026-07-16T16:00Z",
+      "tournament": "Plava Laguna Croatia Open Umag",
+      "surface": "clay",
+      "player1": "Matteo Arnaldi",
+      "player2": "Damir Dzumhur",
+      "player1_win_prob": 0.5626,
+      "player2_win_prob": 0.4374,
+      "p1_matches": 72,
+      "p2_matches": 78,
+      "p1_price": null,
+      "p2_price": null,
+      "p1_ev": null,
+      "p2_ev": null,
+      "kelly": null,
+      "market": null
+     },
+     {
       "match_id": "178790",
-      "match_time": "2026-07-16T04:00Z",
+      "match_time": "2026-07-16T16:30Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
       "player1": "Camilo Ugo Carabelli",
@@ -4102,16 +4174,16 @@
       "market": null
      },
      {
-      "match_id": "178777",
-      "match_time": "2026-07-16T04:00Z",
+      "match_id": "178776",
+      "match_time": "2026-07-16T19:00Z",
       "tournament": "Plava Laguna Croatia Open Umag",
       "surface": "clay",
-      "player1": "Matteo Arnaldi",
-      "player2": "Damir Dzumhur",
-      "player1_win_prob": 0.5626,
-      "player2_win_prob": 0.4374,
-      "p1_matches": 72,
-      "p2_matches": 78,
+      "player1": "Alejandro Davidovich Fokina",
+      "player2": "Alex Molcan",
+      "player1_win_prob": 0.5338,
+      "player2_win_prob": 0.4662,
+      "p1_matches": 104,
+      "p2_matches": 24,
       "p1_price": null,
       "p2_price": null,
       "p1_ev": null,
@@ -4165,17 +4237,17 @@
       "away_win_prob": 0.2919,
       "over_2_5": 0.554,
       "btts": 0.5947,
-      "home_ml": 185,
-      "draw_ml": 290,
+      "home_ml": 180,
+      "draw_ml": 280,
       "away_ml": 135,
-      "home_ev": 0.1028,
-      "draw_ev": 0.0184,
-      "away_ev": -0.1729,
+      "home_ev": 0.0859,
+      "draw_ev": -0.0014,
+      "away_ev": -0.179,
       "over_price": null,
       "under_price": null,
       "over_ev": null,
       "under_ev": null,
-      "kelly": 0.0139,
+      "kelly": 0.0119,
       "market": "soccer_moneyline"
      },
      {
@@ -4311,5 +4383,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98824
+ "odds_api_credits": 98812
 }
