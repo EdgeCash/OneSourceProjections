@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-07-14T16:11:40",
+ "generated_at": "2026-07-15T16:28:24",
  "source": "shared",
- "date": "2026-07-14",
+ "date": "2026-07-15",
  "sports": [
   "MLB",
   "WNBA",
@@ -20,59 +20,87 @@
  "game_plays": [
   {
    "sport": "WNBA",
-   "game": "Washington Mystics @ Toronto Tempo",
-   "market": "Moneyline",
-   "side_key": "home",
-   "selection": "Toronto Tempo",
-   "line": null,
-   "odds": 113.0,
-   "ev": 0.1258,
-   "model_prob": 0.5524,
-   "away_team": "Washington Mystics",
-   "home_team": "Toronto Tempo",
-   "game_time": "2026-07-14T23:00Z"
-  },
-  {
-   "sport": "WNBA",
-   "game": "Washington Mystics @ Toronto Tempo",
-   "market": "Spread",
-   "side_key": "home",
-   "selection": "Toronto Tempo +1.5",
-   "line": 1.5,
-   "odds": 100.0,
-   "ev": 0.0986,
-   "model_prob": 0.5986,
-   "away_team": "Washington Mystics",
-   "home_team": "Toronto Tempo",
-   "game_time": "2026-07-14T23:00Z"
-  },
-  {
-   "sport": "WNBA",
-   "game": "Golden State Valkyries @ Indiana Fever",
+   "game": "Portland Fire @ Washington Mystics",
    "market": "Total",
    "side_key": "over",
-   "selection": "Over 168.5",
-   "line": 168.5,
+   "selection": "Over 163.5",
+   "line": 163.5,
+   "odds": -102.0,
+   "ev": 0.2037,
+   "model_prob": 0.7226,
+   "away_team": "Portland Fire",
+   "home_team": "Washington Mystics",
+   "game_time": "2026-07-16T23:00Z"
+  },
+  {
+   "sport": "WNBA",
+   "game": "New York Liberty @ Dallas Wings",
+   "market": "Spread",
+   "side_key": "home",
+   "selection": "Dallas Wings -1.5",
+   "line": -1.5,
    "odds": 100.0,
-   "ev": 0.0717,
-   "model_prob": 0.5619,
-   "away_team": "Golden State Valkyries",
-   "home_team": "Indiana Fever",
-   "game_time": "2026-07-16T00:00Z"
+   "ev": 0.0783,
+   "model_prob": 0.5783,
+   "away_team": "New York Liberty",
+   "home_team": "Dallas Wings",
+   "game_time": "2026-07-17T01:00Z"
+  },
+  {
+   "sport": "WNBA",
+   "game": "New York Liberty @ Dallas Wings",
+   "market": "Moneyline",
+   "side_key": "home",
+   "selection": "Dallas Wings",
+   "line": null,
+   "odds": -117.0,
+   "ev": 0.0617,
+   "model_prob": 0.6241,
+   "away_team": "New York Liberty",
+   "home_team": "Dallas Wings",
+   "game_time": "2026-07-17T01:00Z"
   },
   {
    "sport": "WNBA",
    "game": "Los Angeles Sparks @ Minnesota Lynx",
    "market": "Total",
    "side_key": "over",
-   "selection": "Over 180.5",
-   "line": 180.5,
-   "odds": -108.0,
-   "ev": 0.0478,
-   "model_prob": 0.5689,
+   "selection": "Over 181.5",
+   "line": 181.5,
+   "odds": 104.0,
+   "ev": 0.0615,
+   "model_prob": 0.5457,
    "away_team": "Los Angeles Sparks",
    "home_team": "Minnesota Lynx",
    "game_time": "2026-07-15T17:00Z"
+  },
+  {
+   "sport": "WNBA",
+   "game": "New York Liberty @ Dallas Wings",
+   "market": "Total",
+   "side_key": "over",
+   "selection": "Over 175.5",
+   "line": 175.5,
+   "odds": -108.0,
+   "ev": 0.0382,
+   "model_prob": 0.5638,
+   "away_team": "New York Liberty",
+   "home_team": "Dallas Wings",
+   "game_time": "2026-07-17T01:00Z"
+  },
+  {
+   "sport": "WNBA",
+   "game": "Golden State Valkyries @ Indiana Fever",
+   "market": "Moneyline",
+   "side_key": "home",
+   "selection": "Indiana Fever",
+   "line": null,
+   "odds": -113.0,
+   "ev": 0.0226,
+   "model_prob": 0.538,
+   "away_team": "Golden State Valkyries",
+   "home_team": "Indiana Fever",
+   "game_time": "2026-07-16T00:00Z"
   }
  ],
  "track_record": {
@@ -105,7 +133,7 @@
   "pending": 0,
   "game_clv": {
    "graded": 0,
-   "pending": 4
+   "pending": 10
   }
  }
 }
