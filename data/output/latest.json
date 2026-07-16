@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-15T19:04:45.929070-04:00",
- "primary_date": "2026-07-15",
+ "generated_at": "2026-07-15T22:56:44.218546-04:00",
+ "primary_date": "2026-07-16",
  "dates": [
   "2026-07-15",
   "2026-07-16"
@@ -11,6 +11,54 @@
     "games": [],
     "props": [],
     "news": [
+     {
+      "title": "Brendan Donovan (groin) begins rehab assignment Wednesday ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 02:05:15"
+     },
+     {
+      "title": "Aaron Civale designated for assignment ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 02:00:58"
+     },
+     {
+      "title": "Yunior Tur has contract selected by Athletics ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:59:44"
+     },
+     {
+      "title": "Brian Serven optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:58:16"
+     },
+     {
+      "title": "Donovan Walton activated by Athletics ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:57:14"
+     },
+     {
+      "title": "Joey Meneses optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:55:12"
+     },
+     {
+      "title": "Mason Barnett optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:54:02"
+     },
+     {
+      "title": "Brady Basso recalled from Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:52:20"
+     },
      {
       "title": "Austin Voth granted release by Rangers",
       "body": "",
@@ -52,54 +100,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-15 22:39:36"
-     },
-     {
-      "title": "Noah Cameron to start Sunday versus Padres",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:39:28"
-     },
-     {
-      "title": "Lance McCullers Jr. could make next outing in majors ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:38:03"
-     },
-     {
-      "title": "Seth Lugo to start Friday versus Padres",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:37:20"
-     },
-     {
-      "title": "Jhony Brito recalled from Triple-A ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:36:32"
-     },
-     {
-      "title": "Wandy Peralta placed on bereavement list",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:35:36"
-     },
-     {
-      "title": "Kyle Harrison (forearm) trending in right direction ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:34:42"
-     },
-     {
-      "title": "Tommy Troy (shoulder) placed on IL",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 21:17:09"
-     },
-     {
-      "title": "Pavin Smith outrighted by Diamondbacks ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:39:07"
      }
     ],
     "injuries": [
@@ -1140,6 +1140,20 @@
       "note": ""
      },
      {
+      "player": "Aaron Civale",
+      "norm": "aaron civale",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Wandy Peralta",
+      "norm": "wandy peralta",
+      "team": "",
+      "status": "BRV",
+      "note": ""
+     },
+     {
       "player": "Rob Zastryzny",
       "norm": "rob zastryzny",
       "team": "",
@@ -1205,13 +1219,6 @@
      {
       "player": "Luke Williams",
       "norm": "luke williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Hacopian",
-      "norm": "chris hacopian",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -1495,57 +1502,11 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Dee Kennedy",
-      "norm": "dee kennedy",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
    "WNBA": {
-    "games": [
-     {
-      "game_id": "401857070",
-      "game_time": "2026-07-16T00:00Z",
-      "away_team": "Golden State Valkyries",
-      "home_team": "Indiana Fever",
-      "away_exp": 84.97,
-      "home_exp": 86.18,
-      "proj_total": 171.15,
-      "home_win_prob": 0.538,
-      "away_win_prob": 0.462,
-      "home_ml": -120,
-      "away_ml": 150,
-      "home_ml_ev": null,
-      "away_ml_ev": null,
-      "home_ml_p_used": 0.554548,
-      "home_ml_fair": null,
-      "total_line": 167.5,
-      "over_odds": 108.0,
-      "under_odds": 104.0,
-      "model_over_prob": 0.585,
-      "over_ev": null,
-      "under_ev": null,
-      "over_p_used": 0.5850016819596556,
-      "over_p_push": 0.0,
-      "spread_home_line": -3.5,
-      "spread_home_odds": 104.0,
-      "spread_away_odds": 117.0,
-      "model_home_cover": 0.4285,
-      "spread_home_ev": null,
-      "spread_away_ev": null,
-      "spread_home_p_used": 0.4284526556424175,
-      "spread_home_p_push": 0.0,
-      "home_win_prob_pub": 0.538,
-      "proj_total_pub": 171.15,
-      "margin_pub": 1.210000000000008,
-      "home_exp_pub": 86.18,
-      "away_exp_pub": 84.97
-     }
-    ],
+    "games": [],
     "props": [],
     "news": [],
     "injuries": []
@@ -1857,10 +1818,10 @@
     "games": [
      {
       "weather": {
-       "temp_f": 98,
-       "wind_mph": 10,
-       "wind_dir": "WSW",
-       "precip_pct": 8
+       "temp_f": 96,
+       "wind_mph": 12,
+       "wind_dir": "WNW",
+       "precip_pct": 7
       },
       "umpire": null,
       "lineups": {
@@ -1879,66 +1840,66 @@
       "home_pitcher": "Aaron Nola",
       "away_pitcher_id": 681035,
       "home_pitcher_id": 605400,
-      "home_exp_runs": 5.059,
-      "away_exp_runs": 5.156,
-      "proj_total": 10.216,
-      "home_win_prob": 0.5015,
-      "away_win_prob": 0.4985,
+      "home_exp_runs": 5.031,
+      "away_exp_runs": 5.127,
+      "proj_total": 10.159,
+      "home_win_prob": 0.5001,
+      "away_win_prob": 0.4999,
       "over_probs": {
-       "6.0": 0.7904,
-       "6.5": 0.7904,
-       "7.0": 0.6939,
-       "7.5": 0.6939,
-       "8.0": 0.6196,
-       "8.5": 0.6196,
-       "9.0": 0.5172,
-       "9.5": 0.5172,
-       "10.0": 0.4444,
-       "10.5": 0.4444,
-       "11.0": 0.35845,
-       "11.5": 0.35845,
-       "12.0": 0.29795,
-       "12.5": 0.29795,
-       "13.0": 0.2296,
-       "13.5": 0.2296,
-       "14.0": 0.1847,
-       "14.5": 0.1847,
-       "15.0": 0.1421
+       "6.0": 0.78385,
+       "6.5": 0.78385,
+       "7.0": 0.6881,
+       "7.5": 0.6881,
+       "8.0": 0.61225,
+       "8.5": 0.61225,
+       "9.0": 0.5146,
+       "9.5": 0.5146,
+       "10.0": 0.44295,
+       "10.5": 0.44295,
+       "11.0": 0.3572,
+       "11.5": 0.3572,
+       "12.0": 0.2943,
+       "12.5": 0.2943,
+       "13.0": 0.2272,
+       "13.5": 0.2272,
+       "14.0": 0.1831,
+       "14.5": 0.1831,
+       "15.0": 0.1399
       },
       "home_rl_cover": {
-       "-1.5": 0.3654,
-       "1.5": 0.6173
+       "-1.5": 0.3632,
+       "1.5": 0.61645
       },
       "model_nrfi_prob": 0.4785,
       "model_yrfi_prob": 0.5215,
       "nrfi_p_top": 0.3096,
       "nrfi_p_bot": 0.3069,
-      "home_ml": -124.0,
-      "away_ml": 124.0,
-      "home_ml_ev": -0.0043,
-      "away_ml_ev": 0.0053,
-      "home_ml_fair": 0.5536,
+      "home_ml": -122.0,
+      "away_ml": 121.0,
+      "home_ml_ev": -0.0033,
+      "away_ml_ev": -0.0005,
+      "home_ml_fair": 0.5484,
       "total_line": 9.5,
-      "over_odds": 104.0,
-      "under_odds": 100.0,
-      "model_over_prob": 0.5172,
-      "over_ev": 0.0257,
-      "under_ev": -0.0056,
+      "over_odds": 100.0,
+      "under_odds": 123.0,
+      "model_over_prob": 0.5146,
+      "over_ev": 0.0292,
+      "under_ev": 0.0824,
       "rl_home_line": -1.5,
-      "rl_home_odds": 160.0,
+      "rl_home_odds": 159.0,
       "rl_away_odds": 158.0,
-      "model_home_rl": 0.3654,
-      "rl_home_ev": -0.05,
-      "rl_away_ev": 0.6373,
-      "home_ml_p_used": 0.5512,
-      "over_p_used": 0.5028,
+      "model_home_rl": 0.3632,
+      "rl_home_ev": -0.0593,
+      "rl_away_ev": 0.6429,
+      "home_ml_p_used": 0.5477,
+      "over_p_used": 0.5146,
       "over_p_push": 0.0,
-      "rl_home_p_used": 0.3654,
-      "home_win_prob_pub": 0.52755,
-      "proj_total_pub": 9.858,
-      "margin_pub": -0.09699999999999953,
-      "home_exp_pub": 4.8805000000000005,
-      "away_exp_pub": 4.9775
+      "rl_home_p_used": 0.3632,
+      "home_win_prob_pub": 0.52425,
+      "proj_total_pub": 9.8295,
+      "margin_pub": -0.09600000000000009,
+      "home_exp_pub": 4.86675,
+      "away_exp_pub": 4.96275
      }
     ],
     "props": [
@@ -2325,6 +2286,54 @@
     ],
     "news": [
      {
+      "title": "Brendan Donovan (groin) begins rehab assignment Wednesday ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 02:05:15"
+     },
+     {
+      "title": "Aaron Civale designated for assignment ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 02:00:58"
+     },
+     {
+      "title": "Yunior Tur has contract selected by Athletics ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:59:44"
+     },
+     {
+      "title": "Brian Serven optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:58:16"
+     },
+     {
+      "title": "Donovan Walton activated by Athletics ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:57:14"
+     },
+     {
+      "title": "Joey Meneses optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:55:12"
+     },
+     {
+      "title": "Mason Barnett optioned to Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:54:02"
+     },
+     {
+      "title": "Brady Basso recalled from Triple-A ",
+      "body": "",
+      "player": "",
+      "when": "2026-07-16 01:52:20"
+     },
+     {
       "title": "Austin Voth granted release by Rangers",
       "body": "",
       "player": "",
@@ -2365,54 +2374,6 @@
       "body": "",
       "player": "",
       "when": "2026-07-15 22:39:36"
-     },
-     {
-      "title": "Noah Cameron to start Sunday versus Padres",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:39:28"
-     },
-     {
-      "title": "Lance McCullers Jr. could make next outing in majors ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:38:03"
-     },
-     {
-      "title": "Seth Lugo to start Friday versus Padres",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:37:20"
-     },
-     {
-      "title": "Jhony Brito recalled from Triple-A ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:36:32"
-     },
-     {
-      "title": "Wandy Peralta placed on bereavement list",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:35:36"
-     },
-     {
-      "title": "Kyle Harrison (forearm) trending in right direction ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 22:34:42"
-     },
-     {
-      "title": "Tommy Troy (shoulder) placed on IL",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 21:17:09"
-     },
-     {
-      "title": "Pavin Smith outrighted by Diamondbacks ",
-      "body": "",
-      "player": "",
-      "when": "2026-07-15 20:39:07"
      }
     ],
     "injuries": [
@@ -3453,6 +3414,20 @@
       "note": ""
      },
      {
+      "player": "Aaron Civale",
+      "norm": "aaron civale",
+      "team": "",
+      "status": "DFA",
+      "note": ""
+     },
+     {
+      "player": "Wandy Peralta",
+      "norm": "wandy peralta",
+      "team": "",
+      "status": "BRV",
+      "note": ""
+     },
+     {
       "player": "Rob Zastryzny",
       "norm": "rob zastryzny",
       "team": "",
@@ -3518,13 +3493,6 @@
      {
       "player": "Luke Williams",
       "norm": "luke williams",
-      "team": "",
-      "status": "UDP",
-      "note": ""
-     },
-     {
-      "player": "Chris Hacopian",
-      "norm": "chris hacopian",
       "team": "",
       "status": "UDP",
       "note": ""
@@ -3808,13 +3776,6 @@
       "team": "",
       "status": "UDP",
       "note": ""
-     },
-     {
-      "player": "Dee Kennedy",
-      "norm": "dee kennedy",
-      "team": "",
-      "status": "UDP",
-      "note": ""
      }
     ]
    },
@@ -3831,26 +3792,26 @@
       "home_win_prob": 0.692,
       "away_win_prob": 0.308,
       "home_ml": -115,
-      "away_ml": 194,
+      "away_ml": 228,
       "home_ml_ev": null,
       "away_ml_ev": null,
       "home_ml_p_used": 0.6875,
       "home_ml_fair": null,
-      "total_line": 163.5,
-      "over_odds": -102.0,
-      "under_odds": -104.0,
-      "model_over_prob": 0.7226,
-      "over_ev": 0.2082,
-      "under_ev": -0.2352,
-      "over_p_used": 0.6101,
+      "total_line": 165.5,
+      "over_odds": 111.0,
+      "under_odds": -105.0,
+      "model_over_prob": 0.6819,
+      "over_ev": 0.2264,
+      "under_ev": -0.1824,
+      "over_p_used": 0.5812,
       "over_p_push": 0.0,
       "spread_home_line": -6.5,
       "spread_home_odds": 108.0,
-      "spread_away_odds": -104.0,
+      "spread_away_odds": 104.0,
       "model_home_cover": 0.4956,
-      "spread_home_ev": 0.0202,
-      "spread_away_ev": -0.0005,
-      "spread_home_p_used": 0.4905,
+      "spread_home_ev": null,
+      "spread_away_ev": null,
+      "spread_home_p_used": 0.49560230015062845,
       "spread_home_p_push": 0.0,
       "home_win_prob_pub": 0.692,
       "proj_total_pub": 173.54,
@@ -3869,27 +3830,27 @@
       "home_win_prob": 0.6241,
       "away_win_prob": 0.3759,
       "home_ml": -115,
-      "away_ml": 117,
-      "home_ml_ev": 0.063,
-      "away_ml_ev": -0.0638,
-      "home_ml_p_used": 0.5686,
-      "home_ml_fair": 0.5372,
+      "away_ml": 115,
+      "home_ml_ev": 0.0609,
+      "away_ml_ev": -0.07,
+      "home_ml_p_used": 0.5674,
+      "home_ml_fair": 0.5349,
       "total_line": 175.5,
       "over_odds": -104.0,
-      "under_odds": 104.0,
+      "under_odds": 113.0,
       "model_over_prob": 0.5638,
-      "over_ev": 0.0529,
-      "under_ev": -0.0551,
-      "over_p_used": 0.5368,
+      "over_ev": null,
+      "under_ev": null,
+      "over_p_used": 0.5637911392469946,
       "over_p_push": 0.0,
-      "spread_home_line": -1.5,
-      "spread_home_odds": -104.0,
-      "spread_away_odds": 100.0,
-      "model_home_cover": 0.5783,
-      "spread_home_ev": 0.0624,
-      "spread_away_ev": -0.0832,
-      "spread_home_p_used": 0.5416,
-      "spread_home_p_push": 0.0,
+      "spread_home_line": -2.0,
+      "spread_home_odds": 110.0,
+      "spread_away_odds": 122.0,
+      "model_home_cover": 0.5629,
+      "spread_home_ev": null,
+      "spread_away_ev": null,
+      "spread_home_p_used": 0.56287707702024,
+      "spread_home_p_push": 0.031,
       "home_win_prob_pub": 0.6241,
       "proj_total_pub": 178.23,
       "margin_pub": 4.010000000000005,
@@ -4211,17 +4172,17 @@
       "away_win_prob": 0.2919,
       "over_2_5": 0.554,
       "btts": 0.5947,
-      "home_ml": 100,
+      "home_ml": 102,
       "draw_ml": 289,
       "away_ml": 275,
-      "home_ev": -0.0774,
-      "draw_ev": 0.0213,
-      "away_ev": 0.0357,
-      "over_price": -152.0,
-      "under_price": 125.0,
-      "over_ev": -0.0635,
-      "under_ev": -0.021,
-      "kelly": 0.0032,
+      "home_ev": -0.0707,
+      "draw_ev": 0.0237,
+      "away_ev": 0.038,
+      "over_price": -155.0,
+      "under_price": 120.0,
+      "over_ev": -0.0737,
+      "under_ev": -0.0388,
+      "kelly": 0.0035,
       "market": "soccer_moneyline"
      },
      {
@@ -4237,17 +4198,17 @@
       "away_win_prob": 0.2919,
       "over_2_5": 0.554,
       "btts": 0.5947,
-      "home_ml": 180,
-      "draw_ml": 280,
-      "away_ml": 135,
-      "home_ev": 0.0859,
-      "draw_ev": -0.0014,
-      "away_ev": -0.179,
+      "home_ml": 185,
+      "draw_ml": 285,
+      "away_ml": 136,
+      "home_ev": 0.1021,
+      "draw_ev": 0.0108,
+      "away_ev": -0.1722,
       "over_price": null,
       "under_price": null,
       "over_ev": null,
       "under_ev": null,
-      "kelly": 0.0119,
+      "kelly": 0.0138,
       "market": "soccer_moneyline"
      },
      {
@@ -4263,12 +4224,12 @@
       "away_win_prob": 0.2919,
       "over_2_5": 0.554,
       "btts": 0.5947,
-      "home_ml": -222,
+      "home_ml": -220,
       "draw_ml": 425,
       "away_ml": 575,
-      "home_ev": -0.1988,
-      "draw_ev": 0.2055,
-      "away_ev": 0.4714,
+      "home_ev": -0.197,
+      "draw_ev": 0.2065,
+      "away_ev": 0.4724,
       "over_price": null,
       "under_price": null,
       "over_ev": null,
@@ -4290,11 +4251,11 @@
       "over_2_5": 0.554,
       "btts": 0.5947,
       "home_ml": -200,
-      "draw_ml": 400,
+      "draw_ml": 405,
       "away_ml": 500,
-      "home_ev": -0.1905,
-      "draw_ev": 0.1688,
-      "away_ev": 0.3595,
+      "home_ev": -0.1896,
+      "draw_ev": 0.1766,
+      "away_ev": 0.3604,
       "over_price": null,
       "under_price": null,
       "over_ev": null,
@@ -4383,5 +4344,5 @@
   "base_brier": 0.2492,
   "actual_yrfi": 0.5291
  },
- "odds_api_credits": 98812
+ "odds_api_credits": 98800
 }
