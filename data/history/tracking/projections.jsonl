@@ -969,3 +969,61 @@
 {"date": "2026-07-16", "sport": "MLS", "event_id": "761662", "game": "Portland Timbers @ Seattle Sounders FC", "source": "market", "home_wp": 0.8, "away_wp": 0.2, "draw_wp": null}
 {"date": "2026-07-16", "sport": "MLS", "event_id": "761660", "game": "Vancouver Whitecaps @ Chicago Fire FC", "source": "bettingpros", "home_wp": 0.4511, "away_wp": 0.5489, "draw_wp": null}
 {"date": "2026-07-16", "sport": "MLS", "event_id": "761662", "game": "Portland Timbers @ Seattle Sounders FC", "source": "bettingpros", "home_wp": 0.7969, "away_wp": 0.2031, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824766", "game": "Tampa Bay Rays @ Boston Red Sox", "source": "model", "home_wp": 0.5293, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824766", "game": "Tampa Bay Rays @ Boston Red Sox", "source": "market", "home_wp": 0.5056, "away_wp": 0.4944, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824737", "game": "Tampa Bay Rays @ Boston Red Sox", "source": "model", "home_wp": 0.5313, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824737", "game": "Tampa Bay Rays @ Boston Red Sox", "source": "market", "home_wp": 0.5056, "away_wp": 0.4944, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823524", "game": "Los Angeles Dodgers @ New York Yankees", "source": "model", "home_wp": 0.4879, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823524", "game": "Los Angeles Dodgers @ New York Yankees", "source": "market", "home_wp": 0.4856, "away_wp": 0.5144, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823524", "game": "Los Angeles Dodgers @ New York Yankees", "source": "bettingpros", "home_wp": 0.4966, "away_wp": 0.5034, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "model", "home_wp": 0.4885, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "market", "home_wp": 0.5168, "away_wp": 0.4832, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "bettingpros", "home_wp": 0.5304, "away_wp": 0.4696, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824901", "game": "Texas Rangers @ Atlanta Braves", "source": "model", "home_wp": 0.5734, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824901", "game": "Texas Rangers @ Atlanta Braves", "source": "market", "home_wp": 0.5841, "away_wp": 0.4159, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824901", "game": "Texas Rangers @ Atlanta Braves", "source": "bettingpros", "home_wp": 0.583, "away_wp": 0.417, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "822789", "game": "Chicago White Sox @ Toronto Blue Jays", "source": "model", "home_wp": 0.5143, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "822789", "game": "Chicago White Sox @ Toronto Blue Jays", "source": "market", "home_wp": 0.5448, "away_wp": 0.4552, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "822789", "game": "Chicago White Sox @ Toronto Blue Jays", "source": "bettingpros", "home_wp": 0.5436, "away_wp": 0.4564, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823766", "game": "Miami Marlins @ Milwaukee Brewers", "source": "model", "home_wp": 0.5196, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823766", "game": "Miami Marlins @ Milwaukee Brewers", "source": "market", "home_wp": 0.6235, "away_wp": 0.3765, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823766", "game": "Miami Marlins @ Milwaukee Brewers", "source": "bettingpros", "home_wp": 0.6115, "away_wp": 0.3885, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824655", "game": "Minnesota Twins @ Chicago Cubs", "source": "model", "home_wp": 0.5257, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824655", "game": "Minnesota Twins @ Chicago Cubs", "source": "market", "home_wp": 0.5595, "away_wp": 0.4405, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824655", "game": "Minnesota Twins @ Chicago Cubs", "source": "bettingpros", "home_wp": 0.5587, "away_wp": 0.4413, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824170", "game": "Baltimore Orioles @ Houston Astros", "source": "model", "home_wp": 0.4971, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824170", "game": "Baltimore Orioles @ Houston Astros", "source": "market", "home_wp": 0.4655, "away_wp": 0.5345, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824170", "game": "Baltimore Orioles @ Houston Astros", "source": "bettingpros", "home_wp": 0.4658, "away_wp": 0.5342, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824090", "game": "San Diego Padres @ Kansas City Royals", "source": "model", "home_wp": 0.4621, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824090", "game": "San Diego Padres @ Kansas City Royals", "source": "market", "home_wp": 0.5246, "away_wp": 0.4754, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824090", "game": "San Diego Padres @ Kansas City Royals", "source": "bettingpros", "home_wp": 0.523, "away_wp": 0.477, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824332", "game": "Cincinnati Reds @ Colorado Rockies", "source": "model", "home_wp": 0.6544, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824332", "game": "Cincinnati Reds @ Colorado Rockies", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824332", "game": "Cincinnati Reds @ Colorado Rockies", "source": "bettingpros", "home_wp": 0.4762, "away_wp": 0.5238, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824009", "game": "Detroit Tigers @ Los Angeles Angels", "source": "model", "home_wp": 0.4617, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824009", "game": "Detroit Tigers @ Los Angeles Angels", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824009", "game": "Detroit Tigers @ Los Angeles Angels", "source": "bettingpros", "home_wp": 0.4906, "away_wp": 0.5094, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824981", "game": "Washington Nationals @ Athletics", "source": "model", "home_wp": 0.5016, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824981", "game": "Washington Nationals @ Athletics", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "824981", "game": "Washington Nationals @ Athletics", "source": "bettingpros", "home_wp": 0.4954, "away_wp": 0.5046, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "825060", "game": "St. Louis Cardinals @ Arizona Diamondbacks", "source": "model", "home_wp": 0.5186, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "825060", "game": "St. Louis Cardinals @ Arizona Diamondbacks", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "825060", "game": "St. Louis Cardinals @ Arizona Diamondbacks", "source": "bettingpros", "home_wp": 0.5068, "away_wp": 0.4932, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823115", "game": "San Francisco Giants @ Seattle Mariners", "source": "model", "home_wp": 0.4981, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823115", "game": "San Francisco Giants @ Seattle Mariners", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLB", "event_id": "823115", "game": "San Francisco Giants @ Seattle Mariners", "source": "bettingpros", "home_wp": 0.5776, "away_wp": 0.4224, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857073", "game": "Seattle Storm @ Indiana Fever", "source": "model", "home_wp": 0.7986, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857073", "game": "Seattle Storm @ Indiana Fever", "source": "market", "home_wp": 0.7035, "away_wp": 0.2965, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857073", "game": "Seattle Storm @ Indiana Fever", "source": "bettingpros", "home_wp": 0.7664, "away_wp": 0.2336, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857074", "game": "Atlanta Dream @ Toronto Tempo", "source": "model", "home_wp": 0.3979, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857074", "game": "Atlanta Dream @ Toronto Tempo", "source": "market", "home_wp": 0.3404, "away_wp": 0.6596, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857074", "game": "Atlanta Dream @ Toronto Tempo", "source": "bettingpros", "home_wp": 0.2727, "away_wp": 0.7273, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857075", "game": "Los Angeles Sparks @ Chicago Sky", "source": "model", "home_wp": 0.5542, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857075", "game": "Los Angeles Sparks @ Chicago Sky", "source": "market", "home_wp": 0.5345, "away_wp": 0.4655, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857076", "game": "Connecticut Sun @ Phoenix Mercury", "source": "model", "home_wp": 0.6292, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "WNBA", "event_id": "401857076", "game": "Connecticut Sun @ Phoenix Mercury", "source": "market", "home_wp": 0.6135, "away_wp": 0.3865, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLS", "event_id": "761663", "game": "Atlanta United FC @ Nashville SC", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLS", "event_id": "761663", "game": "Atlanta United FC @ Nashville SC", "source": "market", "home_wp": 0.8258, "away_wp": 0.1742, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLS", "event_id": "761664", "game": "LAFC @ LA Galaxy", "source": "model", "home_wp": 0.4342, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLS", "event_id": "761664", "game": "LAFC @ LA Galaxy", "source": "market", "home_wp": NaN, "away_wp": NaN, "draw_wp": null}
+{"date": "2026-07-17", "sport": "MLS", "event_id": "761663", "game": "Atlanta United FC @ Nashville SC", "source": "bettingpros", "home_wp": 0.8201, "away_wp": 0.1799, "draw_wp": null}

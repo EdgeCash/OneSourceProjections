@@ -1,0 +1,619 @@
+[
+ {
+  "id": 99952,
+  "sr_id": "d6545b84-3f8f-4ce0-82b6-fbd353d70877",
+  "sport": "MLB",
+  "scheduled": "2026-07-17 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "BOS",
+  "visitor": "TB",
+  "link": "/mlb/matchups/boston-red-sox-vs-tampa-bay-rays/",
+  "series_summary": null,
+  "popularity": 234,
+  "double_header": true,
+  "pitchers": {
+   "home_probable": {
+    "id": "46372",
+    "name": "Jake Bennett",
+    "link": "/mlb/props/jake-bennett/",
+    "player": {
+     "short_name": "J. Bennett",
+     "first_name": "Jake",
+     "last_name": "Bennett",
+     "image": "https://images.fantasypros.com/images/players/mlb/46372/headshot/210x210.webp",
+     "position": "SP",
+     "team": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "slug": "jake-bennett",
+     "jersey_number": 64
+    }
+   },
+   "visitor_probable": {
+    "id": "43669",
+    "name": "Griffin Jax",
+    "link": "/mlb/props/griffin-jax/",
+    "player": {
+     "short_name": "G. Jax",
+     "first_name": "Griffin",
+     "last_name": "Jax",
+     "image": "https://images.fantasypros.com/images/players/mlb/43669/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "TB",
+     "conference": "AL",
+     "division": "East",
+     "slug": "griffin-jax",
+     "jersey_number": 22
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": [
+    {
+     "slot": 1,
+     "position": "LF",
+     "participant": {
+      "id": "10054",
+      "name": "Jarren Duran",
+      "link": "/mlb/props/jarren-duran/",
+      "player": {
+       "short_name": "J. Duran",
+       "first_name": "Jarren",
+       "last_name": "Duran",
+       "image": "https://images.fantasypros.com/images/players/mlb/10054/headshot/210x210.webp",
+       "position": "LF,CF,DH",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "jarren-duran",
+       "jersey_number": 16
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "1B",
+     "participant": {
+      "id": "5919",
+      "name": "Willson Contreras",
+      "link": "/mlb/props/willson-contreras/",
+      "player": {
+       "short_name": "W. Contreras",
+       "first_name": "Willson",
+       "last_name": "Contreras",
+       "image": "https://images.fantasypros.com/images/players/mlb/5919/headshot/210x210.webp",
+       "position": "1B",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "willson-contreras",
+       "jersey_number": 40
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "RF",
+     "participant": {
+      "id": "45630",
+      "name": "Wilyer Abreu",
+      "link": "/mlb/props/wilyer-abreu/",
+      "player": {
+       "short_name": "W. Abreu",
+       "first_name": "Wilyer",
+       "last_name": "Abreu",
+       "image": "https://images.fantasypros.com/images/players/mlb/45630/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "wilyer-abreu",
+       "jersey_number": 52
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "DH",
+     "participant": {
+      "id": "46547",
+      "name": "Masataka Yoshida",
+      "link": "/mlb/props/masataka-yoshida/",
+      "player": {
+       "short_name": "M. Yoshida",
+       "first_name": "Masataka",
+       "last_name": "Yoshida",
+       "image": "https://images.fantasypros.com/images/players/mlb/46547/headshot/210x210.webp",
+       "position": "LF,DH",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "masataka-yoshida",
+       "jersey_number": 7
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "SS",
+     "participant": {
+      "id": "4747",
+      "name": "Trevor Story",
+      "link": "/mlb/props/trevor-story/",
+      "player": {
+       "short_name": "T. Story",
+       "first_name": "Trevor",
+       "last_name": "Story",
+       "image": "https://images.fantasypros.com/images/players/mlb/4747/headshot/210x210.webp",
+       "position": "SS",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "trevor-story",
+       "jersey_number": 10
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "C",
+     "participant": {
+      "id": "47279",
+      "name": "Mickey Gasper",
+      "link": "/mlb/props/mickey-gasper/",
+      "player": {
+       "short_name": "M. Gasper",
+       "first_name": "Mickey",
+       "last_name": "Gasper",
+       "image": "https://images.fantasypros.com/images/players/mlb/47279/headshot/210x210.webp",
+       "position": "C,IF,DH",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "mickey-gasper",
+       "jersey_number": 30
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "2B",
+     "participant": {
+      "id": "44663",
+      "name": "Marcelo Mayer",
+      "link": "/mlb/props/marcelo-mayer/",
+      "player": {
+       "short_name": "M. Mayer",
+       "first_name": "Marcelo",
+       "last_name": "Mayer",
+       "image": "https://images.fantasypros.com/images/players/mlb/44663/headshot/210x210.webp",
+       "position": "2B,3B,SS",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "marcelo-mayer",
+       "jersey_number": 11
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "CF",
+     "participant": {
+      "id": "45510",
+      "name": "Ceddanne Rafaela",
+      "link": "/mlb/props/ceddanne-rafaela/",
+      "player": {
+       "short_name": "C. Rafaela",
+       "first_name": "Ceddanne",
+       "last_name": "Rafaela",
+       "image": "https://images.fantasypros.com/images/players/mlb/45510/headshot/210x210.webp",
+       "position": "2B,CF",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "ceddanne-rafaela",
+       "jersey_number": 3
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "3B",
+     "participant": {
+      "id": "45944",
+      "name": "Caleb Durbin",
+      "link": "/mlb/props/caleb-durbin/",
+      "player": {
+       "short_name": "C. Durbin",
+       "first_name": "Caleb",
+       "last_name": "Durbin",
+       "image": "https://images.fantasypros.com/images/players/mlb/45944/headshot/210x210.webp",
+       "position": "2B,3B",
+       "team": "BOS",
+       "conference": "AL",
+       "division": "East",
+       "slug": "caleb-durbin",
+       "jersey_number": 5
+      }
+     }
+    }
+   ],
+   "visitor_lineup": [
+    {
+     "slot": 1,
+     "position": "LF",
+     "participant": {
+      "id": "46426",
+      "name": "Chandler Simpson",
+      "link": "/mlb/props/chandler-simpson/",
+      "player": {
+       "short_name": "C. Simpson",
+       "first_name": "Chandler",
+       "last_name": "Simpson",
+       "image": "https://images.fantasypros.com/images/players/mlb/46426/headshot/210x210.webp",
+       "position": "LF,CF",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "chandler-simpson",
+       "jersey_number": 14
+      }
+     }
+    },
+    {
+     "slot": 2,
+     "position": "3B",
+     "participant": {
+      "id": "45016",
+      "name": "Junior Caminero",
+      "link": "/mlb/props/junior-caminero/",
+      "player": {
+       "short_name": "J. Caminero",
+       "first_name": "Junior",
+       "last_name": "Caminero",
+       "image": "https://images.fantasypros.com/images/players/mlb/45016/headshot/210x210.webp",
+       "position": "3B",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "junior-caminero",
+       "jersey_number": 13
+      }
+     }
+    },
+    {
+     "slot": 3,
+     "position": "2B",
+     "participant": {
+      "id": "48010",
+      "name": "Ben Williamson",
+      "link": "/mlb/props/ben-williamson/",
+      "player": {
+       "short_name": "B. Williamson",
+       "first_name": "Ben",
+       "last_name": "Williamson",
+       "image": "https://images.fantasypros.com/images/players/mlb/48010/headshot/210x210.webp",
+       "position": "2B,3B,SS",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "ben-williamson",
+       "jersey_number": 15
+      }
+     }
+    },
+    {
+     "slot": 4,
+     "position": "DH",
+     "participant": {
+      "id": "6677",
+      "name": "Yandy Diaz",
+      "link": "/mlb/props/yandy-diaz/",
+      "player": {
+       "short_name": "Y. Diaz",
+       "first_name": "Yandy",
+       "last_name": "Diaz",
+       "image": "https://images.fantasypros.com/images/players/mlb/6677/headshot/210x210.webp",
+       "position": "1B,DH",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "yandy-diaz",
+       "jersey_number": 2
+      }
+     }
+    },
+    {
+     "slot": 5,
+     "position": "1B",
+     "participant": {
+      "id": "7483",
+      "name": "Ryan Vilade",
+      "link": "/mlb/props/ryan-vilade/",
+      "player": {
+       "short_name": "R. Vilade",
+       "first_name": "Ryan",
+       "last_name": "Vilade",
+       "image": "https://images.fantasypros.com/images/players/mlb/7483/headshot/210x210.webp",
+       "position": "1B,LF,RF",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "ryan-vilade",
+       "jersey_number": 26
+      }
+     }
+    },
+    {
+     "slot": 6,
+     "position": "CF",
+     "participant": {
+      "id": "7400",
+      "name": "Cedric Mullins II",
+      "link": "/mlb/props/cedric-mullins/",
+      "player": {
+       "short_name": "C. Mullins II",
+       "first_name": "Cedric",
+       "last_name": "Mullins",
+       "image": "https://images.fantasypros.com/images/players/mlb/7400/headshot/210x210.webp",
+       "position": "CF",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "cedric-mullins",
+       "jersey_number": 31
+      }
+     }
+    },
+    {
+     "slot": 7,
+     "position": "RF",
+     "participant": {
+      "id": "45829",
+      "name": "Jonny DeLuca",
+      "link": "/mlb/props/jonny-deluca/",
+      "player": {
+       "short_name": "J. DeLuca",
+       "first_name": "Jonny",
+       "last_name": "DeLuca",
+       "image": "https://images.fantasypros.com/images/players/mlb/45829/headshot/210x210.webp",
+       "position": "LF,CF,RF",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "jonny-deluca",
+       "jersey_number": 21
+      }
+     }
+    },
+    {
+     "slot": 8,
+     "position": "C",
+     "participant": {
+      "id": "8673",
+      "name": "Nick Fortes",
+      "link": "/mlb/props/nick-fortes/",
+      "player": {
+       "short_name": "N. Fortes",
+       "first_name": "Nick",
+       "last_name": "Fortes",
+       "image": "https://images.fantasypros.com/images/players/mlb/8673/headshot/210x210.webp",
+       "position": "C",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "nick-fortes",
+       "jersey_number": 40
+      }
+     }
+    },
+    {
+     "slot": 9,
+     "position": "SS",
+     "participant": {
+      "id": "43756",
+      "name": "Taylor Walls",
+      "link": "/mlb/props/taylor-walls/",
+      "player": {
+       "short_name": "T. Walls",
+       "first_name": "Taylor",
+       "last_name": "Walls",
+       "image": "https://images.fantasypros.com/images/players/mlb/43756/headshot/210x210.webp",
+       "position": "SS",
+       "team": "TB",
+       "conference": "AL",
+       "division": "East",
+       "slug": "taylor-walls",
+       "jersey_number": 6
+      }
+     }
+    }
+   ],
+   "home_lineup_type": "confirmed",
+   "visitor_lineup_type": "confirmed"
+  },
+  "park_factors": {
+   "team_id": "BOS",
+   "season": "2025",
+   "split": "A",
+   "r": "1.093",
+   "1b": "1.087",
+   "2b": "1.168",
+   "3b": "1.504",
+   "hr": "0.956",
+   "name": "Fenway Park"
+  },
+  "venue": {
+   "name": "Fenway Park",
+   "address": "4 Yawkey Way",
+   "city": "Boston",
+   "state": "MA",
+   "country": "USA",
+   "zip": "02215",
+   "surface": "grass",
+   "capacity": 37755,
+   "stadium_type": "outdoor",
+   "id": "b27b0dc5-c2c5-401d-b8b9-a6a2dbc225e5"
+  },
+  "participants": [
+   {
+    "id": "BOS",
+    "name": "Red Sox",
+    "link": "/mlb/teams/boston-red-sox/",
+    "team": {
+     "city": "Boston",
+     "abbreviation": "BOS",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 46,
+      "L": 48,
+      "T": 0
+     },
+     "slug": "boston-red-sox",
+     "stadium_deg_offset": "45"
+    }
+   },
+   {
+    "id": "TB",
+    "name": "Rays",
+    "link": "/mlb/teams/tampa-bay-rays/",
+    "team": {
+     "city": "Tampa Bay",
+     "abbreviation": "TB",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 56,
+      "L": 38,
+      "T": 0
+     },
+     "slug": "tampa-bay-rays",
+     "stadium_deg_offset": "45"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 79,
+   "forecast_wind_speed": 15,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 299,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Clear",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.37
+  },
+  "broadcasts": [
+   {
+    "network": "RAYS",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 99227,
+  "sr_id": "8c5f8af0-b64c-4984-a5d9-514e8b60ba35",
+  "sport": "MLB",
+  "scheduled": "2026-07-17 23:05:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "NYY",
+  "visitor": "LAD",
+  "link": "/mlb/matchups/los-angeles-dodgers-vs-new-york-yankees/",
+  "series_summary": null,
+  "popularity": 8,
+  "double_header": false,
+  "pitchers": null,
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "NYY",
+   "season": "2025",
+   "split": "A",
+   "r": "0.994",
+   "1b": "0.931",
+   "2b": "0.961",
+   "3b": "0.613",
+   "hr": "1.134",
+   "name": "Yankee Stadium"
+  },
+  "venue": {
+   "name": "Yankee Stadium",
+   "address": "One East 161st Street",
+   "city": "Bronx",
+   "state": "NY",
+   "country": "USA",
+   "zip": "10451",
+   "surface": "grass",
+   "capacity": 47309,
+   "stadium_type": "outdoor",
+   "id": "706e9828-6687-4ac8-a409-3fb972e8bae9"
+  },
+  "participants": [
+   {
+    "id": "NYY",
+    "name": "Yankees",
+    "link": "/mlb/teams/new-york-yankees/",
+    "team": {
+     "city": "New York",
+     "abbreviation": "NYY",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 54,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "new-york-yankees",
+     "stadium_deg_offset": "60"
+    }
+   },
+   {
+    "id": "LAD",
+    "name": "Dodgers",
+    "link": "/mlb/teams/los-angeles-dodgers/",
+    "team": {
+     "city": "Los Angeles",
+     "abbreviation": "LAD",
+     "conference": "NL",
+     "division": "West",
+     "record": {
+      "W": 61,
+      "L": 36,
+      "T": 0
+     },
+     "slug": "los-angeles-dodgers",
+     "stadium_deg_offset": "30"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 83,
+   "forecast_wind_speed": 10,
+   "forecast_wind_direction": "S",
+   "forecast_wind_degree": 186,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Mostly Cloudy",
+   "forecast_pressure": 1016,
+   "forecast_humidity": 0.44
+  },
+  "broadcasts": [
+   {
+    "network": "MLBN",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/mlb-network-us.png"
+   }
+  ]
+ }
+]
