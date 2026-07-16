@@ -1,113 +1,4 @@
 {
-  "2026-07-10": {
-    "slate_note": "Heavy on [verify-news] totals with 18-46% edges \u2014 those scream missing lineups/weather, not value. I trust only the few clean single-digit edges; most of this slate is a pass.",
-    "verdicts": {
-      "824252": {
-        "stance": "differ",
-        "rationale": "Model flags both Over +7.2% and Under +11.3% \u2014 pricing noise. Only ML Tigers -108 (+4.2%) is coherent, and it's thin."
-      },
-      "823357": {
-        "stance": "differ",
-        "rationale": "Over +18.1% is flagged/inflated; I'd rather back the clean ML Pirates -117 (+6.1%) than a suspect total."
-      },
-      "822709": {
-        "stance": "pass",
-        "rationale": "Under +21.3% [verify-news] vs only a 0.8-run model gap \u2014 edge that big means missing news."
-      },
-      "824817": {
-        "stance": "pass",
-        "rationale": "Under +18.9% [verify-news] on a 0.6-run edge; implausible, likely stale line or lineup."
-      },
-      "824493": {
-        "stance": "agree",
-        "rationale": "Over +8.9% clean, model 11.1 vs 9.5 at hitter-friendly GABP with Greene/Imanaga K-upside cutting both ways \u2014 real lean."
-      },
-      "822955": {
-        "stance": "pass",
-        "rationale": "Model total 8.6 = market 8.5; the +12.9% is odds-driven, not a projection edge. No signal."
-      },
-      "823845": {
-        "stance": "pass",
-        "rationale": "Over +22.5% [verify-news] against Alcantara on a 7.5 total \u2014 that's missing news, not a mispriced Over."
-      },
-      "823604": {
-        "stance": "pass",
-        "rationale": "Under +45.7% [verify-news] is absurd \u2014 the model is clearly missing something. Hard fade of my own model."
-      },
-      "824575": {
-        "stance": "pass",
-        "rationale": "Over +21.5% [verify-news]; edge that large points to a stale line or lineup, not free money."
-      },
-      "822878": {
-        "stance": "agree",
-        "rationale": "ML Rangers +127 (+10.7%) clean, but Hunter Brown is elite so I size cautiously \u2014 model's 53% Rangers is aggressive."
-      },
-      "823685": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor and no market total posted."
-      },
-      "823033": {
-        "stance": "pass",
-        "rationale": "Nothing clears the floor; Sale start, no priced edge."
-      },
-      "823278": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor."
-      },
-      "823927": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor."
-      },
-      "823200": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor; no market total posted."
-      },
-      "177491": {
-        "stance": "pass",
-        "rationale": "Zverev +400 at +41% EV is a screaming missing-news flag (injury/withdrawal), not a live overlay. No bet."
-      }
-    },
-    "top_plays": [
-      {
-        "game_id": "824493",
-        "sport": "MLB",
-        "matchup": "Chicago Cubs @ Cincinnati Reds",
-        "market": "Total",
-        "side": "Over",
-        "line": 9.5,
-        "odds": 110,
-        "confidence": 3,
-        "rationale": "Clean +8.9% edge, model 11.1 vs 9.5, GABP hitter park, Cubs bat. Not flagged for news \u2014 my most trustable number."
-      },
-      {
-        "game_id": "823357",
-        "sport": "MLB",
-        "matchup": "Milwaukee Brewers @ Pittsburgh Pirates",
-        "market": "Moneyline",
-        "side": "Pittsburgh Pirates",
-        "line": null,
-        "odds": -117,
-        "confidence": 2,
-        "rationale": "Model 58% Pirates, +6.1% clean edge. Fading the flagged Over and taking the coherent side instead."
-      },
-      {
-        "game_id": "822878",
-        "sport": "MLB",
-        "matchup": "Houston Astros @ Texas Rangers",
-        "market": "Moneyline",
-        "side": "Texas Rangers",
-        "line": null,
-        "odds": 127,
-        "confidence": 2,
-        "rationale": "Rangers +127 with model 53% is +10.7% EV, but Hunter Brown is a real threat \u2014 small stake only."
-      }
-    ],
-    "model": "claude-opus-4-8",
-    "mode": "standard",
-    "game_count": 16,
-    "generated_at": "2026-07-10T22:53:35+00:00",
-    "date": "2026-07-10"
-  },
   "2026-07-11": {
     "slate_note": "A noisy MLB board where most of the fattest edges (16-26%) carry [verify-news] tags and even contradict the model's own totals \u2014 those are missing news, not gifts. Only three modest, un-flagged edges survive scrutiny.",
     "verdicts": {
@@ -927,74 +818,207 @@
     "date": "2026-07-15"
   },
   "2026-07-16": {
-    "slate_note": "Thin, unbackable slate: the only MLB game has no edge clearing the floor, every ATP match lacks posted prices, and the juiciest number (WNBA Over +20.4%) is flagged verify-news with no game_id. Zero plays is the honest call.",
+    "slate_note": "Thin slate for our purposes: the 11 ATP matches have no prices to check EV against, and the one MLB game shows contradictory edges (model total 10.2 favors Over, yet lists Under +8.8% as best). No play I trust.",
     "verdicts": {
       "823440": {
         "stance": "pass",
-        "rationale": "Coinflip ML and model itself says no edge clears floor; total is 0.7 above market, not enough to chase."
-      },
-      "178639": {
-        "stance": "pass",
-        "rationale": "No market price given; 53/47 model lean is not an edge without a line."
-      },
-      "178641": {
-        "stance": "pass",
-        "rationale": "No odds posted; can't price a 57% Rublev without market number."
+        "rationale": "Model total 10.2 implies Over, but it lists Under +8.8% as best play \u2014 internally contradictory. Nola caps upside. No trust."
       },
       "178638": {
         "stance": "pass",
-        "rationale": "No market price; 55% Tabilo lean untradeable without a line."
+        "rationale": "No market price given; can't verify EV on a 45/55 coin-ish match."
       },
       "178643": {
         "stance": "pass",
-        "rationale": "True 50/50 with no price; nothing to bet."
-      },
-      "178644": {
-        "stance": "pass",
-        "rationale": "No odds given; 59% Darderi lean needs a market line to value."
+        "rationale": "50/50 model, no price \u2014 nothing to bet."
       },
       "178628": {
         "stance": "pass",
-        "rationale": "No market price; 59% Vallejo not actionable."
+        "rationale": "No odds provided; 41/59 unpriceable."
       },
-      "178746": {
+      "178644": {
         "stance": "pass",
-        "rationale": "No odds posted; 65% Cerundolo could already be priced through."
-      },
-      "178745": {
-        "stance": "pass",
-        "rationale": "No market price for Ruud; no edge to confirm."
-      },
-      "178722": {
-        "stance": "pass",
-        "rationale": "No odds given; 56% Tsitsipas untradeable."
-      },
-      "178728": {
-        "stance": "pass",
-        "rationale": "No market price; 61% Bublik not actionable."
+        "rationale": "No market number to compare against model 59%."
       },
       "178725": {
         "stance": "pass",
-        "rationale": "Coinflip 51/49 with no price; pass."
+        "rationale": "51/49 toss-up, no price. Skip."
       },
       "178740": {
         "stance": "pass",
-        "rationale": "No odds posted for Vacherot; no edge to trust."
+        "rationale": "No odds given for 59% favorite; can't price edge."
       },
-      "178790": {
+      "178738": {
         "stance": "pass",
-        "rationale": "No market price; 53% lean too thin without a line."
+        "rationale": "Ruud 60% but no market line to establish value."
+      },
+      "178742": {
+        "stance": "pass",
+        "rationale": "No price provided for Tsitsipas 57%; unbettable here."
       },
       "178777": {
         "stance": "pass",
-        "rationale": "No odds given; 56% Arnaldi not actionable."
+        "rationale": "56/44 with no odds; nothing to act on."
+      },
+      "178790": {
+        "stance": "pass",
+        "rationale": "Near coin-flip 53%, no price. Pass."
+      },
+      "178776": {
+        "stance": "pass",
+        "rationale": "53/47 model, no market number. Skip."
       }
     },
     "top_plays": [],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 15,
-    "generated_at": "2026-07-15T22:51:43+00:00",
+    "game_count": 12,
+    "generated_at": "2026-07-16T17:22:32+00:00",
     "date": "2026-07-16"
+  },
+  "2026-07-17": {
+    "slate_note": "Data looks noisy \u2014 nearly every MLB total is a flat 7.5 while the model sits at 9+, and the biggest 'Over' edges (+20-31%) all carry verify-news flags with unlisted starters. That's the model missing lineup/pitcher info, not free money. Thin, low-conviction slate.",
+    "verdicts": {
+      "824766": {
+        "stance": "pass",
+        "rationale": "Over +26% is verify-news flagged; Boston SP unlisted \u2014 model likely missing pitcher news, not a real edge"
+      },
+      "824737": {
+        "stance": "pass",
+        "rationale": "Duplicate Rays/Sox with +31% Over flagged verify-news; too large to trust, missing news"
+      },
+      "823524": {
+        "stance": "agree",
+        "rationale": "Yankees ML +108 (+4.7%) on a true 51/49 coinflip is a defensible thin lean"
+      },
+      "824414": {
+        "stance": "agree",
+        "rationale": "Over +6% with both starters (Jones/Williams) named \u2014 most trustable total on the board"
+      },
+      "824901": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor; Sale listed but opposing SP unknown"
+      },
+      "822789": {
+        "stance": "pass",
+        "rationale": "Over +19.6% verify-news flagged with unproven SP \u2014 untrustworthy gap vs 7.5 market"
+      },
+      "823766": {
+        "stance": "pass",
+        "rationale": "Marlins ML +4.1% too thin to back, no confirming angle"
+      },
+      "824655": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor; missing a starter"
+      },
+      "824170": {
+        "stance": "agree",
+        "rationale": "Astros ML +113 (+5.8%) at home on a 50/50 is a reasonable thin value lean"
+      },
+      "824090": {
+        "stance": "pass",
+        "rationale": "Under +24.6% verify-news flagged; King/Lugo known but edge too large \u2014 likely missing news"
+      },
+      "824332": {
+        "stance": "pass",
+        "rationale": "No edge clears; Coors game with unlisted Rockies SP is a coin toss"
+      },
+      "824009": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor; opposing SP unknown"
+      },
+      "824981": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor; pick-em game"
+      },
+      "825060": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor"
+      },
+      "823115": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor; low-scoring pick-em"
+      },
+      "178643": {
+        "stance": "pass",
+        "rationale": "50/50 tennis, no game-level line to price"
+      },
+      "178628": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178644": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178725": {
+        "stance": "pass",
+        "rationale": "51/49 tennis coinflip, no line given"
+      },
+      "178740": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178738": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178742": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178777": {
+        "stance": "pass",
+        "rationale": "Tennis ML only, no priced market in brief"
+      },
+      "178790": {
+        "stance": "pass",
+        "rationale": "53/47 tennis coinflip, no line given"
+      },
+      "178776": {
+        "stance": "pass",
+        "rationale": "53/47 tennis coinflip, no line given"
+      }
+    },
+    "top_plays": [
+      {
+        "game_id": "824414",
+        "sport": "MLB",
+        "matchup": "Pittsburgh Pirates @ Cleveland Guardians",
+        "market": "Total",
+        "side": "Over",
+        "line": 7.5,
+        "odds": -108,
+        "confidence": 2,
+        "rationale": "Both starters (Jones/Williams) named and edge only +6% \u2014 the one Over not tagged verify-news, so trust it more than the flagged ones"
+      },
+      {
+        "game_id": "824170",
+        "sport": "MLB",
+        "matchup": "Baltimore Orioles @ Houston Astros",
+        "market": "Moneyline",
+        "side": "Houston Astros",
+        "line": null,
+        "odds": 113,
+        "confidence": 2,
+        "rationale": "50/50 model on a home dog price (+113) is small positive value; thin single-unit lean"
+      },
+      {
+        "game_id": "823524",
+        "sport": "MLB",
+        "matchup": "Los Angeles Dodgers @ New York Yankees",
+        "market": "Moneyline",
+        "side": "New York Yankees",
+        "line": null,
+        "odds": 108,
+        "confidence": 2,
+        "rationale": "Model 49% Yankees at +108 is a marginal +4.7% edge; playable but keep it small"
+      }
+    ],
+    "model": "claude-opus-4-8",
+    "mode": "standard",
+    "game_count": 25,
+    "generated_at": "2026-07-16T17:22:32+00:00",
+    "date": "2026-07-17"
   }
 }
