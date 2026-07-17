@@ -1082,3 +1082,6 @@
 {"date": "2026-07-18", "sport": "WNBA", "event_id": "401857079", "game": "Washington Mystics @ Golden State Valkyries", "source": "bettingpros", "home_wp": 0.761, "away_wp": 0.239, "draw_wp": null}
 {"date": "2026-07-18", "sport": "World Cup", "event_id": "760516", "game": "England @ France", "source": "bettingpros", "home_wp": 0.665, "away_wp": 0.335, "draw_wp": null}
 {"date": "2026-07-18", "sport": "UFC", "event_id": "600059599", "game": "Anna Melisano @ Dione Barbosa", "source": "bettingpros", "home_wp": 0.8233, "away_wp": 0.1767, "draw_wp": null}
+{"date": "2026-07-18", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "model", "home_wp": 0.4499, "away_wp": null, "draw_wp": null}
+{"date": "2026-07-18", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "market", "home_wp": 0.5025, "away_wp": 0.4975, "draw_wp": null}
+{"date": "2026-07-18", "sport": "MLB", "event_id": "824414", "game": "Pittsburgh Pirates @ Cleveland Guardians", "source": "bettingpros", "home_wp": 0.4783, "away_wp": 0.5217, "draw_wp": null}
