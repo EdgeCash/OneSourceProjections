@@ -111,36 +111,90 @@ def collect_operators(conn, date, sports, source, per_op: int = 25) -> dict:
     return operators
 
 
+IMPLAUSIBLE_EV = 0.30   # the engine's "model is missing something, not edge" tier
+VERIFY_EV = 0.15        # flag: usually the model missing news, not real alpha
+
+
+def _f(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def game_plays(min_edge: float | None = None) -> list[dict]:
-    """Moneyline / total / spread edges from the main engine's latest.json."""
-    if min_edge is None:
-        try:
-            from project547 import config
-            min_edge = config.MIN_EDGE
-        except Exception:
-            min_edge = 0.02
+    """Moneyline / total / spread edges — sourced from the project547 engine's
+    own board (``app.ui.build_best_bets``), not raw fields.
+
+    That board applies the engine's guardrails: market context, the demonstrated-
+    edge gate, and the implausibility flags. We DROP anything it flags
+    ``🚫 implausible`` (EV >= 30% — the model is missing news/lineups, not real
+    edge, and the engine zeros the stake there), keep the ``⚠️ verify`` flag on
+    each row, and rank clean plays ahead of flagged ones. Falls back to a
+    guarded raw read if ``app.ui`` can't be imported.
+    """
     try:
         data = json.loads((REPO_ROOT / "data" / "output" / "latest.json").read_text())
     except Exception:
         return []
+    try:
+        from app import ui
+        from project547 import config
+    except Exception:
+        return _game_plays_fallback(data, min_edge)
 
-    def _f(v):
+    me = min_edge if min_edge is not None else getattr(config, "MIN_EDGE", 0.02)
+    out: list[dict] = []
+    for _dt, sports in (data.get("slates") or {}).items():
         try:
-            return float(v)
-        except (TypeError, ValueError):
-            return None
+            df = ui.build_best_bets(sports, me)
+        except Exception:
+            continue
+        if df is None or len(df) == 0:
+            continue
+        for _, r in df.iterrows():
+            if r.get("type") != "Game":
+                continue
+            flag = str(r.get("flag") or "")
+            if "🚫" in flag:      # implausible — the engine says don't bet these
+                continue
+            ev = _f(r.get("ev"))
+            if ev is None:
+                continue
+            market, sk = r.get("market"), r.get("_sidekey")
+            home, away = r.get("_home"), r.get("_away")
+            bet = str(r.get("bet") or "")
+            if market == "Total":
+                side_key = sk if sk in ("over", "under") else None
+            elif market == "Moneyline":
+                side_key = "home" if sk == home else ("away" if sk == away else None)
+            else:                 # Run Line / Spread
+                side_key = "home" if (home and bet.startswith(str(home))) else "away"
+            out.append({
+                "sport": r.get("sport"), "game": r.get("game"),
+                "market": "Spread" if market in ("Run Line", "Spread") else market,
+                "side_key": side_key, "selection": bet, "line": _f(r.get("line")),
+                "odds": _f(r.get("price")), "ev": round(ev, 4),
+                "model_prob": _f(r.get("model_prob")),
+                "flag": flag, "gate": str(r.get("gate") or ""),
+                "away_team": away, "home_team": home, "game_time": r.get("time"),
+            })
+    # clean plays first (by EV desc), flagged "verify" plays after
+    out.sort(key=lambda p: (bool(p["flag"]), -(p["ev"] or 0)))
+    return out
 
+
+def _game_plays_fallback(data: dict, min_edge: float | None) -> list[dict]:
+    """Raw latest.json read used only if app.ui can't be imported. Applies the
+    same implausibility guard so it never surfaces the sketchy >=30% edges."""
+    me = min_edge if min_edge is not None else 0.02
     out: list[dict] = []
     for _dt, sports in (data.get("slates") or {}).items():
         for sport, blob in (sports or {}).items():
             for g in (blob.get("games") if isinstance(blob, dict) else None) or []:
                 matchup = f"{g.get('away_team')} @ {g.get('home_team')}"
-                gt = g.get("game_time")
-                mop = _f(g.get("model_over_prob"))
-                mhc = _f(g.get("model_home_cover"))
-                shl = _f(g.get("spread_home_line"))
-                tl = _f(g.get("total_line"))
-                # (market, side_key, selection, line, ev, odds, model_prob)
+                mop, shl = _f(g.get("model_over_prob")), _f(g.get("spread_home_line"))
+                mhc, tl = _f(g.get("model_home_cover")), _f(g.get("total_line"))
                 cands = [
                     ("Moneyline", "home", g.get("home_team"), None,
                      g.get("home_ml_ev"), g.get("home_ml"), _f(g.get("home_win_prob"))),
@@ -163,16 +217,17 @@ def game_plays(min_edge: float | None = None) -> list[dict]:
                 ]
                 for market, side_key, sel, line, ev, odds, prob in cands:
                     ev = _f(ev)
-                    if ev is None or ev < min_edge:
-                        continue
+                    if ev is None or ev < me or ev >= IMPLAUSIBLE_EV:
+                        continue      # guard: never surface implausible edges
                     out.append({
                         "sport": sport, "game": matchup, "market": market,
                         "side_key": side_key, "selection": sel, "line": line,
                         "odds": _f(odds), "ev": round(ev, 4), "model_prob": prob,
-                        "away_team": g.get("away_team"), "home_team": g.get("home_team"),
-                        "game_time": gt,
+                        "flag": "⚠️ verify news" if ev >= VERIFY_EV else "",
+                        "gate": "", "away_team": g.get("away_team"),
+                        "home_team": g.get("home_team"), "game_time": g.get("game_time"),
                     })
-    out.sort(key=lambda p: p["ev"], reverse=True)
+    out.sort(key=lambda p: (bool(p["flag"]), -(p["ev"] or 0)))
     return out
 
 
@@ -307,16 +362,19 @@ def write_workbook(payload: dict, logs: list[dict], out_path: str | Path) -> Pat
     # --- Game Plays --------------------------------------------------------
     ws = wb.create_sheet("Game Plays")
     row = _title(ws, "Game Plays — moneyline / total / spread",
-                 "from the project547 engine (edges ≥ 2% EV), highest EV first")
+                 "project547 engine, clean plays first. Implausible edges "
+                 "(≥30% EV = model missing news) are dropped; ⚠️ = verify news "
+                 "before trusting a high EV.")
     rows = [[p["sport"], p["game"], p["market"], p["selection"], p["odds"],
-             p["model_prob"], p["ev"], p["game_time"]] for p in gp]
+             p.get("model_prob"), p["ev"], p.get("flag") or "", p.get("game_time")]
+            for p in gp]
     if not rows:
         ws.cell(row=row, column=1, value="No qualifying game plays on this slate.")
     else:
         _write_table(ws, row, ["Sport", "Game", "Market", "Selection", "Odds",
-                               "Model%", "EV", "Start (UTC)"],
+                               "Model%", "EV", "Flag", "Start (UTC)"],
                      rows, fmts={5: ODDS, 6: PCT, 7: EDGE})
-    _autosize(ws, {1: 6, 2: 34, 3: 10, 4: 22, 5: 7, 6: 8, 7: 8, 8: 20})
+    _autosize(ws, {1: 6, 2: 34, 3: 10, 4: 22, 5: 7, 6: 8, 7: 8, 8: 14, 9: 20})
 
     # --- Track Record ------------------------------------------------------
     tr = payload.get("track_record")
@@ -437,7 +495,8 @@ def append_game_history(payload: dict, path: str | Path) -> int:
             "home_team": p.get("home_team"), "market": p["market"],
             "side_key": p.get("side_key"), "selection": p["selection"],
             "line": p.get("line"), "odds": p.get("odds"), "ev": p.get("ev"),
-            "model_prob": p.get("model_prob"), "game_time": p.get("game_time"),
+            "model_prob": p.get("model_prob"), "flag": p.get("flag") or "",
+            "gate": p.get("gate") or "", "game_time": p.get("game_time"),
             # graded later by clv.grade_games:
             "closing_odds": None, "closing_line": None, "line_delta": None,
             "clv": None, "beat_close": None,
