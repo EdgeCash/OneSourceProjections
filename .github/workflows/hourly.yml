@@ -79,19 +79,21 @@ jobs:
         # fetched (MLB props/offers) and adds zero external load. openpyxl comes
         # from the root requirements; no Google Cloud, no Sheets secrets.
         run: |
-          # Build once per day on the first run at/after 15:00 UTC, deduped by
-          # checking whether latest.json already has today's shared build.
-          # GitHub's scheduler is jittery (a "15:00" cron can fire at 14:53 or
-          # 15:40), so gate on hour>=15 + a dedupe marker, never an exact hour.
-          HOUR=$(date -u +%H)
-          NEED=$(python3 -c "import json,datetime;d=json.load(open('sports_wagering_pipeline/data/output/latest.json'));t=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d');print('0' if d.get('source')=='shared' and str(d.get('generated_at',''))[:10]==t else '1')" 2>/dev/null || echo 1)
-          if { [ $((10#$HOUR)) -ge 15 ] && [ "$NEED" = "1" ]; } || [ -n "${{ inputs.date }}" ]; then
+          # Build right after THIS run pulled player props, so BettingPros' short
+          # (~10 min) prop cache is still warm for this keyless step. Props are
+          # pulled ~4x/day (see PROPS_MIN_GAP_HOURS: ET ~9/13/17/21), and we
+          # rebuild the sheet on each so it always reflects the latest lines —
+          # the evening pull gives the final pre-game board. Freshness is read
+          # from the prop-pull marker the Hourly pull step just wrote (robust to
+          # scheduler jitter — no exact-hour gate).
+          FRESH=$(python3 -c "import json,datetime;m=json.load(open('data/history/prop_pull_state.json'));last=datetime.datetime.fromisoformat(m['last_pull_utc']);now=datetime.datetime.now(datetime.timezone.utc);print('1' if (now-last).total_seconds()<=900 else '0')" 2>/dev/null || echo 0)
+          if [ "$FRESH" = "1" ] || [ -n "${{ inputs.date }}" ]; then
             cd sports_wagering_pipeline
-            echo "building daily ready-to-play workbook (hour=$HOUR need=$NEED)"
+            echo "building ready-to-play workbook (props just pulled; BP cache warm)"
             PYTHONPATH=.. python -m src.export --daily --source shared \
               --out data/output/latest.xlsx --json data/output/latest.json || true
           else
-            echo "daily workbook already built today or before 15:00 UTC (hour=$HOUR need=$NEED); skipping"
+            echo "no fresh prop pull this run (BP cache cold); skipping workbook build"
           fi
 
       - name: Commit data
