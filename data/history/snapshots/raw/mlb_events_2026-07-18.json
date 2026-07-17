@@ -1,0 +1,274 @@
+[
+ {
+  "id": 99420,
+  "sr_id": "a2cd1d7c-3291-4262-8428-c5db499c924f",
+  "sport": "MLB",
+  "scheduled": "2026-07-18 18:20:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "CHC",
+  "visitor": "MIN",
+  "link": "/mlb/matchups/chicago-cubs-vs-minnesota-twins/?date=2026-07-18",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "5003",
+    "name": "Matthew Boyd",
+    "link": "/mlb/props/matt-boyd/",
+    "player": {
+     "short_name": "M. Boyd",
+     "first_name": "Matthew",
+     "last_name": "Boyd",
+     "image": "https://images.fantasypros.com/images/players/mlb/5003/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "matt-boyd",
+     "jersey_number": 16
+    }
+   },
+   "visitor_probable": {
+    "id": "44442",
+    "name": "Taj Bradley",
+    "link": "/mlb/props/taj-bradley/",
+    "player": {
+     "short_name": "T. Bradley",
+     "first_name": "Taj",
+     "last_name": "Bradley",
+     "image": "https://images.fantasypros.com/images/players/mlb/44442/headshot/210x210.webp",
+     "position": "SP",
+     "team": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "taj-bradley",
+     "jersey_number": 26
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "CHC",
+   "season": "2025",
+   "split": "A",
+   "r": "0.898",
+   "1b": "0.994",
+   "2b": "0.876",
+   "3b": "1.210",
+   "hr": "0.883",
+   "name": "Wrigley Field"
+  },
+  "venue": {
+   "name": "Wrigley Field",
+   "address": "1060 West Addison Street",
+   "city": "Chicago",
+   "state": "IL",
+   "country": "USA",
+   "zip": "60613",
+   "surface": "grass",
+   "capacity": 41363,
+   "stadium_type": "outdoor",
+   "id": "53f8eb0d-a361-4a7a-930b-2f8735ea0698"
+  },
+  "participants": [
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "record": {
+      "W": 54,
+      "L": 42,
+      "T": 0
+     },
+     "slug": "chicago-cubs",
+     "stadium_deg_offset": "30"
+    }
+   },
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 48,
+      "L": 49,
+      "T": 0
+     },
+     "slug": "minnesota-twins",
+     "stadium_deg_offset": "75"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 87,
+   "forecast_wind_speed": 17,
+   "forecast_wind_direction": "NW",
+   "forecast_wind_degree": 323,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1010,
+   "forecast_humidity": 0.62
+  },
+  "broadcasts": [
+   {
+    "network": "MARQ",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ },
+ {
+  "id": 98874,
+  "sr_id": "6536ea4b-0073-4369-99d9-591a55d6e294",
+  "sport": "MLB",
+  "scheduled": "2026-07-18 19:07:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TOR",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/chicago-white-sox-vs-toronto-blue-jays/?date=2026-07-18",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7178",
+    "name": "Shane Bieber",
+    "link": "/mlb/props/shane-bieber/",
+    "player": {
+     "short_name": "S. Bieber",
+     "first_name": "Shane",
+     "last_name": "Bieber",
+     "image": "https://images.fantasypros.com/images/players/mlb/7178/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "shane-bieber",
+     "jersey_number": 57
+    }
+   },
+   "visitor_probable": {
+    "id": "46142",
+    "name": "Davis Martin",
+    "link": "/mlb/props/davis-martin/",
+    "player": {
+     "short_name": "D. Martin",
+     "first_name": "Davis",
+     "last_name": "Martin",
+     "image": "https://images.fantasypros.com/images/players/mlb/46142/headshot/210x210.webp",
+     "position": "SP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "davis-martin",
+     "jersey_number": 65
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TOR",
+   "season": "2025",
+   "split": "A",
+   "r": "0.975",
+   "1b": "0.944",
+   "2b": "1.042",
+   "3b": "0.687",
+   "hr": "1.011",
+   "name": "Rogers Centre"
+  },
+  "venue": {
+   "name": "Rogers Centre",
+   "address": "One Blue Jays Way",
+   "city": "Toronto",
+   "state": "ON",
+   "country": "CAN",
+   "zip": "M5V1J3",
+   "surface": "turf",
+   "capacity": 39150,
+   "stadium_type": "retractable",
+   "id": "84d72338-2173-4a90-9d25-99adc6c86f4b"
+  },
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 45,
+      "L": 51,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 50,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 81,
+   "forecast_wind_speed": 25,
+   "forecast_wind_direction": "WSW",
+   "forecast_wind_degree": 255,
+   "forecast_rain_chance": 19,
+   "forecast_icon": "Windy",
+   "forecast_pressure": 1001,
+   "forecast_humidity": 0.69
+  },
+  "broadcasts": [
+   {
+    "network": "SNET",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

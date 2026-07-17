@@ -1,0 +1,510 @@
+[
+ {
+  "id": "a2a6a5adfae91a29acbfe9994509c138",
+  "market_id": 122,
+  "event_id": 99420,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "MIN",
+    "name": "Twins",
+    "link": "/mlb/teams/minnesota-twins/",
+    "team": {
+     "city": "Minnesota",
+     "abbreviation": "MIN",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "minnesota-twins"
+    }
+   },
+   {
+    "id": "CHC",
+    "name": "Cubs",
+    "link": "/mlb/teams/chicago-cubs/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CHC",
+     "conference": "NL",
+     "division": "Central",
+     "slug": "chicago-cubs"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "MIN",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1567,
+     "book_id": 68,
+     "created": "2026-07-15 18:41:56"
+    },
+    "label": "Twins",
+    "short_label": "MIN",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:47:18",
+        "cost": 144,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 40.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_197c816c5298e40573be3a4c9ecb814e",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-17 05:45:03",
+        "cost": 150,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul181420minchc",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": 0.00821508588498876,
+         "fair_probability": 0.4032860343539955,
+         "pm_win_pct": 40.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_197c816c5298e40573be3a4c9ecb814e",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:42:10",
+        "cost": 144,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.019438330021567828,
+         "fair_probability": 0.40186953687640664,
+         "pm_win_pct": 40.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_197c816c5298e40573be3a4c9ecb814e",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:47:18",
+        "cost": 135,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389248_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.05999999999999994,
+         "fair_probability": 0.4,
+         "pm_win_pct": 40.49
+        }
+       }
+      ]
+     }
+    ],
+    "id": "197c816c5298e40573be3a4c9ecb814e"
+   },
+   {
+    "participant": "CHC",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1567,
+     "book_id": 68,
+     "created": "2026-07-15 18:41:56"
+    },
+    "label": "Cubs",
+    "short_label": "CHC",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:47:18",
+        "cost": -150,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 59.51
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_686739d86b8bb953ca38440d4ce354fe",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-17 05:45:03",
+        "cost": -150,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul181420minchc",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.005476723923325988,
+         "fair_probability": 0.5967139656460044,
+         "pm_win_pct": 59.51
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_686739d86b8bb953ca38440d4ce354fe",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:42:10",
+        "cost": -144,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 59.51
+        }
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_686739d86b8bb953ca38440d4ce354fe",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:47:18",
+        "cost": -170,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389248_c_p_203_prematch",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 59.51
+        }
+       }
+      ]
+     }
+    ],
+    "id": "686739d86b8bb953ca38440d4ce354fe"
+   }
+  ]
+ },
+ {
+  "id": "5922f8824438b92b60bd11b9bfc6370a",
+  "market_id": 122,
+  "event_id": 98874,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "chicago-white-sox"
+    }
+   },
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "toronto-blue-jays"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "CWS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1567,
+     "book_id": 68,
+     "created": "2026-07-15 19:26:22"
+    },
+    "label": "White Sox",
+    "short_label": "CWS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:48:37",
+        "cost": 108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_470f87ae698e2f4c4751e67c8f76c3a3",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-17 05:45:03",
+        "cost": 108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul181507cwstor",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_470f87ae698e2f4c4751e67c8f76c3a3",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-17 05:42:10",
+        "cost": 108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_470f87ae698e2f4c4751e67c8f76c3a3",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:48:37",
+        "cost": -105,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389231_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "470f87ae698e2f4c4751e67c8f76c3a3"
+   },
+   {
+    "participant": "TOR",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1567,
+     "book_id": 68,
+     "created": "2026-07-15 19:26:22"
+    },
+    "label": "Blue Jays",
+    "short_label": "TOR",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:48:37",
+        "cost": -113,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_b7e381b63d982c88b2abb8990e68b503",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-17 05:45:03",
+        "cost": -108,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul181507cwstor",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_b7e381b63d982c88b2abb8990e68b503",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:42:10",
+        "cost": -113,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 39,
+      "lines": [
+       {
+        "id": "39_b7e381b63d982c88b2abb8990e68b503",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-17 05:48:37",
+        "cost": -120,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://sports.getfliff.com/markets?eventId=389231_c_p_203_prematch",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "b7e381b63d982c88b2abb8990e68b503"
+   }
+  ]
+ }
+]
