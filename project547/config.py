@@ -287,6 +287,15 @@ def props_window_open(hour_et: int) -> bool:
     lo, hi = PROPS_WINDOW_ET
     return lo <= hour_et <= hi
 
+
+# Within the window above, pull props at most this often. BettingPros' 5,000/day
+# budget is exhausted by hourly prop pulls before evening games, so space them:
+# ~4 slate-timed pulls a day keep the lines fresh enough (they carry forward in
+# between) while leaving budget for the whole slate. Enforced via a committed
+# last-pull marker so it's robust to GitHub's scheduler jitter (unlike an
+# exact-hour gate). Set to 0 to pull every hour in the window (old behavior).
+PROPS_MIN_GAP_HOURS = 3.5
+
 # Market-blend / price-sanity knobs. The raw model finds far too many fat
 # edges (a sign of over-confidence + stale price inputs, not alpha), so before
 # computing EV we (1) reject incoherent two-way prices and (2) shrink the
