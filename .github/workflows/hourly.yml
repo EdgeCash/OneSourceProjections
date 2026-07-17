@@ -104,7 +104,7 @@ jobs:
           # It MUST be staged or the refreshed games.json.gz is discarded each
           # run while the (committed) dedup state falsely records success — which
           # silently froze the MLB game log at the import cutoff (staleness bug).
-          git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track
+          git add data/output data/history/snapshots data/history/playerlogs data/history/markets data/history/fantasypros data/history/tracking data/history/backfill data/track data/history/prop_pull_state.json
           # daily comparison workbook + growing picks/game history (built once/day)
           git add sports_wagering_pipeline/data/output/latest.xlsx sports_wagering_pipeline/data/output/latest.json sports_wagering_pipeline/data/output/picks_history.jsonl sports_wagering_pipeline/data/output/game_history.jsonl
           git diff --cached --quiet || git commit -m "data: hourly update $(date -u +'%F %H:%MZ')"

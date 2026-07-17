@@ -19,9 +19,10 @@ Usage:
 
 import argparse
 import json
+import json
 import logging
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -36,6 +37,34 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(messag
 log = logging.getLogger("hourly")
 
 ET = ZoneInfo("America/New_York")
+
+# Committed marker recording the last time player props were pulled, so the
+# prop-pull cadence (config.PROPS_MIN_GAP_HOURS) survives GitHub's scheduler
+# jitter and the ephemeral runner. Staged by the workflow's commit step.
+PROP_STATE = config.REPO_ROOT / "data" / "history" / "prop_pull_state.json"
+
+
+def _prop_gap_ok(now_utc: datetime) -> bool:
+    """True if it's been >= PROPS_MIN_GAP_HOURS since the last prop pull (or if
+    there's no record yet). Fail-open so a missing/corrupt marker never blocks
+    props indefinitely."""
+    gap = getattr(config, "PROPS_MIN_GAP_HOURS", 0)
+    if gap <= 0:
+        return True
+    try:
+        last = datetime.fromisoformat(
+            json.loads(PROP_STATE.read_text())["last_pull_utc"])
+        return (now_utc - last).total_seconds() >= gap * 3600
+    except Exception:
+        return True
+
+
+def _record_prop_pull(now_utc: datetime) -> None:
+    try:
+        PROP_STATE.parent.mkdir(parents=True, exist_ok=True)
+        PROP_STATE.write_text(json.dumps({"last_pull_utc": now_utc.isoformat()}))
+    except Exception as e:
+        log.warning("could not write prop-pull marker: %s", e)
 
 
 # Legacy Streamlit deployment URL (brand is now Project 54.7; redeploy under a
@@ -247,16 +276,22 @@ def main():
     yesterday = today - timedelta(days=1)
     upcoming = [today.isoformat(), tomorrow.isoformat()]
 
-    # Player props are only PULLED inside the ET window (config.PROPS_WINDOW_ET)
-    # — games/snapshots/grading still run every hour, but the expensive prop
-    # calls are skipped overnight to stay under BettingPros' daily request cap.
-    # A manual --date run always attempts props.
+    # Player props are the expensive BettingPros calls. They're PULLED inside the
+    # ET window (config.PROPS_WINDOW_ET) AND at most every PROPS_MIN_GAP_HOURS, so
+    # ~4 slate-timed pulls a day keep the 5,000/day budget from being exhausted
+    # before evening games. Games/snapshots/grading still run every hour, and
+    # props carry forward between pulls. A manual --date run always pulls. The
+    # last-pull time is a committed marker (robust to GitHub scheduler jitter).
     hour_et = datetime.now(ET).hour
-    pull_props = bool(args.date) or config.props_window_open(hour_et)
+    now_utc = datetime.now(timezone.utc)
+    gap_ok = _prop_gap_ok(now_utc)
+    pull_props = bool(args.date) or (config.props_window_open(hour_et) and gap_ok)
     if not pull_props:
-        log.info("prop-pull window closed (ET hour %d, window %s) — running "
-                 "games/snapshots/grading, skipping props this hour",
-                 hour_et, config.PROPS_WINDOW_ET)
+        log.info("skipping props this hour (ET %d, window %s, gap_ok=%s) — "
+                 "running games/snapshots/grading, props carry forward",
+                 hour_et, config.PROPS_WINDOW_ET, gap_ok)
+    else:
+        _record_prop_pull(now_utc)
 
     # 1) snapshot odds (closing-line history)
     if not args.no_snapshot:
