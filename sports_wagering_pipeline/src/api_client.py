@@ -282,9 +282,11 @@ def _shared_market_lines(
         offer_rows = bp.prop_offer_lines(sport, date)          # warm / cached
         dfs = bp.dfs_offer_lines(offer_rows, {book_id: platform.lower()})
     except Exception as e:
-        # diagnostic: distinguish "BP errored" from "BP returned nothing"
+        # diagnostic: distinguish "BP errored" (and why) from "BP returned
+        # nothing". The message reveals rate-limit vs auth vs key-not-set.
+        detail = _re.sub(r"\s+", " ", str(e))[:60]
         db_manager.log_api_call(
-            conn, f"bpdiag:{sport}:{platform}:error={type(e).__name__}", 0)
+            conn, f"bpdiag:{sport}:{platform}:error={type(e).__name__}:{detail}", 0)
         return []
     if not dfs:
         db_manager.log_api_call(
