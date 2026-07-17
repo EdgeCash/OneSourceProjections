@@ -608,87 +608,83 @@
     "date": "2026-07-16"
   },
   "2026-07-17": {
-    "slate_note": "Busy MLB card but many of the fattest edges (>15%) carry [verify-news] flags \u2014 I'm fading those as model missing lineup/weather, not free money. A handful of clean totals and one ML stand out.",
+    "slate_note": "Half the MLB edges carry [verify-news] flags and several are internally contradictory (same total posting both Over and Under edges, or 35%+ edges when the model total sits within 0.2 of the market) \u2014 those read as stale lines/missing news, not free money. Clean, projection-backed edges are thin.",
     "verdicts": {
       "824766": {
-        "stance": "agree",
-        "rationale": "Over +123 at clean +7.8% EV; model 9.3 vs 9.0 market. Under edge is the flagged one, I trust the Over."
+        "stance": "pass",
+        "rationale": "Under +35.8% EV but model total 9.3 vs mkt 9.5 nearly matches \u2014 inconsistent edge screams stale/missing news"
       },
       "824737": {
         "stance": "pass",
-        "rationale": "Both Over (+14.6%) and Under (+15.5%) show edge \u2014 internally inconsistent pricing, and Under is verify-flagged."
+        "rationale": "Model total 9.8>9.5 leans Over yet flags a 25.6% Under edge \u2014 contradictory, untrustworthy"
       },
       "823524": {
         "stance": "agree",
-        "rationale": "Yankees ML +104 at 58% win = clean +10.4% EV, Cole home vs Dodgers. Under edge is the flagged one."
-      },
-      "824414": {
-        "stance": "pass",
-        "rationale": "Over +24.9% but model 9.2 vs 7.5 market and verify-news flag \u2014 that gap screams missing news."
+        "rationale": "Yankees ML +105 (implied 48.8%) vs model 57% is a clean unflagged edge, Cole at home"
       },
       "824901": {
-        "stance": "agree",
-        "rationale": "Sale start, Under +113 at +9.8% EV, model 8.7 vs 8.5 \u2014 modest but clean."
+        "stance": "pass",
+        "rationale": "Over/Under both ~5% \u2014 noise, no side"
       },
       "822789": {
         "stance": "pass",
-        "rationale": "Over below floor at 2.6%; Under +28.8% is verify-flagged and implausible."
+        "rationale": "37.3% Under edge with totals nearly equal (9.2 vs 9.5) = model missing news, not value"
       },
       "823766": {
-        "stance": "agree",
-        "rationale": "Under +105 at clean +13% EV, Alcantara on mound, model 8.3 vs 8.5. No flag."
+        "stance": "pass",
+        "rationale": "Totals identical (8.5) yet 13.7% Under edge alongside an Over edge \u2014 contradictory noise"
       },
       "824655": {
-        "stance": "pass",
-        "rationale": "Under +19.8% carries verify-news flag \u2014 likely stale line or lineup, not real edge."
+        "stance": "agree",
+        "rationale": "Under supported by real gap (model 10.9 vs mkt 11.5); trust direction even if 20.6% EV is inflated"
       },
       "824170": {
-        "stance": "agree",
-        "rationale": "Over +111 at +8.6% EV, model 9.6 vs 9.0. RL Astros also live but I take the Over."
+        "stance": "differ",
+        "rationale": "Model total 10.2 vs mkt 8.5 is a 1.7-run gap \u2014 market rarely that wrong; fade the flagged Over/RL"
       },
       "824090": {
         "stance": "pass",
-        "rationale": "Under +34.9% is a huge verify-flagged edge \u2014 model almost certainly missing news."
+        "rationale": "Only 0.5-run gap (10.0 vs 10.5) but 15.3% flagged edge \u2014 direction plausible, magnitude untrustworthy"
       },
       "824332": {
         "stance": "pass",
-        "rationale": "No market total given and no edge clears floor; Coors volatility not worth guessing."
+        "rationale": "Rockies 68% win and +47% RL edge at Coors are implausible; model likely missing lineup/news"
       },
       "824009": {
         "stance": "pass",
-        "rationale": "No edge clears the floor and no market total posted."
+        "rationale": "No market total, no edge clears floor"
       },
       "824981": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; nothing to price."
+        "rationale": "No market total, no edge clears floor"
       },
       "825060": {
         "stance": "pass",
-        "rationale": "No edge clears the floor; no market number to lean on."
+        "rationale": "No market total, no edge clears floor"
       },
       "823115": {
         "stance": "pass",
-        "rationale": "Low-scoring model (7.2) but no edge clears floor and no market total."
+        "rationale": "No market total, no edge clears floor"
+      },
+      "824414": {
+        "stance": "pass",
+        "rationale": "No market total, no edge clears floor"
       },
       "178640": {
         "stance": "pass",
-        "rationale": "Tennis match with no odds provided \u2014 cannot price a game-level market."
+        "rationale": "No odds provided; cannot price this tennis match"
       },
       "178642": {
         "stance": "pass",
-        "rationale": "Rublev 58% but no price given \u2014 no priceable edge."
+        "rationale": "No odds provided; cannot price this tennis match"
       },
       "178747": {
         "stance": "pass",
-        "rationale": "No odds provided for this clay match \u2014 cannot evaluate value."
+        "rationale": "No odds provided; cannot price this tennis match"
       },
-      "178775": {
+      "178748": {
         "stance": "pass",
-        "rationale": "No odds provided \u2014 cannot price the moneyline."
-      },
-      "178773": {
-        "stance": "pass",
-        "rationale": "Molcan 64% but no price listed \u2014 no priceable edge."
+        "rationale": "No odds provided; cannot price this tennis match"
       }
     },
     "top_plays": [
@@ -699,146 +695,156 @@
         "market": "Moneyline",
         "side": "New York Yankees",
         "line": null,
-        "odds": 104,
-        "confidence": 3,
-        "rationale": "58% win vs +104 price = clean +10.4% EV, Cole at home. Best ML value on the board."
-      },
-      {
-        "game_id": "823766",
-        "sport": "MLB",
-        "matchup": "Miami Marlins @ Milwaukee Brewers",
-        "market": "Total",
-        "side": "Under",
-        "line": 8.5,
         "odds": 105,
         "confidence": 3,
-        "rationale": "Under +105 at +13% EV, Alcantara starting, model 8.3 vs 8.5. Unflagged clean edge."
+        "rationale": "Clean unflagged edge: +105 implies 48.8% vs model 57%, Cole at home. Engine edge + ace matchup."
       },
       {
-        "game_id": "824170",
+        "game_id": "824655",
         "sport": "MLB",
-        "matchup": "Baltimore Orioles @ Houston Astros",
-        "market": "Total",
-        "side": "Over",
-        "line": 9.0,
-        "odds": 111,
-        "confidence": 2,
-        "rationale": "Over +111 at +8.6% EV, model 9.6 vs 9.0. No verify flag."
-      },
-      {
-        "game_id": "824766",
-        "sport": "MLB",
-        "matchup": "Tampa Bay Rays @ Boston Red Sox",
-        "market": "Total",
-        "side": "Over",
-        "line": 9.0,
-        "odds": 123,
-        "confidence": 2,
-        "rationale": "Over +123 at +7.8% EV, model 9.3 vs 9.0. Cleaner side than the flagged Under."
-      },
-      {
-        "game_id": "824901",
-        "sport": "MLB",
-        "matchup": "Texas Rangers @ Atlanta Braves",
+        "matchup": "Minnesota Twins @ Chicago Cubs",
         "market": "Total",
         "side": "Under",
-        "line": 8.5,
-        "odds": 113,
+        "line": 11.5,
+        "odds": 105,
         "confidence": 2,
-        "rationale": "Sale start, Under +113 at +9.8% EV, model 8.7 vs 8.5. Modest but clean."
+        "rationale": "Model 10.9 vs market 11.5 backs the Under; taking direction only \u2014 20.6% EV is inflated, so size light."
       }
     ],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 20,
-    "generated_at": "2026-07-17T17:16:19+00:00",
+    "game_count": 19,
+    "generated_at": "2026-07-17T22:40:43+00:00",
     "date": "2026-07-17"
   },
   "2026-07-18": {
-    "slate_note": "Big MLB card but most games sit below the 3% floor; the fattest edges (Rockies +21.8%, both WNBA overs +18-19%) are all flagged verify-news with missing starters, so they're model blind spots, not value. A few small ML edges are the only clean plays.",
+    "slate_note": "Big-EV lines are almost all [verify-news] with unknown starters \u2014 noise, not gold. Only two modest, clean MLB moneylines survive; tennis has no prices to grade.",
     "verdicts": {
-      "824657": {
+      "824414": {
         "stance": "pass",
-        "rationale": "Twins +150 EV only +2.5%, under the 3% floor; no edge to trust."
-      },
-      "822790": {
-        "stance": "agree",
-        "rationale": "White Sox +108 at 60% win, +4.8% EV; Bieber cap risk but priced OK."
-      },
-      "824331": {
-        "stance": "pass",
-        "rationale": "+21.8% edge with opposing SP unlisted = missing news, not free money."
-      },
-      "823441": {
-        "stance": "pass",
-        "rationale": "Phillies -170 near fair (implied ~63% vs model 62%); thin +4.3%, laying juice."
-      },
-      "824169": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor."
+        "rationale": "SP TBD vs Williams; +41.5% Over is model missing a pitcher, not free money"
       },
       "824412": {
         "stance": "agree",
-        "rationale": "Pirates +104 at 58%, +4.8% EV; plus-money on model favorite is clean."
+        "rationale": "Pirates ML +113 at 57% win is a clean +4.6% edge; fade the +29% Over"
+      },
+      "824657": {
+        "stance": "pass",
+        "rationale": "Model shows both Over and Under edges \u2014 internally contradictory, no trust"
+      },
+      "822790": {
+        "stance": "pass",
+        "rationale": "White Sox at 60% win vs Toronto is implausibly high; skeptic veto"
+      },
+      "824331": {
+        "stance": "pass",
+        "rationale": "Rockies SP unknown; +21.8% ML is missing news at Coors"
+      },
+      "823441": {
+        "stance": "pass",
+        "rationale": "No edge clears the floor"
+      },
+      "824169": {
+        "stance": "pass",
+        "rationale": "Only a 2.9% Over \u2014 under the 3% floor"
       },
       "824088": {
         "stance": "pass",
-        "rationale": "Royals +108 +6.6% but KC starter unlisted; won't price a missing SP."
+        "rationale": "Royals SP unknown; 6.5% ML edge not trustworthy without a starter"
       },
       "825059": {
         "stance": "pass",
-        "rationale": "Coinflip 50/50, no edge clears floor."
+        "rationale": "+26.8% Under is missing news; ML ARI only 3.1%"
       },
       "824738": {
-        "stance": "pass",
-        "rationale": "No edge clears the floor."
+        "stance": "agree",
+        "rationale": "Red Sox ML +100 at 57% win = +6.9%; RL edge corroborates the side"
       },
       "824899": {
         "stance": "pass",
-        "rationale": "Even matchup, no edge clears floor."
+        "rationale": "+28% Under vs rookie Murphy is model missing news, not an edge"
       },
       "823763": {
         "stance": "pass",
-        "rationale": "Near coinflip, nothing above floor."
+        "rationale": "Both Over and Under flagged \u2014 model unsure, no play"
       },
       "823116": {
         "stance": "pass",
-        "rationale": "Webb vs Woo pitcher's duel, no edge offered."
+        "rationale": "+60% Under is absurd; Webb/Woo duel real but that number is broken"
       },
       "823523": {
         "stance": "pass",
-        "rationale": "Coinflip, no edge clears floor."
+        "rationale": "No edge clears the floor"
       },
       "824979": {
         "stance": "pass",
-        "rationale": "No edge clears the floor."
+        "rationale": "No market total, no edge"
       },
       "824008": {
         "stance": "pass",
-        "rationale": "Skubal side but no edge listed; pass."
+        "rationale": "No edge clears; Skubal already priced by market"
       },
       "178640": {
         "stance": "pass",
-        "rationale": "No odds provided; can't price the tennis ML."
+        "rationale": "Tennis ML with no market price in brief \u2014 cannot grade"
       },
       "178642": {
         "stance": "pass",
-        "rationale": "No odds provided; can't price the tennis ML."
+        "rationale": "No odds provided; unpriceable"
       },
       "178747": {
         "stance": "pass",
-        "rationale": "No odds provided; can't price the tennis ML."
+        "rationale": "No odds provided; unpriceable"
       },
-      "178775": {
+      "178748": {
         "stance": "pass",
-        "rationale": "No odds provided; can't price the tennis ML."
+        "rationale": "No odds provided; unpriceable"
       },
-      "178773": {
+      "183021": {
         "stance": "pass",
-        "rationale": "No odds provided; can't price the tennis ML."
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183018": {
+        "stance": "pass",
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183017": {
+        "stance": "pass",
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183022": {
+        "stance": "pass",
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183020": {
+        "stance": "pass",
+        "rationale": "Coin flip 50/50 and no price \u2014 no play"
+      },
+      "183019": {
+        "stance": "pass",
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183024": {
+        "stance": "pass",
+        "rationale": "No odds provided; unpriceable"
+      },
+      "183023": {
+        "stance": "pass",
+        "rationale": "Coin flip 50/50 and no price \u2014 no play"
       }
     },
     "top_plays": [
+      {
+        "game_id": "824738",
+        "sport": "MLB",
+        "matchup": "Tampa Bay Rays @ Boston Red Sox",
+        "market": "Moneyline",
+        "side": "Boston Red Sox",
+        "line": null,
+        "odds": 100,
+        "confidence": 3,
+        "rationale": "57% model win at even money = +6.9% EV, and the RL edge corroborates the side. Cleanest play on the board."
+      },
       {
         "game_id": "824412",
         "sport": "MLB",
@@ -846,37 +852,15 @@
         "market": "Moneyline",
         "side": "Pittsburgh Pirates",
         "line": null,
-        "odds": 104,
+        "odds": 113,
         "confidence": 2,
-        "rationale": "Model 58% vs plus-money +104, +4.8% EV; getting a road favorite at even-plus is the cleanest edge on the board."
-      },
-      {
-        "game_id": "822790",
-        "sport": "MLB",
-        "matchup": "Chicago White Sox @ Toronto Blue Jays",
-        "market": "Moneyline",
-        "side": "Chicago White Sox",
-        "line": null,
-        "odds": 108,
-        "confidence": 2,
-        "rationale": "Model 60% vs +108, +4.8% EV; Bieber is the caveat but the price still carries value at 1u."
-      },
-      {
-        "game_id": "824657",
-        "sport": "MLB",
-        "matchup": "Minnesota Twins @ Chicago Cubs",
-        "market": "Moneyline",
-        "side": "Minnesota Twins",
-        "line": null,
-        "odds": 150,
-        "confidence": 1,
-        "rationale": "Only +2.5% EV, below my usual floor; lean-only dog-plus-price flyer, sized minimally, easy to skip."
+        "rationale": "Ashcraft vs Cantillo, 57% win at +113 is a modest +4.6% edge. Ignore the flagged +29% Over."
       }
     ],
     "model": "claude-opus-4-8",
     "mode": "standard",
-    "game_count": 20,
-    "generated_at": "2026-07-17T17:16:19+00:00",
+    "game_count": 28,
+    "generated_at": "2026-07-17T22:40:43+00:00",
     "date": "2026-07-18"
   }
 }
