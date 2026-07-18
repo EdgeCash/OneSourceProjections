@@ -1,0 +1,257 @@
+[
+ {
+  "id": 99393,
+  "sr_id": "9f4e063e-bff1-4a27-b534-c56983417167",
+  "sport": "MLB",
+  "scheduled": "2026-07-19 16:15:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "TOR",
+  "visitor": "CWS",
+  "link": "/mlb/matchups/chicago-white-sox-vs-toronto-blue-jays/?date=2026-07-19",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "7354369",
+    "name": "Trey Yesavage",
+    "link": "/mlb/props/trey-yesavage/",
+    "player": {
+     "short_name": "T. Yesavage",
+     "first_name": "Trey",
+     "last_name": "Yesavage",
+     "image": "https://images.fantasypros.com/images/players/mlb/7354369/headshot/210x210.webp",
+     "position": "SP",
+     "team": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "trey-yesavage",
+     "jersey_number": 39
+    }
+   },
+   "visitor_probable": {
+    "id": "44752",
+    "name": "Sean Burke",
+    "link": "/mlb/props/sean-burke/",
+    "player": {
+     "short_name": "S. Burke",
+     "first_name": "Sean",
+     "last_name": "Burke",
+     "image": "https://images.fantasypros.com/images/players/mlb/44752/headshot/210x210.webp",
+     "position": "SP,RP",
+     "team": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "sean-burke",
+     "jersey_number": 59
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "TOR",
+   "season": "2025",
+   "split": "A",
+   "r": "0.975",
+   "1b": "0.944",
+   "2b": "1.042",
+   "3b": "0.687",
+   "hr": "1.011",
+   "name": "Rogers Centre"
+  },
+  "venue": {
+   "name": "Rogers Centre",
+   "address": "One Blue Jays Way",
+   "city": "Toronto",
+   "state": "ON",
+   "country": "CAN",
+   "zip": "M5V1J3",
+   "surface": "turf",
+   "capacity": 39150,
+   "stadium_type": "retractable",
+   "id": "84d72338-2173-4a90-9d25-99adc6c86f4b"
+  },
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "record": {
+      "W": 45,
+      "L": 52,
+      "T": 0
+     },
+     "slug": "toronto-blue-jays",
+     "stadium_deg_offset": "0"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "record": {
+      "W": 51,
+      "L": 45,
+      "T": 0
+     },
+     "slug": "chicago-white-sox",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 72,
+   "forecast_wind_speed": 12,
+   "forecast_wind_direction": "N",
+   "forecast_wind_degree": 351,
+   "forecast_rain_chance": 0,
+   "forecast_icon": "Clear",
+   "forecast_pressure": 1015,
+   "forecast_humidity": 0.49
+  },
+  "broadcasts": [
+   {
+    "network": "Peacock",
+    "type": "tv",
+    "logo_url": "https://www.bettingpros.com/assets/images/logos/networks/nbc-peacock-alt-us.png"
+   }
+  ]
+ },
+ {
+  "id": 98325,
+  "sr_id": "2bc9740b-261c-446a-b690-0caa964b9eaf",
+  "sport": "MLB",
+  "scheduled": "2026-07-19 17:35:00",
+  "season": 2026,
+  "season_type": "REG",
+  "event_name": null,
+  "status": "scheduled",
+  "home": "ATL",
+  "visitor": "TEX",
+  "link": "/mlb/matchups/atlanta-braves-vs-texas-rangers/?date=2026-07-19",
+  "series_summary": null,
+  "popularity": 1,
+  "double_header": false,
+  "pitchers": {
+   "home_probable": {
+    "id": "6011",
+    "name": "Grant Holmes",
+    "link": "/mlb/props/grant-holmes/",
+    "player": {
+     "short_name": "G. Holmes",
+     "first_name": "Grant",
+     "last_name": "Holmes",
+     "image": "https://images.fantasypros.com/images/players/mlb/6011/headshot/210x210.webp",
+     "position": "SP",
+     "team": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "slug": "grant-holmes",
+     "jersey_number": 66
+    }
+   }
+  },
+  "lineups": {
+   "home_lineup": null,
+   "visitor_lineup": null,
+   "home_lineup_type": null,
+   "visitor_lineup_type": null
+  },
+  "park_factors": {
+   "team_id": "ATL",
+   "season": "2025",
+   "split": "A",
+   "r": "0.977",
+   "1b": "1.037",
+   "2b": "0.952",
+   "3b": "1.105",
+   "hr": "0.931",
+   "name": "Truist Park"
+  },
+  "venue": {
+   "name": "Truist Park",
+   "address": "755 Battery Avenue",
+   "city": "Atlanta",
+   "state": "GA",
+   "country": "USA",
+   "zip": "30339",
+   "surface": "grass",
+   "capacity": 41149,
+   "stadium_type": "outdoor",
+   "id": "3ca8b577-5844-42ed-81a5-bd5d5cbe350c"
+  },
+  "participants": [
+   {
+    "id": "ATL",
+    "name": "Braves",
+    "link": "/mlb/teams/atlanta-braves/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "record": {
+      "W": 56,
+      "L": 40,
+      "T": 0
+     },
+     "slug": "atlanta-braves",
+     "stadium_deg_offset": "160"
+    }
+   },
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "record": {
+      "W": 49,
+      "L": 48,
+      "T": 0
+     },
+     "slug": "texas-rangers",
+     "stadium_deg_offset": "135"
+    }
+   }
+  ],
+  "weather": {
+   "forecast_temp": 89,
+   "forecast_wind_speed": 8,
+   "forecast_wind_direction": "WNW",
+   "forecast_wind_degree": 299,
+   "forecast_rain_chance": 26,
+   "forecast_icon": "Partly Cloudy",
+   "forecast_pressure": 1014,
+   "forecast_humidity": 0.59
+  },
+  "broadcasts": [
+   {
+    "network": "RSN",
+    "type": "tv",
+    "logo_url": null
+   }
+  ]
+ }
+]

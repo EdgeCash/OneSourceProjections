@@ -1,0 +1,418 @@
+[
+ {
+  "id": "a175e88c51042f911887a49fafc11c8c",
+  "market_id": 122,
+  "event_id": 99393,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "TOR",
+    "name": "Blue Jays",
+    "link": "/mlb/teams/toronto-blue-jays/",
+    "team": {
+     "city": "Toronto",
+     "abbreviation": "TOR",
+     "conference": "AL",
+     "division": "East",
+     "slug": "toronto-blue-jays"
+    }
+   },
+   {
+    "id": "CWS",
+    "name": "White Sox",
+    "link": "/mlb/teams/chicago-white-sox/",
+    "team": {
+     "city": "Chicago",
+     "abbreviation": "CWS",
+     "conference": "AL",
+     "division": "Central",
+     "slug": "chicago-white-sox"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "TOR",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1011,
+     "book_id": 68,
+     "created": "2026-07-16 16:27:55"
+    },
+    "label": "Blue Jays",
+    "short_label": "TOR",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_e19f82731a58700b14a844346972cbda",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul191215cwstor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50.49
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_e19f82731a58700b14a844346972cbda",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:27:28",
+        "cost": 100,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50.49
+        }
+       }
+      ]
+     }
+    ],
+    "id": "e19f82731a58700b14a844346972cbda"
+   },
+   {
+    "participant": "CWS",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": -1011,
+     "book_id": 68,
+     "created": "2026-07-16 16:27:55"
+    },
+    "label": "White Sox",
+    "short_label": "CWS",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50.98
+        }
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_e69b305eaa13d1aaade5c5e24f7da81e",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul191215cwstor",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": null,
+         "fair_probability": null,
+         "pm_win_pct": 50.98
+        }
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_e69b305eaa13d1aaade5c5e24f7da81e",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-18 05:27:28",
+        "cost": -104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": {
+         "projection": 0,
+         "cover_probability": 0,
+         "expected_value": null,
+         "bet_rating": null,
+         "result": null,
+         "notes": null,
+         "market_ev": -0.019230769230769162,
+         "fair_probability": 0.5,
+         "pm_win_pct": 50.98
+        }
+       }
+      ]
+     }
+    ],
+    "id": "e69b305eaa13d1aaade5c5e24f7da81e"
+   }
+  ]
+ },
+ {
+  "id": "a8b8c6c8c4d188f6201f4d5ac1cac098",
+  "market_id": 122,
+  "event_id": 98325,
+  "player_id": null,
+  "team_id": null,
+  "opponent_id": null,
+  "link": "",
+  "active": true,
+  "participants": [
+   {
+    "id": "TEX",
+    "name": "Rangers",
+    "link": "/mlb/teams/texas-rangers/",
+    "team": {
+     "city": "Texas",
+     "abbreviation": "TEX",
+     "conference": "AL",
+     "division": "West",
+     "slug": "texas-rangers"
+    }
+   },
+   {
+    "id": "ATL",
+    "name": "Braves",
+    "link": "/mlb/teams/atlanta-braves/",
+    "team": {
+     "city": "Atlanta",
+     "abbreviation": "ATL",
+     "conference": "NL",
+     "division": "East",
+     "slug": "atlanta-braves"
+    }
+   }
+  ],
+  "selections": [
+   {
+    "participant": "TEX",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 1,
+     "cost": 317,
+     "book_id": 73,
+     "created": "2026-07-14 17:45:26"
+    },
+    "label": "Rangers",
+    "short_label": "TEX",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:29:40",
+        "cost": 104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_4220e7981a423dd745926acb39112954",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-18 05:27:28",
+        "cost": 117,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_4220e7981a423dd745926acb39112954",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:29:40",
+        "cost": 104,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul191335texatl",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "4220e7981a423dd745926acb39112954"
+   },
+   {
+    "participant": "ATL",
+    "selection": "",
+    "active": true,
+    "opening_line": {
+     "line": 0,
+     "cost": -669,
+     "book_id": 73,
+     "created": "2026-07-14 17:45:26"
+    },
+    "label": "Braves",
+    "short_label": "ATL",
+    "books": [
+     {
+      "id": 0,
+      "lines": [
+       {
+        "id": null,
+        "from_scout": false,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://www.bettingpros.com",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 73,
+      "lines": [
+       {
+        "id": "73_824fee1962485e2ea08f2be77424d7bf",
+        "from_scout": true,
+        "main": true,
+        "best": false,
+        "updated": "2026-07-18 05:27:28",
+        "cost": -117,
+        "line": 0,
+        "is_off": false,
+        "active": true,
+        "link": "https://polymarket.com/sports/live",
+        "metrics": null
+       }
+      ]
+     },
+     {
+      "id": 68,
+      "lines": [
+       {
+        "id": "68_824fee1962485e2ea08f2be77424d7bf",
+        "from_scout": true,
+        "main": true,
+        "best": true,
+        "updated": "2026-07-18 05:29:40",
+        "cost": -122,
+        "line": 1,
+        "is_off": false,
+        "active": true,
+        "link": "https://kalshi.com/markets/kxmlbgame/-/kxmlbgame-26jul191335texatl",
+        "metrics": null
+       }
+      ]
+     }
+    ],
+    "id": "824fee1962485e2ea08f2be77424d7bf"
+   }
+  ]
+ }
+]
