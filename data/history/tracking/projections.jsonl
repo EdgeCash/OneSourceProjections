@@ -1134,3 +1134,6 @@
 {"date": "2026-07-19", "sport": "WNBA", "event_id": "401857081", "game": "Chicago Sky @ Atlanta Dream", "source": "model", "home_wp": 0.7114, "away_wp": null, "draw_wp": null}
 {"date": "2026-07-19", "sport": "WNBA", "event_id": "401857082", "game": "Connecticut Sun @ Phoenix Mercury", "source": "model", "home_wp": 0.5538, "away_wp": null, "draw_wp": null}
 {"date": "2026-07-19", "sport": "World Cup", "event_id": "760517", "game": "Argentina @ Spain", "source": "bettingpros", "home_wp": 0.6121, "away_wp": 0.3879, "draw_wp": null}
+{"date": "2026-07-19", "sport": "WNBA", "event_id": "401857080", "game": "Los Angeles Sparks @ Dallas Wings", "source": "market", "home_wp": 0.7237, "away_wp": 0.2763, "draw_wp": null}
+{"date": "2026-07-19", "sport": "WNBA", "event_id": "401857081", "game": "Chicago Sky @ Atlanta Dream", "source": "market", "home_wp": 0.75, "away_wp": 0.25, "draw_wp": null}
+{"date": "2026-07-19", "sport": "WNBA", "event_id": "401857082", "game": "Connecticut Sun @ Phoenix Mercury", "source": "market", "home_wp": 0.6261, "away_wp": 0.3739, "draw_wp": null}
