@@ -1,264 +1,4 @@
 {
-  "2026-07-12": {
-    "slate_note": "Most of the fat MLB edges (Over/Under at +20-38%) are [verify-news] flags and several contradict their own model totals \u2014 treat those as missing lineups/weather, not value. The trustworthy signal is a handful of small moneyline leans; WNBA has no game_ids and ATP has no prices, so they're un-actionable here.",
-    "verdicts": {
-      "823358": {
-        "stance": "differ",
-        "rationale": "Model Over +20.8% is absurd with Skenes starting; total 9.7 misses news. Prefer small Pirates ML lean."
-      },
-      "824814": {
-        "stance": "pass",
-        "rationale": "Under +27.7% inflated; ML Orioles only +3.7%. Nothing I trust."
-      },
-      "822708": {
-        "stance": "pass",
-        "rationale": "Under +13.1% contradicts model total 9.6>9.5 market \u2014 internally inconsistent, pass."
-      },
-      "824491": {
-        "stance": "differ",
-        "rationale": "Over +28.1% flagged/implausible; I'd take Cubs ML -122 instead as a cleaner 4% edge."
-      },
-      "823602": {
-        "stance": "pass",
-        "rationale": "Under +22.1% flagged; ML Mets only +4.5% on a coin-flip. Pass."
-      },
-      "822951": {
-        "stance": "pass",
-        "rationale": "Under +15.5% contradicts equal 8.5 total; pure toss-up game. Pass."
-      },
-      "824250": {
-        "stance": "pass",
-        "rationale": "Over +28.4% flagged; Wheeler vs Skubal justifies 7.5 total, model 8.7 wrong. Pass."
-      },
-      "823842": {
-        "stance": "agree",
-        "rationale": "Marlins ML +104 at 7.1% edge \u2014 home dog near even money, best unflagged number on the board."
-      },
-      "823681": {
-        "stance": "agree",
-        "rationale": "Twins ML -122 at 5.8% with 58% model win prob; clean unflagged edge."
-      },
-      "824574": {
-        "stance": "pass",
-        "rationale": "Over +38.6% is a screaming missing-news flag; RL only +5.6%. Pass."
-      },
-      "823029": {
-        "stance": "pass",
-        "rationale": "No edge clears floor, no market total. Pass."
-      },
-      "822876": {
-        "stance": "pass",
-        "rationale": "No edge clears floor, no market total. Pass."
-      },
-      "823199": {
-        "stance": "pass",
-        "rationale": "No edge clears floor, no market total. Pass."
-      },
-      "823925": {
-        "stance": "pass",
-        "rationale": "No edge clears floor, no market total. Pass."
-      },
-      "823274": {
-        "stance": "pass",
-        "rationale": "No edge clears floor, no market total. Pass."
-      },
-      "181711": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; near coin-flip, can't price."
-      },
-      "181712": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "181714": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "181713": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178655": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178651": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178627": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178634": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178645": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; coin-flip, can't price."
-      },
-      "178648": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178654": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178656": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; 50/50, can't price."
-      },
-      "178733": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178729": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178737": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178734": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178741": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178743": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; coin-flip, can't price."
-      },
-      "178726": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178727": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178730": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178732": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178736": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; coin-flip, can't price."
-      },
-      "178735": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178770": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178767": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178774": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178779": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178768": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; coin-flip, can't price."
-      },
-      "178769": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178771": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; 50/50, can't price."
-      },
-      "178772": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178766": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178787": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178789": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      },
-      "178791": {
-        "stance": "pass",
-        "rationale": "No odds or edge provided; can't price."
-      }
-    },
-    "top_plays": [
-      {
-        "game_id": "823842",
-        "sport": "MLB",
-        "matchup": "Cleveland Guardians @ Miami Marlins",
-        "market": "Moneyline",
-        "side": "Miami Marlins",
-        "line": null,
-        "odds": 104,
-        "confidence": 3,
-        "rationale": "Best unflagged number: home dog at +104 with 55% model win prob, +7.1% EV. Cantillo not a lockdown arm."
-      },
-      {
-        "game_id": "823681",
-        "sport": "MLB",
-        "matchup": "Los Angeles Angels @ Minnesota Twins",
-        "market": "Moneyline",
-        "side": "Minnesota Twins",
-        "line": null,
-        "odds": -122,
-        "confidence": 3,
-        "rationale": "Twins 58% win prob, +5.8% EV, unflagged. Total and RL leans corroborate the home side."
-      },
-      {
-        "game_id": "823358",
-        "sport": "MLB",
-        "matchup": "Milwaukee Brewers @ Pittsburgh Pirates",
-        "market": "Moneyline",
-        "side": "Pittsburgh Pirates",
-        "line": null,
-        "odds": -120,
-        "confidence": 2,
-        "rationale": "Skenes anchors the Pirates at 57%; only +3.6% but the ace angle is real. Ignore the fantasy 9.7 total."
-      },
-      {
-        "game_id": "824491",
-        "sport": "MLB",
-        "matchup": "Chicago Cubs @ Cincinnati Reds",
-        "market": "Moneyline",
-        "side": "Chicago Cubs",
-        "line": null,
-        "odds": -122,
-        "confidence": 2,
-        "rationale": "Cubs 63% win prob, +4.1% EV. Fading the flagged +28% Over and taking the side instead."
-      }
-    ],
-    "model": "claude-opus-4-8",
-    "mode": "standard",
-    "game_count": 51,
-    "generated_at": "2026-07-12T22:39:49+00:00",
-    "date": "2026-07-12"
-  },
   "2026-07-13": {
     "slate_note": "Tennis card has model probabilities but zero market prices, so nothing is priceable there \u2014 all passes. Only one game-level edge exists: a thin WNBA total.",
     "verdicts": {
@@ -718,119 +458,119 @@
     "date": "2026-07-17"
   },
   "2026-07-18": {
-    "slate_note": "Big-EV lines are almost all [verify-news] with unknown starters \u2014 noise, not gold. Only two modest, clean MLB moneylines survive; tennis has no prices to grade.",
+    "slate_note": "Thin on trustworthy edges \u2014 nearly every big number carries a [verify-news] flag and >15% EV, meaning the model is missing lineups/news, not finding free money. Only a couple of clean single-digit ML edges survive.",
     "verdicts": {
       "824414": {
         "stance": "pass",
-        "rationale": "SP TBD vs Williams; +41.5% Over is model missing a pitcher, not free money"
+        "rationale": "Over +30.4% is a verify-news flag; that size means missing news, not value. No trust."
       },
       "824412": {
-        "stance": "agree",
-        "rationale": "Pirates ML +113 at 57% win is a clean +4.6% edge; fade the +29% Over"
+        "stance": "pass",
+        "rationale": "ML PIT only +3.7% and SP unlisted; Over +29% flagged. Nothing clean enough."
       },
       "824657": {
         "stance": "pass",
-        "rationale": "Model shows both Over and Under edges \u2014 internally contradictory, no trust"
-      },
-      "822790": {
-        "stance": "pass",
-        "rationale": "White Sox at 60% win vs Toronto is implausibly high; skeptic veto"
-      },
-      "824331": {
-        "stance": "pass",
-        "rationale": "Rockies SP unknown; +21.8% ML is missing news at Coors"
+        "rationale": "Over +25% verify-news flagged; implausible edge, likely stale total."
       },
       "823441": {
         "stance": "pass",
-        "rationale": "No edge clears the floor"
+        "rationale": "Model total 9.0 = market 9.0 yet Under shows +11% \u2014 internally inconsistent, skip."
+      },
+      "822790": {
+        "stance": "agree",
+        "rationale": "CWS ML +104, +4.9% edge, no news flag; cleaner than the flagged Under."
+      },
+      "824331": {
+        "stance": "pass",
+        "rationale": "Coors pick'em, ML COL only +5.3% and totals here are noise. Low conviction."
       },
       "824169": {
         "stance": "pass",
-        "rationale": "Only a 2.9% Over \u2014 under the 3% floor"
+        "rationale": "Model lists Over AND Under both +5.9% \u2014 contradictory, no read."
       },
       "824088": {
         "stance": "pass",
-        "rationale": "Royals SP unknown; 6.5% ML edge not trustworthy without a starter"
+        "rationale": "Under +32% verify-news; ML KC only +3.1%. Nothing trustworthy."
       },
       "825059": {
         "stance": "pass",
-        "rationale": "+26.8% Under is missing news; ML ARI only 3.1%"
+        "rationale": "Under +29.9% flagged; oversized edge screams missing news."
       },
       "824738": {
         "stance": "agree",
-        "rationale": "Red Sox ML +100 at 57% win = +6.9%; RL edge corroborates the side"
+        "rationale": "BOS ML +104, +7.1% edge with no news flag \u2014 cleanest ML on the board."
       },
       "824899": {
         "stance": "pass",
-        "rationale": "+28% Under vs rookie Murphy is model missing news, not an edge"
+        "rationale": "Under +36.8% flagged; ML ATL just +4.1%. Skip the noise."
       },
       "823763": {
         "stance": "pass",
-        "rationale": "Both Over and Under flagged \u2014 model unsure, no play"
+        "rationale": "No edge clears the floor; no market total posted."
       },
       "823116": {
         "stance": "pass",
-        "rationale": "+60% Under is absurd; Webb/Woo duel real but that number is broken"
+        "rationale": "Under +58% is absurd \u2014 model total 7.2 vs 9.5 means it's missing lineup/weather news."
       },
       "823523": {
         "stance": "pass",
-        "rationale": "No edge clears the floor"
+        "rationale": "No edge clears the floor; pick'em game."
       },
       "824979": {
         "stance": "pass",
-        "rationale": "No market total, no edge"
+        "rationale": "No edge clears the floor; no market total."
       },
       "824008": {
         "stance": "pass",
-        "rationale": "No edge clears; Skubal already priced by market"
+        "rationale": "No edge clears the floor despite Skubal; no market price to attack."
       },
-      "178640": {
+      "178749": {
         "stance": "pass",
-        "rationale": "Tennis ML with no market price in brief \u2014 cannot grade"
+        "rationale": "ATP prop-style match, no prices given; can't price."
       },
-      "178642": {
+      "178795": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "178747": {
+      "183036": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "178748": {
+      "178884": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183021": {
+      "178881": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183018": {
+      "178858": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183017": {
+      "178859": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183022": {
+      "178860": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183020": {
+      "178865": {
         "stance": "pass",
-        "rationale": "Coin flip 50/50 and no price \u2014 no play"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183019": {
+      "178869": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183024": {
+      "178882": {
         "stance": "pass",
-        "rationale": "No odds provided; unpriceable"
+        "rationale": "No odds provided; cannot evaluate."
       },
-      "183023": {
+      "183014": {
         "stance": "pass",
-        "rationale": "Coin flip 50/50 and no price \u2014 no play"
+        "rationale": "No odds provided; cannot evaluate."
       }
     },
     "top_plays": [
@@ -841,26 +581,164 @@
         "market": "Moneyline",
         "side": "Boston Red Sox",
         "line": null,
-        "odds": 100,
+        "odds": 104,
         "confidence": 3,
-        "rationale": "57% model win at even money = +6.9% EV, and the RL edge corroborates the side. Cleanest play on the board."
+        "rationale": "+7.1% edge with no news flag, home at plus money; the cleanest number on the slate."
       },
       {
-        "game_id": "824412",
+        "game_id": "822790",
         "sport": "MLB",
-        "matchup": "Pittsburgh Pirates @ Cleveland Guardians",
+        "matchup": "Chicago White Sox @ Toronto Blue Jays",
         "market": "Moneyline",
-        "side": "Pittsburgh Pirates",
+        "side": "Chicago White Sox",
         "line": null,
-        "odds": 113,
+        "odds": 104,
         "confidence": 2,
-        "rationale": "Ashcraft vs Cantillo, 57% win at +113 is a modest +4.6% edge. Ignore the flagged +29% Over."
+        "rationale": "ML +4.9% at plus money, no verify flag; taking the ML over the flagged 24% Under."
       }
     ],
     "model": "claude-opus-4-8",
     "mode": "standard",
     "game_count": 28,
-    "generated_at": "2026-07-17T22:40:43+00:00",
+    "generated_at": "2026-07-18T17:02:26+00:00",
     "date": "2026-07-18"
+  },
+  "2026-07-19": {
+    "slate_note": "Mostly thin \u2014 5 of 15 MLB games show any ML edge and three are under the 3% floor. Only two plays clear the bar, both plus-money leans I trust modestly. WNBA has no IDs/lines and ATP has no prices, so nothing actionable there.",
+    "verdicts": {
+      "822786": {
+        "stance": "pass",
+        "rationale": "Toronto -104 EV +2.4% under 3% floor; near coin-flip, no edge worth taking."
+      },
+      "824739": {
+        "stance": "agree",
+        "rationale": "Boston +104 EV +7.7%, model 55%; plus-money value but McClanahan return adds uncertainty."
+      },
+      "823439": {
+        "stance": "pass",
+        "rationale": "No edge clears floor; Mets slim 52% not priceable."
+      },
+      "824897": {
+        "stance": "pass",
+        "rationale": "Rangers SP unlisted; can't trust a pick_em with unknown starter."
+      },
+      "824411": {
+        "stance": "pass",
+        "rationale": "Skenes strong but -113 EV +2.5% under floor; price already respects him."
+      },
+      "824168": {
+        "stance": "pass",
+        "rationale": "No edge clears floor; Orioles 54% not enough."
+      },
+      "824086": {
+        "stance": "agree",
+        "rationale": "KC -104 EV +5.5% at home; total 11.2 flags shaky arms, modest lean."
+      },
+      "823764": {
+        "stance": "pass",
+        "rationale": "Coin-flip, no edge clears floor."
+      },
+      "824653": {
+        "stance": "pass",
+        "rationale": "Model favors Cubs but no edge clears floor."
+      },
+      "824330": {
+        "stance": "differ",
+        "rationale": "Model likes Rockies +117 at Coors, but I fade a bad club vs Hunter Greene."
+      },
+      "824978": {
+        "stance": "pass",
+        "rationale": "Nats 60% but no edge clears floor; no price to justify."
+      },
+      "824007": {
+        "stance": "pass",
+        "rationale": "Tigers 59% but no edge clears floor."
+      },
+      "823113": {
+        "stance": "pass",
+        "rationale": "Mariners favored, no edge clears floor."
+      },
+      "825057": {
+        "stance": "pass",
+        "rationale": "Coin-flip, no edge."
+      },
+      "823521": {
+        "stance": "pass",
+        "rationale": "Even game Yamamoto vs Schlittler, no edge clears floor."
+      },
+      "178749": {
+        "stance": "pass",
+        "rationale": "No price provided; tennis ML not priceable from brief."
+      },
+      "183036": {
+        "stance": "pass",
+        "rationale": "No price provided; near coin-flip."
+      },
+      "178884": {
+        "stance": "pass",
+        "rationale": "No price provided; no edge to trust."
+      },
+      "178881": {
+        "stance": "pass",
+        "rationale": "No price provided; can't confirm value on Navone 65%."
+      },
+      "178858": {
+        "stance": "pass",
+        "rationale": "No price provided; coin-flip."
+      },
+      "178859": {
+        "stance": "pass",
+        "rationale": "No price provided; 51/49 toss-up."
+      },
+      "178860": {
+        "stance": "pass",
+        "rationale": "No price provided; can't price Molcan 66%."
+      },
+      "178865": {
+        "stance": "pass",
+        "rationale": "No price provided; Hanfmann 68% unpriced."
+      },
+      "178869": {
+        "stance": "pass",
+        "rationale": "No price provided; Collignon 60% unpriced."
+      },
+      "178882": {
+        "stance": "pass",
+        "rationale": "No price provided; coin-flip."
+      },
+      "183014": {
+        "stance": "pass",
+        "rationale": "No price provided; Jacquet 65% unpriced."
+      }
+    },
+    "top_plays": [
+      {
+        "game_id": "824739",
+        "sport": "MLB",
+        "matchup": "Tampa Bay Rays @ Boston Red Sox",
+        "market": "Moneyline",
+        "side": "Boston Red Sox",
+        "line": null,
+        "odds": 104,
+        "confidence": 3,
+        "rationale": "Model 55% vs +104 implied 49%, +7.7% EV; plus-money home dog. Watch McClanahan's form as the lone risk."
+      },
+      {
+        "game_id": "824086",
+        "sport": "MLB",
+        "matchup": "San Diego Padres @ Kansas City Royals",
+        "market": "Moneyline",
+        "side": "Kansas City Royals",
+        "line": null,
+        "odds": -104,
+        "confidence": 2,
+        "rationale": "KC 54% home, +5.5% EV; inflated 11.2 total says both arms shaky, small edge so keep it 1u."
+      }
+    ],
+    "model": "claude-opus-4-8",
+    "mode": "standard",
+    "game_count": 26,
+    "generated_at": "2026-07-18T17:02:26+00:00",
+    "date": "2026-07-19"
   }
 }
