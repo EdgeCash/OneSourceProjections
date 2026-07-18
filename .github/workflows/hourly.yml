@@ -70,14 +70,19 @@ jobs:
 
       - name: Daily ready-to-play workbook (Excel)
         continue-on-error: true
-        # Built once per day (15:00 UTC run or a manual --date run). NO API
-        # secrets on purpose: the BettingPros account's 5,000/day budget is the
-        # binding constraint and the main engine's own hourly pull already
-        # exhausts it by mid-day, so this step must NOT make its own BP/FP calls
-        # and compete for a budget that's gone. Keyless => pure warm-cache
-        # consumer: it gets whatever the main engine's pull above already
-        # fetched (MLB props/offers) and adds zero external load. openpyxl comes
+        # Runs right after a props pull (see FRESH gate below), so it mostly hits
+        # the warm BP cache the Hourly pull step just populated and adds almost no
+        # load. It DOES carry the BP/FP keys: the prop cache is only ~10 min, so a
+        # purely keyless read misses it and dies ("BP_PARTNER_KEY is not set").
+        # This is affordable now that props pull ~4x/day (PROPS_MIN_GAP_HOURS) —
+        # the budget has headroom, unlike the old hourly cadence. openpyxl comes
         # from the root requirements; no Google Cloud, no Sheets secrets.
+        env:
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+          BP_PARTNER_KEY: ${{ secrets.BP_PARTNER_KEY }}
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_USER_KEY: ${{ secrets.BP_USER_KEY }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
         run: |
           # Build right after THIS run pulled player props, so BettingPros' short
           # (~10 min) prop cache is still warm for this keyless step. Props are
